@@ -148,6 +148,7 @@
     <ClCompile Include="Ball.cpp" />
     <ClCompile Include="BallUI.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="CameraBatter.cpp" />
     <ClCompile Include="CameraDebug.cpp" />
     <ClCompile Include="CameraEvent.cpp" />
     <ClCompile Include="CameraMinimap.cpp" />
@@ -166,6 +167,11 @@
     <ClCompile Include="GaugeUI.cpp" />
     <ClCompile Include="Geometory.cpp" />
     <ClCompile Include="Goal.cpp" />
+    <ClCompile Include="imgui\imgui.cpp" />
+    <ClCompile Include="imgui\imgui_demo.cpp" />
+    <ClCompile Include="imgui\imgui_draw.cpp" />
+    <ClCompile Include="imgui\imgui_tables.cpp" />
+    <ClCompile Include="imgui\imgui_widgets.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MeshBuffer.cpp" />
@@ -191,6 +197,7 @@
     <ClInclude Include="Ball.h" />
     <ClInclude Include="BallUI.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="CameraBatter.h" />
     <ClInclude Include="CameraDebug.h" />
     <ClInclude Include="CameraEvent.h" />
     <ClInclude Include="CameraMinimap.h" />
@@ -210,6 +217,12 @@
     <ClInclude Include="GaugeUI.h" />
     <ClInclude Include="Geometory.h" />
     <ClInclude Include="Goal.h" />
+    <ClInclude Include="imgui\imconfig.h" />
+    <ClInclude Include="imgui\imgui.h" />
+    <ClInclude Include="imgui\imgui_internal.h" />
+    <ClInclude Include="imgui\imstb_rectpack.h" />
+    <ClInclude Include="imgui\imstb_textedit.h" />
+    <ClInclude Include="imgui\imstb_truetype.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="Main.h" />
     <ClInclude Include="MeshBuffer.h" />

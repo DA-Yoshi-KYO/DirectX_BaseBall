@@ -3,6 +3,7 @@
 #include <DirectXMath.h>
 #include <fstream>
 #include <string>
+#include <iostream>
 #include "Defines.h"
 #include "Model.h"
 #include "Geometory.h"

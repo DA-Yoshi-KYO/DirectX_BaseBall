@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GameObject.h"
+#include "Defines.h"
 
 class CField : public CGameObject
 {
@@ -24,6 +25,8 @@ private:
 		MAX_FIELD
 	};
 	Model* m_pModel[MAX_FIELD];
+	std::unique_ptr<Model> m_pField;
+	ModelParam m_tFieldParam;
 	int FieldMap[MAP_X][MAP_Y];
 
 	CCamera* m_pCamera;			// カメラ情報(コンポジション)
