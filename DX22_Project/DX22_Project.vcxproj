@@ -145,6 +145,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Attack.cpp" />
     <ClCompile Include="Ball.cpp" />
     <ClCompile Include="BallUI.cpp" />
     <ClCompile Include="Camera.cpp" />
@@ -154,6 +155,7 @@
     <ClCompile Include="CameraMinimap.cpp" />
     <ClCompile Include="CameraPlayer.cpp" />
     <ClCompile Include="Collision.cpp" />
+    <ClCompile Include="Defence.cpp" />
     <ClCompile Include="DirectWriteCustomFont.cpp" />
     <ClCompile Include="DirectWriteSample.cpp" />
     <ClCompile Include="DirectX.cpp" />
@@ -188,12 +190,14 @@
     <ClCompile Include="ShaderList.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="Startup.cpp" />
+    <ClCompile Include="StrikeZone.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="TrailEffect.cpp" />
     <ClCompile Include="_geometory.cpp" />
     <ClCompile Include="_model.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Attack.h" />
     <ClInclude Include="Ball.h" />
     <ClInclude Include="BallUI.h" />
     <ClInclude Include="Camera.h" />
@@ -203,6 +207,7 @@
     <ClInclude Include="CameraMinimap.h" />
     <ClInclude Include="CameraPlayer.h" />
     <ClInclude Include="Collision.h" />
+    <ClInclude Include="Defence.h" />
     <ClInclude Include="Defines.h" />
     <ClInclude Include="DirectWriteCustomFont.h" />
     <ClInclude Include="DirectWriteSample.h" />
@@ -238,12 +243,14 @@
     <ClInclude Include="Shader.h" />
     <ClInclude Include="ShaderList.h" />
     <ClInclude Include="Sprite.h" />
+    <ClInclude Include="StrikeZone.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TrailEffect.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Assets\txt\Ground.txt" />
     <Text Include="Assets\txt\Object.txt" />
+    <Text Include="History.txt" />
     <Text Include="memo.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

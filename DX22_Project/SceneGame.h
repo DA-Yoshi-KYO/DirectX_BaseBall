@@ -9,6 +9,7 @@ enum CameraKind
 	CAM_PLAYER,
 	CAM_EVENT, // イベント用の定義 
 	CAM_MINIMAP, // ミニマップ用の定義
+	CAM_BATTER,
 	MAX_CAMERA // カメラ最大数 
 };
 
@@ -24,6 +25,15 @@ enum CameraKind
 #include "Minimap.h"
 #include "Ball.h"
 #include "BallUI.h"
+#include "Attack.h"
+#include "Defence.h"
+
+
+enum class Playing
+{
+	Attack,
+	Defence
+};
 
 // class
 class CSceneGame : public CScene
@@ -48,14 +58,21 @@ private:
 	CMinimap* m_pMinimap;	// ミニマップ
 	CBall* m_pBall;		// ボール
 	CBallUI* m_pBallUI;
+	std::unique_ptr<CAttack> m_pAttack;
+	std::unique_ptr<CDefence> m_pDefence;
 
 	int m_nGoalCount;
 	bool m_bEnd;
 	CameraKind m_eCameraKind;
+	static int m_nPlaying;
 
 	/*---------------内部処理---------------*/
 	void CameraUpdate();
 	void DrawMinimap();
+
+public:
+	static void SetPlaying(Playing playing);
+	static Playing GetPlaying();
 };
 
 #endif // __SCENE_GAME_H__

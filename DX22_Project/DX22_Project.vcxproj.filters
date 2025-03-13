@@ -64,6 +64,9 @@
     <Filter Include="リソース ファイル\imgui">
       <UniqueIdentifier>{b4a7e802-ef5c-41d7-9cee-5adf75cc14d2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="リソース ファイル\memo">
+      <UniqueIdentifier>{23d468d2-c273-46d6-9644-3a31e88acea7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Shader.cpp">
@@ -207,6 +210,15 @@
     <ClCompile Include="CameraBatter.cpp">
       <Filter>ソース ファイル\Camera</Filter>
     </ClCompile>
+    <ClCompile Include="StrikeZone.cpp">
+      <Filter>ソース ファイル\2DObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Attack.cpp">
+      <Filter>ソース ファイル\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="Defence.cpp">
+      <Filter>ソース ファイル\Application</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MeshBuffer.h">
@@ -347,6 +359,15 @@
     <ClInclude Include="CameraBatter.h">
       <Filter>ヘッダー ファイル\Camera</Filter>
     </ClInclude>
+    <ClInclude Include="StrikeZone.h">
+      <Filter>ヘッダー ファイル\2DObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Attack.h">
+      <Filter>ヘッダー ファイル\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="Defence.h">
+      <Filter>ヘッダー ファイル\Application</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Assets\txt\Ground.txt">
@@ -357,6 +378,9 @@
     </Text>
     <Text Include="Assets\txt\Object.txt">
       <Filter>リソース ファイル\imgui</Filter>
+    </Text>
+    <Text Include="History.txt">
+      <Filter>リソース ファイル\memo</Filter>
     </Text>
   </ItemGroup>
 </Project>

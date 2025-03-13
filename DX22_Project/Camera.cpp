@@ -41,3 +41,46 @@ DirectX::XMFLOAT4X4 CCamera::GetProjectionMatrix(bool transpose)
 
 	return mat;
 }
+
+const DirectX::XMFLOAT4X4 CCamera::Get2DWolrdMatrix(float rotate, bool transpose)
+{
+	DirectX::XMMATRIX mWorld = 
+		DirectX::XMMatrixScaling(1.0f, -1.0f, 1.0f) *
+		DirectX::XMMatrixRotationZ(rotate) *
+		DirectX::XMMatrixTranslation(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f, 0.0f);
+
+	if (transpose) mWorld = DirectX::XMMatrixTranspose(mWorld);
+
+	DirectX::XMFLOAT4X4 world;
+	DirectX::XMStoreFloat4x4(&world, mWorld);
+
+	return world;
+}
+
+const DirectX::XMFLOAT4X4 CCamera::Get2DViewMatrix(bool transpose)
+{
+	DirectX::XMMATRIX mView = DirectX::XMMatrixLookAtLH(
+		DirectX::XMVectorSet(0.0f, 0.0f, -0.02f, 0.0f),
+		DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f),
+		DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
+
+	if (transpose) mView = DirectX::XMMatrixTranspose(mView);
+
+	DirectX::XMFLOAT4X4 view;
+	DirectX::XMStoreFloat4x4(&view, mView);
+
+	return view;
+}
+
+const DirectX::XMFLOAT4X4 CCamera::Get2DProjectionMatrix(bool transpose)
+{
+	DirectX::XMMATRIX mProj = 
+		DirectX::XMMatrixOrthographicOffCenterLH(0.0f, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f, 0.1f, 10.0f);
+
+	if (transpose) mProj = DirectX::XMMatrixTranspose(mProj);
+
+	DirectX::XMFLOAT4X4 proj;
+	DirectX::XMStoreFloat4x4(&proj, mProj);
+
+	return proj;
+}
