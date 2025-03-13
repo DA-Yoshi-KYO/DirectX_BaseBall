@@ -14,6 +14,10 @@ public:
 	DirectX::XMFLOAT3 GetPos() { return m_pos; }
 	DirectX::XMFLOAT3 GetLook() { return m_look; }
 	DirectX::XMFLOAT3 GetForward() { return m_look; }
+
+	static const DirectX::XMFLOAT4X4 Get2DWolrdMatrix(float rotate = 0.0f,bool transpose = true);
+	static const DirectX::XMFLOAT4X4 Get2DViewMatrix(bool transpose = true);
+	static const DirectX::XMFLOAT4X4 Get2DProjectionMatrix(bool transpose = true);
 protected:
 	DirectX::XMFLOAT3 m_pos;
 	DirectX::XMFLOAT3 m_look;

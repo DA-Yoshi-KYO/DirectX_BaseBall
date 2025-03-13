@@ -158,3 +158,28 @@ void Sprite::SetPixelShader(Shader* ps)
 	else
 		m_data.ps = m_defPS.get();
 }
+
+void Sprite::SetParam(SpriteParam param)
+{
+	// パラメーター設定
+	// 座標
+	m_data.param[0].x = param.pos.x;
+	m_data.param[0].y = param.pos.y;
+	// サイズ
+	m_data.param[0].z = param.size.x;
+	m_data.param[0].w = param.size.y;
+	// uv座標
+	m_data.param[1].x = param.uvPos.x;
+	m_data.param[1].y = param.uvPos.y;
+	// uvサイズ
+	m_data.param[1].z = param.uvSize.x;
+	m_data.param[1].w = param.uvSize.y;
+	// 色
+	m_data.param[2] = param.color;
+	// ワールド座標
+	m_data.matrix[0] = param.world;
+	// ビュー座標
+	m_data.matrix[1] = param.view;
+	// プロジェクション座標
+	m_data.matrix[2] = param.proj;
+}

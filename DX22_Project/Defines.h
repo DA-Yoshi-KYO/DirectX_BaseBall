@@ -6,6 +6,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <DirectXMath.h>
+#include <memory>
 
 using namespace std;
 

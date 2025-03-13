@@ -6,6 +6,7 @@
 #include "MeshBuffer.h"
 #include "Shader.h"
 #include "Texture.h"
+#include "Defines.h"
 
 class Sprite
 {
@@ -27,6 +28,8 @@ public:
 
 	static void SetVertexShader(Shader* vs);
 	static void SetPixelShader(Shader* ps);
+
+	static void SetParam(SpriteParam param);
 
 private:
 	struct Data

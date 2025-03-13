@@ -7,6 +7,9 @@
 #include "CameraEvent.h"
 #include "CameraMinimap.h"
 #include "CameraPlayer.h"
+#include "CameraBatter.h"
+
+int CSceneGame::m_nPlaying = 0;
 
 /*───────四大処理───────*/
 // コンストラクタ
@@ -16,17 +19,13 @@ CSceneGame::CSceneGame()
 	, m_pPlayer(nullptr), m_pField(nullptr), m_pObject(nullptr)
 	, m_pGoal(nullptr), m_pEffect(nullptr), m_pGaugeUI(nullptr)
 	, m_pMinimap(nullptr), m_pBall(nullptr), m_pBallUI(nullptr)
-	, m_eCameraKind(CAM_EVENT), m_nGoalCount(0), m_bEnd(false)
+	, m_pAttack(nullptr), m_pDefence(nullptr)
+	, m_eCameraKind(CAM_BATTER), m_nGoalCount(0), m_bEnd(false)
 {
 	// 各種初期化処理
 	// オブジェクト
 	m_pPlayer = new CPlayer();
-	//m_pObject = new CObject();
 	m_pField = new CField();
-	m_pGaugeUI = new CGaugeUI();
-	m_pGoal = new CGoal();
-	m_pBall = new  CBall();
-	m_pBallUI = new CBallUI();
 
 	// カメラ
 	CCameraDebug* pCamDebug = new CCameraDebug();
@@ -36,10 +35,13 @@ CSceneGame::CSceneGame()
 	pCamEvent->SetEvent(DirectX::XMFLOAT3(0.0f, 5.0f, 0.0f), DirectX::XMFLOAT3(0.0f, 25.0f, 43.3f), 5.0f);	// イベントの設定をする
 	CCameraMinimap* pCamMinimap = new CCameraMinimap();
 	pCamMinimap->SetPlayer(m_pPlayer);	// カメラで追いかけるプレイヤーを設定
+	CCameraBatter* pCamBatter = new CCameraBatter();
+
 	m_pCamera[CAM_DEBUG] = pCamDebug;
 	m_pCamera[CAM_PLAYER] = pCamPlayer;
 	m_pCamera[CAM_EVENT] = pCamEvent;
 	m_pCamera[CAM_MINIMAP] = pCamMinimap;
+	m_pCamera[CAM_BATTER] = pCamBatter;
 
 	// エフェクト
 	CEffectGoal* pEffect = new CEffectGoal();
@@ -50,13 +52,11 @@ CSceneGame::CSceneGame()
 	m_pMinimap = new CMinimap();
 	
 	m_pPlayer->SetCamera(m_pCamera[m_eCameraKind]);
-	m_pPlayer->SetBall(m_pBall);
-//	m_pObject->SetCamera(m_pCamera[m_eCameraKind]);
-	m_pField->SetCamera(m_pCamera[m_eCameraKind]);	
-	m_pGoal->SetCamera(m_pCamera[m_eCameraKind]);
-	m_pBall->SetCamera(m_pCamera[m_eCameraKind]);
-	m_pBall->SetPlayer(m_pPlayer);
-	m_pBall->SetRandX();
+	m_pField->SetCamera(m_pCamera[m_eCameraKind]);
+
+	m_nPlaying = (int)Playing::Attack;
+	m_pAttack = std::make_unique<CAttack>();
+	m_pDefence = std::make_unique<CDefence>();
 }
 
 // デストラクタ
@@ -90,111 +90,26 @@ void CSceneGame::Update()
 	// カメラの切り替え処理
 	CameraUpdate();
 
-	// エフェクトの再生中は更新処理を行わない
-	if (!m_pEffect->IsPlay() && m_eCameraKind == CAM_PLAYER && !m_bEnd)
-	{
-		// 各種更新処理
-		m_pField->Update();		// フィールド
-		//m_pObject->Update();	// オブジェクト
-		m_pPlayer->Update();	// プレイヤー
-		m_pGoal->Update();		// ゴール
-		m_pBall->Update();
-		m_pBallUI->Update();
-		// ゲージをパワーに応じて設定
-		m_pGaugeUI->SetGauge(m_pPlayer->GetPower());
-
-		//// 当たり判定情報
-		//Collision::Info collisionPlayer;	// プレイヤー
-		//Collision::Info collisionObject;	// オブジェクト
-
-		//collisionPlayer = m_pPlayer->GetCollision();
-		//// マップのサイズ分当たり判定の確認を行う
-		//for (int j = 0; j < MAP_Y; j++)
-		//{
-		//	for (int i = 0; i < MAP_X; i++)
-		//	{
-		//		//　当たり判定情報の取得
-		//		collisionObject = m_pObject->GetCollision(j, i);
-		//		// プレイヤーとオブジェクトの当たり判定を確認
-		//		Collision::Result result_PlayerToObject = Collision::Hit(collisionPlayer, collisionObject);
-		//		// プレイヤーとオブジェクトが当たっている場合
-		//		if (result_PlayerToObject.isHit)
-		//		{
-		//			result_PlayerToObject.other = collisionObject;	// 当たった先をオブジェクトとする
-		//			m_pPlayer->OnCollision(result_PlayerToObject);	// プレイヤーの当たり判定処理を行う
-		//		}
-
-		//		// 影の位置を計算 
-		//		if (collisionPlayer.type == Collision::eBox)
-		//		{
-		//			// 高さを考慮せず、Ｂｏｘの中心までの距離を判定 
-		//			DirectX::XMFLOAT2 dist(
-		//				fabsf(collisionPlayer.box.center.x - collisionObject.box.center.x),
-		//				fabsf(collisionPlayer.box.center.z - collisionObject.box.center.z)
-		//			);
-		//			// Ｂｏｘ内に収まっているか判定 
-		//			if (dist.x <= collisionObject.box.size.x * 0.5f &&
-		//				dist.y <= collisionObject.box.size.z * 0.5f)
-		//			{
-		//				// Ｂｏｘの天面の座標を、影の位置に設定 
-		//				m_pPlayer->SetShadow(DirectX::XMFLOAT3(
-		//					collisionPlayer.box.center.x,
-		//					collisionObject.box.center.y + collisionObject.box.size.y * 0.5f,
-		//					collisionPlayer.box.center.z));
-		//			}
-		//		}
-		//	}
-
-		Collision::Info collisionPlayer = m_pPlayer->GetCollision();
-		Collision::Info collisionBall = m_pBall->GetCollision();
-		// プレイヤーとオブジェクトの当たり判定を確認
-		Collision::Result result_PlayerToObject = Collision::Hit(collisionBall, collisionPlayer);
-		// プレイヤーとオブジェクトが当たっている場合
-		if (result_PlayerToObject.isHit && (m_pBall->GetPhase() != 1 || m_pBall->GetPhase() != 2))
-		{
-			m_pBall->OnCollision(result_PlayerToObject);	// プレイヤーの当たり判定処理を行う
-		}
-		// ゴールに当たった場合
-		if (m_pGoal->IsHit(m_pBall->GetCollision()))
-		{
-			if (!m_pEffect->IsPlay())
-			{
-				// プレイヤーの位置にエフェクトを設定
-				m_pEffect->SetPos({ -120.0f + WORLD_AJUST,0.0f + WORLD_AJUST,80.0f + WORLD_AJUST });
-				// エフェクトの再生
-				m_pEffect->Play();
-				m_nGoalCount++;
-				m_pBall->SetPos({ 0.0f + WORLD_AJUST,3.0f + WORLD_AJUST,180.0f + WORLD_AJUST });
-				m_pBall->SetPhase(0);
-				m_pPlayer->SetPos({ 0.0f + WORLD_AJUST,10.0f + WORLD_AJUST,20.0f + WORLD_AJUST });
-				m_pBall->SetRandX();
-			}
-		}
-		else if (m_pBall->GetPos().z <= -100.0f + WORLD_AJUST)
-		{
-			m_nGoalCount++;
-			m_pBall->SetPos({ 0.0f + WORLD_AJUST,3.0f + WORLD_AJUST,180.0f + WORLD_AJUST });
-			m_pBall->SetPhase(0);
-			m_pPlayer->SetPos({ 0.0f + WORLD_AJUST,10.0f + WORLD_AJUST,20.0f + WORLD_AJUST });
-			m_pBall->SetRandX();
-		}
-		if (m_nGoalCount >= 5)
-		{
-			m_bEnd = true;
-			SetNext(0);
-		}
-		m_pBallUI->SetBallVal(MAX_BALL - 1 - m_nGoalCount);
-	}
 	
+	m_pField->Update();		// フィールド
+	switch (m_nPlaying)
+	{
+	case (int)Playing::Attack:
+		m_pAttack->Update();
+		break;
+	case (int)Playing::Defence:
+		m_pDefence->Update();
+		break;
+	default:
+		break;
+	}
 
-
-	if (m_pEffect)m_pEffect->Update();	// エフェクトの更新
 }
 
 // 描画
 void CSceneGame::Draw()
 {
-	DrawMinimap();
+	//DrawMinimap();
 
 	// GeometoryへのView,Projection設定
 	Geometory::SetView(m_pCamera[m_eCameraKind]->GetViewMatrix());
@@ -203,23 +118,30 @@ void CSceneGame::Draw()
 	// SpriteへのView,Projection設定
 	Sprite::SetView(m_pCamera[m_eCameraKind]->GetViewMatrix());
 	Sprite::SetProjection(m_pCamera[m_eCameraKind]->GetProjectionMatrix());
-
 	// 3D描画
 	// レンダーターゲットを3D用の設定に変更
 	SetRender3D();
-	m_pField->Draw();	// フィールドの描画
-//	m_pObject->Draw();	// オブジェクトの描画	
-	m_pPlayer->Draw();	// プレイヤーの描画
-	m_pGoal->Draw();	// ゴールの描画
-	m_pBall->Draw();
+	m_pField->Draw();	// フィールドの描画	
+
+	switch (m_nPlaying)
+	{
+	case (int)Playing::Attack:
+		m_pAttack->Draw();
+		break;
+	case (int)Playing::Defence:
+		m_pDefence->Draw();
+		break;
+	default:
+		break;
+	}
+
+	//m_pPlayer->Draw();	// プレイヤーの描画
 
 	// 2D描画
 	// レンダーターゲットを2D用の設定に変更
 	SetRender2D();
 	m_pMinimap->Draw();	// ミニマップの描画
-	m_pGaugeUI->Draw();	// ゲージの描画
-	m_pBallUI->Draw();
-	if (m_pEffect)m_pEffect->Draw();	// エフェクトの描画
+	//if (m_pEffect)m_pEffect->Draw();	// エフェクトの描画
 }
 
 /*───────内部処理───────*/
@@ -321,3 +243,14 @@ void CSceneGame::DrawMinimap()
 	m_pBall->SetCamera(m_pCamera[m_eCameraKind]);
 	((CEffectGoal*)m_pEffect)->SetCamera(m_pCamera[m_eCameraKind]);
 }
+
+void CSceneGame::SetPlaying(Playing playing)
+{
+	m_nPlaying = (int)playing;
+}
+
+Playing CSceneGame::GetPlaying()
+{
+	return (Playing)m_nPlaying;
+}
+
