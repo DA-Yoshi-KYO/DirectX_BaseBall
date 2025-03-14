@@ -148,6 +148,7 @@
     <ClCompile Include="Attack.cpp" />
     <ClCompile Include="Ball.cpp" />
     <ClCompile Include="BallUI.cpp" />
+    <ClCompile Include="Batting.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CameraBatter.cpp" />
     <ClCompile Include="CameraDebug.cpp" />
@@ -183,6 +184,7 @@
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="NumberUI.cpp" />
     <ClCompile Include="Object.cpp" />
+    <ClCompile Include="Pitching.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PolylineEffect.cpp" />
     <ClCompile Include="Scene.cpp" />
@@ -202,6 +204,7 @@
     <ClInclude Include="Attack.h" />
     <ClInclude Include="Ball.h" />
     <ClInclude Include="BallUI.h" />
+    <ClInclude Include="Batting.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CameraBatter.h" />
     <ClInclude Include="CameraDebug.h" />
@@ -239,6 +242,7 @@
     <ClInclude Include="Model.h" />
     <ClInclude Include="NumberUI.h" />
     <ClInclude Include="Object.h" />
+    <ClInclude Include="Pitching.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PolylineEffect.h" />
     <ClInclude Include="Scene.h" />

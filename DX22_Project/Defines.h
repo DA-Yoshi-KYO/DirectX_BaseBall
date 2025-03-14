@@ -24,10 +24,12 @@ static const float fFPS = static_cast<float>(FPS);
 #define TXTPASS(txt) ("Assets/txt/" txt)
 #define TEXPASS(png) ("Assets/Texture/" png)
 #define ERROR_MESSAGE(asset) do{ MessageBox(NULL,asset,"LoadError",MB_OK); } while (0)
+#define INFO_MESSAGE(information) do{ MessageBox(NULL,information,"Information",MB_OK); } while (0)
 
 // 3D‹óŠÔ’è‹`
 #define CMETER(value) (value * 0.01f)
 #define METER(value) (value * 1.0f)
+#define KMETER(value) (value * 1000.0f)
 #define MSEC(value) (value / fFPS)
 #define CMSEC(value) MSEC(CMETER(value))
 #define WORLD_AJUST 10000.0f

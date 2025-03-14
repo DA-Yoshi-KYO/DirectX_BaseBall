@@ -29,11 +29,7 @@ enum CameraKind
 #include "Defence.h"
 
 
-enum class Playing
-{
-	Attack,
-	Defence
-};
+
 
 // class
 class CSceneGame : public CScene
@@ -71,6 +67,11 @@ private:
 	void DrawMinimap();
 
 public:
+	enum class Playing
+	{
+		Attack,
+		Defence
+	};
 	static void SetPlaying(Playing playing);
 	static Playing GetPlaying();
 };

@@ -90,5 +90,5 @@ public:
 	static Result Hit(Plane plane, Line line);
 	static Result Hit(Plane plane, Ray ray, float lenght);
 	static Result Hit(Point point, Triangle triangle);
-
+	static bool Hit2D(DirectX::XMFLOAT2 aPos, DirectX::XMFLOAT2 bPos, DirectX::XMFLOAT2 aSize, DirectX::XMFLOAT2 bSize);
 };

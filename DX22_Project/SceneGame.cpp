@@ -96,6 +96,7 @@ void CSceneGame::Update()
 	{
 	case (int)Playing::Attack:
 		m_pAttack->Update();
+		m_pDefence->Update();
 		break;
 	case (int)Playing::Defence:
 		m_pDefence->Update();
@@ -127,6 +128,7 @@ void CSceneGame::Draw()
 	{
 	case (int)Playing::Attack:
 		m_pAttack->Draw();
+		m_pDefence->Draw();
 		break;
 	case (int)Playing::Defence:
 		m_pDefence->Draw();
@@ -249,7 +251,7 @@ void CSceneGame::SetPlaying(Playing playing)
 	m_nPlaying = (int)playing;
 }
 
-Playing CSceneGame::GetPlaying()
+CSceneGame::Playing CSceneGame::GetPlaying()
 {
 	return (Playing)m_nPlaying;
 }

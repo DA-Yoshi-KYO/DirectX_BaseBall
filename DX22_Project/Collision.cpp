@@ -182,6 +182,19 @@ Collision::Result Collision::Hit(Point point, Triangle triangle)
 
 }
 
+bool Collision::Hit2D(DirectX::XMFLOAT2 aPos, DirectX::XMFLOAT2 bPos, DirectX::XMFLOAT2 aSize, DirectX::XMFLOAT2 bSize)
+{
+	DirectX::XMFLOAT2 aHalf = { aSize.x * 0.5f, aSize.y * 0.5f };
+	DirectX::XMFLOAT2 bHalf = { bSize.x * 0.5f, bSize.y * 0.5f };
+
+	DirectX::XMFLOAT2 aMin = { aPos.x - aHalf.x, aPos.y - aHalf.y };
+	DirectX::XMFLOAT2 aMax = { aPos.x + aHalf.x, aPos.y + aHalf.y };
+	DirectX::XMFLOAT2 bMin = { bPos.x - bHalf.x, bPos.y - bHalf.y };
+	DirectX::XMFLOAT2 bMax = { bPos.x + bHalf.x, bPos.y + bHalf.y };
+
+	return (aMin.x <= bMax.x && aMax.x >= bMin.x && aMin.y <= bMax.y && aMax.y >= bMin.y);
+}
+
 Collision::Result Collision::Hit(Plane plane, Line line)
 {
     Result out = {};
