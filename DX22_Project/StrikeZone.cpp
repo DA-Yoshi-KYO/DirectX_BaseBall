@@ -34,3 +34,13 @@ void CStrikeZone::Draw()
 	Sprite::SetTexture(m_pTexture.get());
 	Sprite::Draw();
 }
+
+DirectX::XMFLOAT2 CStrikeZone::GetPos()
+{
+	return m_tParam.pos;
+}
+
+DirectX::XMFLOAT2 CStrikeZone::GetSize()
+{
+	return m_tParam.size;
+}
