@@ -9,6 +9,8 @@
 #include "SceneTitle.h"
 #include "SceneGame.h"
 #include "FadeBlack.h"
+#include "imgui.h"
+#include "imgui_impl_dx11.h"
 #include <dinput.h>
 
 //--- グローバル変数
@@ -30,6 +32,19 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 	hr = g_pKeyboardDevice->SetCooperativeLevel(hWnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE);
 	g_pKeyboardDevice->Acquire();
 	if (FAILED(hr)) { return hr; }
+
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+	io.DisplaySize = ImVec2((float)width, (float)height);
+
+	// Setup Dear ImGui style
+	ImGui::StyleColorsDark();
+	//ImGui::StyleColorsLight();
+
+	ImGui_ImplDX11_Init(GetDevice(), GetContext());
 
 	// 他機能初期化
 	Geometory::Init();
@@ -56,6 +71,8 @@ void Uninit()
 	UninitInput();
 	Sprite::Uninit();
 	Geometory::Uninit();
+	ImGui_ImplDX11_Shutdown();
+	ImGui::DestroyContext();
 	UninitDirectX();
 }
 
@@ -88,9 +105,10 @@ void Update()
 void Draw()
 {
 	BeginDrawDirectX();
-
+	ImGui_ImplDX11_NewFrame();
+	ImGui::NewFrame();
 	// 軸線の表示
-#ifdef _DEBUG
+#if 0
 	// グリッド
 	DirectX::XMFLOAT4 lineColor(0.5f, 0.5f, 0.5f, 1.0f);
 	float size = DEBUG_GRID_NUM * DEBUG_GRID_MARGIN;
@@ -149,8 +167,9 @@ void Draw()
 	Geometory::SetView(mat[0]);
 	Geometory::SetProjection(mat[1]);
 #endif
-
 	g_pScene->RootDraw();
+	ImGui::Render();
+	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 	EndDrawDirectX();
 }
 
