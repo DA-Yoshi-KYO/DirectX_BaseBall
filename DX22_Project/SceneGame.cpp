@@ -57,6 +57,7 @@ CSceneGame::CSceneGame()
 	m_nPlaying = (int)Playing::Attack;
 	m_pAttack = std::make_unique<CAttack>();
 	m_pDefence = std::make_unique<CDefence>();
+	CBallCount::GetInstance()->Init();
 }
 
 // デストラクタ
@@ -104,6 +105,7 @@ void CSceneGame::Update()
 	default:
 		break;
 	}
+	CBallCount::GetInstance()->Update();
 
 }
 
@@ -136,6 +138,7 @@ void CSceneGame::Draw()
 	default:
 		break;
 	}
+	CBallCount::GetInstance()->Draw();
 
 	//m_pPlayer->Draw();	// プレイヤーの描画
 

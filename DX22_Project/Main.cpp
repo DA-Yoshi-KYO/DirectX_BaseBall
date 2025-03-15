@@ -11,6 +11,7 @@
 #include "FadeBlack.h"
 #include "imgui.h"
 #include "imgui_impl_dx11.h"
+#include "imgui_impl_win32.h"
 #include <dinput.h>
 
 //--- グローバル変数
@@ -39,14 +40,13 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 	io.DisplaySize = ImVec2((float)width, (float)height);
-
 	// Setup Dear ImGui style
 	ImGui::StyleColorsDark();
 	//ImGui::StyleColorsLight();
 
+	ImGui_ImplWin32_Init(hWnd);
 	ImGui_ImplDX11_Init(GetDevice(), GetContext());
 
-	// 他機能初期化
 	Geometory::Init();
 	Sprite::Init();
 	InitInput();
@@ -72,6 +72,7 @@ void Uninit()
 	Sprite::Uninit();
 	Geometory::Uninit();
 	ImGui_ImplDX11_Shutdown();
+	ImGui_ImplWin32_Shutdown();
 	ImGui::DestroyContext();
 	UninitDirectX();
 }
@@ -106,6 +107,7 @@ void Draw()
 {
 	BeginDrawDirectX();
 	ImGui_ImplDX11_NewFrame();
+	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
 	// 軸線の表示
 #if 0

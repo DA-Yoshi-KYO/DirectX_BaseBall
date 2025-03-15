@@ -1,6 +1,4 @@
 #include "Cursor.h"
-#include "imgui.h"
-#include "imgui_impl_dx11.h"
 #include "Sprite.h"
 #include "Main.h"
 #include "Camera.h"
@@ -78,10 +76,7 @@ void CCursor::Update(int play)
 
 void CCursor::Draw(int play)
 {
-	ImGui::SetNextWindowSize(ImVec2(320, 100));
-	ImGui::Begin("hoge");
-	ImGui::Text("fugafuga");
-	ImGui::End();
+
 
 	switch (play)
 	{
@@ -117,6 +112,7 @@ DirectX::XMFLOAT2 CCursor::GetPos(int play)
 		return m_tParam[(int)CSceneGame::Playing::Defence].pos;
 		break;
 	default:
+		return DirectX::XMFLOAT2(0.0f, 0.0f);
 		break;
 	}
 }
@@ -132,6 +128,7 @@ DirectX::XMFLOAT2 CCursor::GetSize(int play)
 		return m_tParam[(int)CSceneGame::Playing::Defence].size;
 		break;
 	default:
+		return DirectX::XMFLOAT2(0.0f, 0.0f);
 		break;
 	}
 }
