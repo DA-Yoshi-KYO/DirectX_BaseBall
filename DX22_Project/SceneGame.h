@@ -27,6 +27,7 @@ enum CameraKind
 #include "BallUI.h"
 #include "Attack.h"
 #include "Defence.h"
+#include "BallCount.h"
 
 
 

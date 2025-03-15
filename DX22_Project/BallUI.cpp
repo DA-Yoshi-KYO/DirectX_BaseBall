@@ -16,28 +16,6 @@ CBallUI::CBallUI()
 		m_Sprite[i].color = { 1.0f,1.0f,1.0f,1.0f };
 		m_Sprite[i].uvPos = { 0.0f,0.0f };
 		m_Sprite[i].uvSize = { 1.0f,1.0f };
-		m_Sprite[i].mWorld =
-			DirectX::XMMatrixTranspose(
-				DirectX::XMMatrixScaling(1.0f, -1.0f, 1.0f) *
-				DirectX::XMMatrixRotationZ(m_Sprite[i].rotate) *
-		
-				DirectX::XMMatrixTranslation(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f, 0.0f)
-			);
-		DirectX::XMStoreFloat4x4(&m_Sprite[i].world, m_Sprite[i].mWorld);
-		m_Sprite[i].mView =
-			DirectX::XMMatrixTranspose(
-				DirectX::XMMatrixLookAtLH(
-					DirectX::XMVectorSet(0.0f, 0.0f, -0.3f, 0.0f),
-					DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f),
-					DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f))
-			);
-		DirectX::XMStoreFloat4x4(&m_Sprite[i].view, m_Sprite[i].mView);
-		m_Sprite[i].mProj =
-			DirectX::XMMatrixTranspose(
-				DirectX::XMMatrixOrthographicOffCenterLH(
-					0.0f, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f, 0.1f, 10.0f)
-			);
-		DirectX::XMStoreFloat4x4(&m_Sprite[i].proj, m_Sprite[i].mProj);
 	}
 }
 

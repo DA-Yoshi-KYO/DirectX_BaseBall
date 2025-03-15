@@ -25,6 +25,7 @@ static const float fFPS = static_cast<float>(FPS);
 #define TEXPASS(png) ("Assets/Texture/" png)
 #define ERROR_MESSAGE(asset) do{ MessageBox(NULL,asset,"LoadError",MB_OK); } while (0)
 #define INFO_MESSAGE(information) do{ MessageBox(NULL,information,"Information",MB_OK); } while (0)
+#define RANGEERROR_MESSAGE(value) do{ MessageBox(NULL,value,"Out of range",MB_OK); } while (0)
 
 // 3D‹óŠÔ’è‹`
 #define CMETER(value) (value * 0.01f)
@@ -54,9 +55,6 @@ struct SpriteParam
 	DirectX::XMFLOAT4 color = {1.0f,1.0f,1.0f,1.0f};
 	DirectX::XMFLOAT2 uvPos = { 0.0f,0.0f };
 	DirectX::XMFLOAT2 uvSize = {1.0f,1.0f};
-	DirectX::XMMATRIX mWorld;
-	DirectX::XMMATRIX mView;
-	DirectX::XMMATRIX mProj;
 	DirectX::XMFLOAT4X4 world;
 	DirectX::XMFLOAT4X4 view;
 	DirectX::XMFLOAT4X4 proj;
