@@ -1,33 +1,55 @@
+/*+===================================================================
+	File: BallCount.cpp
+	Summary: スコアボード内の処理
+	Author: 吉田京志郎
+	Date:	2025/03/16	初回作成
+						スコアボード、カウントの描画
+			2025/03/17	塁状況、イニングの描画
+						各種処理を描画に反映
+						ボールカウントの処理実装
+===================================================================+*/
+
+// ==============================
+//    インクルード部
+// ==============================
 #include "BallCount.h"
 #include "Camera.h"
 #include "Sprite.h"
 #include "ImGuiManager.h"
 
-#define COUNT_SPLIT_X 5
-#define COUNT_SPLIT_Y 5
-
-constexpr DirectX::XMFLOAT2 ce_BackPos = { 480.0f,260.0f };
-constexpr DirectX::XMFLOAT2 ce_BackSize = { 280.0f,170.0f };
-constexpr DirectX::XMFLOAT2 ce_CountPos = { 395.0f,271.0f };
-constexpr DirectX::XMFLOAT2 ce_CountSize = { 35.0f,35.0f };
-constexpr float ce_CountY = 37.3f;
-constexpr DirectX::XMFLOAT2 ce_BasePos = { 515.0f,210.0f };
-constexpr DirectX::XMFLOAT2 ce_BaseSize = { 50.0f,40.0f };
-constexpr DirectX::XMFLOAT2 ce_BaseAjust = { 42.0f,40.0f };
-constexpr DirectX::XMFLOAT2 ce_ScoreTopPos = { 500.0f,320.0f };
-constexpr DirectX::XMFLOAT2 ce_ScoreBottomPos = { 560.0f,320.0f };
-constexpr DirectX::XMFLOAT2 ce_ScoreSize = { 50.0f,50.0f };
-constexpr DirectX::XMFLOAT2 ce_ScoreAjust = { 30.0f,60.0f };
-constexpr DirectX::XMFLOAT2 ce_InningPos = { 395.0f,320.0f };
-constexpr DirectX::XMFLOAT2 ce_InningSize = { 50.0f,50.0f };
-constexpr DirectX::XMFLOAT2 ce_InningAjust = { 30.0f,60.0f };
-constexpr DirectX::XMFLOAT2 ce_TopBottomPos = { 435.0f,310.0f };
-constexpr DirectX::XMFLOAT2 ce_TopBottomSize = { 50.0f,50.0f };
-constexpr DirectX::XMFLOAT2 ce_TopBottomAjust = { 30.0f,60.0f };
-
-std::unique_ptr<CBallCount> CBallCount::m_pInstance = nullptr;
+// ==============================
+//    定数定義
+// ==============================
+// スプライトシートの分割数
+constexpr int ce_nCountSplitX = 5;
+constexpr int ce_nCountSplitY = 5;
+// スコアボードのパラメータ
+constexpr DirectX::XMFLOAT2 ce_fBackPos = { 480.0f,260.0f };
+constexpr DirectX::XMFLOAT2 ce_fBackSize = { 280.0f,170.0f };
+// 各種カウントのパラメータ
+constexpr DirectX::XMFLOAT2 ce_fCountPos = { 395.0f,271.0f };
+constexpr DirectX::XMFLOAT2 ce_fCountSize = { 35.0f,35.0f };
+constexpr float ce_fCountAjustY = 37.3f;
+// ベース状況のパラメータ
+constexpr DirectX::XMFLOAT2 ce_fBasePos = { 515.0f,210.0f };
+constexpr DirectX::XMFLOAT2 ce_fBaseSize = { 50.0f,40.0f };
+constexpr DirectX::XMFLOAT2 ce_fBaseAjust = { 42.0f,40.0f };
+// 得点のパラメータ
+constexpr DirectX::XMFLOAT2 ce_fScoreTopPos = { 500.0f,320.0f };
+constexpr DirectX::XMFLOAT2 ce_fScoreBottomPos = { 560.0f,320.0f };
+constexpr DirectX::XMFLOAT2 ce_fScoreSize = { 50.0f,50.0f };
+constexpr DirectX::XMFLOAT2 ce_fScoreAjust = { 30.0f,60.0f };
+// イニングのパラメータ
+constexpr DirectX::XMFLOAT2 ce_fInningPos = { 395.0f,320.0f };
+constexpr DirectX::XMFLOAT2 ce_fInningSize = { 50.0f,50.0f };
+constexpr DirectX::XMFLOAT2 ce_fInningAjust = { 30.0f,60.0f };
+// オモテ・ウラのパラメータ
+constexpr DirectX::XMFLOAT2 ce_fTopBottomPos = { 435.0f,310.0f };
+constexpr DirectX::XMFLOAT2 ce_fTopBottomSize = { 50.0f,50.0f };
+constexpr DirectX::XMFLOAT2 ce_fTopBottomAjust = { 30.0f,60.0f };
 
 CBallCount::CBallCount()
+	: m_tCount{}
 {
 
 }
@@ -44,6 +66,9 @@ void CBallCount::Init()
 	m_pSheet = std::make_unique<Texture>();
 	if (FAILED(m_pSheet->Create(TEXPASS("BallCountSheet.png"))))ERROR_MESSAGE("BallCountSheet.png");
 
+	// [0]:world
+	// [1]:view
+	// [2]:projection
 	DirectX::XMFLOAT4X4 wvp[3];
 	wvp[0] = CCamera::Get2DWolrdMatrix();
 	wvp[1] = CCamera::Get2DViewMatrix();
@@ -53,8 +78,8 @@ void CBallCount::Init()
 	m_tSheetParam.view = wvp[1];
 	m_tSheetParam.proj = wvp[2];
 
-	m_tBackParam.pos = ce_BackPos;
-	m_tBackParam.size = ce_BackSize;
+	m_tBackParam.pos = ce_fBackPos;
+	m_tBackParam.size = ce_fBackSize;
 	m_tBackParam.rotate = 0.0f;
 	m_tBackParam.color = { 1.0f,1.0f,1.0f,1.0f };
 	m_tBackParam.uvPos = { 0.0f,0.0f };
@@ -78,13 +103,19 @@ void CBallCount::Init()
 
 void CBallCount::Update()
 {
+	// ストライクが3つ溜まったら
 	if (m_tCount.m_nStrikeCount >= MAX_STRIKE_COUNT)
 	{
+		//アウトカウントを増やし、ストライク・ボールのカウントをリセットする
 		m_tCount.m_nOutCount++;
 		ResetCount();
 	}
+
+	// ボールが4つ溜まったら
 	if (m_tCount.m_nBallCount >= MAX_BALL_COUNT)
 	{
+		// 空いてる塁を一塁から探し
+		// 空いていたら塁を埋める
 		if (!m_tCount.m_bBaseState[0])
 		{
 			m_tCount.m_bBaseState[0] = true;
@@ -97,16 +128,20 @@ void CBallCount::Update()
 		{
 			m_tCount.m_bBaseState[2] = true;
 		}
+		// どこも空いていなかったら満塁なので点を入れる
 		else
 		{
-			// 点加算
 			if (m_tCount.m_bTop)AddScore((int)Team::TOP);
 			else AddScore((int)Team::BOTTOM);
 		}
+		// ストライク・ボールのカウントをリセットする
 		ResetCount();
 	}
+
+	// アウトが3つ溜まったら
 	if (m_tCount.m_nOutCount >= MAX_OUT_COUNT)
 	{
+		// イニング(オモテ・ウラ)を終える
 		ChangeInning();
 	}
 }
@@ -118,9 +153,16 @@ void CBallCount::Draw()
 	Sprite::SetTexture(m_pBack.get());
 	Sprite::Draw();
 
+	// ボールカウントの描画
 	DrawBallCount();
+
+	// 塁状況の描画
 	DrawBaseCount();
+
+	// 得点の描画
 	DrawScore();
+
+	// イニングの描画
 	DrawInning();
 }
 
@@ -141,7 +183,12 @@ void CBallCount::AddOutCount()
 
 void CBallCount::AddScore(int No)
 {
-	if(m_tCount.m_nScore[No] < MAX_SCORE)m_tCount.m_nScore[No]++;
+	if (No != 0 && No != 1)
+	{
+		INFO_MESSAGE("TeamNo = Out of range");
+		return;
+	}
+	if (m_tCount.m_nScore[No] < MAX_SCORE)m_tCount.m_nScore[No]++;
 }
 
 void CBallCount::SetBaseState(int base, bool state)
@@ -157,37 +204,46 @@ void CBallCount::ResetCount()
 
 void CBallCount::ChangeInning()
 {
+	// 各種カウントのリセット
 	m_tCount.m_nStrikeCount = 0;
 	m_tCount.m_nBallCount = 0;
 	m_tCount.m_nOutCount = 0;
+
+	// 塁状況のリセット
 	for (int i = 0; i < MAX_BASE_COUNT; i++)
 	{
 		m_tCount.m_bBaseState[i] = false;
 	}
 
+	// 9回の表終了時で後攻が勝っていたら試合を終了する
 	if (m_tCount.m_bTop && m_tCount.m_nInning == MAX_INNING)
 	{
-		if (m_tCount.m_nScore[(int)Team::TOP] > m_tCount.m_nScore[(int)Team::BOTTOM])
+		if (m_tCount.m_nScore[(int)Team::TOP] < m_tCount.m_nScore[(int)Team::BOTTOM])
 		{
 			m_tCount.m_bEnd = true;
 			return;
 		}
 	}
+	// 9回以上の時の処理
 	if (m_tCount.m_nInning >= MAX_INNING)
 	{
+		// 後攻終了時に点数が違ったら試合を終了する
 		if (!m_tCount.m_bTop && m_tCount.m_nScore[(int)Team::TOP] != m_tCount.m_nScore[(int)Team::BOTTOM])
 		{
 			m_tCount.m_bEnd = true;
 			return;
 		}
+		// 同じなら延長線に突入する
 		else
 		{
 			if (!m_tCount.m_bTop)m_tCount.m_nInning++;
 			m_tCount.m_bTop ^= true;
 		}
 	}
+	// 8回までは通常通り処理をする
 	else
 	{
+		// 裏の時はイニングを進める
 		if (!m_tCount.m_bTop)m_tCount.m_nInning++;
 		m_tCount.m_bTop ^= true;
 	}
@@ -200,13 +256,9 @@ bool CBallCount::IsEnd()
 
 std::unique_ptr<CBallCount>& CBallCount::GetInstance()
 { 
+	// インスタンスは一つしか存在しない
 	static std::unique_ptr<CBallCount> instance(new CBallCount());
 	return instance;
-}
-
-void CBallCount::DestroyInstance()
-{
-	m_pInstance.release();
 }
 
 void CBallCount::DrawBallCount()
@@ -216,14 +268,16 @@ void CBallCount::DrawBallCount()
 	SpriteParamDebug(&m_tBackParam.pos, &m_tBackParam.size, "back");
 	SpriteParamDebug(&debugpos, &debugpos, "count", { 220.0f,20.0f });
 #endif // _IMGUI
+
 	// ボールカウント共通の処理
-	m_tSheetParam.size = ce_CountSize;
-	m_tSheetParam.uvPos = { 1.0f / (float)COUNT_SPLIT_X,2.0f / (float)COUNT_SPLIT_Y };
-	m_tSheetParam.uvSize = { 1.0f / (float)COUNT_SPLIT_X,1.0f / (float)COUNT_SPLIT_Y };
+	m_tSheetParam.size = ce_fCountSize;
+	m_tSheetParam.uvPos = { 1.0f / (float)ce_nCountSplitX,2.0f / (float)ce_nCountSplitY };
+	m_tSheetParam.uvSize = { 1.0f / (float)ce_nCountSplitX,1.0f / (float)ce_nCountSplitY };
+
 	// ボールカウントの描画
 	for (int i = 0; i < MAX_BALL_COUNT - 1; i++)
 	{
-		m_tSheetParam.pos = { m_tSheetParam.size.x * i + ce_CountPos.x,0.0f + ce_CountPos.y };
+		m_tSheetParam.pos = { m_tSheetParam.size.x * i + ce_fCountPos.x,0.0f + ce_fCountPos.y };
 
 		if (m_tCount.m_nBallCount >= i + 1)m_tSheetParam.color = { 0.0f,1.0f,0.0f,1.0f };
 		else m_tSheetParam.color = { 0.0f,1.0f,0.0f,0.3f };
@@ -235,7 +289,7 @@ void CBallCount::DrawBallCount()
 	// ストライクカウントの描画
 	for (int i = 0; i < MAX_STRIKE_COUNT - 1; i++)
 	{
-		m_tSheetParam.pos = { m_tSheetParam.size.x * i + ce_CountPos.x,-ce_CountY + ce_CountPos.y };
+		m_tSheetParam.pos = { m_tSheetParam.size.x * i + ce_fCountPos.x,-ce_fCountAjustY + ce_fCountPos.y };
 		if (m_tCount.m_nStrikeCount >= i + 1)m_tSheetParam.color = { 1.0f,1.0f,0.0f,1.0f };
 		else m_tSheetParam.color = { 1.0f,1.0f,0.0f,0.3f };
 		Sprite::SetParam(m_tSheetParam);
@@ -246,7 +300,7 @@ void CBallCount::DrawBallCount()
 	// アウトカウントの描画
 	for (int i = 0; i < MAX_OUT_COUNT - 1; i++)
 	{
-		m_tSheetParam.pos = { m_tSheetParam.size.x * i + ce_CountPos.x,-ce_CountY * 2.0f + ce_CountPos.y };
+		m_tSheetParam.pos = { m_tSheetParam.size.x * i + ce_fCountPos.x,-ce_fCountAjustY * 2.0f + ce_fCountPos.y };
 		if (m_tCount.m_nOutCount >= i + 1)m_tSheetParam.color = { 1.0f,0.0f,0.0f,1.0f };
 		else m_tSheetParam.color = { 1.0f,0.0f,0.0f,0.3f };
 		Sprite::SetParam(m_tSheetParam);
@@ -263,26 +317,27 @@ void CBallCount::DrawBaseCount()
 	SpriteParamDebug(&debugpos, &debugsize, "count", { 220.0f,20.0f });
 #endif // _IMGUI
 
-	// ベースカウント共通の処理
-	m_tSheetParam.uvPos = { 0.0f / (float)COUNT_SPLIT_X,2.0f / (float)COUNT_SPLIT_Y };
-	m_tSheetParam.uvSize = { 1.0f / (float)COUNT_SPLIT_X,1.0f / (float)COUNT_SPLIT_Y };
+	// 塁状況共通の処理
+	m_tSheetParam.uvPos = { 0.0f / (float)ce_nCountSplitX,2.0f / (float)ce_nCountSplitY };
+	m_tSheetParam.uvSize = { 1.0f / (float)ce_nCountSplitX,1.0f / (float)ce_nCountSplitY };
 
+	// 塁状況の描画
 	for (int i = 0; i < MAX_BASE_COUNT - 1; i++)
 	{
-		m_tSheetParam.size = ce_BaseSize;
+		m_tSheetParam.size = ce_fBaseSize;
 		if(m_tCount.m_bBaseState[i])m_tSheetParam.color = {1.0f,1.0f,0.0f,1.0f};
 		else m_tSheetParam.color = { 1.0f,1.0f,1.0f,1.0f };
 
 		switch (i)
 		{
 		case 0:
-			m_tSheetParam.pos = { ce_BasePos.x + ce_BaseAjust.x * 2.0f,ce_BasePos.y };
+			m_tSheetParam.pos = { ce_fBasePos.x + ce_fBaseAjust.x * 2.0f,ce_fBasePos.y };
 			break;
 		case 1:
-			m_tSheetParam.pos = { ce_BasePos.x + ce_BaseAjust.x,ce_BasePos.y + ce_BaseAjust.y };
+			m_tSheetParam.pos = { ce_fBasePos.x + ce_fBaseAjust.x,ce_fBasePos.y + ce_fBaseAjust.y };
 			break;
 		case 2:
-			m_tSheetParam.pos = ce_BasePos;
+			m_tSheetParam.pos = ce_fBasePos;
 			break;
 		default:
 			break;
@@ -301,13 +356,15 @@ void CBallCount::DrawScore()
 	SpriteParamDebug(&debugpos, &debugsize, "score", { 220.0f,20.0f });
 #endif // _IMGUI
 
+	// スプライトシート操作用
 	int nNum = 0;
 
-	m_tSheetParam.uvSize = { 1.0f / (float)COUNT_SPLIT_X,1.0f / (float)COUNT_SPLIT_Y };
+	// 得点共通の処理
+	m_tSheetParam.uvSize = { 1.0f / (float)ce_nCountSplitX,1.0f / (float)ce_nCountSplitX };
 	m_tSheetParam.color = { 1.0f,1.0f,1.0f,1.0f };	
-	m_tSheetParam.size = ce_ScoreSize;
+	m_tSheetParam.size = ce_fScoreSize;
 
-	// 先行
+	// 先行の得点の描画
 	for (int i = 0; i < 2; i++)
 	{
 		switch (i)
@@ -322,14 +379,14 @@ void CBallCount::DrawScore()
 		default:
 			break;
 		}
-		m_tSheetParam.pos = { ce_ScoreTopPos.x - ce_ScoreAjust.x * i, ce_ScoreTopPos.y };
-		m_tSheetParam.uvPos = { (float)(nNum % COUNT_SPLIT_X) / (float)COUNT_SPLIT_X ,(float)(nNum / COUNT_SPLIT_X) / (float)COUNT_SPLIT_Y };
+		m_tSheetParam.pos = { ce_fScoreTopPos.x - ce_fScoreAjust.x * i, ce_fScoreTopPos.y };
+		m_tSheetParam.uvPos = { (float)(nNum % ce_nCountSplitX) / (float)ce_nCountSplitX ,(float)(nNum / ce_nCountSplitX) / (float)ce_nCountSplitY };
 		Sprite::SetParam(m_tSheetParam);
 		Sprite::SetTexture(m_pSheet.get());
 		Sprite::Draw();
 	}
 
-	// 後攻
+	// 後攻の得点の描画
 	for (int i = 0; i < 2; i++)
 	{
 		switch (i)
@@ -344,9 +401,9 @@ void CBallCount::DrawScore()
 		default:
 			break;
 		}
-		if (m_tCount.m_nScore[(int)Team::BOTTOM] < 10)m_tSheetParam.pos = { ce_ScoreBottomPos.x + ce_ScoreAjust.x * i, ce_ScoreBottomPos.y };
-		else m_tSheetParam.pos = { ce_ScoreBottomPos.x + ce_ScoreAjust.x * abs(i - 1), ce_ScoreBottomPos.y};
-		m_tSheetParam.uvPos = { (float)(nNum % COUNT_SPLIT_X) / (float)COUNT_SPLIT_X ,(float)(nNum / COUNT_SPLIT_X) / (float)COUNT_SPLIT_Y };
+		if (m_tCount.m_nScore[(int)Team::BOTTOM] < 10)m_tSheetParam.pos = { ce_fScoreBottomPos.x + ce_fScoreAjust.x * i, ce_fScoreBottomPos.y };
+		else m_tSheetParam.pos = { ce_fScoreBottomPos.x + ce_fScoreAjust.x * abs(i - 1), ce_fScoreBottomPos.y};
+		m_tSheetParam.uvPos = { (float)(nNum % ce_nCountSplitX) / (float)ce_nCountSplitX ,(float)(nNum / ce_nCountSplitX) / (float)ce_nCountSplitY };
 		Sprite::SetParam(m_tSheetParam);
 		Sprite::SetTexture(m_pSheet.get());
 		Sprite::Draw();
@@ -359,16 +416,19 @@ void CBallCount::DrawInning()
 	static DirectX::XMFLOAT2 debugpos = { 0.0f,0.0f };
 	static DirectX::XMFLOAT2 debugsize = { 30.0f,30.0f };
 	SpriteParamDebug(&debugpos, &debugsize, "top", { 220.0f,20.0f });
-#endif // _IMGUI
-
 	ValueDebug(&m_tCount.m_nInning, "InningNum", { 420.0f,20.0f });
 	BoolDebug(&m_tCount.m_bTop, "IsTop", { 220.0f,20.0f });
+#endif // _IMGUI
 
+	// スプライトシート操作用
 	int nNum = 0;
 
-	m_tSheetParam.size = ce_InningSize;
+	// イニング共通の処理
+	m_tSheetParam.size = ce_fInningSize;
 	m_tSheetParam.color = { 1.0f,1.0f,1.0f,1.0f };
-	m_tSheetParam.uvSize = { 1.0f / (float)COUNT_SPLIT_X,1.0f / (float)COUNT_SPLIT_Y };
+	m_tSheetParam.uvSize = { 1.0f / (float)ce_nCountSplitX,1.0f / (float)ce_nCountSplitY };
+
+	// イニングの描画
 	for (int i = 0; i < 2; i++)
 	{
 		switch (i)
@@ -383,8 +443,8 @@ void CBallCount::DrawInning()
 		default:
 			break;
 		}
-		m_tSheetParam.pos = { ce_InningPos.x - ce_InningAjust.x * i, ce_InningPos.y };
-		m_tSheetParam.uvPos = { (float)(nNum % COUNT_SPLIT_X) / (float)COUNT_SPLIT_X ,(float)(nNum / COUNT_SPLIT_X) / (float)COUNT_SPLIT_Y };
+		m_tSheetParam.pos = { ce_fInningPos.x - ce_fInningAjust.x * i, ce_fInningPos.y };
+		m_tSheetParam.uvPos = { (float)(nNum % ce_nCountSplitX) / (float)ce_nCountSplitX ,(float)(nNum / ce_nCountSplitX) / (float)ce_nCountSplitY };
 		Sprite::SetParam(m_tSheetParam);
 		Sprite::SetTexture(m_pSheet.get());
 		Sprite::Draw();
@@ -393,10 +453,11 @@ void CBallCount::DrawInning()
 	Sprite::SetTexture(m_pSheet.get());
 	Sprite::Draw();
 
-	m_tSheetParam.pos = ce_TopBottomPos;
-	m_tSheetParam.size = ce_TopBottomSize;
-	if (m_tCount.m_bTop)m_tSheetParam.uvPos = { 2.0f / (float)COUNT_SPLIT_X ,2.0f / (float)COUNT_SPLIT_Y };
-	else m_tSheetParam.uvPos = { 3.0f / (float)COUNT_SPLIT_X ,2.0f / (float)COUNT_SPLIT_Y };
+	// オモテ・ウラの描画
+	m_tSheetParam.pos = ce_fTopBottomPos;
+	m_tSheetParam.size = ce_fTopBottomSize;
+	if (m_tCount.m_bTop)m_tSheetParam.uvPos = { 2.0f / (float)ce_nCountSplitX ,2.0f / (float)ce_nCountSplitY };
+	else m_tSheetParam.uvPos = { 3.0f / (float)ce_nCountSplitX ,2.0f / (float)ce_nCountSplitY };
 	Sprite::SetParam(m_tSheetParam);
 	Sprite::SetTexture(m_pSheet.get());
 	Sprite::Draw();
