@@ -9,10 +9,10 @@
 #include "SceneTitle.h"
 #include "SceneGame.h"
 #include "FadeBlack.h"
+#include <dinput.h>
 #include "imgui.h"
 #include "imgui_impl_dx11.h"
 #include "imgui_impl_win32.h"
-#include <dinput.h>
 
 //--- グローバル変数
 CScene* g_pScene; // シーン 

@@ -22,6 +22,7 @@ public:
 	void AddBallCount();
 	void AddStrikeCount();
 	void AddOutCount();
+	void AddScore(int No);
 	void SetBaseState(int base, bool state);
 	void ResetCount();
 	void ChangeInning();
@@ -57,9 +58,14 @@ public:
 private:
 	std::unique_ptr<Texture> m_pSheet;
 	std::unique_ptr<Texture> m_pBack;
-	SpriteParam m_tBallParam;
+	SpriteParam m_tSheetParam;
 	SpriteParam m_tBackParam;
 	TCount m_tCount;
 
 	static std::unique_ptr<CBallCount> m_pInstance;
+private:
+	void DrawBallCount();
+	void DrawBaseCount();
+	void DrawScore();
+	void DrawInning();
 };
