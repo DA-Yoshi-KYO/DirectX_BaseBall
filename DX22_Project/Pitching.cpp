@@ -2,6 +2,7 @@
 #include "Input.h"
 #include "Collision.h"
 #include "SceneGame.h"
+#include "BallCount.h"
 
 constexpr float MAX_SPEED = 170.0f;
 constexpr float SPEED_AJUST = 60.0f;
@@ -23,6 +24,7 @@ void CPitching::Update()
 {
 	static float fPitchTime = 0.0f;
 	static DirectX::XMFLOAT2 fCursorPos = { 0.0f,0.0f };
+	CBallCount* pBallCount = CBallCount::GetInstance().get();
 
 	switch (m_nPitchingPhase)
 	{
@@ -63,10 +65,12 @@ void CPitching::Update()
 			if (Collision::Hit2D(m_pStrikeZone->GetPos(), fCursorPos, m_pStrikeZone->GetSize(), { 0.0f,0.0f }))
 			{
 				INFO_MESSAGE("ストライク！");
+				pBallCount->AddStrikeCount();
 			}
 			else
 			{
 				INFO_MESSAGE("ボール！");
+				pBallCount->AddBallCount();
 			}
 			m_nPitchingPhase = (int)CPitching::PitchingPhase::Set;
 		}
