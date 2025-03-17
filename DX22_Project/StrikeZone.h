@@ -3,6 +3,8 @@
 #include "Texture.h"
 #include "Defines.h"
 
+constexpr DirectX::XMFLOAT2 ce_fStrikeZoneSize{ 100.0f,100.0f };
+
 class CStrikeZone
 {
 public:

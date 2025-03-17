@@ -15,6 +15,7 @@
 #include "Defines.h"
 #include "StrikeZone.h"
 #include "Cursor.h"
+#include "Texture.h"
 
 class CPitching
 {
@@ -30,14 +31,6 @@ public:
 	/// <summary> SetStrikeZone </summary>
 	/// <param name="cursor:"> CCursorクラスのインスタンス </param>
 	void SetCursor(CCursor* cursor);
-private:
-	// コンポジション
-	std::unique_ptr<CStrikeZone> m_pStrikeZone;
-	std::unique_ptr<CCursor> m_pCursor;
-	
-	int m_nPitchingPhase;	// 投球の流れ
-	float m_fSpeed;			// 球速
-	float m_fChatchTime;	// 捕球までの時間
 
 	// 投球の流れ
 	enum class PitchingPhase
@@ -46,4 +39,40 @@ private:
 		Pitch,
 		Release,
 	};
+	int GetPitchingPhase();
+
+	float GetChatchTime();
+private:
+	int m_nPitchingPhase;	// 投球の流れ
+
+	// テクスチャ
+	enum class TexKind
+	{
+		ReleasePoint,
+		PitchingCircle,
+
+		Max
+	};
+	std::unique_ptr<Texture> m_pTexture[(int)TexKind::Max];
+	SpriteParam m_tParam[(int)TexKind::Max];
+	
+	// コンポジション
+	std::unique_ptr<CStrikeZone> m_pStrikeZone;
+	std::unique_ptr<CCursor> m_pCursor;
+
+	// メンバ変数
+	float m_fSpeed;			// 球速
+	float m_fChatchTime;	// 捕球までの時間
+
+	enum class PitchingQuality
+	{
+		Miss,
+		Nomal,
+		Nice,
+		Best
+	};
+private:
+	// 内部処理
+	// リリースポイント、ピッチングサークルの描画
+	void DrawCircle();
 };

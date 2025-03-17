@@ -15,19 +15,7 @@ public:
 	virtual void OnCollision(Collision::Result collision) override;
 	virtual Collision::Info GetCollision() override;
 private:
-	void InitText();
-	enum E_FIELD
-	{
-		NONE_FIELD = 0,
-		FAIRWAY,
-		BUNKER,
-
-		MAX_FIELD
-	};
-	Model* m_pModel[MAX_FIELD];
 	std::unique_ptr<Model> m_pField;
+	std::unique_ptr<CCamera> m_pCamera;			// カメラ情報(コンポジション)
 	ModelParam m_tFieldParam;
-	int FieldMap[MAP_X][MAP_Y];
-
-	CCamera* m_pCamera;			// カメラ情報(コンポジション)
 };

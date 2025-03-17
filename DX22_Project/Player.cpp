@@ -69,22 +69,6 @@ void CPlayer::Update()
 
 	PlayerInput();
 
-	switch (m_pBall->GetPhase())
-	{
-	case 0:
-		break;
-	case 1:
-		//// ボールが停止しているかどうかによって処理を変える
-		UpdateShot(); // 球を打つ処理
-		break;
-	case 2:
-		UpdateMove(); // 打った球の処理
-	case 3:
-		break;
-	default:
-		break;
-	}
-
 
 	// 当たり判定情報の更新
 	m_Collision.box = { {m_pos.x,m_pos.y - 7.0f,m_pos.z},{m_size.x / 1.3f,m_size.y,m_size.z / 1.3f} };
@@ -160,7 +144,6 @@ void CPlayer::OnCollision(Collision::Result collision)
 		m_Move.y *= 0.5f;
 		m_Move.z *= 0.2f;
 	}
-	m_pBall->SetPos(ballPos);
 }
 
 Collision::Info CPlayer::GetCollision()
@@ -171,97 +154,10 @@ Collision::Info CPlayer::GetCollision()
 
 void CPlayer::UpdateShot()
 {
-	switch (m_nShotStep)
-	{
-	case SHOT_WAIT:	// 球の打ちはじめ
-		if (IsKeyTrigger('Z'))
-		{
-			m_fPower = 0.0f;
-			m_nShotStep = SHOT_KEEP;
-		}
-		break;
-	case SHOT_KEEP: // キー入力継続中
-		m_fPower += 0.01f;	//球を打ち出す力を溜める
-		m_pBall->SetPos(m_pos);
-		if (m_fPower >= MAX_POWER) m_fPower = MAX_POWER;
-		if (IsKeyRelease('Z'))
-		{
-			m_nShotStep = SHOT_RELEASE;
-		}
-		break;
-	case SHOT_RELEASE:	// 球を打つ
-		// 打ち出す計算
-		DirectX::XMFLOAT3 camPos = m_pCamera->GetForward();	// カメラの位置を取得
-		DirectX::XMVECTOR vCamPos = DirectX::XMLoadFloat3(&camPos);
-		DirectX::XMFLOAT3 ballPos = m_pBall->GetPos();
-		DirectX::XMVECTOR vPos = DirectX::XMLoadFloat3(&ballPos);
-		DirectX::XMVECTOR vec = DirectX::XMVectorSubtract(vPos, vCamPos);
-		vec = DirectX::XMVectorNegate(vec);
-		vec = DirectX::XMVector3Normalize(vec);
-		vec = DirectX::XMVectorScale(vec, m_fPower * 4.0f);
-		DirectX::XMStoreFloat3(&m_Move, vec);
-
-		// 打ち出し後の状態を設定
-		m_isStop = false;			// ボールが移動している状態  
-		m_nShotStep = SHOT_WAIT;	// 再び打ちはじめる処理に戻る
-		m_pBall->SetPhase(2);
-		break;
-	default:
-		break;
-	}
 }
 
 void CPlayer::UpdateMove()
 {
-	DirectX::XMFLOAT3 ballPos = m_pBall->GetPos();
-	// 移動処理
-	ballPos.x += m_Move.x;
-	ballPos.y += m_Move.y;
-	ballPos.z += m_Move.z;
-
-	// 空気抵抗
-	m_Move.x *= 0.99f;
-	m_Move.y *= 0.99f;
-	m_Move.z *= 0.99f;
-
-	// 重量
-	m_Move.y -= MSEC(GRAVITY);
-
-	// 地面接触判定
-	if (ballPos.y < WORLD_AJUST + 3.0f)
-	{
-		// 接触時の減速処理
-		m_Move.x *= 0.95f;
-		m_Move.y *= 0.5f;
-		m_Move.z *= 0.95f;
-
-		// バウンド処理
-		m_Move.y = -m_Move.y; // yの移動方向を反転
-		if (m_Move.y < CMETER(5.0f) + WORLD_AJUST)	// バウンドが小さいか判定
-		{
-			m_Move.y = 0.0f;
-			ballPos .y = WORLD_AJUST;
-		}
-		else
-		{
-			// 地面にめり込んでいるので、バウンドした場合の位置に変更
-			ballPos.y = -ballPos.y;
-		}
-	}
-
-	float fSpeed = 0.0f;
-	DirectX::XMVECTOR vMove = DirectX::XMLoadFloat3(&m_Move);
-	DirectX::XMVECTOR vLen = DirectX::XMVector3Length(vMove);
-	DirectX::XMStoreFloat(&fSpeed, vLen);
-	if (fSpeed < CMSEC(30.0f))
-	{
-		m_isStop = true;
-		m_nShotStep = SHOT_WAIT;
-		m_fPower = 0.0f;
-		m_pBall->SetPhase(3);
-	}
-
-	m_pBall->SetPos(ballPos);
 }
 
 void CPlayer::PlayerInput()

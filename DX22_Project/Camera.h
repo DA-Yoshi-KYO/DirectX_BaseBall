@@ -1,6 +1,17 @@
 #pragma once
 
 #include <DirectXMath.h>
+#include <memory>
+
+enum CameraKind
+{
+	CAM_DEBUG,
+	CAM_PLAYER,
+	CAM_EVENT, // イベント用の定義 
+	CAM_MINIMAP, // ミニマップ用の定義
+	CAM_BATTER,
+	MAX_CAMERA // カメラ最大数 
+};
 
 class CCamera
 {	
@@ -18,6 +29,7 @@ public:
 	static const DirectX::XMFLOAT4X4 Get2DWolrdMatrix(float rotate = 0.0f,bool transpose = true);
 	static const DirectX::XMFLOAT4X4 Get2DViewMatrix(bool transpose = true);
 	static const DirectX::XMFLOAT4X4 Get2DProjectionMatrix(bool transpose = true);
+	static std::unique_ptr<CCamera>& GetInstance(int CamKind);
 protected:
 	DirectX::XMFLOAT3 m_pos;
 	DirectX::XMFLOAT3 m_look;

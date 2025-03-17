@@ -7,9 +7,10 @@
 
 CCursor::CCursor()
 	: m_pTexture{ nullptr }, m_pStrikeZone(nullptr)
+	, m_bMove{true,true}
 {
 	m_pTexture[(int)CSceneGame::Playing::Attack] = std::make_unique<Texture>();
-	m_tParam[(int)CSceneGame::Playing::Attack].pos = { 0.0f,-100.0f };
+	m_tParam[(int)CSceneGame::Playing::Attack].pos = ce_fCursorPos;
 	m_tParam[(int)CSceneGame::Playing::Attack].size = DirectX::XMFLOAT2(50.0f, 50.0f);
 	m_tParam[(int)CSceneGame::Playing::Attack].rotate = 0.0f;
 	m_tParam[(int)CSceneGame::Playing::Attack].color = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -22,8 +23,8 @@ CCursor::CCursor()
 	if (FAILED(m_pTexture[(int)CSceneGame::Playing::Attack]->Create(TEXPASS("Cursor.png")))) MessageBox(NULL, "Cursor.png", "Error", MB_OK);
 
 	m_pTexture[(int)CSceneGame::Playing::Defence] = std::make_unique<Texture>();
-	m_tParam[(int)CSceneGame::Playing::Defence].pos = { 0.0f,-100.0f };
-	m_tParam[(int)CSceneGame::Playing::Defence].size = DirectX::XMFLOAT2(15.0f, 15.0f);
+	m_tParam[(int)CSceneGame::Playing::Defence].pos = ce_fCursorPos;
+	m_tParam[(int)CSceneGame::Playing::Defence].size = DirectX::XMFLOAT2(20.0f, 20.0f);
 	m_tParam[(int)CSceneGame::Playing::Defence].rotate = 0.0f;
 	m_tParam[(int)CSceneGame::Playing::Defence].color = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	m_tParam[(int)CSceneGame::Playing::Defence].uvPos = DirectX::XMFLOAT2(0.0f, 0.0f);
@@ -45,26 +46,32 @@ void CCursor::Update(int play)
 	switch (play)
 	{
 		case (int)CSceneGame::Playing::Attack:
-			if (IsKeyPress('D')) m_tParam[(int)CSceneGame::Playing::Attack].pos.x += 1.0f;
-			if (IsKeyPress('A')) m_tParam[(int)CSceneGame::Playing::Attack].pos.x -= 1.0f;
-			if (IsKeyPress('W')) m_tParam[(int)CSceneGame::Playing::Attack].pos.y += 1.0f;
-			if (IsKeyPress('S')) m_tParam[(int)CSceneGame::Playing::Attack].pos.y -= 1.0f;
+			if (m_bMove[(int)CSceneGame::Playing::Attack])
+			{
+				if (IsKeyPress('D')) m_tParam[(int)CSceneGame::Playing::Attack].pos.x += 1.0f;
+				if (IsKeyPress('A')) m_tParam[(int)CSceneGame::Playing::Attack].pos.x -= 1.0f;
+				if (IsKeyPress('W')) m_tParam[(int)CSceneGame::Playing::Attack].pos.y += 1.0f;
+				if (IsKeyPress('S')) m_tParam[(int)CSceneGame::Playing::Attack].pos.y -= 1.0f;
 
-			if (m_tParam[(int)CSceneGame::Playing::Attack].pos.x >= m_pStrikeZone->GetPos().x + m_pStrikeZone->GetSize().x / 2.0f) m_tParam[(int)CSceneGame::Playing::Attack].pos.x = m_pStrikeZone->GetPos().x + m_pStrikeZone->GetSize().x / 2.0f;
-			if (m_tParam[(int)CSceneGame::Playing::Attack].pos.x <= m_pStrikeZone->GetPos().x - m_pStrikeZone->GetSize().x / 2.0f) m_tParam[(int)CSceneGame::Playing::Attack].pos.x = m_pStrikeZone->GetPos().x - m_pStrikeZone->GetSize().x / 2.0f;
-			if (m_tParam[(int)CSceneGame::Playing::Attack].pos.y >= m_pStrikeZone->GetPos().y + m_pStrikeZone->GetSize().y / 2.0f) m_tParam[(int)CSceneGame::Playing::Attack].pos.y = m_pStrikeZone->GetPos().y + m_pStrikeZone->GetSize().y / 2.0f;
-			if (m_tParam[(int)CSceneGame::Playing::Attack].pos.y <= m_pStrikeZone->GetPos().y - m_pStrikeZone->GetSize().y / 2.0f) m_tParam[(int)CSceneGame::Playing::Attack].pos.y = m_pStrikeZone->GetPos().y - m_pStrikeZone->GetSize().y / 2.0f;
+				if (m_tParam[(int)CSceneGame::Playing::Attack].pos.x >= m_pStrikeZone->GetPos().x + m_pStrikeZone->GetSize().x / 2.0f) m_tParam[(int)CSceneGame::Playing::Attack].pos.x = m_pStrikeZone->GetPos().x + m_pStrikeZone->GetSize().x / 2.0f;
+				if (m_tParam[(int)CSceneGame::Playing::Attack].pos.x <= m_pStrikeZone->GetPos().x - m_pStrikeZone->GetSize().x / 2.0f) m_tParam[(int)CSceneGame::Playing::Attack].pos.x = m_pStrikeZone->GetPos().x - m_pStrikeZone->GetSize().x / 2.0f;
+				if (m_tParam[(int)CSceneGame::Playing::Attack].pos.y >= m_pStrikeZone->GetPos().y + m_pStrikeZone->GetSize().y / 2.0f) m_tParam[(int)CSceneGame::Playing::Attack].pos.y = m_pStrikeZone->GetPos().y + m_pStrikeZone->GetSize().y / 2.0f;
+				if (m_tParam[(int)CSceneGame::Playing::Attack].pos.y <= m_pStrikeZone->GetPos().y - m_pStrikeZone->GetSize().y / 2.0f) m_tParam[(int)CSceneGame::Playing::Attack].pos.y = m_pStrikeZone->GetPos().y - m_pStrikeZone->GetSize().y / 2.0f;
+			}
 			break;
 		case (int)CSceneGame::Playing::Defence:
-			if (IsKeyPress(VK_RIGHT)) m_tParam[(int)CSceneGame::Playing::Defence].pos.x += 1.0f;
-			if (IsKeyPress(VK_LEFT)) m_tParam[(int)CSceneGame::Playing::Defence].pos.x -= 1.0f;
-			if (IsKeyPress(VK_UP)) m_tParam[(int)CSceneGame::Playing::Defence].pos.y += 1.0f;
-			if (IsKeyPress(VK_DOWN)) m_tParam[(int)CSceneGame::Playing::Defence].pos.y -= 1.0f;
+			if (m_bMove[(int)CSceneGame::Playing::Defence])
+			{
+				if (IsKeyPress(VK_RIGHT)) m_tParam[(int)CSceneGame::Playing::Defence].pos.x += 1.0f;
+				if (IsKeyPress(VK_LEFT)) m_tParam[(int)CSceneGame::Playing::Defence].pos.x -= 1.0f;
+				if (IsKeyPress(VK_UP)) m_tParam[(int)CSceneGame::Playing::Defence].pos.y += 1.0f;
+				if (IsKeyPress(VK_DOWN)) m_tParam[(int)CSceneGame::Playing::Defence].pos.y -= 1.0f;
 
-			if (m_tParam[(int)CSceneGame::Playing::Defence].pos.x >= m_pStrikeZone->GetPos().x + m_pStrikeZone->GetSize().x / 1.3f) m_tParam[(int)CSceneGame::Playing::Defence].pos.x = m_pStrikeZone->GetPos().x + m_pStrikeZone->GetSize().x / 1.3f;
-			if (m_tParam[(int)CSceneGame::Playing::Defence].pos.x <= m_pStrikeZone->GetPos().x - m_pStrikeZone->GetSize().x / 1.3f) m_tParam[(int)CSceneGame::Playing::Defence].pos.x = m_pStrikeZone->GetPos().x - m_pStrikeZone->GetSize().x / 1.3f;
-			if (m_tParam[(int)CSceneGame::Playing::Defence].pos.y >= m_pStrikeZone->GetPos().y + m_pStrikeZone->GetSize().y / 1.3f) m_tParam[(int)CSceneGame::Playing::Defence].pos.y = m_pStrikeZone->GetPos().y + m_pStrikeZone->GetSize().y / 1.3f;
-			if (m_tParam[(int)CSceneGame::Playing::Defence].pos.y <= m_pStrikeZone->GetPos().y - m_pStrikeZone->GetSize().y / 1.3f) m_tParam[(int)CSceneGame::Playing::Defence].pos.y = m_pStrikeZone->GetPos().y - m_pStrikeZone->GetSize().y / 1.3f;
+				if (m_tParam[(int)CSceneGame::Playing::Defence].pos.x >= m_pStrikeZone->GetPos().x + m_pStrikeZone->GetSize().x / 1.3f) m_tParam[(int)CSceneGame::Playing::Defence].pos.x = m_pStrikeZone->GetPos().x + m_pStrikeZone->GetSize().x / 1.3f;
+				if (m_tParam[(int)CSceneGame::Playing::Defence].pos.x <= m_pStrikeZone->GetPos().x - m_pStrikeZone->GetSize().x / 1.3f) m_tParam[(int)CSceneGame::Playing::Defence].pos.x = m_pStrikeZone->GetPos().x - m_pStrikeZone->GetSize().x / 1.3f;
+				if (m_tParam[(int)CSceneGame::Playing::Defence].pos.y >= m_pStrikeZone->GetPos().y + m_pStrikeZone->GetSize().y / 1.3f) m_tParam[(int)CSceneGame::Playing::Defence].pos.y = m_pStrikeZone->GetPos().y + m_pStrikeZone->GetSize().y / 1.3f;
+				if (m_tParam[(int)CSceneGame::Playing::Defence].pos.y <= m_pStrikeZone->GetPos().y - m_pStrikeZone->GetSize().y / 1.3f) m_tParam[(int)CSceneGame::Playing::Defence].pos.y = m_pStrikeZone->GetPos().y - m_pStrikeZone->GetSize().y / 1.3f;
+			}
 			break;
 	default:
 		break;
@@ -131,4 +138,14 @@ DirectX::XMFLOAT2 CCursor::GetSize(int play)
 		return DirectX::XMFLOAT2(0.0f, 0.0f);
 		break;
 	}
+}
+
+void CCursor::SetPos(int play, DirectX::XMFLOAT2 pos)
+{
+	m_tParam[play].pos = pos;
+}
+
+void CCursor::SetMove(int play, bool isMove)
+{
+	m_bMove[play] = isMove;
 }

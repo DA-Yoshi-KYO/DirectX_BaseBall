@@ -10,11 +10,11 @@ CObject::CObject()
 	{
 		m_pModel[i] = new Model();
 	}
-	if (!m_pModel[TREE]->Load(PASS("tree_forest.fbx"))) MessageBox(NULL, "Icon.png", "Error", MB_OK);	// エラーメッセージの表示 
-	if (!m_pModel[TREE2]->Load(PASS("tree_desert.fbx"))) MessageBox(NULL, "tree_desert.fbx", "Error", MB_OK);	// エラーメッセージの表示 
-	if (!m_pModel[CUP]->Load(PASS("flag_teamBlue.fbx"))) MessageBox(NULL, "flag_teamBlue.fbx", "Error", MB_OK);	// エラーメッセージの表示 
-	if (!m_pModel[BEAR]->Load(PASS("character_bear.fbx"))) MessageBox(NULL, "character_bear.fbx", "Error", MB_OK);	// エラーメッセージの表示 
-	if (!m_pModel[DETAIL]->Load(PASS("detail_forest.fbx"))) MessageBox(NULL, "detail_forest.fbx", "Error", MB_OK);	// エラーメッセージの表示 
+	//if (!m_pModel[TREE]->Load(PASS("tree_forest.fbx"))) MessageBox(NULL, "Icon.png", "Error", MB_OK);	// エラーメッセージの表示 
+	//if (!m_pModel[TREE2]->Load(PASS("tree_desert.fbx"))) MessageBox(NULL, "tree_desert.fbx", "Error", MB_OK);	// エラーメッセージの表示 
+	//if (!m_pModel[CUP]->Load(PASS("flag_teamBlue.fbx"))) MessageBox(NULL, "flag_teamBlue.fbx", "Error", MB_OK);	// エラーメッセージの表示 
+	//if (!m_pModel[BEAR]->Load(PASS("character_bear.fbx"))) MessageBox(NULL, "character_bear.fbx", "Error", MB_OK);	// エラーメッセージの表示 
+	//if (!m_pModel[DETAIL]->Load(PASS("detail_forest.fbx"))) MessageBox(NULL, "detail_forest.fbx", "Error", MB_OK);	// エラーメッセージの表示 
 	InitText();
 
 	for (int j = 0; j < MAP_Y; j++)

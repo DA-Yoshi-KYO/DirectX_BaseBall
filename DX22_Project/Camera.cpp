@@ -1,5 +1,10 @@
 #include "Camera.h"
 #include "Defines.h"
+#include "CameraDebug.h"
+#include "CameraEvent.h"
+#include "CameraMinimap.h"
+#include "CameraPlayer.h"
+#include "CameraBatter.h"
 
 CCamera::CCamera()
 	: m_pos{ 0.0f + WORLD_AJUST, 10.0f + WORLD_AJUST, 0.0f + WORLD_AJUST }, m_look{ 0.0f + WORLD_AJUST,0.0f + WORLD_AJUST,0.0f + WORLD_AJUST }, m_up{ 0.0f,1.0f,0.0f }
@@ -83,4 +88,25 @@ const DirectX::XMFLOAT4X4 CCamera::Get2DProjectionMatrix(bool transpose)
 	DirectX::XMStoreFloat4x4(&proj, mProj);
 
 	return proj;
+}
+
+std::unique_ptr<CCamera>& CCamera::GetInstance(int CamKind)
+{
+	static std::unique_ptr<CCamera> CamInstance[] = {
+		std::make_unique<CCameraDebug>(),
+		std::make_unique<CCameraPlayer>(),
+		std::make_unique<CCameraEvent>(),
+		std::make_unique<CCameraMinimap>(),
+		std::make_unique<CCameraBatter>(),
+	};
+
+	switch (CamKind)
+	{
+	case CAM_DEBUG:		return CamInstance[CAM_DEBUG];		break;
+	case CAM_PLAYER :	return CamInstance[CAM_PLAYER];		break;
+	case CAM_EVENT :	return CamInstance[CAM_EVENT];		break;
+	case CAM_MINIMAP :	return CamInstance[CAM_MINIMAP];	break;
+	case CAM_BATTER :	return CamInstance[CAM_BATTER];		break;
+	default: return CamInstance[CAM_DEBUG]; break;
+	}
 }
