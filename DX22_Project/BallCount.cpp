@@ -20,9 +20,6 @@
 // ==============================
 //    定数定義
 // ==============================
-// スプライトシートの分割数
-constexpr int ce_nCountSplitX = 5;
-constexpr int ce_nCountSplitY = 5;
 // スコアボードのパラメータ
 constexpr DirectX::XMFLOAT2 ce_fBackPos = { 480.0f,260.0f };
 constexpr DirectX::XMFLOAT2 ce_fBackSize = { 280.0f,170.0f };

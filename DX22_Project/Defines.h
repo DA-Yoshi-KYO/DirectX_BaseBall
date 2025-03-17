@@ -17,8 +17,6 @@ using namespace std;
 static const int FPS = 60;
 static const float fFPS = static_cast<float>(FPS);
 // リソースパス
-#define ASSET(path)	"Assets/"path
-#define PASS(fbx) ("Assets/Model/KayKitMini/" fbx)
 #define MODELPASS(fbx) ("Assets/Model/" fbx)
 #define LOWPASS(fbx) ("Assets/Model/LowPolyNature/" fbx)
 #define TXTPASS(txt) ("Assets/txt/" txt)
@@ -26,6 +24,15 @@ static const float fFPS = static_cast<float>(FPS);
 #define ERROR_MESSAGE(asset) do{ MessageBox(NULL,asset,"LoadError",MB_OK); } while (0)
 #define INFO_MESSAGE(information) do{ MessageBox(NULL,information,"Information",MB_OK); } while (0)
 #define RANGEERROR_MESSAGE(value) do{ MessageBox(NULL,value,"Out of range",MB_OK); } while (0)
+
+// テクスチャパス
+#define TEX_BALLSHEET TEXPASS("BallCountSheet.png")
+constexpr int ce_nCountSplitX = 5;
+constexpr int ce_nCountSplitY = 5;
+#define TEX_BALLICON TEXPASS("Ball.png")
+#define TEX_STRIKEZONE TEXPASS("StrikeZone.png")
+#define TEX_SCOREBOARD TEXPASS("BallCount.png")
+#define TEX_PITCHINGCIRCLE TEXPASS("PitchingCircle.png")
 
 // 3D空間定義
 #define CMETER(value) (value * 0.01f)
