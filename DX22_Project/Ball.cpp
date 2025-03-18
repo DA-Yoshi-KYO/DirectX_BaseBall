@@ -2,8 +2,7 @@
 #include "ImGuiManager.h"
 #include "SceneGame.h"
 
-constexpr DirectX::XMFLOAT3 ce_fBallPos = { 0.0f,10.0f,70.0f };
-constexpr DirectX::XMFLOAT3 ce_fBallEndPos = { 0.0f,2.0f,140.0f };
+
 constexpr DirectX::XMFLOAT2 ce_fBallEndCenter = { 0.0f,2.0f };
 constexpr DirectX::XMFLOAT2 ce_fBallLimitX = { 2.7f,-2.7f };
 constexpr DirectX::XMFLOAT2 ce_fBallLimitY = { -2.7f,2.3f };
@@ -134,4 +133,9 @@ void CBall::SetPitching(CPitching* pitching)
 void CBall::SetCursor(CCursor* cursor)
 {
 	m_pCursor.reset(cursor);
+}
+
+DirectX::XMFLOAT3 CBall::GetPos()
+{
+	return m_pos;
 }
