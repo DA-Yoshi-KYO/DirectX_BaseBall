@@ -6,8 +6,10 @@ CAttack::CAttack()
 {
 	m_pStrikeZone = std::make_unique<CStrikeZone>();
 	m_pCursor = std::make_unique<CCursor>();
+	m_pBatting = std::make_unique<CBatting>();
 
 	m_pCursor->SetStrikeZone(m_pStrikeZone.get());
+	m_pBatting->SetCursor(m_pCursor.get());
 }
 
 CAttack::~CAttack()
@@ -18,10 +20,12 @@ void CAttack::Update()
 {
 	m_pStrikeZone->Update();
 	m_pCursor->Update((int)CSceneGame::Playing::Attack);
+	m_pBatting->Update();
 }
 
 void CAttack::Draw()
 {
 	m_pStrikeZone->Draw();
 	m_pCursor->Draw((int)CSceneGame::Playing::Attack);
+	m_pBatting->Draw();
 }

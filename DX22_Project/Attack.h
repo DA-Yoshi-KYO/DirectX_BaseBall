@@ -3,6 +3,7 @@
 #include "Defines.h"
 #include "StrikeZone.h"
 #include "Cursor.h"
+#include "Batting.h"
 
 class CAttack
 {
@@ -11,8 +12,10 @@ public:
 	~CAttack();
 	void Update();
 	void Draw();
+
 private:
 	std::unique_ptr<CStrikeZone> m_pStrikeZone;
 	std::unique_ptr<CCursor> m_pCursor;
+	std::unique_ptr<CBatting> m_pBatting;
 
 };

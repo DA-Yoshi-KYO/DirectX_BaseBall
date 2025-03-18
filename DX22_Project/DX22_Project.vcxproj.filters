@@ -67,6 +67,30 @@
     <Filter Include="imgui">
       <UniqueIdentifier>{aceb42b5-a09e-4cf9-9a34-73e967d191b7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\BaseBall">
+      <UniqueIdentifier>{eb454ab2-2f6d-4a8f-8c52-d95227756fa9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\BaseBall\Attack">
+      <UniqueIdentifier>{31243132-0deb-4dac-8e13-c7e8891986b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\BaseBall\Difence">
+      <UniqueIdentifier>{ad45c694-7e41-4e8f-ba94-7ba2025816dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\BaseBall\System">
+      <UniqueIdentifier>{b353eae5-3c11-4e2f-b9a9-b92d4ded31b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\BaseBall">
+      <UniqueIdentifier>{e3321a0d-5e17-41a2-894b-4ceb2cd1994c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\BaseBall\Attack">
+      <UniqueIdentifier>{270d5b17-8365-4f16-90e6-dfbfbaba9e89}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\BaseBall\Difence">
+      <UniqueIdentifier>{ab482894-c15d-426e-a9b4-a0f47ad19187}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\BaseBall\System">
+      <UniqueIdentifier>{902c156b-6707-475d-a5ec-aecf6f5b284d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Shader.cpp">
@@ -183,9 +207,6 @@
     <ClCompile Include="CameraPlayer.cpp">
       <Filter>ソース ファイル\Camera</Filter>
     </ClCompile>
-    <ClCompile Include="Ball.cpp">
-      <Filter>ソース ファイル\3DObject</Filter>
-    </ClCompile>
     <ClCompile Include="BallUI.cpp">
       <Filter>ソース ファイル\2DObject</Filter>
     </ClCompile>
@@ -194,18 +215,6 @@
     </ClCompile>
     <ClCompile Include="CameraBatter.cpp">
       <Filter>ソース ファイル\Camera</Filter>
-    </ClCompile>
-    <ClCompile Include="StrikeZone.cpp">
-      <Filter>ソース ファイル\2DObject</Filter>
-    </ClCompile>
-    <ClCompile Include="Attack.cpp">
-      <Filter>ソース ファイル\Application</Filter>
-    </ClCompile>
-    <ClCompile Include="Defence.cpp">
-      <Filter>ソース ファイル\Application</Filter>
-    </ClCompile>
-    <ClCompile Include="Cursor.cpp">
-      <Filter>ソース ファイル\2DObject</Filter>
     </ClCompile>
     <ClCompile Include="imgui.cpp">
       <Filter>imgui</Filter>
@@ -225,20 +234,35 @@
     <ClCompile Include="imgui_widgets.cpp">
       <Filter>imgui</Filter>
     </ClCompile>
-    <ClCompile Include="Batting.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Pitching.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="BallCount.cpp">
-      <Filter>ソース ファイル\2DObject</Filter>
-    </ClCompile>
     <ClCompile Include="ImGuiManager.cpp">
       <Filter>imgui</Filter>
     </ClCompile>
     <ClCompile Include="imgui_impl_win32.cpp">
       <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Batting.cpp">
+      <Filter>ソース ファイル\BaseBall\Attack</Filter>
+    </ClCompile>
+    <ClCompile Include="Pitching.cpp">
+      <Filter>ソース ファイル\BaseBall\Difence</Filter>
+    </ClCompile>
+    <ClCompile Include="Ball.cpp">
+      <Filter>ソース ファイル\BaseBall\System</Filter>
+    </ClCompile>
+    <ClCompile Include="StrikeZone.cpp">
+      <Filter>ソース ファイル\BaseBall\System</Filter>
+    </ClCompile>
+    <ClCompile Include="BallCount.cpp">
+      <Filter>ソース ファイル\BaseBall\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Attack.cpp">
+      <Filter>ソース ファイル\BaseBall\Attack</Filter>
+    </ClCompile>
+    <ClCompile Include="Defence.cpp">
+      <Filter>ソース ファイル\BaseBall\Difence</Filter>
+    </ClCompile>
+    <ClCompile Include="Cursor.cpp">
+      <Filter>ソース ファイル\BaseBall\System</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -350,9 +374,6 @@
     <ClInclude Include="CameraPlayer.h">
       <Filter>ヘッダー ファイル\Camera</Filter>
     </ClInclude>
-    <ClInclude Include="Ball.h">
-      <Filter>ヘッダー ファイル\3DObject</Filter>
-    </ClInclude>
     <ClInclude Include="BallUI.h">
       <Filter>ヘッダー ファイル\2DObject</Filter>
     </ClInclude>
@@ -361,15 +382,6 @@
     </ClInclude>
     <ClInclude Include="CameraBatter.h">
       <Filter>ヘッダー ファイル\Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="StrikeZone.h">
-      <Filter>ヘッダー ファイル\2DObject</Filter>
-    </ClInclude>
-    <ClInclude Include="Attack.h">
-      <Filter>ヘッダー ファイル\Application</Filter>
-    </ClInclude>
-    <ClInclude Include="Defence.h">
-      <Filter>ヘッダー ファイル\Application</Filter>
     </ClInclude>
     <ClInclude Include="Cursor.h">
       <Filter>ヘッダー ファイル\2DObject</Filter>
@@ -395,20 +407,32 @@
     <ClInclude Include="imstb_truetype.h">
       <Filter>imgui</Filter>
     </ClInclude>
-    <ClInclude Include="Batting.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Pitching.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="BallCount.h">
-      <Filter>ヘッダー ファイル\2DObject</Filter>
-    </ClInclude>
     <ClInclude Include="ImGuiManager.h">
       <Filter>imgui</Filter>
     </ClInclude>
     <ClInclude Include="imgui_impl_win32.h">
       <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Attack.h">
+      <Filter>ヘッダー ファイル\BaseBall\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="Batting.h">
+      <Filter>ヘッダー ファイル\BaseBall\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="Pitching.h">
+      <Filter>ヘッダー ファイル\BaseBall\Difence</Filter>
+    </ClInclude>
+    <ClInclude Include="Ball.h">
+      <Filter>ヘッダー ファイル\BaseBall\System</Filter>
+    </ClInclude>
+    <ClInclude Include="BallCount.h">
+      <Filter>ヘッダー ファイル\BaseBall\System</Filter>
+    </ClInclude>
+    <ClInclude Include="StrikeZone.h">
+      <Filter>ヘッダー ファイル\BaseBall\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Defence.h">
+      <Filter>ヘッダー ファイル\BaseBall\Difence</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
