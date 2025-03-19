@@ -80,6 +80,41 @@ public:
 		DirectX::XMFLOAT3  normal;	// ヒット平面 
 		Info other;					// 当たり判定オブジェクト
 	};
+
+	// 2D
+	enum Type2D
+	{
+		eSquare,
+		eCircle
+	};
+
+	struct Square	// 短形
+	{
+		DirectX::XMFLOAT2 pos;
+		DirectX::XMFLOAT2 size;
+	};
+
+	struct Circle	// 円型
+	{
+		DirectX::XMFLOAT2 pos;
+		float radius;
+	};
+
+	//--- 当たり判定の統合情報
+	struct Info2D
+	{
+		Type2D type;
+		Square square;
+		Circle circle;
+	};
+
+	//--- 2D当たり判定の結果 
+	struct Result2D 
+	{
+		bool isHit;	// 当たったかどうか 
+		DirectX::XMFLOAT2 posAtoB;
+		DirectX::XMFLOAT2 posBtoA;
+	};
 public:
 	// Info型での当たり判定
 	static Result Hit(Info a, Info b);
@@ -90,5 +125,7 @@ public:
 	static Result Hit(Plane plane, Line line);
 	static Result Hit(Plane plane, Ray ray, float lenght);
 	static Result Hit(Point point, Triangle triangle);
-	static bool Hit2D(DirectX::XMFLOAT2 aPos, DirectX::XMFLOAT2 bPos, DirectX::XMFLOAT2 aSize, DirectX::XMFLOAT2 bSize);
+	static Result2D Hit2D(Info2D a, Info2D b);
+	static Result2D Hit2D(Square a,Square b);
+	static Result2D Hit2D(Circle a, Circle b);
 };

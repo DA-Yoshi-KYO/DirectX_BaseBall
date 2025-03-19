@@ -264,6 +264,12 @@
     <ClCompile Include="Cursor.cpp">
       <Filter>ソース ファイル\BaseBall\System</Filter>
     </ClCompile>
+    <ClCompile Include="BattingCursor.cpp">
+      <Filter>ソース ファイル\BaseBall\Attack</Filter>
+    </ClCompile>
+    <ClCompile Include="PitchingCursor.cpp">
+      <Filter>ソース ファイル\BaseBall\Difence</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MeshBuffer.h">
@@ -383,9 +389,6 @@
     <ClInclude Include="CameraBatter.h">
       <Filter>ヘッダー ファイル\Camera</Filter>
     </ClInclude>
-    <ClInclude Include="Cursor.h">
-      <Filter>ヘッダー ファイル\2DObject</Filter>
-    </ClInclude>
     <ClInclude Include="imconfig.h">
       <Filter>imgui</Filter>
     </ClInclude>
@@ -433,6 +436,15 @@
     </ClInclude>
     <ClInclude Include="Defence.h">
       <Filter>ヘッダー ファイル\BaseBall\Difence</Filter>
+    </ClInclude>
+    <ClInclude Include="PitchingCursor.h">
+      <Filter>ヘッダー ファイル\BaseBall\Difence</Filter>
+    </ClInclude>
+    <ClInclude Include="BattingCursor.h">
+      <Filter>ヘッダー ファイル\BaseBall\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="Cursor.h">
+      <Filter>ヘッダー ファイル\BaseBall\System</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

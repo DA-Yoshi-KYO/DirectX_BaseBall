@@ -9,6 +9,7 @@
 #include "CameraPlayer.h"
 #include "CameraBatter.h"
 #include "BallCount.h"
+#include "StrikeZone.h"
 
 int CSceneGame::m_nPlaying = 0;
 CameraKind CSceneGame::m_eCameraKind = CAM_BATTER;
@@ -58,11 +59,13 @@ void CSceneGame::Update()
 	CameraUpdate();
 
 	m_pField->Update();		// フィールド
+	CStrikeZone::GetInstance()->Update();
 	switch (m_nPlaying)
 	{
 	case (int)Playing::Attack:
-		m_pAttack->Update();
 		m_pDefence->Update();
+
+		m_pAttack->Update();
 		break;
 	case (int)Playing::Defence:
 		m_pDefence->Update();
@@ -92,11 +95,12 @@ void CSceneGame::Draw()
 	SetRender3D();
 
 	m_pField->Draw();	// フィールドの描画
+	CStrikeZone::GetInstance()->Draw();
 	switch (m_nPlaying)
 	{
 	case (int)Playing::Attack:
-		m_pAttack->Draw();
 		m_pDefence->Draw();
+		m_pAttack->Draw();
 		break;
 	case (int)Playing::Defence:
 		m_pDefence->Draw();
@@ -104,6 +108,8 @@ void CSceneGame::Draw()
 	default:
 		break;
 	}
+	CBall::GetInstance()->Update();
+	CBall::GetInstance()->Draw();
 	CBallCount::GetInstance()->Draw();
 
 	//m_pPlayer->Draw();	// プレイヤーの描画

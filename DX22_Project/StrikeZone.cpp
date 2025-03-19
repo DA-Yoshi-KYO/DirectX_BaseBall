@@ -17,6 +17,10 @@ CStrikeZone::CStrikeZone()
 	m_tParam.world = CCamera::Get2DWolrdMatrix();
 	m_tParam.view = CCamera::Get2DViewMatrix();
 	m_tParam.proj = CCamera::Get2DProjectionMatrix();
+	
+	m_Collision.type = Collision::Type2D::eSquare;
+	m_Collision.square.pos = m_tParam.pos;
+	m_Collision.square.size = m_tParam.size;
 }
 
 CStrikeZone::~CStrikeZone()
@@ -25,6 +29,8 @@ CStrikeZone::~CStrikeZone()
 
 void CStrikeZone::Update()
 {
+	m_Collision.square.pos = m_tParam.pos;
+	m_Collision.square.size = m_tParam.size;
 }
 
 void CStrikeZone::Draw()
@@ -43,4 +49,16 @@ DirectX::XMFLOAT2 CStrikeZone::GetPos()
 DirectX::XMFLOAT2 CStrikeZone::GetSize()
 {
 	return m_tParam.size;
+}
+
+Collision::Info2D CStrikeZone::GetCollision()
+{
+	return m_Collision;
+}
+
+std::unique_ptr<CStrikeZone>& CStrikeZone::GetInstance()
+{
+	static std::unique_ptr<CStrikeZone> instance(new CStrikeZone());
+
+	return instance;
 }

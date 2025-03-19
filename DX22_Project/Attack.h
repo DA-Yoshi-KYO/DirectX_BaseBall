@@ -1,8 +1,7 @@
 #pragma once
 
 #include "Defines.h"
-#include "StrikeZone.h"
-#include "Cursor.h"
+#include "BattingCursor.h"
 #include "Batting.h"
 
 class CAttack
@@ -14,8 +13,6 @@ public:
 	void Draw();
 
 private:
-	std::unique_ptr<CStrikeZone> m_pStrikeZone;
-	std::unique_ptr<CCursor> m_pCursor;
+	std::unique_ptr<CBattingCursor> m_pBattingCursor;
 	std::unique_ptr<CBatting> m_pBatting;
-
 };
