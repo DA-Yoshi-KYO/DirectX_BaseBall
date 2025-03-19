@@ -2,15 +2,21 @@
 #include "ImGuiManager.h"
 #include "SceneGame.h"
 
-
 constexpr DirectX::XMFLOAT2 ce_fBallEndCenter = { 0.0f,2.0f };
 constexpr DirectX::XMFLOAT2 ce_fBallLimitX = { 2.7f,-2.7f };
 constexpr DirectX::XMFLOAT2 ce_fBallLimitY = { -2.7f,2.3f };
 constexpr  DirectX::XMFLOAT3 ce_fBallSize = { 10.0f,10.0f,10.0f };
 constexpr int ce_nBallRotateSec = 220 / 60;
 
+enum class BallPhase
+{
+	Batting,
+	InPlay,
+};
+
 CBall::CBall()
 	: m_pModel(nullptr), m_pCamera(nullptr), m_pPitching(nullptr)
+	, m_nPhase((int)BallPhase::Batting), m_fMove{}
 {
 	// ボールのモデルの読み込み
 	m_pModel = std::make_unique<Model>();
@@ -27,27 +33,18 @@ CBall::~CBall()
 	m_pCamera.release();
 	m_pPitching.release();
 	m_pCursor.release();
+	m_pPitching.release();
+	m_pBatting.release();
 }
 
 void CBall::Update()
 {
-	if (m_pPitching->GetPitchingPhase() == (int)CPitching::PitchingPhase::Release)
+	switch (m_nPhase)
 	{
-		float fChatch = m_pPitching->GetChatchTime();
-		DirectX::XMFLOAT2 fCursorPos = m_pCursor->GetPos((int)CSceneGame::Playing::Defence);
-		DirectX::XMFLOAT2 fCenterToCursor = { ce_fCursorPos.x - fCursorPos.x,ce_fCursorPos.y - fCursorPos.y };
-		DirectX::XMFLOAT2 fZoneSizeHarf = { ce_fStrikeZoneSize.x / 2.0f,ce_fStrikeZoneSize.y / 2.0f };
-		DirectX::XMFLOAT2 fCenterToCursorPow = { fCenterToCursor.x / fZoneSizeHarf.x,fCenterToCursor.y / fZoneSizeHarf.y };
-		DirectX::XMFLOAT2 fCenterToBall = { ce_fBallLimitX.x * fCenterToCursorPow.x,  ce_fBallLimitX.y * fCenterToCursorPow.y + ce_fBallEndPos.y };
-
-		m_pos.x += (fCenterToBall.x - ce_fBallPos.x) / fChatch;
-		m_pos.y += (fCenterToBall.y - ce_fBallPos.y) / fChatch;
-		m_pos.z += (ce_fBallEndPos.z - ce_fBallPos.z) / fChatch;
-		m_rotate.y += DirectX::XMConvertToRadians(ce_nBallRotateSec * 360.0f) / fChatch;
-	}
-	else
-	{
-		m_pos = { ce_fBallPos.x + WORLD_AJUST ,ce_fBallPos.y + WORLD_AJUST, ce_fBallPos.z + WORLD_AJUST };
+	case (int)BallPhase::Batting: UpdateBatting(); break;
+	case (int)BallPhase::InPlay: UpdateInPlay(); break;
+	default:
+		break;
 	}
 }
 
@@ -56,10 +53,9 @@ void CBall::Draw()
 #ifdef _IMGUI
 	DirectX::XMFLOAT3X3 debug = GetPosSizeRotateDebug("Ball");
 #endif // _IMGUI
-	if (m_pPitching->GetPitchingPhase() == (int)CPitching::PitchingPhase::Release)
-	{
-		SetModel(m_pos, m_size, m_rotate);
-	}
+
+	SetModel(m_pos, m_size, m_rotate);
+	
 }
 
 void CBall::SetModel(DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 size, DirectX::XMFLOAT3 rotate, int ModelType)
@@ -130,12 +126,99 @@ void CBall::SetPitching(CPitching* pitching)
 	m_pPitching.reset(pitching);
 }
 
-void CBall::SetCursor(CCursor* cursor)
+void CBall::SetPitchingCursor(CPitchingCursor* cursor)
 {
 	m_pCursor.reset(cursor);
+}
+
+void CBall::SetBatting(CBatting* batting)
+{
+	m_pBatting.reset(batting);
 }
 
 DirectX::XMFLOAT3 CBall::GetPos()
 {
 	return m_pos;
 }
+
+std::unique_ptr<CBall>& CBall::GetInstance()
+{
+	// インスタンスは一つしか存在しない
+	static std::unique_ptr<CBall> instance(new CBall());
+	return instance;
+}
+
+void CBall::UpdateBatting()
+{
+	if (m_pPitching->GetPitchingPhase() == (int)CPitching::PitchingPhase::Release)
+	{
+		float fChatch = m_pPitching->GetChatchTime();
+		DirectX::XMFLOAT2 fCursorPos = m_pCursor->GetPos();
+		DirectX::XMFLOAT2 fCenterToCursor = { ce_fPitchingCursorPos.x - fCursorPos.x,ce_fPitchingCursorPos.y - fCursorPos.y };
+		DirectX::XMFLOAT2 fZoneSizeHarf = { ce_fStrikeZoneSize.x / 2.0f,ce_fStrikeZoneSize.y / 2.0f };
+		DirectX::XMFLOAT2 fCenterToCursorPow = { fCenterToCursor.x / fZoneSizeHarf.x,fCenterToCursor.y / fZoneSizeHarf.y };
+		DirectX::XMFLOAT2 fCenterToBall = { ce_fBallLimitX.x * fCenterToCursorPow.x,  ce_fBallLimitX.y * fCenterToCursorPow.y + ce_fBallEndPos.y };
+
+		m_pos.x += (fCenterToBall.x - ce_fBallPos.x) / fChatch;
+		m_pos.y += (fCenterToBall.y - ce_fBallPos.y) / fChatch;
+		m_pos.z += (ce_fBallEndPos.z - ce_fBallPos.z) / fChatch;
+		m_rotate.y += DirectX::XMConvertToRadians(ce_nBallRotateSec * 360.0f) / fChatch;
+
+		if (m_pBatting->GetBatting())
+		{
+			m_nPhase = (int)BallPhase::InPlay;
+			m_fMove = m_pBatting->GetDirection();
+		}
+	}
+	else
+	{
+		m_pos = { ce_fBallPos.x + WORLD_AJUST ,ce_fBallPos.y + WORLD_AJUST, ce_fBallPos.z + WORLD_AJUST };
+	}
+}
+
+void CBall::UpdateInPlay()
+{
+	m_pos.x += m_fMove.x;
+	m_pos.y += m_fMove.y;
+	m_pos.z += m_fMove.z;
+
+	m_fMove.x *= 0.99f;
+	m_fMove.y *= 0.99f;
+	m_fMove.z *= 0.99f;
+
+	m_fMove.y -= MSEC(GRAVITY);
+ 
+	if (m_pos.y < 0.0f + WORLD_AJUST) 
+	{
+		m_fMove.x *= 0.95f;
+		m_fMove.y *= 0.5f;
+		m_fMove.z *= 0.95f;
+	
+		m_fMove.y = -m_fMove.y;
+		if (m_fMove.y < CMETER(5.0f))
+		{
+			m_fMove.y = 0.0f;
+			m_pos.y = 0.0f;
+		}
+		else 
+		{
+			m_pos.y -= WORLD_AJUST;
+			m_pos.y = -m_pos.y;
+			m_pos.y += WORLD_AJUST;
+		}
+	}
+
+	float speed;
+	DirectX::XMVECTOR vMove = DirectX::XMLoadFloat3(&m_fMove);
+	DirectX::XMVECTOR vLen = DirectX::XMVector3Length(vMove);
+	DirectX::XMStoreFloat(&speed, vLen);
+	if (speed < CMSEC(0.01f)) 
+	{ 
+		m_nPhase = (int)BallPhase::Batting;
+		m_pBatting->SetBatting(false);
+		std::string debug;
+		debug = std::to_string(ce_fBallEndPos.z - (m_pos.z - WORLD_AJUST));
+		debug += "M飛びました";
+		//INFO_MESSAGE(debug.c_str());
+	}
+}

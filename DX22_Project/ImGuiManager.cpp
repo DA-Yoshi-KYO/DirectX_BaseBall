@@ -133,3 +133,61 @@ void BoolDebug(bool* value, std::string name, DirectX::XMFLOAT2 guipos)
 	// 描画後の処理
 	ImGui::End();
 }
+
+void ApperCollisionSquare(DirectX::XMFLOAT2 pos, DirectX::XMFLOAT2 size, std::string name,bool* bApper, DirectX::XMFLOAT2 guipos, DirectX::XMFLOAT4  color)
+{
+
+	// 描画前の設定
+	// ウィンドウを出す位置
+	ImGui::SetNextWindowPos(ImVec2(guipos.x, guipos.y));
+	// ウィンドウのサイズ
+	ImGui::SetNextWindowSize(ImVec2(200, 150));
+	// ウィンドウの名前
+	ImGui::Begin(name.c_str());
+
+	pos.y *= -1;
+	ImVec2 vec2Min(pos.x - size.x / 2.0f + SCREEN_WIDTH / 2.0f, pos.y - size.y / 2.0f + SCREEN_HEIGHT / 2.0f);  // 矩形の左上座標
+	ImVec2 vec2Max(pos.x + size.x / 2.0f + SCREEN_WIDTH / 2.0f, pos.y + size.y / 2.0f + SCREEN_HEIGHT / 2.0f);  // 矩形の右下座標
+	ImDrawList* pDrawList = ImGui::GetForegroundDrawList();
+	
+	// チェックボックスで当たり判定の表示を切り替える
+	ImGui::Checkbox("Apper", bApper);
+
+	if (*bApper)
+	{
+		pDrawList->AddRectFilled(vec2Min, vec2Max, IM_COL32(color.x, color.y, color.z, color.w));
+	}
+
+	// 描画後の処理
+	ImGui::End();
+}
+
+void ApperCollisionCircle(DirectX::XMFLOAT2 pos, float radius, std::string name, bool* bApper, DirectX::XMFLOAT2 guipos, DirectX::XMFLOAT4 color)
+{
+
+	// 描画前の設定
+	// ウィンドウを出す位置
+	ImGui::SetNextWindowPos(ImVec2(guipos.x, guipos.y));
+	// ウィンドウのサイズ
+	ImGui::SetNextWindowSize(ImVec2(200, 150));
+	// ウィンドウの名前
+	ImGui::Begin(name.c_str());
+
+	pos.y *= -1;
+
+	pos.x += SCREEN_WIDTH / 2.0f;
+	pos.y += SCREEN_HEIGHT / 2.0f;
+
+	ImDrawList* pDrawList = ImGui::GetForegroundDrawList();
+
+	// チェックボックスで当たり判定の表示を切り替える
+	ImGui::Checkbox("Apper", bApper);
+
+	if (*bApper)
+	{
+		pDrawList->AddCircleFilled(ImVec2(pos.x, pos.y), radius, IM_COL32(color.x, color.y, color.z, color.w));
+	}
+
+	// 描画後の処理
+	ImGui::End();
+}

@@ -14,7 +14,7 @@
 #pragma once
 #include "Defines.h"
 #include "StrikeZone.h"
-#include "Cursor.h"
+#include "PitchingCursor.h"
 #include "Texture.h"
 
 class CPitching
@@ -30,7 +30,7 @@ public:
 	void SetStrikeZone(CStrikeZone* zone);
 	/// <summary> SetStrikeZone </summary>
 	/// <param name="cursor:"> CCursorクラスのインスタンス </param>
-	void SetCursor(CCursor* cursor);
+	void SetCursor(CPitchingCursor* cursor);
 
 	// 投球の流れ
 	enum class PitchingPhase
@@ -58,7 +58,7 @@ private:
 	
 	// コンポジション
 	std::unique_ptr<CStrikeZone> m_pStrikeZone;
-	std::unique_ptr<CCursor> m_pCursor;
+	std::unique_ptr<CPitchingCursor> m_pPitchingCursor;
 
 	// メンバ変数
 	float m_fSpeed;			// 球速

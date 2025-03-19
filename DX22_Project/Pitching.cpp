@@ -35,7 +35,7 @@ constexpr float ce_fSetPositionTime = 4.0f;
 constexpr float ce_fCircleTime = 0.5f;
 
 CPitching::CPitching()
-	: m_pStrikeZone(nullptr), m_pCursor(nullptr)
+	: m_pStrikeZone(nullptr), m_pPitchingCursor(nullptr)
 	, m_nPitchingPhase((int)PitchingPhase::Set)
 	, m_fSpeed(148.0f), m_fChatchTime(0.0f)
 {
@@ -67,7 +67,7 @@ CPitching::CPitching()
 
 CPitching::~CPitching()
 {
-	m_pCursor.release();
+	m_pPitchingCursor.release();
 	m_pStrikeZone.release();
 }
 
@@ -83,11 +83,11 @@ void CPitching::Update()
 	{
 		// セットポジション
 	case (int)CPitching::PitchingPhase::Set:
-		m_pCursor->SetMove((int)CSceneGame::Playing::Defence,true);
+		m_pPitchingCursor->SetMove(true);
 		// スペースキーで位置決定
 		if (IsKeyTrigger(VK_SPACE))
 		{
-			m_tParam[(int)TexKind::ReleasePoint].pos = m_tParam[(int)TexKind::PitchingCircle].pos = fCursorPos = m_pCursor->GetPos((int)CSceneGame::Playing::Defence);
+			m_tParam[(int)TexKind::ReleasePoint].pos = m_tParam[(int)TexKind::PitchingCircle].pos = fCursorPos = m_pPitchingCursor->GetPos();
 			fPitchTime = 0.0f;
 			// 球速は乱数で一定値下がる可能性がある
 			m_fSpeed = m_fSpeed - (float)(rand() % 3);
@@ -95,7 +95,7 @@ void CPitching::Update()
 			m_tParam[(int)TexKind::PitchingCircle].size = { 0.0f,0.0f };
 			// 投球する場所を決めたらフェーズを移す
 			m_nPitchingPhase = (int)PitchingPhase::Pitch;
-			m_pCursor->SetMove((int)CSceneGame::Playing::Defence, false);
+			m_pPitchingCursor->SetMove(false);
 		}
 		break;
 		// リリースポイント
@@ -119,7 +119,7 @@ void CPitching::Update()
 		// リリースポイントのタイミングで投球の質を判断する
 		if (IsKeyTrigger(VK_SPACE))
 		{
-			DirectX::XMFLOAT2 fDefCursorPos = m_pCursor->GetPos((int)CSceneGame::Playing::Defence);
+			DirectX::XMFLOAT2 fDefCursorPos = m_pPitchingCursor->GetPos();
 			int randX = rand() % 20 - 10;
 			int randY = rand() % 10 - 10;
 			int randMiss = rand() % 10;
@@ -129,32 +129,32 @@ void CPitching::Update()
 				switch (randMiss)
 				{
 				case 0:
-					m_pCursor->SetPos((int)CSceneGame::Playing::Defence, {  0.0f,-100.0f  });
+					m_pPitchingCursor->SetPos( {  0.0f,-100.0f  });
 				default:
-					m_pCursor->SetPos((int)CSceneGame::Playing::Defence, { m_pStrikeZone->GetPos().x - m_pStrikeZone->GetSize().x / 1.3f,m_pStrikeZone->GetPos().y + m_pStrikeZone->GetSize().y / 1.3f });
+					m_pPitchingCursor->SetPos( { m_pStrikeZone->GetPos().x - m_pStrikeZone->GetSize().x / 1.3f,m_pStrikeZone->GetPos().y + m_pStrikeZone->GetSize().y / 1.3f });
 					break;												   
 				}
 			}
 			else if (m_tParam[(int)TexKind::PitchingCircle].size.x > ce_fPitchingCircleEndSize.x + 1.0f)
 			{
-				m_pCursor->SetPos((int)CSceneGame::Playing::Defence, { fDefCursorPos.x + randX, fDefCursorPos.y + randY });
+				m_pPitchingCursor->SetPos( { fDefCursorPos.x + randX, fDefCursorPos.y + randY });
 			}
 			else if (m_tParam[(int)TexKind::PitchingCircle].size.x > ce_fPitchingCircleEndSize.x - 1.0f)
 			{
-				m_pCursor->SetPos((int)CSceneGame::Playing::Defence, { fDefCursorPos.x,fDefCursorPos.y });
+				m_pPitchingCursor->SetPos( { fDefCursorPos.x,fDefCursorPos.y });
 			}
 			else if (m_tParam[(int)TexKind::PitchingCircle].size.x > ce_fPitchingCircleEndSize.x / 2.0f)
 			{
-				m_pCursor->SetPos((int)CSceneGame::Playing::Defence, { fDefCursorPos.x + randX, fDefCursorPos.y + randY });
+				m_pPitchingCursor->SetPos( { fDefCursorPos.x + randX, fDefCursorPos.y + randY });
 			}
 			else
 			{
 				switch (randMiss)
 				{
 				case 0:
-					m_pCursor->SetPos((int)CSceneGame::Playing::Defence, { 0.0f,-100.0f });
+					m_pPitchingCursor->SetPos( { 0.0f,-100.0f });
 				default:
-					m_pCursor->SetPos((int)CSceneGame::Playing::Defence, { m_pStrikeZone->GetPos().x - m_pStrikeZone->GetSize().x / 1.3f,m_pStrikeZone->GetPos().y + m_pStrikeZone->GetSize().y / 1.3f });
+					m_pPitchingCursor->SetPos( { m_pStrikeZone->GetPos().x - m_pStrikeZone->GetSize().x / 1.3f,m_pStrikeZone->GetPos().y + m_pStrikeZone->GetSize().y / 1.3f });
 					break;
 				}
 			}
@@ -162,7 +162,7 @@ void CPitching::Update()
 			// 投球したらフェーズを移す
 			m_nPitchingPhase = (int)CPitching::PitchingPhase::Release;
 			fPitchTime = 0.0f;
-			fCursorPos = m_pCursor->GetPos((int)CSceneGame::Playing::Defence);
+			fCursorPos = m_pPitchingCursor->GetPos();
 		}
 		else if(m_tParam[(int)TexKind::PitchingCircle].size.x < 0.0f)
 		{
@@ -171,15 +171,15 @@ void CPitching::Update()
 			switch (randMiss)
 			{
 			case 0:
-				m_pCursor->SetPos((int)CSceneGame::Playing::Defence, { 0.0f,-100.0f });
+				m_pPitchingCursor->SetPos( { 0.0f,-100.0f });
 			default:
-				m_pCursor->SetPos((int)CSceneGame::Playing::Defence, { m_pStrikeZone->GetPos().x - m_pStrikeZone->GetSize().x / 1.3f,m_pStrikeZone->GetPos().y + m_pStrikeZone->GetSize().y / 1.3f });
+				m_pPitchingCursor->SetPos( { m_pStrikeZone->GetPos().x - m_pStrikeZone->GetSize().x / 1.3f,m_pStrikeZone->GetPos().y + m_pStrikeZone->GetSize().y / 1.3f });
 				break;
 			}
 			// 投球したらフェーズを移す
 			m_nPitchingPhase = (int)CPitching::PitchingPhase::Release;
 			fPitchTime = 0.0f;
-			fCursorPos = m_pCursor->GetPos((int)CSceneGame::Playing::Defence);
+			fCursorPos = m_pPitchingCursor->GetPos();
 		}
 		// 球速に応じて捕球までの時間を決める
 		m_fChatchTime = ce_fSpeed_Ajust / KMETER(m_fSpeed) * 60.0f * 60.0f;
@@ -195,7 +195,7 @@ void CPitching::Update()
 		{
 			// ストライクゾーンにカーソルのポジションが入っていればストライクのカウント
 			// 入っていなければボールのカウントを増やす
-			if (Collision::Hit2D(m_pStrikeZone->GetPos(), fCursorPos, m_pStrikeZone->GetSize(), { 0.0f,0.0f }))
+			if (Collision::Hit2D(m_pPitchingCursor->GetCollision(true,Collision::eSquare),m_pStrikeZone->GetCollision()).isHit)
 			{
 				pBallCount->AddStrikeCount();
 			}
@@ -205,7 +205,7 @@ void CPitching::Update()
 			}
 			// セットポジションに戻る
 			m_nPitchingPhase = (int)CPitching::PitchingPhase::Set;
-			m_pCursor->SetPos((int)CSceneGame::Playing::Defence, { 0.0f,-100.0f });
+			m_pPitchingCursor->SetPos( { 0.0f,-100.0f });
 		}
 		break;
 	default:
@@ -223,9 +223,9 @@ void CPitching::SetStrikeZone(CStrikeZone* zone)
 	m_pStrikeZone.reset(zone);
 }
 
-void CPitching::SetCursor(CCursor* cursor)
+void CPitching::SetCursor(CPitchingCursor* cursor)
 {
-	m_pCursor.reset(cursor);
+	m_pPitchingCursor.reset(cursor);
 }
 
 int CPitching::GetPitchingPhase()

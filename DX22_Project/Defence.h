@@ -1,10 +1,8 @@
 #pragma once
 
 #include "Defines.h"
-#include "Cursor.h"
-#include "StrikeZone.h"
+#include "PitchingCursor.h"
 #include "Pitching.h"
-#include "Ball.h"
 
 class CDefence
 {
@@ -14,8 +12,6 @@ public:
 	void Update();
 	void Draw();
 private:
-	std::unique_ptr<CStrikeZone> m_pStrikeZone;
-	std::unique_ptr<CCursor> m_pCursor;
+	std::unique_ptr<CPitchingCursor> m_pPitchingCursor;
 	std::unique_ptr<CPitching> m_pPitching;
-	std::unique_ptr<CBall> m_pBall;
 };

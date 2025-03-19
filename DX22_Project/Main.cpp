@@ -110,13 +110,13 @@ void Draw()
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
 	// 軸線の表示
-#if 0
+#if 1
 	// グリッド
 	DirectX::XMFLOAT4 lineColor(0.5f, 0.5f, 0.5f, 1.0f);
 	float size = DEBUG_GRID_NUM * DEBUG_GRID_MARGIN;
 	for (int i = 1; i <= DEBUG_GRID_NUM; ++i)
 	{
-		float grid = i * DEBUG_GRID_MARGIN;
+		float grid = i * DEBUG_GRID_MARGIN + WORLD_AJUST;
 		DirectX::XMFLOAT3 pos[2] = {
 			DirectX::XMFLOAT3(grid, 0.0f, size),
 			DirectX::XMFLOAT3(grid, 0.0f,-size),

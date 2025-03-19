@@ -150,6 +150,7 @@
     <ClCompile Include="BallCount.cpp" />
     <ClCompile Include="BallUI.cpp" />
     <ClCompile Include="Batting.cpp" />
+    <ClCompile Include="BattingCursor.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CameraBatter.cpp" />
     <ClCompile Include="CameraDebug.cpp" />
@@ -157,7 +158,6 @@
     <ClCompile Include="CameraMinimap.cpp" />
     <ClCompile Include="CameraPlayer.cpp" />
     <ClCompile Include="Collision.cpp" />
-    <ClCompile Include="Cursor.cpp" />
     <ClCompile Include="Defence.cpp" />
     <ClCompile Include="DirectWriteCustomFont.cpp" />
     <ClCompile Include="DirectWriteSample.cpp" />
@@ -188,6 +188,7 @@
     <ClCompile Include="NumberUI.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Pitching.cpp" />
+    <ClCompile Include="PitchingCursor.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PolylineEffect.cpp" />
     <ClCompile Include="Scene.cpp" />
@@ -209,6 +210,7 @@
     <ClInclude Include="BallCount.h" />
     <ClInclude Include="BallUI.h" />
     <ClInclude Include="Batting.h" />
+    <ClInclude Include="BattingCursor.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CameraBatter.h" />
     <ClInclude Include="CameraDebug.h" />
@@ -216,7 +218,6 @@
     <ClInclude Include="CameraMinimap.h" />
     <ClInclude Include="CameraPlayer.h" />
     <ClInclude Include="Collision.h" />
-    <ClInclude Include="Cursor.h" />
     <ClInclude Include="Defence.h" />
     <ClInclude Include="Defines.h" />
     <ClInclude Include="DirectWriteCustomFont.h" />
@@ -249,6 +250,7 @@
     <ClInclude Include="NumberUI.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="Pitching.h" />
+    <ClInclude Include="PitchingCursor.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PolylineEffect.h" />
     <ClInclude Include="Scene.h" />
