@@ -7,11 +7,12 @@
 constexpr float ce_fJustTyming = 138.0f;
 constexpr float ce_fHittingTyming = 5.0f;
 constexpr float ce_fAngleMax = 60.0f;
+constexpr float ce_fHomeRunAngle = 30.0f;
 
 CBatting::CBatting()
 	: m_pBattingCursor(nullptr), m_pBall(nullptr)
 	, m_bSwing(false), m_fMoveDirection{}
-	, m_fPower(5.0f), m_bBatting(false)
+	, m_fPower(4.0f), m_bBatting(false)
 {
 
 }
@@ -26,52 +27,85 @@ void CBatting::Update()
 {
 	DirectX::XMFLOAT3 fBallPos = m_pBall->GetPos();
 
-	if (fBallPos.z == ce_fBallPos.z + WORLD_AJUST) m_bSwing = false;
+	if (fBallPos.z == ce_fBallPos.z + WORLD_AJUST)
+	{
+		// ピッチャーがボールを受け取ったらスイング可能にする
+		m_bSwing = false;
+	}
 
+	// 投球中にスイングを掛けていない時にスイングが出来る
 	if (IsKeyTrigger(VK_RETURN) && !m_bSwing && !m_bBatting)
 	{
-		float fTyming = ce_fJustTyming + WORLD_AJUST - fBallPos.z;
-		float fAngle = 30.0f;
-		float fDirection = 0.0f;
-		std::string debugST;
+		float fTyming = ce_fJustTyming + WORLD_AJUST - fBallPos.z;	// どのタイミングで振ったか(0がジャスト、マイナスが遅れている、プラスが早い)
+		float fAngle = 30.0f;		// 打球角度
+		float fDirection = 0.0f;	// 打球方向
+		float fShotPower;			// ショットの強さ
 
 		do
 		{ 
-			if (fTyming > 50.0f) break;
+			if (fTyming > 50.0f)
+			{
+				// 早すぎるスイングはスイングとして扱わない
+				break;
+			}
 			
 			// タイミングチェック 
 			if (fTyming > ce_fHittingTyming || fTyming < -ce_fHittingTyming)
 			{
-				INFO_MESSAGE("空振り");
+				// スイングした
 				m_bSwing = true;
 				break;
 			}
 			else
 			{
-				fDirection = fTyming * (ce_fAngleMax / ce_fHittingTyming);
-
-				if(Collision::Hit2D(m_pBattingCursor->GetCollision(false), CPitchingCursor::GetCollision(false)).isHit)
+				Collision::Result2D result = Collision::Hit2D(m_pBattingCursor->GetCollision(false), CPitchingCursor::GetCollision(false));
+				if(result.isHit)
 				{
-					DirectX::XMFLOAT3 f3Angle;
-					fAngle = DirectX::XMConvertToRadians(fAngle);
+					// ミートカーソルの中央がボールの中央からどれだけ離れているか線形補間で求める
+					DirectX::XMFLOAT2 fDistanceRatio = { result.posAtoB.x / result.distance.x * 100.0f ,result.posAtoB.y / result.distance.y * 100.0f };
+					DirectX::XMFLOAT2 fSlowDown = {};
+
+					// 打球速度決定
+					if (fabsf(fDistanceRatio.x) >= 10.0f)fSlowDown.x = (100 - fabsf(fDistanceRatio.x)) / 150.0f;
+					if (fabsf(fDistanceRatio.y) >= 10.0f)fSlowDown.y = (100 - fabsf(fDistanceRatio.y)) / 150.0f;
+
+					// 減速を元のパワーと掛け合わせて打球の強さを求める
+					// 減速がない場合元の強さをそのまま計算する
+					fShotPower = m_fPower * (fSlowDown.x == 0 ? 1 : fSlowDown.x * fSlowDown.y == 0 ? 1 : fSlowDown.y);
+
+					// 捉えた場所が端すぎるならファールチップとしてストライクにする
+					if (fabsf(fDistanceRatio.x) >= 75.0f || fabsf(fDistanceRatio.y) >= 75.0f) break;
+
+					// 打球方向決定
+					fDirection = fTyming * (ce_fAngleMax / ce_fHittingTyming);
+					fDirection = fDirection - ce_fAngleMax / 2.0f * fDistanceRatio.x / 100.0f;
 					fDirection = DirectX::XMConvertToRadians(fDirection);
 
-					// sinfに-を付けると左バッターになる
-					f3Angle.x = cosf(fAngle) * sinf(fDirection);
+					// 打球角度決定
+					//fDistanceRatio = { (fDistanceRatio.x < 0) ? -(100 - fabsf(fDistanceRatio.x)) : 100 - fDistanceRatio.x, (fDistanceRatio.y < 0) ? -(100 - fabsf(fDistanceRatio.y)) : 100 - fDistanceRatio.y };
+					if (fDistanceRatio.y > 0)fDistanceRatio.y *= 3.0f;
+					else fDistanceRatio.y /= 2.0f;
+					fAngle = ce_fHomeRunAngle - ce_fAngleMax / 2.0f * fDistanceRatio.y / 100.0f;
+					fAngle = DirectX::XMConvertToRadians(fAngle);
+					
+					// 方向と角度から打球の進行方向を決める
+					// x計算のsinfに-を付けると左バッターになる
+					m_fMoveDirection.x = cosf(fAngle) * sinf(fDirection);
+					m_fMoveDirection.y = sinf(fAngle);                    
+					m_fMoveDirection.z = -cosf(fAngle) * fabs(cosf(fDirection));
 
-					f3Angle.y = sinf(fAngle);                    
-					f3Angle.z = -cosf(fAngle) * fabs(cosf(fDirection));
-
-					DirectX::XMVECTOR vecMove = DirectX::XMLoadFloat3(&f3Angle);
+					// 進行方向ベクトルを正規化し、スケーリングすることで打球の強さを決める
+					DirectX::XMVECTOR vecMove = DirectX::XMLoadFloat3(&m_fMoveDirection);
 					vecMove = DirectX::XMVector3Normalize(vecMove);
-					vecMove = DirectX::XMVectorScale(vecMove, m_fPower);
+					vecMove = DirectX::XMVectorScale(vecMove, fShotPower);
 					DirectX::XMStoreFloat3(&m_fMoveDirection, vecMove);
 
+					// バットに当たった
 					m_bBatting = true;
 				}
 				else
 				{
-
+					// 空振り
 				}
 			}
 		} while (0);
