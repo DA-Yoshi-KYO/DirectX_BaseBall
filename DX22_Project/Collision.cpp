@@ -87,7 +87,6 @@ Collision::Result Collision::Hit(Sphere a, Sphere b)
 }
 
 Collision::Result Collision::Hit(Point point, Triangle triangle)
-
 {
 
     Result out = {};
@@ -220,8 +219,11 @@ Collision::Result2D Collision::Hit2D(Circle a, Circle b)
     Result2D out = {};
 
     out.isHit = powf(a.pos.x - b.pos.x, 2) + powf(a.pos.x - b.pos.x, 2) <= powf(a.radius + b.radius, 2);
+
+    out.distance.x = out.distance.y = a.radius + b.radius;
+
     out.posAtoB = { a.pos.x - b.pos.x, a.pos.y - b.pos.y };
-    out.posAtoB = { b.pos.x - a.pos.x, b.pos.y - a.pos.y };
+    out.posBtoA = { b.pos.x - a.pos.x, b.pos.y - a.pos.y };
 
     return out;
 }

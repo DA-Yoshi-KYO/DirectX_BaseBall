@@ -114,6 +114,7 @@ public:
 		bool isHit;	// “–‚½‚Á‚½‚©‚Ç‚¤‚© 
 		DirectX::XMFLOAT2 posAtoB;
 		DirectX::XMFLOAT2 posBtoA;
+		DirectX::XMFLOAT2 distance;
 	};
 public:
 	// InfoŒ^‚Å‚Ì“–‚½‚è”»’è
