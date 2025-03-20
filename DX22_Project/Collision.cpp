@@ -181,53 +181,6 @@ Collision::Result Collision::Hit(Point point, Triangle triangle)
 
 }
 
-Collision::Result2D Collision::Hit2D(Info2D a, Info2D b)
-{
-    Result2D out = {};
-    if (a.type == b.type)
-    {
-        switch (a.type)
-        {
-        case eSquare: out = Hit2D(a.square, b.square);	break;
-        case eCircle: out = Hit2D(a.circle, b.circle); break;
-        }
-    }
-    return out;
-}
-
-Collision::Result2D Collision::Hit2D(Square a, Square b)
-{
-    Result2D out = {};
-
-	DirectX::XMFLOAT2 aHalf = { a.size.x * 0.5f, a.size.y * 0.5f };
-    DirectX::XMFLOAT2 bHalf = { b.size.x * 0.5f, b.size.y * 0.5f };
-
-	DirectX::XMFLOAT2 aMin = { a.pos.x - aHalf.x, a.pos.y - aHalf.y };
-	DirectX::XMFLOAT2 aMax = { a.pos.x + aHalf.x, a.pos.y + aHalf.y };
-	DirectX::XMFLOAT2 bMin = { b.pos.x - bHalf.x, b.pos.y - bHalf.y };
-	DirectX::XMFLOAT2 bMax = { b.pos.x + bHalf.x, b.pos.y + bHalf.y };
-
-    out.isHit = aMin.x <= bMax.x && aMax.x >= bMin.x && aMin.y <= bMax.y && aMax.y >= bMin.y;
-    out.posAtoB = { a.pos.x - b.pos.x, a.pos.y - b.pos.y };
-    out.posAtoB = { b.pos.x - a.pos.x, b.pos.y - a.pos.y };
-
-    return out;
-}
-
-Collision::Result2D Collision::Hit2D(Circle a, Circle b)
-{
-    Result2D out = {};
-
-    out.isHit = powf(a.pos.x - b.pos.x, 2) + powf(a.pos.x - b.pos.x, 2) <= powf(a.radius + b.radius, 2);
-
-    out.distance.x = out.distance.y = a.radius + b.radius;
-
-    out.posAtoB = { a.pos.x - b.pos.x, a.pos.y - b.pos.y };
-    out.posBtoA = { b.pos.x - a.pos.x, b.pos.y - a.pos.y };
-
-    return out;
-}
-
 Collision::Result Collision::Hit(Plane plane, Line line)
 {
     Result out = {};
@@ -295,3 +248,49 @@ Collision::Result Collision::Hit(Plane plane, Ray ray, float lenght)
 
 };
 
+Collision::Result2D Collision::Hit2D(Info2D a, Info2D b)
+{
+    Result2D out = {};
+    if (a.type == b.type)
+    {
+        switch (a.type)
+        {
+        case eSquare: out = Hit2D(a.square, b.square);	break;
+        case eCircle: out = Hit2D(a.circle, b.circle); break;
+        }
+    }
+    return out;
+}
+
+Collision::Result2D Collision::Hit2D(Square a, Square b)
+{
+    Result2D out = {};
+
+	DirectX::XMFLOAT2 aHalf = { a.size.x * 0.5f, a.size.y * 0.5f };
+    DirectX::XMFLOAT2 bHalf = { b.size.x * 0.5f, b.size.y * 0.5f };
+
+	DirectX::XMFLOAT2 aMin = { a.pos.x - aHalf.x, a.pos.y - aHalf.y };
+	DirectX::XMFLOAT2 aMax = { a.pos.x + aHalf.x, a.pos.y + aHalf.y };
+	DirectX::XMFLOAT2 bMin = { b.pos.x - bHalf.x, b.pos.y - bHalf.y };
+	DirectX::XMFLOAT2 bMax = { b.pos.x + bHalf.x, b.pos.y + bHalf.y };
+
+    out.isHit = aMin.x <= bMax.x && aMax.x >= bMin.x && aMin.y <= bMax.y && aMax.y >= bMin.y;
+    out.posAtoB = { a.pos.x - b.pos.x, a.pos.y - b.pos.y };
+    out.posAtoB = { b.pos.x - a.pos.x, b.pos.y - a.pos.y };
+
+    return out;
+}
+
+Collision::Result2D Collision::Hit2D(Circle a, Circle b)
+{
+    Result2D out = {};
+
+    out.isHit = powf(a.pos.x - b.pos.x, 2) + powf(a.pos.x - b.pos.x, 2) <= powf(a.radius + b.radius, 2);
+
+    out.distance.x = out.distance.y = a.radius + b.radius;
+
+    out.posAtoB = { a.pos.x - b.pos.x, a.pos.y - b.pos.y };
+    out.posBtoA = { b.pos.x - a.pos.x, b.pos.y - a.pos.y };
+
+    return out;
+}

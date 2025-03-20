@@ -9,10 +9,12 @@ constexpr float ce_fHittingTyming = 5.0f;
 constexpr float ce_fAngleMax = 60.0f;
 constexpr float ce_fHomeRunAngle = 30.0f;
 
+bool CBatting::m_bSwing = false;
+
 CBatting::CBatting()
 	: m_pBattingCursor(nullptr), m_pBall(nullptr)
-	, m_bSwing(false), m_fMoveDirection{}
-	, m_fPower(4.0f), m_bBatting(false)
+	, m_bBatting(false), m_fMoveDirection{}
+	, m_fPower(4.0f)
 {
 
 }
@@ -26,6 +28,7 @@ CBatting::~CBatting()
 void CBatting::Update()
 {
 	DirectX::XMFLOAT3 fBallPos = m_pBall->GetPos();
+	CBallCount* pBallCount = CBallCount::GetInstance().get();	// ボールカウントクラスのインスタンスを取得
 
 	if (fBallPos.z == ce_fBallPos.z + WORLD_AJUST)
 	{
@@ -39,21 +42,20 @@ void CBatting::Update()
 		float fTyming = ce_fJustTyming + WORLD_AJUST - fBallPos.z;	// どのタイミングで振ったか(0がジャスト、マイナスが遅れている、プラスが早い)
 		float fAngle = 30.0f;		// 打球角度
 		float fDirection = 0.0f;	// 打球方向
-		float fShotPower;			// ショットの強さ
+		float fShotPower = 0.0f;			// ショットの強さ
 
 		do
 		{ 
-			if (fTyming > 50.0f)
-			{
-				// 早すぎるスイングはスイングとして扱わない
-				break;
-			}
+			// 早すぎるスイングはスイングとして扱わない
+			if (fTyming > 50.0f) break;
 			
+			// スイングした
+			m_bSwing = true;
+
 			// タイミングチェック 
 			if (fTyming > ce_fHittingTyming || fTyming < -ce_fHittingTyming)
 			{
-				// スイングした
-				m_bSwing = true;
+				pBallCount->AddStrikeCount();
 				break;
 			}
 			else
@@ -74,7 +76,11 @@ void CBatting::Update()
 					fShotPower = m_fPower * (fSlowDown.x == 0 ? 1 : fSlowDown.x * fSlowDown.y == 0 ? 1 : fSlowDown.y);
 
 					// 捉えた場所が端すぎるならファールチップとしてストライクにする
-					if (fabsf(fDistanceRatio.x) >= 75.0f || fabsf(fDistanceRatio.y) >= 75.0f) break;
+					if (fabsf(fDistanceRatio.x) >= 75.0f || fabsf(fDistanceRatio.y) >= 75.0f)
+					{
+						pBallCount->AddStrikeCount();
+						break;
+					}
 
 					// 打球方向決定
 					fDirection = fTyming * (ce_fAngleMax / ce_fHittingTyming);
@@ -82,7 +88,6 @@ void CBatting::Update()
 					fDirection = DirectX::XMConvertToRadians(fDirection);
 
 					// 打球角度決定
-					//fDistanceRatio = { (fDistanceRatio.x < 0) ? -(100 - fabsf(fDistanceRatio.x)) : 100 - fDistanceRatio.x, (fDistanceRatio.y < 0) ? -(100 - fabsf(fDistanceRatio.y)) : 100 - fDistanceRatio.y };
 					if (fDistanceRatio.y > 0)fDistanceRatio.y *= 3.0f;
 					else fDistanceRatio.y /= 2.0f;
 					fAngle = ce_fHomeRunAngle - ce_fAngleMax / 2.0f * fDistanceRatio.y / 100.0f;
@@ -102,10 +107,12 @@ void CBatting::Update()
 
 					// バットに当たった
 					m_bBatting = true;
+					break;
 				}
 				else
 				{
 					// 空振り
+					pBallCount->AddStrikeCount();
 				}
 			}
 		} while (0);
@@ -130,6 +137,11 @@ void CBatting::SetBall(CBall* ball)
 DirectX::XMFLOAT3 CBatting::GetDirection()
 {
 	return m_fMoveDirection;
+}
+
+bool CBatting::GetSwing()
+{
+	return m_bSwing;
 }
 
 bool CBatting::GetBatting()
