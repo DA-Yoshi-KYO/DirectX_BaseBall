@@ -168,9 +168,14 @@ void CBallCount::AddBallCount()
 	m_tCount.m_nBallCount++;
 }
 
-void CBallCount::AddStrikeCount()
+void CBallCount::AddStrikeCount(bool isFoul)
 {
-	m_tCount.m_nStrikeCount++;
+	// ファールの時は2ストライク未満の時だけストライクカウントを加算する
+	if (isFoul)
+	{
+		if (m_tCount.m_nStrikeCount < 2) m_tCount.m_nStrikeCount++;
+	}
+	else m_tCount.m_nStrikeCount++;
 }
 
 void CBallCount::AddOutCount()

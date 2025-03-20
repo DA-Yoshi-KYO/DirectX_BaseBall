@@ -193,16 +193,21 @@ void CPitching::Update()
 		// タイマーが捕球までの時間になったら
 		if (fPitchTime >= m_fChatchTime)
 		{
-			// ストライクゾーンにカーソルのポジションが入っていればストライクのカウント
-			// 入っていなければボールのカウントを増やす
-			if (Collision::Hit2D(m_pPitchingCursor->GetCollision(true,Collision::eSquare),m_pStrikeZone->GetCollision()).isHit)
+			// バッターが見逃した時
+			if (!CBatting::GetSwing())
 			{
-				pBallCount->AddStrikeCount();
+				// ストライクゾーンにカーソルのポジションが入っていればストライクのカウント
+				// 入っていなければボールのカウントを増やす
+				if (Collision::Hit2D(m_pPitchingCursor->GetCollision(true, Collision::eSquare), m_pStrikeZone->GetCollision()).isHit)
+				{
+					pBallCount->AddStrikeCount();
+				}
+				else
+				{
+					pBallCount->AddBallCount();
+				}
 			}
-			else
-			{
-				pBallCount->AddBallCount();
-			}
+
 			// セットポジションに戻る
 			m_nPitchingPhase = (int)CPitching::PitchingPhase::Set;
 			m_pPitchingCursor->SetPos( { 0.0f,-100.0f });

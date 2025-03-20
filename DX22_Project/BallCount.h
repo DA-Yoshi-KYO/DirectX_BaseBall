@@ -39,7 +39,7 @@ public:
 	/// <summary> AddBallCount:ボールのカウントを1増やす </summary>
 	void AddBallCount();
 	/// <summary> AddStrikeCount:ストライクのカウントを1増やす </summary>
-	void AddStrikeCount();
+	void AddStrikeCount(bool isFoul = true);
 	/// <summary> AddOutCount:アウトのカウントを1増やす </summary>
 	void AddOutCount();
 	/// <summary> AddScore:引数のチームのスコアを1増やす </summary>
