@@ -261,14 +261,26 @@
     <ClCompile Include="Defence.cpp">
       <Filter>ソース ファイル\BaseBall\Difence</Filter>
     </ClCompile>
-    <ClCompile Include="Cursor.cpp">
-      <Filter>ソース ファイル\BaseBall\System</Filter>
-    </ClCompile>
     <ClCompile Include="BattingCursor.cpp">
       <Filter>ソース ファイル\BaseBall\Attack</Filter>
     </ClCompile>
     <ClCompile Include="PitchingCursor.cpp">
       <Filter>ソース ファイル\BaseBall\Difence</Filter>
+    </ClCompile>
+    <ClCompile Include="Shadow.cpp">
+      <Filter>ソース ファイル\2DObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Model_anime.cpp">
+      <Filter>ソース ファイル\Work</Filter>
+    </ClCompile>
+    <ClCompile Include="Model_check.cpp">
+      <Filter>ソース ファイル\Work</Filter>
+    </ClCompile>
+    <ClCompile Include="Model_get.cpp">
+      <Filter>ソース ファイル\Work</Filter>
+    </ClCompile>
+    <ClCompile Include="Model_morph.cpp">
+      <Filter>ソース ファイル\Work</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -443,8 +455,8 @@
     <ClInclude Include="BattingCursor.h">
       <Filter>ヘッダー ファイル\BaseBall\Attack</Filter>
     </ClInclude>
-    <ClInclude Include="Cursor.h">
-      <Filter>ヘッダー ファイル\BaseBall\System</Filter>
+    <ClInclude Include="Shadow.h">
+      <Filter>ヘッダー ファイル\2DObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

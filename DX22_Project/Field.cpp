@@ -1,6 +1,6 @@
 #include "Field.h"
+#include "ImGuiManager.h"
 
-constexpr float FIELD_SIZE_POW = 20.0f;
 
 CField::CField()
 	: m_pCamera(nullptr), m_pField(nullptr)
@@ -8,9 +8,13 @@ CField::CField()
 	m_pField = std::make_unique<Model>();
 	m_pField->Load(MODELPASS("BaseBallPark.fbx"));
 
-	m_tFieldParam.pos = { 0.0f,0.0f,0.0f };
+	m_tFieldParam.pos = { 0.0f + WORLD_AJUST,0.0f + WORLD_AJUST,0.0f + WORLD_AJUST };
 	m_tFieldParam.size = { 50.0f,1.0f,50.0f };
 	m_tFieldParam.rotate = { 0.0f,0.0f,0.0f };
+
+	m_Ground.type = Collision::Type::eBox;
+	m_Ground.box.center = m_tFieldParam.pos;
+	m_Ground.box.size = {m_tFieldParam.size.x * 8.0f,m_tFieldParam.size.y,m_tFieldParam.size.z * 8.0f };
 }
 
 CField::~CField()
@@ -20,16 +24,20 @@ CField::~CField()
 
 void CField::Update()
 {
+
 }
 
 void CField::Draw()
 {
+	static DirectX::XMFLOAT3 rotate = {};
+	ModelParamDebug(&m_Ground.box.center, &m_Ground.box.size, &rotate, "Collision");
+
 	m_tFieldParam.mWorld =
 		DirectX::XMMatrixScaling(m_tFieldParam.size.x, m_tFieldParam.size.y, m_tFieldParam.size.z) *
 		DirectX::XMMatrixRotationX(m_tFieldParam.rotate.x) *
 		DirectX::XMMatrixRotationY(m_tFieldParam.rotate.y) *
 		DirectX::XMMatrixRotationZ(m_tFieldParam.rotate.z) *
-		DirectX::XMMatrixTranslation(m_tFieldParam.pos.x + WORLD_AJUST, m_tFieldParam.pos.y + WORLD_AJUST, m_tFieldParam.pos.z + WORLD_AJUST);
+		DirectX::XMMatrixTranslation(m_tFieldParam.pos.x, m_tFieldParam.pos.y, m_tFieldParam.pos.z);
 
 	DirectX::XMStoreFloat4x4(&m_tFieldParam.wvp[0], DirectX::XMMatrixTranspose(m_tFieldParam.mWorld));
 	m_tFieldParam.wvp[1] = m_pCamera->GetViewMatrix();		// views—ñ
@@ -61,6 +69,8 @@ void CField::Draw()
 		// ƒ‚ƒfƒ‹‚Ì•`‰æ
 		m_pField->Draw(i);
 	}
+
+	Collision::DrawCollision(m_Ground);
 }
 
 void CField::SetModel(DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 size, DirectX::XMFLOAT3 rotate, int ModelType)

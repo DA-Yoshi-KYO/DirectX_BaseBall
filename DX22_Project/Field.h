@@ -18,4 +18,8 @@ private:
 	std::unique_ptr<Model> m_pField;
 	std::unique_ptr<CCamera> m_pCamera;			// カメラ情報(コンポジション)
 	ModelParam m_tFieldParam;
+	Collision::Info m_Ground;
+	Collision::Info m_LeftFaul;
+	Collision::Info m_RightFaul;
+	Collision::Info m_InOutBorder;
 };
