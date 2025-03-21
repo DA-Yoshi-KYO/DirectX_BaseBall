@@ -1,4 +1,5 @@
 #include "Collision.h"
+#include "Geometory.h"
 #undef min
 
 Collision::Result Collision::Hit(Info a, Info b)
@@ -293,4 +294,59 @@ Collision::Result2D Collision::Hit2D(Circle a, Circle b)
     out.posBtoA = { b.pos.x - a.pos.x, b.pos.y - a.pos.y };
 
     return out;
+}
+
+void Collision::DrawCollision(Collision::Info collision)
+{
+    switch (collision.type)
+    {
+    case eBox:
+        // 原点(-x,-y,-z)
+
+        DirectX::XMFLOAT3 harfSize = { collision.box.size.x / 2.0f,collision.box.size.y / 2.0f,collision.box.size.z / 2.0f };
+        DirectX::XMFLOAT3 vertex[2][4];
+
+        vertex[0][0] = { collision.box.center.x - harfSize.x,collision.box.center.y + harfSize.y,collision.box.center.z - harfSize.z };
+        vertex[0][1] = { collision.box.center.x - harfSize.x,collision.box.center.y - harfSize.y,collision.box.center.z - harfSize.z };
+        vertex[0][2] = { collision.box.center.x + harfSize.x,collision.box.center.y + harfSize.y,collision.box.center.z - harfSize.z };
+        vertex[0][3] = { collision.box.center.x + harfSize.x,collision.box.center.y - harfSize.y,collision.box.center.z - harfSize.z };
+
+        vertex[1][0] = { collision.box.center.x - harfSize.x,collision.box.center.y + harfSize.y,collision.box.center.z + harfSize.z };
+        vertex[1][1] = { collision.box.center.x - harfSize.x,collision.box.center.y - harfSize.y,collision.box.center.z + harfSize.z };
+        vertex[1][2] = { collision.box.center.x + harfSize.x,collision.box.center.y + harfSize.y,collision.box.center.z + harfSize.z };
+        vertex[1][3] = { collision.box.center.x + harfSize.x,collision.box.center.y - harfSize.y,collision.box.center.z + harfSize.z };
+
+        Geometory::AddLine(vertex[0][0], vertex[0][1], DirectX::XMFLOAT4(1, 0, 0, 1));
+        Geometory::AddLine(vertex[0][0], vertex[0][2], DirectX::XMFLOAT4(1, 0, 0, 1));
+        Geometory::AddLine(vertex[0][3], vertex[0][1], DirectX::XMFLOAT4(1, 0, 0, 1));
+        Geometory::AddLine(vertex[0][3], vertex[0][2], DirectX::XMFLOAT4(1, 0, 0, 1));
+
+        Geometory::AddLine(vertex[1][0], vertex[1][1], DirectX::XMFLOAT4(0, 1, 0, 1));
+        Geometory::AddLine(vertex[1][0], vertex[1][2], DirectX::XMFLOAT4(0, 1, 0, 1));
+        Geometory::AddLine(vertex[1][3], vertex[1][1], DirectX::XMFLOAT4(0, 1, 0, 1));
+        Geometory::AddLine(vertex[1][3], vertex[1][2], DirectX::XMFLOAT4(0, 1, 0, 1));
+
+        Geometory::AddLine(vertex[0][0], vertex[1][0], DirectX::XMFLOAT4(0, 0, 1, 1));
+        Geometory::AddLine(vertex[0][1], vertex[1][1], DirectX::XMFLOAT4(0, 0, 1, 1));
+        Geometory::AddLine(vertex[0][2], vertex[1][2], DirectX::XMFLOAT4(0, 0, 1, 1));
+        Geometory::AddLine(vertex[0][3], vertex[1][3], DirectX::XMFLOAT4(0, 0, 1, 1));
+        break;
+    case eSphere:
+        break;
+    case eLine:
+        Geometory::AddLine(collision.line.start, collision.line.end, DirectX::XMFLOAT4(0, 1, 0, 1));
+        break;
+    case ePlane:
+        DirectX::XMVECTOR vNormal = DirectX::XMVectorSet(collision.plane.normal.x, collision.plane.normal.y, collision.plane.normal.z, 0);
+
+        // 法線がY軸方向に近い場合はX軸を使う、それ以外はY軸を使う
+        DirectX::XMVECTOR vTemp = (fabs(collision.plane.normal.y) < 0.9f) ? DirectX::XMVectorSet(0, 1, 0, 0) : DirectX::XMVectorSet(1, 0, 0, 0);
+
+        // 外積を取って接線ベクトルを求める
+        DirectX::XMVECTOR vTangent1 = DirectX::XMVector3Normalize(DirectX::XMVector3Cross(vTemp, vNormal));
+        DirectX::XMVECTOR vTangent2 = DirectX::XMVector3Normalize(XMVector3Cross(normal, tangent1));
+        DirectX::XMFLOAT3 theta = { collision.plane.normal.x * 90.0f,collision.plane.normal.y * 90.0f,collision.plane.normal.z * 90.0f };
+    default:
+        break;
+    }
 }

@@ -6,6 +6,7 @@
 #include "StrikeZone.h"
 #include "Pitching.h"
 #include "PitchingCursor.h"
+#include "Texture.h"
 
 class CBatting;
 
@@ -34,6 +35,7 @@ public:
 
 	static std::unique_ptr<CBall>& GetInstance();
 private:
+	std::unique_ptr<Texture> m_pShadow;
 	std::unique_ptr<Model> m_pModel;
 	std::unique_ptr<CCamera> m_pCamera;
 	std::unique_ptr<CPitching> m_pPitching;
@@ -41,7 +43,12 @@ private:
 	std::unique_ptr<CBatting> m_pBatting;
 	int m_nPhase;
 	DirectX::XMFLOAT3 m_fMove;
+	DirectX::XMFLOAT3 m_fShadowPos;
+
+	Collision::Info m_PlaneCollision;
 
 	void UpdateBatting();
 	void UpdateInPlay();
+
+	void DrawShadow();
 };

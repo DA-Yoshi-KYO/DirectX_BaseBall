@@ -1,11 +1,12 @@
 #include "Ball.h"
 #include "ImGuiManager.h"
 #include "SceneGame.h"
+#include "Sprite.h"
 
 constexpr DirectX::XMFLOAT2 ce_fBallEndCenter = { 0.0f,2.0f };
 constexpr DirectX::XMFLOAT2 ce_fBallLimitX = { 2.7f,-2.7f };
 constexpr DirectX::XMFLOAT2 ce_fBallLimitY = { -2.7f,2.3f };
-constexpr  DirectX::XMFLOAT3 ce_fBallSize = { 10.0f,10.0f,10.0f };
+constexpr  DirectX::XMFLOAT3 ce_fBallSize = { 1.0f,1.0f,1.0f };
 constexpr int ce_nBallRotateSec = 220 / 60;
 
 enum class BallPhase
@@ -16,16 +17,24 @@ enum class BallPhase
 
 CBall::CBall()
 	: m_pModel(nullptr), m_pCamera(nullptr), m_pPitching(nullptr)
-	, m_nPhase((int)BallPhase::Batting), m_fMove{}
+	, m_nPhase((int)BallPhase::Batting)
+	, m_fMove{}, m_fShadowPos{}
 {
 	// É{Å[ÉãÇÃÉÇÉfÉãÇÃì«Ç›çûÇ›
 	m_pModel = std::make_unique<Model>();
-	if (!m_pModel->Load(MODELPASS("ball.fbx"))) ERROR_MESSAGE("ball.fbx");
+	if (!m_pModel->Load(MODELPASS("ball.obj"))) ERROR_MESSAGE("ball.fbx");
+
+	m_pShadow = std::make_unique<Texture>();
+	if (FAILED(m_pShadow->Create(TEXPASS("Shadow.png")))) ERROR_MESSAGE("Shadow.png");
 
 	m_pos = { ce_fBallPos.x + WORLD_AJUST ,ce_fBallPos.y + WORLD_AJUST, ce_fBallPos.z + WORLD_AJUST };
 	m_size = ce_fBallSize;
-	m_Collision.type = Collision::eBox;
-	m_Collision.box = { m_pos,m_size };
+	m_PlaneCollision.type = Collision::ePlane;
+	m_PlaneCollision.plane.pos = m_pos;
+	m_PlaneCollision.plane.normal = { 0.0f,0.0f,-1.0f };
+	m_Collision.type = Collision::eSphere;
+	m_Collision.sphere.center = m_pos;
+	m_Collision.sphere.radius = ce_fBallSize.x / 2.0f;
 }
 
 CBall::~CBall()
@@ -46,6 +55,12 @@ void CBall::Update()
 	default:
 		break;
 	}
+	m_PlaneCollision.type = Collision::ePlane;
+	m_PlaneCollision.plane.pos = m_pos;
+	m_PlaneCollision.plane.normal = { 0.0f,0.0f,-1.0f };
+	m_Collision.type = Collision::eSphere;
+	m_Collision.sphere.center = m_pos;
+	m_Collision.sphere.radius = ce_fBallSize.x / 2.0f;
 }
 
 void CBall::Draw()
@@ -62,8 +77,8 @@ void CBall::SetModel(DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 size, DirectX::XMF
 {
 	// ÉèÅ[ÉãÉhçsóÒïœä∑
 	DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);	// ç¿ïW
-	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(size.z, size.z, size.z);		// ägèk
-	DirectX::XMMATRIX Rx = DirectX::XMMatrixRotationX(rotate.z);				// âÒì]X
+	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(size.x, size.y, size.z);		// ägèk
+	DirectX::XMMATRIX Rx = DirectX::XMMatrixRotationX(rotate.x);				// âÒì]X
 	DirectX::XMMATRIX Ry = DirectX::XMMatrixRotationY(rotate.y);				// âÒì]Y
 	DirectX::XMMATRIX Rz = DirectX::XMMatrixRotationZ(rotate.z);				// âÒì]Z
 	DirectX::XMMATRIX world = S * Rx * Ry * Rz * T;	// ägèkÅEâÒì]ÅEç¿ïWÇÃèáî‘Ç≈Ç©ÇØçáÇÌÇπÇÈ
@@ -162,7 +177,7 @@ void CBall::UpdateBatting()
 		m_pos.x += (fCenterToBall.x - ce_fBallPos.x) / fChatch;
 		m_pos.y += (fCenterToBall.y - ce_fBallPos.y) / fChatch;
 		m_pos.z += (ce_fBallEndPos.z - ce_fBallPos.z) / fChatch;
-		m_rotate.y += DirectX::XMConvertToRadians(ce_nBallRotateSec * 360.0f) / fChatch;
+		m_rotate.x += DirectX::XMConvertToRadians(ce_nBallRotateSec * 360.0f) / fChatch;
 
 		if (m_pBatting->GetBatting())
 		{
@@ -221,4 +236,9 @@ void CBall::UpdateInPlay()
 		debug += "MîÚÇ—Ç‹ÇµÇΩ";
 		//INFO_MESSAGE(debug.c_str());
 	}
+}
+
+void CBall::DrawShadow()
+{
+
 }

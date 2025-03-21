@@ -129,4 +129,5 @@ public:
 	static Result2D Hit2D(Info2D a, Info2D b);
 	static Result2D Hit2D(Square a,Square b);
 	static Result2D Hit2D(Circle a, Circle b);
+	static void DrawCollision(Collision::Info collision);
 };
