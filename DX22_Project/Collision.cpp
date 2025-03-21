@@ -298,6 +298,7 @@ Collision::Result2D Collision::Hit2D(Circle a, Circle b)
 
 void Collision::DrawCollision(Collision::Info collision)
 {
+    float size = 1.0f; // 平面のサイズ（必要に応じて変更）
     switch (collision.type)
     {
     case eBox:
@@ -344,8 +345,16 @@ void Collision::DrawCollision(Collision::Info collision)
 
         // 外積を取って接線ベクトルを求める
         DirectX::XMVECTOR vTangent1 = DirectX::XMVector3Normalize(DirectX::XMVector3Cross(vTemp, vNormal));
-        DirectX::XMVECTOR vTangent2 = DirectX::XMVector3Normalize(XMVector3Cross(normal, tangent1));
-        DirectX::XMFLOAT3 theta = { collision.plane.normal.x * 90.0f,collision.plane.normal.y * 90.0f,collision.plane.normal.z * 90.0f };
+        DirectX::XMVECTOR vTangent2 = DirectX::XMVector3Normalize(DirectX::XMVector3Cross(vNormal, vTangent1));
+
+        DirectX::XMVECTOR vCenter = DirectX::XMVectorSet(collision.plane.pos.x, collision.plane.pos.y, collision.plane.pos.z, 1);
+
+
+        DirectX::XMVECTOR v0 = DirectX::XMVectorAdd(DirectX::XMVectorAdd(vCenter, DirectX::XMVectorScale(vTangent1, size)), DirectX::XMVectorScale(vTangent2, size));
+        DirectX::XMVECTOR v1 = DirectX::XMVectorAdd(DirectX::XMVectorSubtract(vCenter, DirectX::XMVectorScale(vTangent1, size)), DirectX::XMVectorScale(vTangent2, size));
+        DirectX::XMVECTOR v2 = DirectX::XMVectorSubtract(DirectX::XMVectorSubtract(vCenter, DirectX::XMVectorScale(vTangent1, size)), DirectX::XMVectorScale(vTangent2, size));
+        DirectX::XMVECTOR v3 = DirectX::XMVectorSubtract(DirectX::XMVectorAdd(vCenter, DirectX::XMVectorScale(vTangent1, size)), DirectX::XMVectorScale(vTangent2, size));
+
     default:
         break;
     }
