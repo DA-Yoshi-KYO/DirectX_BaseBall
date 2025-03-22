@@ -3,6 +3,8 @@
 #include "GameObject.h"
 #include "Defines.h"
 
+constexpr int ce_nMaxHomerunPolyLine = 40;
+
 class CField : public CGameObject
 {
 public:
@@ -22,4 +24,6 @@ private:
 	Collision::Info m_LeftFaul;
 	Collision::Info m_RightFaul;
 	Collision::Info m_InOutBorder;
+	std::vector<Collision::Info> m_HomeRunZone;
+	Collision::Info m_HomeRunFence[ce_nMaxHomerunPolyLine];
 };

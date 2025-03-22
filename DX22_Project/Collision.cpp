@@ -354,7 +354,12 @@ void Collision::DrawCollision(Collision::Info collision)
         DirectX::XMVECTOR v1 = DirectX::XMVectorAdd(DirectX::XMVectorSubtract(vCenter, DirectX::XMVectorScale(vTangent1, size)), DirectX::XMVectorScale(vTangent2, size));
         DirectX::XMVECTOR v2 = DirectX::XMVectorSubtract(DirectX::XMVectorSubtract(vCenter, DirectX::XMVectorScale(vTangent1, size)), DirectX::XMVectorScale(vTangent2, size));
         DirectX::XMVECTOR v3 = DirectX::XMVectorSubtract(DirectX::XMVectorAdd(vCenter, DirectX::XMVectorScale(vTangent1, size)), DirectX::XMVectorScale(vTangent2, size));
-
+    case eTriangle:
+        Geometory::AddLine(collision.triangle.point[0], collision.triangle.point[1], DirectX::XMFLOAT4(1, 0, 0, 1));
+        Geometory::AddLine(collision.triangle.point[1], collision.triangle.point[2], DirectX::XMFLOAT4(1, 0, 0, 1));
+        Geometory::AddLine(collision.triangle.point[2], collision.triangle.point[0], DirectX::XMFLOAT4(1, 0, 0, 1));
+        
+        break;
     default:
         break;
     }

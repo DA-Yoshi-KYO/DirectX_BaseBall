@@ -46,6 +46,7 @@ private:
 	DirectX::XMFLOAT3 m_fShadowPos;
 
 	Collision::Info m_PlaneCollision;
+	Collision::Info m_LucusCollision;
 
 	void UpdateBatting();
 	void UpdateInPlay();

@@ -35,6 +35,10 @@ CBall::CBall()
 	m_Collision.type = Collision::eSphere;
 	m_Collision.sphere.center = m_pos;
 	m_Collision.sphere.radius = ce_fBallSize.x / 2.0f;
+
+	m_LucusCollision.type = Collision::eLine;
+	m_LucusCollision.line.start = m_pos;
+	m_LucusCollision.line.end = m_pos;
 }
 
 CBall::~CBall()
@@ -48,6 +52,7 @@ CBall::~CBall()
 
 void CBall::Update()
 {
+	m_LucusCollision.line.start = m_pos;
 	switch (m_nPhase)
 	{
 	case (int)BallPhase::Batting: UpdateBatting(); break;
@@ -61,6 +66,7 @@ void CBall::Update()
 	m_Collision.type = Collision::eSphere;
 	m_Collision.sphere.center = m_pos;
 	m_Collision.sphere.radius = ce_fBallSize.x / 2.0f;
+	m_LucusCollision.line.end = m_pos;
 }
 
 void CBall::Draw()
@@ -128,7 +134,7 @@ void CBall::OnCollision(Collision::Result collision)
 
 Collision::Info CBall::GetCollision()
 {
-	return m_Collision;
+	return m_LucusCollision;
 }
 
 void CBall::SetCamera(CCamera* camera)
