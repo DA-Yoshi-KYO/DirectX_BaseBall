@@ -1,6 +1,12 @@
 #include "Field.h"
 #include "ImGuiManager.h"
+#include "Input.h"
 
+constexpr float ce_fFenceY = 2.0f;
+constexpr float ce_fGroundY = ce_fFenceY + 23.0f;
+constexpr float ce_fStartEndZ = -85.0f;
+constexpr float ce_fAjustZ = 98.0f;
+constexpr float ce_fSinAjust = 0.2f;
 
 CField::CField()
 	: m_pCamera(nullptr), m_pField(nullptr)
@@ -9,12 +15,60 @@ CField::CField()
 	m_pField->Load(MODELPASS("BaseBallPark.fbx"));
 
 	m_tFieldParam.pos = { 0.0f + WORLD_AJUST,0.0f + WORLD_AJUST,0.0f + WORLD_AJUST };
-	m_tFieldParam.size = { 50.0f,1.0f,50.0f };
+	m_tFieldParam.size = { 50.0f,50.0f,50.0f };
 	m_tFieldParam.rotate = { 0.0f,0.0f,0.0f };
 
 	m_Ground.type = Collision::Type::eBox;
-	m_Ground.box.center = m_tFieldParam.pos;
+	m_Ground.box.center = m_tFieldParam.pos;	
 	m_Ground.box.size = {m_tFieldParam.size.x * 8.0f,m_tFieldParam.size.y,m_tFieldParam.size.z * 8.0f };
+
+	int i = 0;
+	int j = 0;
+	m_HomeRunZone.clear();
+	m_HomeRunZone.resize(ce_nMaxHomerunPolyLine);
+	float fStep = 609.0f / (m_HomeRunZone.size() - 1);
+	float fBaseX = WORLD_AJUST + 160.0f;
+
+	for (auto itr = m_HomeRunZone.begin(); itr != m_HomeRunZone.end(); itr++, i++)
+	{
+		float fAngleZ = 0;
+
+		(*itr).type = Collision::eTriangle;
+
+
+		if (i % 2 == 0)
+		{
+			// 0,1
+			fAngleZ = DirectX::XMConvertToRadians(360.0f) / m_HomeRunZone.size() * (i / 2);
+			fAngleZ = -sinf(fAngleZ);
+
+			(*itr).triangle.point[0] = { fBaseX - fStep * (i / 2), ce_fFenceY + WORLD_AJUST, fAngleZ * ce_fAjustZ + WORLD_AJUST + ce_fStartEndZ };
+			(*itr).triangle.point[1] = { fBaseX - fStep * (i / 2), ce_fGroundY + WORLD_AJUST, fAngleZ * ce_fAjustZ + WORLD_AJUST + ce_fStartEndZ };
+
+			// 2
+			fAngleZ = DirectX::XMConvertToRadians(360.0f) / m_HomeRunZone.size() * (i / 2 + 1);
+			fAngleZ = -sinf(fAngleZ);
+			(*itr).triangle.point[2] = { fBaseX - fStep * (i / 2 + 1), ce_fFenceY + WORLD_AJUST, fAngleZ * ce_fAjustZ + WORLD_AJUST + ce_fStartEndZ };
+		}
+		else
+		{
+			// 2
+			fAngleZ = DirectX::XMConvertToRadians(360.0f) / m_HomeRunZone.size() * (i / 2);
+			fAngleZ = -sinf(fAngleZ);
+
+			(*itr).triangle.point[0] = { fBaseX - fStep * (i / 2), ce_fGroundY + WORLD_AJUST, fAngleZ * ce_fAjustZ + WORLD_AJUST + ce_fStartEndZ };
+
+			// 1,3
+			fAngleZ = DirectX::XMConvertToRadians(360.0f) / m_HomeRunZone.size() * (i / 2 + 1);
+			fAngleZ = -sinf(fAngleZ);
+			(*itr).triangle.point[1] = { fBaseX - fStep * (i / 2 + 1), ce_fFenceY + WORLD_AJUST, fAngleZ * ce_fAjustZ + WORLD_AJUST + ce_fStartEndZ };
+			(*itr).triangle.point[2] = { fBaseX - fStep * (i / 2 + 1), ce_fGroundY + WORLD_AJUST, fAngleZ * ce_fAjustZ + WORLD_AJUST + ce_fStartEndZ };
+
+			j += 1;  // 1Ç∏Ç¬ëùÇ‚ÇµÇƒòAë±ê´Çï€Ç¬
+		}
+	}
+
+	
 }
 
 CField::~CField()
@@ -32,6 +86,23 @@ void CField::Draw()
 	static DirectX::XMFLOAT3 rotate = {};
 	ModelParamDebug(&m_Ground.box.center, &m_Ground.box.size, &rotate, "Collision");
 
+	static int a = 0;
+	if (IsKeyTrigger('8'))
+	{
+		a--;
+	}
+	if (IsKeyTrigger('9'))
+	{
+		a++;
+	}
+	DirectX::XMFLOAT3 debug = {m_HomeRunZone[a + 1].triangle.point[2].x - m_HomeRunZone[a].triangle.point[0].x,m_HomeRunZone[a + 1].triangle.point[2].y - m_HomeRunZone[a].triangle.point[0].y ,m_HomeRunZone[a + 1].triangle.point[2].z - m_HomeRunZone[a].triangle.point[0].z };
+	OutputDebugStringA(std::to_string(debug.x).c_str());
+	OutputDebugStringA(" ");
+	OutputDebugStringA(std::to_string(debug.y).c_str());
+	OutputDebugStringA(" ");
+	OutputDebugStringA(std::to_string(debug.z).c_str());
+	OutputDebugStringA("\n");
+	
 	m_tFieldParam.mWorld =
 		DirectX::XMMatrixScaling(m_tFieldParam.size.x, m_tFieldParam.size.y, m_tFieldParam.size.z) *
 		DirectX::XMMatrixRotationX(m_tFieldParam.rotate.x) *
@@ -71,6 +142,10 @@ void CField::Draw()
 	}
 
 	Collision::DrawCollision(m_Ground);
+	for (auto itr = m_HomeRunZone.begin(); itr != m_HomeRunZone.end(); itr++)
+	{
+		Collision::DrawCollision((*itr));
+	}
 }
 
 void CField::SetModel(DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 size, DirectX::XMFLOAT3 rotate, int ModelType)

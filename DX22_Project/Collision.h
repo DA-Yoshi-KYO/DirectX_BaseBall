@@ -124,6 +124,7 @@ public:
 	// ‹…“¯Žm‚Å‚Ì“–‚½‚è”»’è
 	static Result Hit(Sphere a, Sphere b);
 	static Result Hit(Plane plane, Line line);
+	static Result Hit(Line line1, Line line);
 	static Result Hit(Plane plane, Ray ray, float lenght);
 	static Result Hit(Point point, Triangle triangle);
 	static Result2D Hit2D(Info2D a, Info2D b);
