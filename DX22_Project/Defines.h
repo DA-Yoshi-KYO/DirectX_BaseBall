@@ -29,7 +29,6 @@ static const float fFPS = static_cast<float>(FPS);
 #define TEX_BALLSHEET TEXPASS("BallCountSheet.png")
 constexpr int ce_nCountSplitX = 5;
 constexpr int ce_nCountSplitY = 5;
-#define TEX_BALLICON TEXPASS("Ball.png")
 #define TEX_STRIKEZONE TEXPASS("StrikeZone.png")
 #define TEX_SCOREBOARD TEXPASS("BallCount.png")
 #define TEX_PITCHINGCIRCLE TEXPASS("PitchingCircle.png")

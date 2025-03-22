@@ -16,8 +16,8 @@ CSceneTitle::CSceneTitle()
 		m_pTran[i] = new Texture();
 	}
 	if (FAILED(m_pLogo->Create("Assets/Texture/Title.jpeg"))) MessageBox(NULL, "Load failed SceneTitle.", "Error", MB_OK);
-	if (FAILED(m_pTran[0]->Create("Assets/Texture/004.png"))) MessageBox(NULL, "Load failed SceneTitle.", "Error", MB_OK);
-	if (FAILED(m_pTran[1]->Create("Assets/Texture/TransitionStarA.png"))) MessageBox(NULL, "Load failed SceneTitle.", "Error", MB_OK);
+	//if (FAILED(m_pTran[0]->Create("Assets/Texture/004.png"))) MessageBox(NULL, "Load failed SceneTitle.", "Error", MB_OK);
+	//if (FAILED(m_pTran[1]->Create("Assets/Texture/TransitionStarA.png"))) MessageBox(NULL, "Load failed SceneTitle.", "Error", MB_OK);
 	font = new DirectWriteSample();
 	font->Init();
 

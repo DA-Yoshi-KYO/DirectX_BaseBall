@@ -7,7 +7,7 @@ CBallUI::CBallUI()
 	, m_nBall(MAX_BALL)
 {
 	m_pTexture = new Texture();
-	if(FAILED(m_pTexture->Create(TEXPASS("Ball.png"))))MessageBox(NULL,"Ball.png","Error",MB_OK);
+	//if(FAILED(m_pTexture->Create(TEXPASS("Ball.png"))))MessageBox(NULL,"Ball.png","Error",MB_OK);
 	for (int i = 0; i < MAX_BALL; i++)
 	{
 		m_Sprite[i].pos = { -580.0f + i * 100.0f ,300.0f };
