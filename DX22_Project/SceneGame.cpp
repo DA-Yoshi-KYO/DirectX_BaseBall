@@ -12,7 +12,7 @@
 #include "StrikeZone.h"
 
 int CSceneGame::m_nPlaying = 0;
-CameraKind CSceneGame::m_eCameraKind = CAM_DEBUG;
+CameraKind CSceneGame::m_eCameraKind = CAM_BATTER;
 
 /*───────四大処理───────*/
 // コンストラクタ

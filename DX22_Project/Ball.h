@@ -10,8 +10,8 @@
 
 class CBatting;
 
-constexpr DirectX::XMFLOAT3 ce_fBallPos = { 0.0f,10.0f,70.0f };
-constexpr DirectX::XMFLOAT3 ce_fBallEndPos = { 0.0f,2.0f,145.0f };
+constexpr DirectX::XMFLOAT3 ce_fBallPos = { 0.0f,5.0f,70.0f };
+constexpr DirectX::XMFLOAT3 ce_fBallEndPos = { 0.0f,2.7f,145.0f };
 
 class CBall : public CGameObject
 {

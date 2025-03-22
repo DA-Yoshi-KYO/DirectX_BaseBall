@@ -2,11 +2,12 @@
 #include "ImGuiManager.h"
 #include "SceneGame.h"
 #include "Sprite.h"
+#include "Main.h"
 
-constexpr DirectX::XMFLOAT2 ce_fBallEndCenter = { 0.0f,2.0f };
+constexpr DirectX::XMFLOAT2 ce_fBallEndCenter = { 0.0f,0.0f };
 constexpr DirectX::XMFLOAT2 ce_fBallLimitX = { 2.7f,-2.7f };
 constexpr DirectX::XMFLOAT2 ce_fBallLimitY = { -2.7f,2.3f };
-constexpr  DirectX::XMFLOAT3 ce_fBallSize = { 1.0f,1.0f,1.0f };
+constexpr  DirectX::XMFLOAT3 ce_fBallSize = { 0.5f,0.5f,0.5f };
 constexpr int ce_nBallRotateSec = 220 / 60;
 
 enum class BallPhase
@@ -81,6 +82,7 @@ void CBall::Draw()
 
 void CBall::SetModel(DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 size, DirectX::XMFLOAT3 rotate, int ModelType)
 {
+	SetRender3D();
 	// ワールド行列変換
 	DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);	// 座標
 	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(size.x, size.y, size.z);		// 拡縮

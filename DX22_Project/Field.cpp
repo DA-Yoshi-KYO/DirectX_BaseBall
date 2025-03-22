@@ -1,6 +1,7 @@
 #include "Field.h"
 #include "ImGuiManager.h"
 #include "Input.h"
+#include "Main.h"
 
 constexpr float ce_fFenceY = 2.0f;
 constexpr float ce_fGroundY = ce_fFenceY + 23.0f;
@@ -14,7 +15,7 @@ CField::CField()
 	m_pField = std::make_unique<Model>();
 	m_pField->Load(MODELPASS("BaseBallPark.fbx"));
 
-	m_tFieldParam.pos = { 0.0f + WORLD_AJUST,0.0f + WORLD_AJUST,0.0f + WORLD_AJUST };
+	m_tFieldParam.pos = { 0.0f + WORLD_AJUST,-10.0f + WORLD_AJUST,0.0f + WORLD_AJUST };
 	m_tFieldParam.size = { 50.0f,50.0f,50.0f };
 	m_tFieldParam.rotate = { 0.0f,0.0f,0.0f };
 
@@ -83,26 +84,8 @@ void CField::Update()
 
 void CField::Draw()
 {
-	static DirectX::XMFLOAT3 rotate = {};
-	ModelParamDebug(&m_Ground.box.center, &m_Ground.box.size, &rotate, "Collision");
+	SetRender3D();
 
-	static int a = 0;
-	if (IsKeyTrigger('8'))
-	{
-		a--;
-	}
-	if (IsKeyTrigger('9'))
-	{
-		a++;
-	}
-	DirectX::XMFLOAT3 debug = {m_HomeRunZone[a + 1].triangle.point[2].x - m_HomeRunZone[a].triangle.point[0].x,m_HomeRunZone[a + 1].triangle.point[2].y - m_HomeRunZone[a].triangle.point[0].y ,m_HomeRunZone[a + 1].triangle.point[2].z - m_HomeRunZone[a].triangle.point[0].z };
-	OutputDebugStringA(std::to_string(debug.x).c_str());
-	OutputDebugStringA(" ");
-	OutputDebugStringA(std::to_string(debug.y).c_str());
-	OutputDebugStringA(" ");
-	OutputDebugStringA(std::to_string(debug.z).c_str());
-	OutputDebugStringA("\n");
-	
 	m_tFieldParam.mWorld =
 		DirectX::XMMatrixScaling(m_tFieldParam.size.x, m_tFieldParam.size.y, m_tFieldParam.size.z) *
 		DirectX::XMMatrixRotationX(m_tFieldParam.rotate.x) *
