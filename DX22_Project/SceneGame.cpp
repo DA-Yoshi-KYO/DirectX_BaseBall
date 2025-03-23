@@ -12,7 +12,6 @@
 #include "StrikeZone.h"
 
 int CSceneGame::m_nPlaying = 0;
-CameraKind CSceneGame::m_eCameraKind = CAM_BATTER;
 
 /*───────四大処理───────*/
 // コンストラクタ
@@ -29,7 +28,7 @@ CSceneGame::CSceneGame()
 	m_pDefence = std::make_unique<CDefence>();
 
 	// カメラ
-
+	CCamera::SetCameraKind(CameraKind::CAM_BATTER);
 
 	// エフェクト
 	//CEffectGoal* pEffect = new CEffectGoal();
@@ -42,8 +41,6 @@ CSceneGame::CSceneGame()
 	//m_pPlayer->SetCamera(m_pCamera[m_eCameraKind]);
 	//m_pField->SetCamera(m_pCamera[m_eCameraKind]);
 
-	 // インスタンスのセット
-	m_pField->SetCamera(CCamera::GetInstance(m_eCameraKind).get());
 }
 
 // デストラクタ
@@ -73,6 +70,7 @@ void CSceneGame::Update()
 	default:
 		break;
 	}
+	CBall::GetInstance()->Update();
 	CBallCount::GetInstance()->Update();
 
 }
@@ -80,7 +78,7 @@ void CSceneGame::Update()
 // 描画
 void CSceneGame::Draw()
 {
-	CCamera* pCamera = CCamera::GetInstance(m_eCameraKind).get();
+	CCamera* pCamera = CCamera::GetInstance(CCamera::GetCameraKind()).get();
 	//DrawMinimap();
 
 	// GeometoryへのView,Projection設定
@@ -108,7 +106,6 @@ void CSceneGame::Draw()
 	default:
 		break;
 	}
-	CBall::GetInstance()->Update();
 	CBall::GetInstance()->Draw();
 	CBallCount::GetInstance()->Draw();
 
@@ -121,28 +118,22 @@ void CSceneGame::Draw()
 	//if (m_pEffect)m_pEffect->Draw();	// エフェクトの描画
 }
 
-CameraKind CSceneGame::GetCameraKind()
-{
-	return m_eCameraKind;
-}
-
 /*───────内部処理───────*/
 void CSceneGame::CameraUpdate()
 {
 	// カメラの更新
-	CCamera::GetInstance(m_eCameraKind)->Update();
+	CCamera::GetInstance(CCamera::GetCameraKind())->Update();
 
 	// イベント用のカメラ情報を取得
 }
 
 void CSceneGame::DrawMinimap()
 {
-	CCamera* pCamera = CCamera::GetInstance(m_eCameraKind).get();
+	CCamera* pCamera = CCamera::GetInstance(CCamera::GetCameraKind()).get();
 
 	// ミニマップ用カメラの更新
 	pCamera->Update(); // 更新処理だが描画で実行  
 	// 各種カメラをミニマップ用に設定
-	m_pField->SetCamera(pCamera);
 	//((CEffectGoal*)m_pEffect)->SetCamera(m_pCamera[CAM_MINIMAP]);
 
 	// ミニマップ表示用の変換行列を取得
@@ -166,7 +157,6 @@ void CSceneGame::DrawMinimap()
 	//m_pMinimap->EndRender();
 
 	// 各種カメラを元に戻す
-	m_pField->SetCamera(pCamera);
 	//((CEffectGoal*)m_pEffect)->SetCamera(m_pCamera[m_eCameraKind]);
 }
 

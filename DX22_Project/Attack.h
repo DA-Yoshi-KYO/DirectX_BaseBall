@@ -11,7 +11,6 @@ public:
 	~CAttack();
 	void Update();
 	void Draw();
-
 private:
 	std::unique_ptr<CBattingCursor> m_pBattingCursor;
 	std::unique_ptr<CBatting> m_pBatting;

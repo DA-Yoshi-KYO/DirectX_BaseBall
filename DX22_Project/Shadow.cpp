@@ -62,7 +62,7 @@ void CShadow::Draw()
 	
 	mWorld = DirectX::XMMatrixTranspose(mWorld);
 
-	CCamera* pCamera = CCamera::GetInstance(CSceneGame::GetCameraKind()).get();
+	CCamera* pCamera = CCamera::GetInstance(CCamera::GetCameraKind()).get();
 	DirectX::XMStoreFloat4x4(&m_tParam.world, mWorld);
 	m_tParam.view = pCamera->GetViewMatrix();
 	m_tParam.proj = pCamera->GetProjectionMatrix();

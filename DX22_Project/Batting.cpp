@@ -14,7 +14,7 @@ bool CBatting::m_bSwing = false;
 CBatting::CBatting()
 	: m_pBattingCursor(nullptr), m_pBall(nullptr)
 	, m_bBatting(false), m_fMoveDirection{}
-	, m_fPower(4.0f)
+	, m_fPower(4.5f)
 {
 
 }

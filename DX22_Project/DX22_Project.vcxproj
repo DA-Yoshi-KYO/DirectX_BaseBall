@@ -155,6 +155,7 @@
     <ClCompile Include="CameraBatter.cpp" />
     <ClCompile Include="CameraDebug.cpp" />
     <ClCompile Include="CameraEvent.cpp" />
+    <ClCompile Include="CameraInplay.cpp" />
     <ClCompile Include="CameraMinimap.cpp" />
     <ClCompile Include="CameraPlayer.cpp" />
     <ClCompile Include="Collision.cpp" />
@@ -220,6 +221,7 @@
     <ClInclude Include="CameraBatter.h" />
     <ClInclude Include="CameraDebug.h" />
     <ClInclude Include="CameraEvent.h" />
+    <ClInclude Include="CameraInplay.h" />
     <ClInclude Include="CameraMinimap.h" />
     <ClInclude Include="CameraPlayer.h" />
     <ClInclude Include="Collision.h" />
