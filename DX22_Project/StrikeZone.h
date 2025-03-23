@@ -21,6 +21,8 @@ public:
 	static std::unique_ptr<CStrikeZone>& GetInstance();
 private:
 	std::unique_ptr<Texture> m_pTexture;
+	//std::unique_ptr<Texture> m_pTest;
 	SpriteParam m_tParam;
+	//SpriteParam m_tTest;
 	Collision::Info2D m_Collision;
 };

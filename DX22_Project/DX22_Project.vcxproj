@@ -273,7 +273,8 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="History.txt" />
-    <Text Include="task.txt" />
+    <Text Include="Schedule.txt" />
+    <Text Include="Task.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
