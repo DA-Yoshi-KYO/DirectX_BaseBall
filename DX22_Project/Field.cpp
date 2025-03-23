@@ -3,14 +3,13 @@
 #include "Input.h"
 #include "Main.h"
 
-constexpr float ce_fFenceY = 2.0f;
-constexpr float ce_fGroundY = ce_fFenceY + 23.0f;
+constexpr float ce_fFenceY = ce_fGroundY + 100.0f;
 constexpr float ce_fStartEndZ = -85.0f;
 constexpr float ce_fAjustZ = 98.0f;
 constexpr float ce_fSinAjust = 0.2f;
 
 CField::CField()
-	: m_pCamera(nullptr), m_pField(nullptr)
+	: m_pField(nullptr)
 {
 	m_pField = std::make_unique<Model>();
 	m_pField->Load(MODELPASS("BaseBallPark.fbx"));
@@ -20,8 +19,8 @@ CField::CField()
 	m_tFieldParam.rotate = { 0.0f,0.0f,0.0f };
 
 	m_Ground.type = Collision::Type::eBox;
-	m_Ground.box.center = m_tFieldParam.pos;	
-	m_Ground.box.size = {m_tFieldParam.size.x * 8.0f,m_tFieldParam.size.y,m_tFieldParam.size.z * 8.0f };
+	m_Ground.box.center = m_tFieldParam.pos;
+	m_Ground.box.size = { m_tFieldParam.size.x * 8.0f,m_tFieldParam.size.y,m_tFieldParam.size.z * 8.0f };
 
 	int i = 0;
 	int j = 0;
@@ -68,23 +67,36 @@ CField::CField()
 			j += 1;  // 1ずつ増やして連続性を保つ
 		}
 	}
-
-	
 }
 
 CField::~CField()
 {
-	m_pCamera.release();
+
 }
 
 void CField::Update()
 {
-
+	CBall* pBall = CBall::GetInstance().get();
+	Collision::Info ballCollision = pBall->GetCollision();
+	if (CCamera::GetCameraKind() == CameraKind::CAM_INPLAY)
+	{
+		for (int i = 0; i < m_HomeRunZone.size(); i++)
+		{
+			Collision::Result result = Collision::Hit(ballCollision.line, m_HomeRunZone[i].triangle);
+			if (result.isHit)
+			{
+				result.other = m_HomeRunZone[i];
+				pBall->OnCollision(result);
+			}
+		}
+	}
 }
 
 void CField::Draw()
 {
 	SetRender3D();
+	
+	CCamera* pCamera = CCamera::GetInstance(CCamera::GetCameraKind()).get();
 
 	m_tFieldParam.mWorld =
 		DirectX::XMMatrixScaling(m_tFieldParam.size.x, m_tFieldParam.size.y, m_tFieldParam.size.z) *
@@ -94,8 +106,8 @@ void CField::Draw()
 		DirectX::XMMatrixTranslation(m_tFieldParam.pos.x, m_tFieldParam.pos.y, m_tFieldParam.pos.z);
 
 	DirectX::XMStoreFloat4x4(&m_tFieldParam.wvp[0], DirectX::XMMatrixTranspose(m_tFieldParam.mWorld));
-	m_tFieldParam.wvp[1] = m_pCamera->GetViewMatrix();		// view行列
-	m_tFieldParam.wvp[2] = m_pCamera->GetProjectionMatrix();	// projection行列
+	m_tFieldParam.wvp[1] = pCamera->GetViewMatrix();		// view行列
+	m_tFieldParam.wvp[2] = pCamera->GetProjectionMatrix();	// projection行列
 	// カメラ行列を設定
 	Geometory::SetView(m_tFieldParam.wvp[1]);
 	Geometory::SetProjection(m_tFieldParam.wvp[2]);
@@ -135,11 +147,6 @@ void CField::SetModel(DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 size, DirectX::XM
 {
 
 }
-
-void CField::SetCamera(CCamera* camera)
-{
-	m_pCamera.reset(camera);
-}	
 
 void CField::OnCollision(Collision::Result collision)
 {

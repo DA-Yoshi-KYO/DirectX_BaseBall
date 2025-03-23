@@ -26,7 +26,6 @@ public:
 	virtual void OnCollision(Collision::Result collision);
 	virtual Collision::Info GetCollision();
 
-	void SetCamera(CCamera* camera);
 	void SetPitching(CPitching* pitching);
 	void SetPitchingCursor(CPitchingCursor* cursor);
 	void SetBatting(CBatting* batting);
@@ -37,7 +36,6 @@ public:
 private:
 	std::unique_ptr<Texture> m_pShadow;
 	std::unique_ptr<Model> m_pModel;
-	std::unique_ptr<CCamera> m_pCamera;
 	std::unique_ptr<CPitching> m_pPitching;
 	std::unique_ptr<CPitchingCursor> m_pCursor;
 	std::unique_ptr<CBatting> m_pBatting;

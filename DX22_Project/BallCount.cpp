@@ -16,6 +16,7 @@
 #include "Camera.h"
 #include "Sprite.h"
 #include "ImGuiManager.h"
+#include "Main.h"
 
 // ==============================
 //    定数定義
@@ -145,6 +146,7 @@ void CBallCount::Update()
 
 void CBallCount::Draw()
 {
+	SetRender2D();
 	// スコアボードの描画
 	Sprite::SetParam(m_tBackParam);
 	Sprite::SetTexture(m_pBack.get());

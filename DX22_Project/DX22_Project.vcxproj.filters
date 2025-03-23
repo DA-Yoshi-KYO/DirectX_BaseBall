@@ -282,6 +282,9 @@
     <ClCompile Include="Model_morph.cpp">
       <Filter>ソース ファイル\Work</Filter>
     </ClCompile>
+    <ClCompile Include="CameraInplay.cpp">
+      <Filter>ソース ファイル\Camera</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MeshBuffer.h">
@@ -457,6 +460,9 @@
     </ClInclude>
     <ClInclude Include="Shadow.h">
       <Filter>ヘッダー ファイル\2DObject</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraInplay.h">
+      <Filter>ヘッダー ファイル\Camera</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -15,7 +15,6 @@ CDefence::CDefence()
 	m_pPitching->SetStrikeZone(pStrikeZone);
 	m_pPitching->SetCursor(m_pPitchingCursor.get());
 	CBall* pBall = CBall::GetInstance().get();
-	pBall->SetCamera(CCamera::GetInstance(CSceneGame::GetCameraKind()).get());
 	pBall->SetPitching(m_pPitching.get());
 	pBall->SetPitchingCursor(m_pPitchingCursor.get());
 }

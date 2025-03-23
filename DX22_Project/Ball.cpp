@@ -1,4 +1,4 @@
-#include "Ball.h"
+ï»¿#include "Ball.h"
 #include "ImGuiManager.h"
 #include "SceneGame.h"
 #include "Sprite.h"
@@ -17,11 +17,11 @@ enum class BallPhase
 };
 
 CBall::CBall()
-	: m_pModel(nullptr), m_pCamera(nullptr), m_pPitching(nullptr)
+	: m_pModel(nullptr), m_pPitching(nullptr)
 	, m_nPhase((int)BallPhase::Batting)
 	, m_fMove{}, m_fShadowPos{}
 {
-	// ƒ{[ƒ‹‚Ìƒ‚ƒfƒ‹‚Ì“Ç‚İ‚İ
+	// ãƒœãƒ¼ãƒ«ã®ãƒ¢ãƒ‡ãƒ«ã®èª­ã¿è¾¼ã¿
 	m_pModel = std::make_unique<Model>();
 	if (!m_pModel->Load(MODELPASS("ball.obj"))) ERROR_MESSAGE("ball.fbx");
 
@@ -44,7 +44,6 @@ CBall::CBall()
 
 CBall::~CBall()
 {
-	m_pCamera.release();
 	m_pPitching.release();
 	m_pCursor.release();
 	m_pPitching.release();
@@ -76,6 +75,7 @@ void CBall::Draw()
 	DirectX::XMFLOAT3X3 debug = GetPosSizeRotateDebug("Ball");
 #endif // _IMGUI
 
+	Collision::DrawCollision(m_LucusCollision);
 	SetModel(m_pos, m_size, m_rotate);
 	
 }
@@ -83,65 +83,106 @@ void CBall::Draw()
 void CBall::SetModel(DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 size, DirectX::XMFLOAT3 rotate, int ModelType)
 {
 	SetRender3D();
-	// ƒ[ƒ‹ƒhs—ñ•ÏŠ·
-	DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);	// À•W
-	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(size.x, size.y, size.z);		// Šgk
-	DirectX::XMMATRIX Rx = DirectX::XMMatrixRotationX(rotate.x);				// ‰ñ“]X
-	DirectX::XMMATRIX Ry = DirectX::XMMatrixRotationY(rotate.y);				// ‰ñ“]Y
-	DirectX::XMMATRIX Rz = DirectX::XMMatrixRotationZ(rotate.z);				// ‰ñ“]Z
-	DirectX::XMMATRIX world = S * Rx * Ry * Rz * T;	// ŠgkE‰ñ“]EÀ•W‚Ì‡”Ô‚Å‚©‚¯‡‚í‚¹‚é
+	CCamera* pCamera = CCamera::GetInstance(CCamera::GetCameraKind()).get();
+	// ãƒ¯ãƒ¼ãƒ«ãƒ‰è¡Œåˆ—å¤‰æ›
+	DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);	// åº§æ¨™
+	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(size.x, size.y, size.z);		// æ‹¡ç¸®
+	DirectX::XMMATRIX Rx = DirectX::XMMatrixRotationX(rotate.x);				// å›è»¢X
+	DirectX::XMMATRIX Ry = DirectX::XMMatrixRotationY(rotate.y);				// å›è»¢Y
+	DirectX::XMMATRIX Rz = DirectX::XMMatrixRotationZ(rotate.z);				// å›è»¢Z
+	DirectX::XMMATRIX world = S * Rx * Ry * Rz * T;	// æ‹¡ç¸®ãƒ»å›è»¢ãƒ»åº§æ¨™ã®é †ç•ªã§ã‹ã‘åˆã‚ã›ã‚‹
 
-	DirectX::XMFLOAT4X4 wvp[3] = {};	// Šes—ñ•ÏŠ·‚Ìó‚¯“ü‚êæ
+	DirectX::XMFLOAT4X4 wvp[3] = {};	// å„è¡Œåˆ—å¤‰æ›ã®å—ã‘å…¥ã‚Œå…ˆ
 
-	// ŒvZ—p‚Ìƒf[ƒ^‚©‚ç“Ç‚İæ‚è—p‚Ìƒf[ƒ^‚É•ÏŠ·(“]’u)
-	DirectX::XMStoreFloat4x4(&wvp[0], DirectX::XMMatrixTranspose(world));	// ƒ[ƒ‹ƒhs—ñ‚ğ“]’u‚µ‚Äİ’è
-	// views—ñ‚Æprojections—ñ‚ÍƒJƒƒ‰‚Ì•¨‚ğ‚Á‚Ä‚­‚é
-	wvp[1] = m_pCamera->GetViewMatrix();		// views—ñ
-	wvp[2] = m_pCamera->GetProjectionMatrix();	// projections—ñ
-	// ƒJƒƒ‰s—ñ‚ğİ’è
+	// è¨ˆç®—ç”¨ã®ãƒ‡ãƒ¼ã‚¿ã‹ã‚‰èª­ã¿å–ã‚Šç”¨ã®ãƒ‡ãƒ¼ã‚¿ã«å¤‰æ›(è»¢ç½®)
+	DirectX::XMStoreFloat4x4(&wvp[0], DirectX::XMMatrixTranspose(world));	// ãƒ¯ãƒ¼ãƒ«ãƒ‰è¡Œåˆ—ã‚’è»¢ç½®ã—ã¦è¨­å®š
+	// viewè¡Œåˆ—ã¨projectionè¡Œåˆ—ã¯ã‚«ãƒ¡ãƒ©ã®ç‰©ã‚’æŒã£ã¦ãã‚‹
+	wvp[1] = pCamera->GetViewMatrix();		// viewè¡Œåˆ—
+	wvp[2] = pCamera->GetProjectionMatrix();	// projectionè¡Œåˆ—
+	// ã‚«ãƒ¡ãƒ©è¡Œåˆ—ã‚’è¨­å®š
 	Geometory::SetView(wvp[1]);
 	Geometory::SetProjection(wvp[2]);
 
-	// ƒVƒF[ƒ_[‚Ö•ÏŠ·s—ñ‚ğİ’è
-	ShaderList::SetWVP(wvp); // ˆø”‚É‚ÍXMFloat4X4Œ^‚ÌA—v‘f”3‚ÌƒAƒhƒŒƒX‚ğ“n‚·‚±‚Æ
+	// ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼ã¸å¤‰æ›è¡Œåˆ—ã‚’è¨­å®š
+	ShaderList::SetWVP(wvp); // å¼•æ•°ã«ã¯XMFloat4X4å‹ã®ã€è¦ç´ æ•°3ã®ã‚¢ãƒ‰ãƒ¬ã‚¹ã‚’æ¸¡ã™ã“ã¨
 
-	//ƒ‚ƒfƒ‹‚Ég—p‚·‚é’¸“_ƒVƒF[ƒ_[‚ğİ’è
+	//ãƒ¢ãƒ‡ãƒ«ã«ä½¿ç”¨ã™ã‚‹é ‚ç‚¹ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼ã‚’è¨­å®š
 	m_pModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_WORLD));
-	// ƒ‚ƒfƒ‹‚Ég—p‚·‚é’¸“_ƒsƒNƒZƒ‹ƒVƒF[ƒ_[‚ğİ’è
+	// ãƒ¢ãƒ‡ãƒ«ã«ä½¿ç”¨ã™ã‚‹é ‚ç‚¹ãƒ”ã‚¯ã‚»ãƒ«ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼ã‚’è¨­å®š
 	m_pModel->SetPixelShader(ShaderList::GetPS(ShaderList::PS_LAMBERT));
 
 	for (int i = 0; i < m_pModel->GetMeshNum(); i++)
 	{
-		// ƒ‚ƒfƒ‹‚ÌƒƒbƒVƒ…‚Ìæ“¾
+		// ãƒ¢ãƒ‡ãƒ«ã®ãƒ¡ãƒƒã‚·ãƒ¥ã®å–å¾—
 		Model::Mesh mesh = *m_pModel->GetMesh(i);
 
-		// ƒƒbƒVƒ…‚ÉŠ„‚è“–‚Ä‚ç‚ê‚Ä‚¢‚éƒ}ƒeƒŠƒAƒ‹‚ğæ“¾
+		// ãƒ¡ãƒƒã‚·ãƒ¥ã«å‰²ã‚Šå½“ã¦ã‚‰ã‚Œã¦ã„ã‚‹ãƒãƒ†ãƒªã‚¢ãƒ«ã‚’å–å¾—
 		Model::Material material = *m_pModel->GetMaterial(mesh.materialID);
 
 		material.ambient.x = 0.75f;
 		material.ambient.y = 0.75f;
 		material.ambient.z = 0.75f;
 
-		// ƒVƒF[ƒ_[‚Öƒ}ƒeƒŠƒAƒ‹‚ğİ’è
+		// ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼ã¸ãƒãƒ†ãƒªã‚¢ãƒ«ã‚’è¨­å®š
 		ShaderList::SetMaterial(material);
 
-		// ƒ‚ƒfƒ‹‚Ì•`‰æ
+		// ãƒ¢ãƒ‡ãƒ«ã®æç”»
 		m_pModel->Draw(i);
 	}
 }
 
 void CBall::OnCollision(Collision::Result collision)
 {
+	// ãƒ•ã‚§ãƒ³ã‚¹ã‚’è¶Šãˆã¦ã„ãŸã‚‰ãƒ›ãƒ¼ãƒ ãƒ©ãƒ³
+	if (m_pos.y >= ce_fFenceHeight + WORLD_AJUST)return;
+
+	// è¶Šãˆã¦ã„ãªã‹ã£ãŸã‚‰ãƒ•ã‚§ãƒ³ã‚¹åå°„ã®è¨ˆç®—ã‚’ã™ã‚‹
+	// è¨ˆç®—ã«ä½¿ç”¨ã™ã‚‹å¤‰æ•°ã‚’å®šç¾©
+	DirectX::XMVECTOR vecStart = DirectX::XMLoadFloat3(&m_LucusCollision.line.start);
+	DirectX::XMVECTOR vecEnd = DirectX::XMLoadFloat3(&m_LucusCollision.line.end);
+	DirectX::XMVECTOR vecDir = DirectX::XMVectorSubtract(vecEnd, vecStart);
+	DirectX::XMVECTOR vecPoint[3];
+	vecPoint[0] = DirectX::XMLoadFloat3(&collision.other.triangle.point[0]);
+	vecPoint[1] = DirectX::XMLoadFloat3(&collision.other.triangle.point[1]);
+	vecPoint[2] = DirectX::XMLoadFloat3(&collision.other.triangle.point[2]);
+
+	// è¡çªä½ç½®ã®æ¤œå‡º
+	DirectX::XMVECTOR vecHitPoint = DirectX::XMVectorAdd(vecStart, DirectX::XMVectorScale(vecDir, collision.t));
+
+	// è¡çªã—ãŸä¸‰è§’å½¢ã®æ³•ç·šã‚’æ±‚ã‚ã‚‹
+	DirectX::XMVECTOR vecEdge1 = DirectX::XMVectorSubtract(vecPoint[1], vecPoint[0]);
+	DirectX::XMVECTOR vecEdge2 = DirectX::XMVectorSubtract(vecPoint[2], vecPoint[0]);
+	DirectX::XMVECTOR vecNormal = DirectX::XMVector3Normalize(DirectX::XMVector3Cross(vecEdge1, vecEdge2));
+
+	// åå°„ãƒ™ã‚¯ãƒˆãƒ«ã®è¨ˆç®— (ä¿®æ­£æ¸ˆã¿)
+	float dotProduct = DirectX::XMVectorGetX(DirectX::XMVector3Dot(vecDir, vecNormal));
+	DirectX::XMVECTOR vecReflectDir = DirectX::XMVectorSubtract(
+		vecDir,
+		DirectX::XMVectorScale(vecNormal, 2.0f * dotProduct)
+	);
+	vecReflectDir = DirectX::XMVector3Normalize(vecReflectDir);
+
+	// åå°„å¾Œã®ä½ç½®ã‚’è£œæ­£ï¼ˆã‚¹ã‚¿ãƒƒã‚¯é˜²æ­¢ï¼‰
+	vecHitPoint = DirectX::XMVectorAdd(vecHitPoint, DirectX::XMVectorScale(vecNormal, 5.0f));
+
+	// é€Ÿåº¦ã®æ¸›è¡°
+	float fRestitution = 0.8f;
+	float ballVelocity = DirectX::XMVectorGetX(DirectX::XMVector3Length(vecDir));
+
+	DirectX::XMVECTOR vecNewVelocity = DirectX::XMVectorScale(vecReflectDir, fRestitution * ballVelocity);
+
+	// ç§»å‹•å…ˆã®æ›´æ–°
+	DirectX::XMFLOAT3 curDir;
+	DirectX::XMStoreFloat3(&curDir, vecDir);
+	DirectX::XMStoreFloat3(&m_LucusCollision.line.start,vecHitPoint);
+	DirectX::XMStoreFloat3(&m_pos,vecHitPoint);
+	DirectX::XMStoreFloat3(&m_LucusCollision.line.end, DirectX::XMVectorAdd(vecHitPoint, vecNewVelocity));
+	DirectX::XMStoreFloat3(&m_fMove, vecNewVelocity);
 }
 
 Collision::Info CBall::GetCollision()
 {
 	return m_LucusCollision;
-}
-
-void CBall::SetCamera(CCamera* camera)
-{
-	m_pCamera.reset(camera);
 }
 
 void CBall::SetPitching(CPitching* pitching)
@@ -166,13 +207,14 @@ DirectX::XMFLOAT3 CBall::GetPos()
 
 std::unique_ptr<CBall>& CBall::GetInstance()
 {
-	// ƒCƒ“ƒXƒ^ƒ“ƒX‚Íˆê‚Â‚µ‚©‘¶İ‚µ‚È‚¢
+	// ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã¯ä¸€ã¤ã—ã‹å­˜åœ¨ã—ãªã„
 	static std::unique_ptr<CBall> instance(new CBall());
 	return instance;
 }
 
 void CBall::UpdateBatting()
 {
+	CCamera::SetCameraKind(CAM_BATTER);
 	if (m_pPitching->GetPitchingPhase() == (int)CPitching::PitchingPhase::Release)
 	{
 		float fChatch = m_pPitching->GetChatchTime();
@@ -201,6 +243,7 @@ void CBall::UpdateBatting()
 
 void CBall::UpdateInPlay()
 {
+	CCamera::SetCameraKind(CAM_INPLAY);
 	m_pos.x += m_fMove.x;
 	m_pos.y += m_fMove.y;
 	m_pos.z += m_fMove.z;
@@ -211,7 +254,7 @@ void CBall::UpdateInPlay()
 
 	m_fMove.y -= MSEC(GRAVITY);
  
-	if (m_pos.y < 0.0f + WORLD_AJUST) 
+	if (m_pos.y < 0.0f + WORLD_AJUST + 1.0f) 
 	{
 		m_fMove.x *= 0.95f;
 		m_fMove.y *= 0.5f;
@@ -225,9 +268,9 @@ void CBall::UpdateInPlay()
 		}
 		else 
 		{
-			m_pos.y -= WORLD_AJUST;
+			m_pos.y -= WORLD_AJUST + 1.0f;
 			m_pos.y = -m_pos.y;
-			m_pos.y += WORLD_AJUST;
+			m_pos.y += WORLD_AJUST + 1.0f;
 		}
 	}
 
@@ -241,7 +284,7 @@ void CBall::UpdateInPlay()
 		m_pBatting->SetBatting(false);
 		std::string debug;
 		debug = std::to_string(ce_fBallEndPos.z - (m_pos.z - WORLD_AJUST));
-		debug += "M”ò‚Ñ‚Ü‚µ‚½";
+		debug += "Mé£›ã³ã¾ã—ãŸ";
 		//INFO_MESSAGE(debug.c_str());
 	}
 }

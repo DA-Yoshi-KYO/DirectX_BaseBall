@@ -5,6 +5,9 @@
 #include "CameraMinimap.h"
 #include "CameraPlayer.h"
 #include "CameraBatter.h"
+#include "CameraInplay.h"
+
+CameraKind CCamera::m_eCameraKind = CameraKind::CAM_BATTER;
 
 CCamera::CCamera()
 	: m_pos{ 0.0f + WORLD_AJUST, 10.0f + WORLD_AJUST, 0.0f + WORLD_AJUST }, m_look{ 0.0f + WORLD_AJUST,0.0f + WORLD_AJUST,0.0f + WORLD_AJUST }, m_up{ 0.0f,1.0f,0.0f }
@@ -98,6 +101,7 @@ std::unique_ptr<CCamera>& CCamera::GetInstance(int CamKind)
 		std::make_unique<CCameraEvent>(),
 		std::make_unique<CCameraMinimap>(),
 		std::make_unique<CCameraBatter>(),
+		std::make_unique<CCameraInplay>(),
 	};
 
 	switch (CamKind)
@@ -107,6 +111,17 @@ std::unique_ptr<CCamera>& CCamera::GetInstance(int CamKind)
 	case CAM_EVENT :	return CamInstance[CAM_EVENT];		break;
 	case CAM_MINIMAP :	return CamInstance[CAM_MINIMAP];	break;
 	case CAM_BATTER :	return CamInstance[CAM_BATTER];		break;
+	case CAM_INPLAY :	return CamInstance[CAM_INPLAY];		break;
 	default: return CamInstance[CAM_DEBUG]; break;
 	}
+}
+
+void CCamera::SetCameraKind(CameraKind kind)
+{
+	m_eCameraKind = kind;
+}
+
+CameraKind CCamera::GetCameraKind()
+{
+	return m_eCameraKind;
 }
