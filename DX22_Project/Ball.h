@@ -17,7 +17,7 @@ enum class BallPhase
 };
 
 constexpr DirectX::XMFLOAT3 ce_fBallPos = { 0.0f,5.0f,70.0f };
-constexpr DirectX::XMFLOAT3 ce_fBallEndPos = { 0.0f,2.7f,145.0f };
+constexpr DirectX::XMFLOAT3 ce_fBallEndPos = { 0.0f,-4.0f,145.0f };
 
 class CBall : public CGameObject
 {
@@ -28,9 +28,10 @@ public:
 	virtual void Update();
 	virtual void Draw();
 
-	virtual void SetModel(DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 size, DirectX::XMFLOAT3 rotate, int ModelType = 0);	// モデルのセット＆描画
-	virtual void OnCollision(Collision::Result collision);
-	virtual Collision::Info GetCollision();
+	virtual void SetModel(ModelParam param, Model* model, bool isAnime = false);	// モデルのセット＆描画
+	void OnCollision(Collision::Result collision);
+	Collision::Info GetCollision();
+	Collision::Info GetLineCollision();
 
 	void SetPitching(CPitching* pitching);
 	void SetPitchingCursor(CPitchingCursor* cursor);
@@ -46,11 +47,12 @@ private:
 	std::unique_ptr<CPitching> m_pPitching;
 	std::unique_ptr<CPitchingCursor> m_pCursor;
 	std::unique_ptr<CBatting> m_pBatting;
+	ModelParam m_tParam;
 	int m_nPhase;
 	DirectX::XMFLOAT3 m_fMove;
 	DirectX::XMFLOAT3 m_fShadowPos;
 
-	Collision::Info m_PlaneCollision;
+	Collision::Info m_BallCollision;
 	Collision::Info m_LucusCollision;
 
 	void UpdateBatting();

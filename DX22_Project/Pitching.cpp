@@ -129,7 +129,8 @@ void CPitching::Update()
 				switch (randMiss)
 				{
 				case 0:
-					m_pPitchingCursor->SetPos( {  0.0f,-100.0f  });
+					m_pPitchingCursor->SetPos(ce_fPitchingCursorPos);
+					break;
 				default:
 					m_pPitchingCursor->SetPos( { m_pStrikeZone->GetPos().x - m_pStrikeZone->GetSize().x / 1.3f,m_pStrikeZone->GetPos().y + m_pStrikeZone->GetSize().y / 1.3f });
 					break;												   
@@ -152,7 +153,8 @@ void CPitching::Update()
 				switch (randMiss)
 				{
 				case 0:
-					m_pPitchingCursor->SetPos( { 0.0f,-100.0f });
+					m_pPitchingCursor->SetPos(ce_fPitchingCursorPos);
+					break;
 				default:
 					m_pPitchingCursor->SetPos( { m_pStrikeZone->GetPos().x - m_pStrikeZone->GetSize().x / 1.3f,m_pStrikeZone->GetPos().y + m_pStrikeZone->GetSize().y / 1.3f });
 					break;
@@ -171,7 +173,8 @@ void CPitching::Update()
 			switch (randMiss)
 			{
 			case 0:
-				m_pPitchingCursor->SetPos( { 0.0f,-100.0f });
+				m_pPitchingCursor->SetPos(ce_fPitchingCursorPos);
+				break;
 			default:
 				m_pPitchingCursor->SetPos( { m_pStrikeZone->GetPos().x - m_pStrikeZone->GetSize().x / 1.3f,m_pStrikeZone->GetPos().y + m_pStrikeZone->GetSize().y / 1.3f });
 				break;
@@ -210,7 +213,7 @@ void CPitching::Update()
 
 			// セットポジションに戻る
 			m_nPitchingPhase = (int)CPitching::PitchingPhase::Set;
-			m_pPitchingCursor->SetPos( { 0.0f,-100.0f });
+			m_pPitchingCursor->SetPos(ce_fPitchingCursorPos);
 		}
 		break;
 	default:

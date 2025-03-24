@@ -3,12 +3,13 @@
 #include <DirectXMath.h>
 #include <memory>
 
+//#define _CAM_DEBUG
+
 enum CameraKind
 {
 	CAM_DEBUG,
-	CAM_PLAYER,
 	CAM_EVENT, // イベント用の定義 
-	CAM_MINIMAP, // ミニマップ用の定義
+	//CAM_MINIMAP, // ミニマップ用の定義
 	CAM_BATTER,
 	CAM_INPLAY,
 	MAX_CAMERA // カメラ最大数 

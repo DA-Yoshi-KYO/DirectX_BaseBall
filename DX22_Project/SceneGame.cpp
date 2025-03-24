@@ -6,7 +6,6 @@
 #include "CameraDebug.h"
 #include "CameraEvent.h"
 #include "CameraMinimap.h"
-#include "CameraPlayer.h"
 #include "CameraBatter.h"
 #include "BallCount.h"
 #include "StrikeZone.h"
@@ -27,7 +26,19 @@ CSceneGame::CSceneGame()
 	m_pDefence = std::make_unique<CDefence>();
 
 	// カメラ
-	CCamera::SetCameraKind(CameraKind::CAM_BATTER);
+#ifdef _CAM_DEBUG
+	CCamera::SetCameraKind(CameraKind::CAM_DEBUG);
+#else
+	if (1)
+	{
+		CCamera::SetCameraKind(CameraKind::CAM_BATTER);
+	}
+	else
+	{
+
+	}
+#endif // DEBUG
+
 
 	// エフェクト
 	//CEffectGoal* pEffect = new CEffectGoal();

@@ -10,7 +10,7 @@ public:
 	virtual ~CFielding()override;
 	virtual void Update()override;
 	virtual void Draw()override;
-	virtual void SetModel(DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 size, DirectX::XMFLOAT3 rotate, int ModelType = 0) override;
+	virtual void SetModel(ModelParam param, Model* model, bool isAnime = false) override;
 private:
 	enum class FieldMember
 	{
@@ -29,5 +29,6 @@ private:
 	std::unique_ptr<Model> m_pFieldMember[(int)FieldMember::Max];
 	ModelParam m_tParam[(int)FieldMember::Max];
 
+	bool m_bHold;
 	int OperationSearch();
 };
