@@ -10,14 +10,16 @@ constexpr float ce_fFenceHeight = ce_fGroundY + 15.0f;
 
 class CField : public CGameObject
 {
-public:
+private:
 	CField();
+public:
 	~CField();
 	void Update() override;
 	void Draw() override;
 	void SetModel(DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 size, DirectX::XMFLOAT3 rotate, int ModelType = 0) override;
 	virtual void OnCollision(Collision::Result collision) override;
 	virtual Collision::Info GetCollision() override;
+	static std::unique_ptr<CField>& GetInstance();
 private:
 	std::unique_ptr<Model> m_pField;
 	ModelParam m_tFieldParam;

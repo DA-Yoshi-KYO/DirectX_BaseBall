@@ -10,12 +10,6 @@ constexpr DirectX::XMFLOAT2 ce_fBallLimitY = { -2.7f,2.3f };
 constexpr  DirectX::XMFLOAT3 ce_fBallSize = { 0.5f,0.5f,0.5f };
 constexpr int ce_nBallRotateSec = 220 / 60;
 
-enum class BallPhase
-{
-	Batting,
-	InPlay,
-};
-
 CBall::CBall()
 	: m_pModel(nullptr), m_pPitching(nullptr)
 	, m_nPhase((int)BallPhase::Batting)
@@ -210,6 +204,11 @@ std::unique_ptr<CBall>& CBall::GetInstance()
 	// インスタンスは一つしか存在しない
 	static std::unique_ptr<CBall> instance(new CBall());
 	return instance;
+}
+
+BallPhase CBall::GetPhase()
+{
+	return (BallPhase)m_nPhase;
 }
 
 void CBall::UpdateBatting()

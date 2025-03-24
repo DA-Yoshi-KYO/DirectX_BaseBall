@@ -10,6 +10,12 @@
 
 class CBatting;
 
+enum class BallPhase
+{
+	Batting,
+	InPlay,
+};
+
 constexpr DirectX::XMFLOAT3 ce_fBallPos = { 0.0f,5.0f,70.0f };
 constexpr DirectX::XMFLOAT3 ce_fBallEndPos = { 0.0f,2.7f,145.0f };
 
@@ -33,6 +39,7 @@ public:
 	DirectX::XMFLOAT3 GetPos();
 
 	static std::unique_ptr<CBall>& GetInstance();
+	BallPhase GetPhase();
 private:
 	std::unique_ptr<Texture> m_pShadow;
 	std::unique_ptr<Model> m_pModel;

@@ -6,9 +6,11 @@
 CDefence::CDefence()
 	: m_pPitchingCursor(nullptr)
 	, m_pPitching(nullptr)
+	, m_pFielding(nullptr)
 {
 	m_pPitchingCursor = std::make_unique<CPitchingCursor>();
 	m_pPitching = std::make_unique<CPitching>();
+	m_pFielding = std::make_unique<CFielding>();
 
 	CStrikeZone* pStrikeZone = CStrikeZone::GetInstance().get();
 	m_pPitchingCursor->SetStrikeZone(pStrikeZone);
@@ -29,10 +31,12 @@ void CDefence::Update()
 {
 	m_pPitchingCursor->Update();
 	m_pPitching->Update();
+	m_pFielding->Update();
 }
 
 void CDefence::Draw()
 {
 	m_pPitchingCursor->Draw();
 	m_pPitching->Draw();
+	m_pFielding->Draw();
 }

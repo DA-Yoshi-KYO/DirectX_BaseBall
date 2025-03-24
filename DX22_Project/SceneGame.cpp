@@ -20,10 +20,9 @@ CSceneGame::CSceneGame()
 {
 	// 静的変数の初期化
 	m_nPlaying = (int)Playing::Attack;
-	CBallCount::GetInstance()->Init();
 
 	// 各種初期化処理
-	m_pField = std::make_unique<CField>();
+	CBallCount::GetInstance()->Init();
 	m_pAttack = std::make_unique<CAttack>();
 	m_pDefence = std::make_unique<CDefence>();
 
@@ -55,7 +54,7 @@ void CSceneGame::Update()
 	// カメラの切り替え処理
 	CameraUpdate();
 
-	m_pField->Update();		// フィールド
+	CField::GetInstance()->Update();		// フィールド
 	CStrikeZone::GetInstance()->Update();
 	switch (m_nPlaying)
 	{
@@ -92,7 +91,7 @@ void CSceneGame::Draw()
 	// レンダーターゲットを3D用の設定に変更
 	SetRender3D();
 
-	m_pField->Draw();	// フィールドの描画
+	CField::GetInstance()->Draw();	// フィールドの描画
 	CStrikeZone::GetInstance()->Draw();
 	switch (m_nPlaying)
 	{
@@ -150,7 +149,7 @@ void CSceneGame::DrawMinimap()
 	//m_pMinimap->BeginRender();
 
 	// ミニマップに表示するものを描画
-	m_pField->Draw();
+	CField::GetInstance()->Draw();
 	//m_pEffect->Draw();
 
 	// ミニマップの作成終了

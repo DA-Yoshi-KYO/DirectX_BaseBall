@@ -24,7 +24,6 @@ public:
 
 	/*------------コンポジション------------*/
 private:
-	std::unique_ptr<CField> m_pField;
 	std::unique_ptr<CAttack> m_pAttack;
 	std::unique_ptr<CDefence> m_pDefence;
 	static int m_nPlaying;

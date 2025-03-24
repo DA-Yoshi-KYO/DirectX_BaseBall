@@ -157,3 +157,9 @@ Collision::Info CField::GetCollision()
 {
 	return m_Collision;
 }
+
+std::unique_ptr<CField>& CField::GetInstance()
+{
+	static std::unique_ptr<CField> instance(new CField());
+	return instance;
+}
