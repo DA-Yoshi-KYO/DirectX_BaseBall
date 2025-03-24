@@ -5,7 +5,7 @@
 #include "StrikeZone.h"
 #include "Collision.h"
 
-constexpr DirectX::XMFLOAT2 ce_fPitchingCursorPos = { 0.0f,-100.0f };
+constexpr DirectX::XMFLOAT2 ce_fPitchingCursorPos = { 0.0f,-150.0f };
 
 class CPitchingCursor
 {

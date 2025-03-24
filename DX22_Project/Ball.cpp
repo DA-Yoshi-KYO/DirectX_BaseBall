@@ -22,18 +22,16 @@ CBall::CBall()
 	m_pShadow = std::make_unique<Texture>();
 	if (FAILED(m_pShadow->Create(TEXPASS("Shadow.png")))) ERROR_MESSAGE("Shadow.png");
 
-	m_pos = { ce_fBallPos.x + WORLD_AJUST ,ce_fBallPos.y + WORLD_AJUST, ce_fBallPos.z + WORLD_AJUST };
-	m_size = ce_fBallSize;
-	m_PlaneCollision.type = Collision::ePlane;
-	m_PlaneCollision.plane.pos = m_pos;
-	m_PlaneCollision.plane.normal = { 0.0f,0.0f,-1.0f };
-	m_Collision.type = Collision::eSphere;
-	m_Collision.sphere.center = m_pos;
-	m_Collision.sphere.radius = ce_fBallSize.x / 2.0f;
+	m_tParam.pos = { ce_fBallPos.x + WORLD_AJUST ,ce_fBallPos.y + WORLD_AJUST, ce_fBallPos.z + WORLD_AJUST };
+	m_tParam.size = ce_fBallSize;
+	m_tParam.rotate = { 0.0f,0.0f,0.0f };
+	m_BallCollision.type = Collision::eBox;
+	m_BallCollision.box.center = m_tParam.pos;
+	m_BallCollision.box.size = { ce_fBallSize.x / 2.0f,ce_fBallSize.y / 2.0f,ce_fBallSize.z / 2.0f };
 
 	m_LucusCollision.type = Collision::eLine;
-	m_LucusCollision.line.start = m_pos;
-	m_LucusCollision.line.end = m_pos;
+	m_LucusCollision.line.start = m_tParam.pos;
+	m_LucusCollision.line.end = m_tParam.pos;
 }
 
 CBall::~CBall()
@@ -46,7 +44,7 @@ CBall::~CBall()
 
 void CBall::Update()
 {
-	m_LucusCollision.line.start = m_pos;
+	m_LucusCollision.line.start = m_tParam.pos;
 	switch (m_nPhase)
 	{
 	case (int)BallPhase::Batting: UpdateBatting(); break;
@@ -54,13 +52,10 @@ void CBall::Update()
 	default:
 		break;
 	}
-	m_PlaneCollision.type = Collision::ePlane;
-	m_PlaneCollision.plane.pos = m_pos;
-	m_PlaneCollision.plane.normal = { 0.0f,0.0f,-1.0f };
-	m_Collision.type = Collision::eSphere;
-	m_Collision.sphere.center = m_pos;
-	m_Collision.sphere.radius = ce_fBallSize.x / 2.0f;
-	m_LucusCollision.line.end = m_pos;
+	m_BallCollision.type = Collision::eBox;
+	m_BallCollision.box.center = m_tParam.pos;
+	m_BallCollision.box.size = { ce_fBallSize.x / 2.0f,ce_fBallSize.y / 2.0f,ce_fBallSize.z / 2.0f };
+	m_LucusCollision.line.end = m_tParam.pos;
 }
 
 void CBall::Draw()
@@ -70,65 +65,59 @@ void CBall::Draw()
 #endif // _IMGUI
 
 	Collision::DrawCollision(m_LucusCollision);
-	SetModel(m_pos, m_size, m_rotate);
+	SetModel(m_tParam,m_pModel.get());
 	
 }
 
-void CBall::SetModel(DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 size, DirectX::XMFLOAT3 rotate, int ModelType)
+void CBall::SetModel(ModelParam param, Model* model, bool isAnime)
 {
 	SetRender3D();
+
 	CCamera* pCamera = CCamera::GetInstance(CCamera::GetCameraKind()).get();
-	// ワールド行列変換
-	DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);	// 座標
-	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(size.x, size.y, size.z);		// 拡縮
-	DirectX::XMMATRIX Rx = DirectX::XMMatrixRotationX(rotate.x);				// 回転X
-	DirectX::XMMATRIX Ry = DirectX::XMMatrixRotationY(rotate.y);				// 回転Y
-	DirectX::XMMATRIX Rz = DirectX::XMMatrixRotationZ(rotate.z);				// 回転Z
-	DirectX::XMMATRIX world = S * Rx * Ry * Rz * T;	// 拡縮・回転・座標の順番でかけ合わせる
 
-	DirectX::XMFLOAT4X4 wvp[3] = {};	// 各行列変換の受け入れ先
+	param.mWorld =
+		DirectX::XMMatrixScaling(param.size.x, param.size.y, param.size.z) *
+		DirectX::XMMatrixRotationX(param.rotate.x) *
+		DirectX::XMMatrixRotationY(param.rotate.y) *
+		DirectX::XMMatrixRotationZ(param.rotate.z) *
+		DirectX::XMMatrixTranslation(param.pos.x, param.pos.y, param.pos.z);
 
-	// 計算用のデータから読み取り用のデータに変換(転置)
-	DirectX::XMStoreFloat4x4(&wvp[0], DirectX::XMMatrixTranspose(world));	// ワールド行列を転置して設定
-	// view行列とprojection行列はカメラの物を持ってくる
-	wvp[1] = pCamera->GetViewMatrix();		// view行列
-	wvp[2] = pCamera->GetProjectionMatrix();	// projection行列
+	DirectX::XMStoreFloat4x4(&param.wvp[0], DirectX::XMMatrixTranspose(param.mWorld));
+	param.wvp[1] = pCamera->GetViewMatrix();		// view行列
+	param.wvp[2] = pCamera->GetProjectionMatrix();	// projection行列
 	// カメラ行列を設定
-	Geometory::SetView(wvp[1]);
-	Geometory::SetProjection(wvp[2]);
+	Geometory::SetView(param.wvp[1]);
+	Geometory::SetProjection(param.wvp[2]);
+
 
 	// シェーダーへ変換行列を設定
-	ShaderList::SetWVP(wvp); // 引数にはXMFloat4X4型の、要素数3のアドレスを渡すこと
+	ShaderList::SetWVP(param.wvp); // 引数にはXMFloat4X4型の、要素数3のアドレスを渡すこと
 
 	//モデルに使用する頂点シェーダーを設定
-	m_pModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_WORLD));
+	model->SetVertexShader(ShaderList::GetVS(ShaderList::VS_WORLD));
 	// モデルに使用する頂点ピクセルシェーダーを設定
-	m_pModel->SetPixelShader(ShaderList::GetPS(ShaderList::PS_LAMBERT));
+	model->SetPixelShader(ShaderList::GetPS(ShaderList::PS_LAMBERT));
 
-	for (int i = 0; i < m_pModel->GetMeshNum(); i++)
+	for (int i = 0; i < model->GetMeshNum(); i++)
 	{
 		// モデルのメッシュの取得
-		Model::Mesh mesh = *m_pModel->GetMesh(i);
+		Model::Mesh mesh = *model->GetMesh(i);
 
 		// メッシュに割り当てられているマテリアルを取得
-		Model::Material material = *m_pModel->GetMaterial(mesh.materialID);
-
-		material.ambient.x = 0.75f;
-		material.ambient.y = 0.75f;
-		material.ambient.z = 0.75f;
+		Model::Material material = *model->GetMaterial(mesh.materialID);
 
 		// シェーダーへマテリアルを設定
 		ShaderList::SetMaterial(material);
 
 		// モデルの描画
-		m_pModel->Draw(i);
+		model->Draw(i);
 	}
 }
 
 void CBall::OnCollision(Collision::Result collision)
 {
 	// フェンスを越えていたらホームラン
-	if (m_pos.y >= ce_fFenceHeight + WORLD_AJUST)return;
+	if (m_tParam.pos.y >= ce_fFenceHeight + WORLD_AJUST)return;
 
 	// 越えていなかったらフェンス反射の計算をする
 	// 計算に使用する変数を定義
@@ -169,12 +158,17 @@ void CBall::OnCollision(Collision::Result collision)
 	DirectX::XMFLOAT3 curDir;
 	DirectX::XMStoreFloat3(&curDir, vecDir);
 	DirectX::XMStoreFloat3(&m_LucusCollision.line.start,vecHitPoint);
-	DirectX::XMStoreFloat3(&m_pos,vecHitPoint);
+	DirectX::XMStoreFloat3(&m_tParam.pos,vecHitPoint);
 	DirectX::XMStoreFloat3(&m_LucusCollision.line.end, DirectX::XMVectorAdd(vecHitPoint, vecNewVelocity));
 	DirectX::XMStoreFloat3(&m_fMove, vecNewVelocity);
 }
 
 Collision::Info CBall::GetCollision()
+{
+	return m_BallCollision;
+}
+
+Collision::Info CBall::GetLineCollision()
 {
 	return m_LucusCollision;
 }
@@ -196,7 +190,7 @@ void CBall::SetBatting(CBatting* batting)
 
 DirectX::XMFLOAT3 CBall::GetPos()
 {
-	return m_pos;
+	return m_tParam.pos;
 }
 
 std::unique_ptr<CBall>& CBall::GetInstance()
@@ -213,7 +207,10 @@ BallPhase CBall::GetPhase()
 
 void CBall::UpdateBatting()
 {
+#ifndef _CAM_DEBUG
 	CCamera::SetCameraKind(CAM_BATTER);
+#endif // !_CAM_DEBUG
+
 	if (m_pPitching->GetPitchingPhase() == (int)CPitching::PitchingPhase::Release)
 	{
 		float fChatch = m_pPitching->GetChatchTime();
@@ -223,10 +220,10 @@ void CBall::UpdateBatting()
 		DirectX::XMFLOAT2 fCenterToCursorPow = { fCenterToCursor.x / fZoneSizeHarf.x,fCenterToCursor.y / fZoneSizeHarf.y };
 		DirectX::XMFLOAT2 fCenterToBall = { ce_fBallLimitX.x * fCenterToCursorPow.x,  ce_fBallLimitX.y * fCenterToCursorPow.y + ce_fBallEndPos.y };
 
-		m_pos.x += (fCenterToBall.x - ce_fBallPos.x) / fChatch;
-		m_pos.y += (fCenterToBall.y - ce_fBallPos.y) / fChatch;
-		m_pos.z += (ce_fBallEndPos.z - ce_fBallPos.z) / fChatch;
-		m_rotate.x += DirectX::XMConvertToRadians(ce_nBallRotateSec * 360.0f) / fChatch;
+		m_tParam.pos.x += (fCenterToBall.x - ce_fBallPos.x) / fChatch;
+		m_tParam.pos.y += (fCenterToBall.y - ce_fBallPos.y) / fChatch;
+		m_tParam.pos.z += (ce_fBallEndPos.z - ce_fBallPos.z) / fChatch;
+		m_tParam.rotate.x += DirectX::XMConvertToRadians(ce_nBallRotateSec * 360.0f) / fChatch;
 
 		if (m_pBatting->GetBatting())
 		{
@@ -236,16 +233,18 @@ void CBall::UpdateBatting()
 	}
 	else
 	{
-		m_pos = { ce_fBallPos.x + WORLD_AJUST ,ce_fBallPos.y + WORLD_AJUST, ce_fBallPos.z + WORLD_AJUST };
+		m_tParam.pos = { ce_fBallPos.x + WORLD_AJUST ,ce_fBallPos.y + WORLD_AJUST, ce_fBallPos.z + WORLD_AJUST };
 	}
 }
 
 void CBall::UpdateInPlay()
 {
+#ifndef _CAM_DEBUG
 	CCamera::SetCameraKind(CAM_INPLAY);
-	m_pos.x += m_fMove.x;
-	m_pos.y += m_fMove.y;
-	m_pos.z += m_fMove.z;
+#endif
+	m_tParam.pos.x += m_fMove.x;
+	m_tParam.pos.y += m_fMove.y;
+	m_tParam.pos.z += m_fMove.z;
 
 	m_fMove.x *= 0.99f;
 	m_fMove.y *= 0.99f;
@@ -253,7 +252,7 @@ void CBall::UpdateInPlay()
 
 	m_fMove.y -= MSEC(GRAVITY);
  
-	if (m_pos.y < 0.0f + WORLD_AJUST + 1.0f) 
+	if (m_tParam.pos.y < 0.0f + WORLD_AJUST + 1.0f)
 	{
 		m_fMove.x *= 0.95f;
 		m_fMove.y *= 0.5f;
@@ -263,13 +262,13 @@ void CBall::UpdateInPlay()
 		if (m_fMove.y < CMETER(5.0f))
 		{
 			m_fMove.y = 0.0f;
-			m_pos.y = 0.0f;
+			m_tParam.pos.y = 0.0f;
 		}
 		else 
 		{
-			m_pos.y -= WORLD_AJUST + 1.0f;
-			m_pos.y = -m_pos.y;
-			m_pos.y += WORLD_AJUST + 1.0f;
+			m_tParam.pos.y -= WORLD_AJUST + 1.0f;
+			m_tParam.pos.y = -m_tParam.pos.y;
+			m_tParam.pos.y += WORLD_AJUST + 1.0f;
 		}
 	}
 
@@ -282,7 +281,7 @@ void CBall::UpdateInPlay()
 		m_nPhase = (int)BallPhase::Batting;
 		m_pBatting->SetBatting(false);
 		std::string debug;
-		debug = std::to_string(ce_fBallEndPos.z - (m_pos.z - WORLD_AJUST));
+		debug = std::to_string(ce_fBallEndPos.z - (m_tParam.pos.z - WORLD_AJUST));
 		debug += "M飛びました";
 		//INFO_MESSAGE(debug.c_str());
 	}

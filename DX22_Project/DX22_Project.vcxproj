@@ -157,7 +157,6 @@
     <ClCompile Include="CameraEvent.cpp" />
     <ClCompile Include="CameraInplay.cpp" />
     <ClCompile Include="CameraMinimap.cpp" />
-    <ClCompile Include="CameraPlayer.cpp" />
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="Defence.cpp" />
     <ClCompile Include="DirectWriteCustomFont.cpp" />
@@ -173,7 +172,6 @@
     <ClCompile Include="GameUI.cpp" />
     <ClCompile Include="GaugeUI.cpp" />
     <ClCompile Include="Geometory.cpp" />
-    <ClCompile Include="Goal.cpp" />
     <ClCompile Include="imgui.cpp" />
     <ClCompile Include="ImGuiManager.cpp" />
     <ClCompile Include="imgui_demo.cpp" />
@@ -192,7 +190,6 @@
     <ClCompile Include="Model_get.cpp" />
     <ClCompile Include="Model_morph.cpp" />
     <ClCompile Include="NumberUI.cpp" />
-    <ClCompile Include="Object.cpp" />
     <ClCompile Include="Pitching.cpp" />
     <ClCompile Include="PitchingCursor.cpp" />
     <ClCompile Include="Player.cpp" />
@@ -224,7 +221,6 @@
     <ClInclude Include="CameraEvent.h" />
     <ClInclude Include="CameraInplay.h" />
     <ClInclude Include="CameraMinimap.h" />
-    <ClInclude Include="CameraPlayer.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="Defence.h" />
     <ClInclude Include="Defines.h" />
@@ -241,7 +237,6 @@
     <ClInclude Include="GameUI.h" />
     <ClInclude Include="GaugeUI.h" />
     <ClInclude Include="Geometory.h" />
-    <ClInclude Include="Goal.h" />
     <ClInclude Include="imconfig.h" />
     <ClInclude Include="imgui.h" />
     <ClInclude Include="ImGuiManager.h" />
@@ -257,7 +252,6 @@
     <ClInclude Include="Minimap.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="NumberUI.h" />
-    <ClInclude Include="Object.h" />
     <ClInclude Include="Pitching.h" />
     <ClInclude Include="PitchingCursor.h" />
     <ClInclude Include="Player.h" />

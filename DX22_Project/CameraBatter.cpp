@@ -8,7 +8,7 @@
 CCameraBatter::CCameraBatter()
 	: m_radXZ(0.0f), m_radY(DirectX::XMConvertToRadians(30.0f)), m_radius(0.0f)
 {
-	m_pos = { WORLD_AJUST,WORLD_AJUST + 10.0f, WORLD_AJUST + 170.0f };
+	m_pos = { WORLD_AJUST,WORLD_AJUST + 5.0f, WORLD_AJUST + 160.0f };
 	m_look = { WORLD_AJUST,WORLD_AJUST + 0.0f, WORLD_AJUST - 10.0f };
 }
 
