@@ -4,7 +4,7 @@
 #include "Collision.h"
 #include "PitchingCursor.h"
 
-constexpr float ce_fJustTyming = 138.0f;
+constexpr float ce_fJustTyming = 133.0f;
 constexpr float ce_fHittingTyming = 5.0f;
 constexpr float ce_fAngleMax = 60.0f;
 constexpr float ce_fHomeRunAngle = 30.0f;
@@ -73,7 +73,7 @@ void CBatting::Update()
 
 					// 減速を元のパワーと掛け合わせて打球の強さを求める
 					// 減速がない場合元の強さをそのまま計算する
-					fShotPower = m_fPower * (fSlowDown.x == 0 ? 1 : fSlowDown.x * fSlowDown.y == 0 ? 1 : fSlowDown.y);
+					fShotPower = m_fPower * (fSlowDown.x == 0.0f ? 1 : fSlowDown.x * fSlowDown.y == 0.0f ? 1 : fSlowDown.y);
 
 					// 捉えた場所が端すぎるならファールチップとしてストライクにする
 					if (fabsf(fDistanceRatio.x) >= 75.0f || fabsf(fDistanceRatio.y) >= 75.0f)

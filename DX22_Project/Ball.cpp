@@ -3,17 +3,20 @@
 #include "SceneGame.h"
 #include "Sprite.h"
 #include "Main.h"
+#include "BallCount.h"
 
 constexpr DirectX::XMFLOAT2 ce_fBallEndCenter = { 0.0f,0.0f };
 constexpr DirectX::XMFLOAT2 ce_fBallLimitX = { 2.7f,-2.7f };
 constexpr DirectX::XMFLOAT2 ce_fBallLimitY = { -2.7f,2.3f };
 constexpr  DirectX::XMFLOAT3 ce_fBallSize = { 0.5f,0.5f,0.5f };
+constexpr  DirectX::XMFLOAT3 ce_fInplayBallSize = { 2.0f,2.0f,2.0f };
 constexpr int ce_nBallRotateSec = 220 / 60;
 
 CBall::CBall()
 	: m_pModel(nullptr), m_pPitching(nullptr)
 	, m_nPhase((int)BallPhase::Batting)
 	, m_fMove{}, m_fShadowPos{}
+	, m_bFry(true)
 {
 	// ボールのモデルの読み込み
 	m_pModel = std::make_unique<Model>();
@@ -193,6 +196,11 @@ DirectX::XMFLOAT3 CBall::GetPos()
 	return m_tParam.pos;
 }
 
+void CBall::SetPos(DirectX::XMFLOAT3 pos)
+{
+	m_tParam.pos = pos;
+}
+
 std::unique_ptr<CBall>& CBall::GetInstance()
 {
 	// インスタンスは一つしか存在しない
@@ -205,12 +213,17 @@ BallPhase CBall::GetPhase()
 	return (BallPhase)m_nPhase;
 }
 
+bool CBall::GetIsFry()
+{
+	return m_bFry;
+}
+
 void CBall::UpdateBatting()
 {
 #ifndef _CAM_DEBUG
 	CCamera::SetCameraKind(CAM_BATTER);
 #endif // !_CAM_DEBUG
-
+	m_tParam.size = ce_fBallSize;
 	if (m_pPitching->GetPitchingPhase() == (int)CPitching::PitchingPhase::Release)
 	{
 		float fChatch = m_pPitching->GetChatchTime();
@@ -229,6 +242,7 @@ void CBall::UpdateBatting()
 		{
 			m_nPhase = (int)BallPhase::InPlay;
 			m_fMove = m_pBatting->GetDirection();
+			m_bFry = true;
 		}
 	}
 	else
@@ -239,6 +253,20 @@ void CBall::UpdateBatting()
 
 void CBall::UpdateInPlay()
 {
+	CBallCount* pBallCount = CBallCount::GetInstance().get();
+	if (pBallCount->GetEndInplay())
+	{
+		for (int i = 0; i < (int)CBallCount::InplayElement::Max; i++)
+		{
+			pBallCount->SetEndInplay((CBallCount::InplayElement)i, false);
+		}
+		// ファールの時はカウントをリセットしない
+		pBallCount->ResetCount();
+		//pBallCount->AddStrikeCount(true);
+		m_nPhase = (int)BallPhase::Batting;
+		m_pBatting->SetBatting(false);
+	}
+	m_tParam.size = ce_fInplayBallSize;
 #ifndef _CAM_DEBUG
 	CCamera::SetCameraKind(CAM_INPLAY);
 #endif
@@ -246,14 +274,18 @@ void CBall::UpdateInPlay()
 	m_tParam.pos.y += m_fMove.y;
 	m_tParam.pos.z += m_fMove.z;
 
+	OutputDebugStringA(std::to_string(m_tParam.pos.y).c_str());
+	OutputDebugStringA("\n");
+
 	m_fMove.x *= 0.99f;
 	m_fMove.y *= 0.99f;
 	m_fMove.z *= 0.99f;
 
 	m_fMove.y -= MSEC(GRAVITY);
  
-	if (m_tParam.pos.y < 0.0f + WORLD_AJUST + 1.0f)
+	if (m_tParam.pos.y < 0.0f + WORLD_AJUST + ce_fGroundY)
 	{
+		m_bFry = false;
 		m_fMove.x *= 0.95f;
 		m_fMove.y *= 0.5f;
 		m_fMove.z *= 0.95f;
@@ -262,13 +294,13 @@ void CBall::UpdateInPlay()
 		if (m_fMove.y < CMETER(5.0f))
 		{
 			m_fMove.y = 0.0f;
-			m_tParam.pos.y = 0.0f;
+			m_tParam.pos.y = WORLD_AJUST + ce_fGroundY;
 		}
 		else 
 		{
-			m_tParam.pos.y -= WORLD_AJUST + 1.0f;
+			m_tParam.pos.y -= WORLD_AJUST + ce_fGroundY;
 			m_tParam.pos.y = -m_tParam.pos.y;
-			m_tParam.pos.y += WORLD_AJUST + 1.0f;
+			m_tParam.pos.y += WORLD_AJUST + ce_fGroundY;
 		}
 	}
 
@@ -278,8 +310,6 @@ void CBall::UpdateInPlay()
 	DirectX::XMStoreFloat(&speed, vLen);
 	if (speed < CMSEC(0.01f)) 
 	{ 
-		m_nPhase = (int)BallPhase::Batting;
-		m_pBatting->SetBatting(false);
 		std::string debug;
 		debug = std::to_string(ce_fBallEndPos.z - (m_tParam.pos.z - WORLD_AJUST));
 		debug += "M飛びました";

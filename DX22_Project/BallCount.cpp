@@ -47,7 +47,7 @@ constexpr DirectX::XMFLOAT2 ce_fTopBottomSize = { 50.0f,50.0f };
 constexpr DirectX::XMFLOAT2 ce_fTopBottomAjust = { 30.0f,60.0f };
 
 CBallCount::CBallCount()
-	: m_tCount{}
+	: m_tCount{},m_bInplay{}
 {
 
 }
@@ -97,6 +97,11 @@ void CBallCount::Init()
 	m_tCount.m_nScore[(int)Team::BOTTOM] = 0;
 	m_tCount.m_nInning = 1;
 	m_tCount.m_bTop = true;
+
+	for (int i = 0; i < (int)InplayElement::Max; i++)
+	{
+		m_bInplay[i] = false;
+	}
 }
 
 void CBallCount::Update()
@@ -256,6 +261,33 @@ void CBallCount::ChangeInning()
 bool CBallCount::IsEnd()
 {
 	return m_tCount.m_bEnd;
+}
+
+void CBallCount::SetEndInplay(InplayElement ElemEndInplay, bool state)
+{
+	m_bInplay[(int)ElemEndInplay] = state;
+}
+
+bool CBallCount::GetEndInplay()
+{
+	static float fTime = 0.0f;
+	for (int i = 0; i < (int)InplayElement::Max; i++)
+	{
+		if(!m_bInplay[i])
+		{
+			fTime = 0.0f;
+			return false;
+		}
+	}
+
+	fTime += 1.0f / fFPS;
+
+	if (fTime >= 3.0f)
+	{
+		return true;
+	}
+
+	return false;
 }
 
 std::unique_ptr<CBallCount>& CBallCount::GetInstance()
