@@ -17,7 +17,7 @@ enum class BallPhase
 };
 
 constexpr DirectX::XMFLOAT3 ce_fBallPos = { 0.0f,5.0f,70.0f };
-constexpr DirectX::XMFLOAT3 ce_fBallEndPos = { 0.0f,-4.0f,145.0f };
+constexpr DirectX::XMFLOAT3 ce_fBallEndPos = { 0.0f,-4.0f,148.0f };
 
 class CBall : public CGameObject
 {
@@ -38,9 +38,12 @@ public:
 	void SetBatting(CBatting* batting);
 
 	DirectX::XMFLOAT3 GetPos();
+	void SetPos(DirectX::XMFLOAT3 pos);
 
 	static std::unique_ptr<CBall>& GetInstance();
 	BallPhase GetPhase();
+
+	bool GetIsFry();
 private:
 	std::unique_ptr<Texture> m_pShadow;
 	std::unique_ptr<Model> m_pModel;
@@ -49,6 +52,7 @@ private:
 	std::unique_ptr<CBatting> m_pBatting;
 	ModelParam m_tParam;
 	int m_nPhase;
+	bool m_bFry;
 	DirectX::XMFLOAT3 m_fMove;
 	DirectX::XMFLOAT3 m_fShadowPos;
 

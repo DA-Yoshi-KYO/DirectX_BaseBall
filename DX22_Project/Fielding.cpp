@@ -2,6 +2,7 @@
 #include "Camera.h"
 #include "Main.h"
 #include "Ball.h"
+#include "BallCount.h"
 #include "Field.h"
 #include "Input.h"
 
@@ -14,6 +15,9 @@ CFielding::CFielding()
 		m_tParam[i].pos = { WORLD_AJUST,WORLD_AJUST, WORLD_AJUST };
 		m_tParam[i].size = { 5.0f,5.0f,5.0f };
 		m_tParam[i].rotate = { 0.0f,0.0f,0.0f };
+		m_Collision[i].type = Collision::eBox;
+		m_Collision[i].box.center = m_tParam[i].pos;
+		m_Collision[i].box.size = m_tParam[i].size;
 	}
 	if (!m_pFieldMember[(int)FieldMember::Pitcher]->Load(MODELPASS("ball.obj"))) ERROR_MESSAGE("");
 	if(!m_pFieldMember[(int)FieldMember::Chatcher]->Load(MODELPASS("ball.obj")))ERROR_MESSAGE("");
@@ -32,13 +36,17 @@ CFielding::~CFielding()
 
 void CFielding::Update()
 {
-	DirectX::XMFLOAT3 fFieldPos = CField::GetInstance()->GetPos();
-	fFieldPos.y = WORLD_AJUST + 10.0f;
-	DirectX::XMFLOAT3 fFieldSizeMin = CField::GetInstance()->GetSize();
+	CField* pField = CField::GetInstance().get();
+	CBall* pBall = CBall::GetInstance().get();
+	CBallCount* pBallCount = CBallCount::GetInstance().get();
+	DirectX::XMFLOAT3 fFieldPos = pField->GetPos();
+	fFieldPos.y = WORLD_AJUST + ce_fGroundY;
+	DirectX::XMFLOAT3 fFieldSizeMin = pField->GetSize();
 	DirectX::XMFLOAT3 fFieldSize = { fFieldSizeMin.x * 7.0f , fFieldSizeMin.y * 8.0f , fFieldSizeMin.z * 8.0f };
 
 	DirectX::XMFLOAT3 fFieldPosLine = {fFieldSize.x / 10.0f,fFieldSize.y / 10.0f ,fFieldSize.z / 10.0f };
 	int nNo = 0;
+	static int nHoldNo = 0;
 
 	switch (CBall::GetInstance()->GetPhase())
 	{
@@ -52,15 +60,44 @@ void CFielding::Update()
 		m_tParam[(int)FieldMember::Left].pos = { fFieldPos.x + fFieldPosLine.x * 2.3f,fFieldPos.y, fFieldPos.z - fFieldPosLine.z * 1.3f };
 		m_tParam[(int)FieldMember::Center].pos = { fFieldPos.x,fFieldPos.y, fFieldPos.z - fFieldPosLine.z * 2.0f };
 		m_tParam[(int)FieldMember::Right].pos = { fFieldPos.x - fFieldPosLine.x * 2.3f,fFieldPos.y, fFieldPos.z - fFieldPosLine.z * 1.3f };
+		m_bHold = false;
 		break;
 	case BallPhase::InPlay:
-		nNo = OperationSearch();
+		if (!m_bHold) nNo = OperationSearch();
+		else
+		{
+			nNo = nHoldNo;
+			pBall->SetPos(m_tParam[nNo].pos);
+			
+		}
 
-		if (IsKeyPress('W')) m_tParam[nNo].pos.z--;
-		if (IsKeyPress('S')) m_tParam[nNo].pos.z++;
-		if (IsKeyPress('D')) m_tParam[nNo].pos.x--;
-		if (IsKeyPress('A')) m_tParam[nNo].pos.x++;
+		if (IsKeyPress('W')) m_tParam[nNo].pos.z -= 0.5f;
+		if (IsKeyPress('S')) m_tParam[nNo].pos.z += 0.5f;
+		if (IsKeyPress('D')) m_tParam[nNo].pos.x -= 0.5f;
+		if (IsKeyPress('A')) m_tParam[nNo].pos.x += 0.5f;
+		
+		if (!m_bHold)
+		{
+			Collision::Info ballCollision = pBall->GetCollision();
+			for (int i = 0; i < (int)FieldMember::Max; i++)
+			{
+				m_Collision[i].type = Collision::eBox;
+				m_Collision[i].box.center = m_tParam[i].pos;
+				m_Collision[i].box.size = m_tParam[i].size;
 
+				Collision::Result result = Collision::Hit(ballCollision, m_Collision[i]);
+				if (result.isHit)
+				{
+					nHoldNo = i;
+					m_bHold = true;
+					pBallCount->SetEndInplay(CBallCount::InplayElement::HoldBall, true);
+					if (pBall->GetIsFry())
+					{
+						pBallCount->AddOutCount();
+					}
+				}
+			}
+		}
 
 		break;
 	default:
@@ -73,6 +110,7 @@ void CFielding::Draw()
 	for (int i = 0; i < (int)FieldMember::Max; i++)
 	{
 		SetModel(m_tParam[i],m_pFieldMember[i].get());
+		Collision::DrawCollision(m_Collision[i]);
 	}
 }
 
@@ -125,8 +163,8 @@ int CFielding::OperationSearch()
 {
 	DirectX::XMFLOAT3 fBallPos = CBall::GetInstance()->GetPos();
 	DirectX::XMVECTOR vecBallPos = DirectX::XMLoadFloat3(&fBallPos);
-	DirectX::XMVECTOR vecMostNear = {};
-	int nMostNearNo = 0;
+	DirectX::XMVECTOR vecMostNear = DirectX::XMVectorSet(FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX);
+	int nMostNearNo = -1;
 
 	for (int i = 0; i < (int)FieldMember::Max; i++)
 	{
@@ -134,11 +172,16 @@ int CFielding::OperationSearch()
 		DirectX::XMVECTOR vecDistance = DirectX::XMVectorSubtract(vecBallPos, vecMemberPos);
 		vecDistance = DirectX::XMVector3Length(vecDistance);
 
-		if (DirectX::XMVector3GreaterOrEqual(vecMostNear, vecDistance) || i == 0)
+		if (DirectX::XMVector3Less(vecDistance, vecMostNear) || i == 0)
 		{
 			vecMostNear = vecDistance;
 			nMostNearNo = i;
 		}
 	}
 	return nMostNearNo;
+}
+
+Collision::Info CFielding::GetCollision(FieldMember Member)
+{
+	return Collision::Info();
 }

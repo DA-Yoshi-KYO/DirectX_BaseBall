@@ -71,6 +71,20 @@ public:
 		BOTTOM
 	};
 
+	enum class InplayElement
+	{
+		HoldBall,
+		Max
+	};
+	bool m_bInplay[(int)InplayElement::Max];
+	/// <summary> SetEndInplay:Inplay状態を終了していいかをセットする </summary>
+	/// <param name="ElemEndInplay:"> Inplay状態を継続している要素 </param>
+	/// <param name="state:"> true:Inplay中,false:終了 </param>
+	void SetEndInplay(InplayElement ElemEndInplay,bool state);
+	/// <summary> SetEndInplay:Inplay状態を終了していいかを取得する </summary>
+	/// <returns> true:Inplay終了,false:Inplay中 </returns>
+	bool GetEndInplay();
+
 	/// <summary> シングルトンインスタンスの取得 </summary>
 	static std::unique_ptr <CBallCount>& GetInstance();
 

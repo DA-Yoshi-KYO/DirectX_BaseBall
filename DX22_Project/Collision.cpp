@@ -244,8 +244,8 @@ Collision::Result Collision::Hit(Ray ray, Triangle triangle)
 
     // Tパラメータ(レイの始点から交点までの距離)を求める
     out.t = DirectX::XMVectorGetX(DirectX::XMVector3Dot(vecEdge2, vecQ)) * invDet;
-    OutputDebugStringA(std::to_string(out.t).c_str());
-    OutputDebugStringA("\n");
+    //OutputDebugStringA(std::to_string(out.t).c_str());
+    //OutputDebugStringA("\n");
     
     out.isHit = out.t >= 0; // t < 0 の場合、レイの負方向に交差している
     

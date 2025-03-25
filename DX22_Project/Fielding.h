@@ -2,6 +2,7 @@
 
 #include "Defines.h"
 #include "GameObject.h"
+#include "Collision.h"
 
 class CFielding : public CGameObject
 {
@@ -28,7 +29,10 @@ private:
 	};
 	std::unique_ptr<Model> m_pFieldMember[(int)FieldMember::Max];
 	ModelParam m_tParam[(int)FieldMember::Max];
+	Collision::Info m_Collision[(int)FieldMember::Max];
 
 	bool m_bHold;
 	int OperationSearch();
+public:
+	Collision::Info GetCollision(FieldMember Member);
 };

@@ -5,7 +5,7 @@
 #include "Ball.h"
 
 constexpr int ce_nMaxHomerunPolyLine = 40;
-constexpr float ce_fGroundY = 0.0f;
+constexpr float ce_fGroundY = -5.0f;
 constexpr float ce_fFenceHeight = ce_fGroundY + 15.0f;
 constexpr DirectX::XMFLOAT3 ce_fPitcherPos = { WORLD_AJUST, WORLD_AJUST-8.0f, WORLD_AJUST + 60.0f };
 
