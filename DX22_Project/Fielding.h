@@ -3,6 +3,7 @@
 #include "Defines.h"
 #include "GameObject.h"
 #include "Collision.h"
+#include "Field.h"
 
 class CFielding : public CGameObject
 {
@@ -30,9 +31,16 @@ private:
 	std::unique_ptr<Model> m_pFieldMember[(int)FieldMember::Max];
 	ModelParam m_tParam[(int)FieldMember::Max];
 	Collision::Info m_Collision[(int)FieldMember::Max];
-
+	int m_nOperationNo;
+	int m_nBaseNearNo[(int)BaseKind::Max];
+	void BaseCover();
+	void Throwing(BaseKind kind);
 	bool m_bHold;
+	bool m_bBaseCovered[(int)BaseKind::Max];
 	int OperationSearch();
+	int BaseSearch(BaseKind kind);
+	DirectX::XMFLOAT3 m_fThrowDirection;
 public:
 	Collision::Info GetCollision(FieldMember Member);
+	DirectX::XMFLOAT3 GetThrowDirection();
 };

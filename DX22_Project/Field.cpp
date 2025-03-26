@@ -44,7 +44,7 @@ void CField::Draw()
 	SetModel(m_tFieldParam, m_pField.get());
 
 	SetModel(m_tBaseParam[(int)BaseKind::Home], m_pHomeBase.get());
-	for (int i = (int)BaseKind::First; i < (int)BaseKind::Max; i++)
+	for (int i = (int)BaseKind::First; i < (int)BaseKind::Third; i++)
 	{
 		SetModel(m_tBaseParam[i], m_pBase.get());
 	}
@@ -119,23 +119,12 @@ DirectX::XMFLOAT3 CField::GetPos()
 
 DirectX::XMFLOAT3 CField::GetBasePos(BaseKind No)
 {
-	switch (No)
-	{
-	case BaseKind::Home:
-		return {m_tFieldParam.pos.x - m_tFieldParam.size.x / 5.0f, m_tFieldParam.pos.y, m_tFieldParam.pos.z + m_tFieldParam.size.z / 5.0f };
-		break;
-	case BaseKind::First:
-		return { m_tFieldParam.pos.x - m_tFieldParam.size.x / 5.0f, m_tFieldParam.pos.y, m_tFieldParam.pos.z + m_tFieldParam.size.z / 5.0f };
-		break;
-	case BaseKind::Second:
-		return { m_tFieldParam.pos.x - m_tFieldParam.size.x / 5.0f, m_tFieldParam.pos.y, m_tFieldParam.pos.z + m_tFieldParam.size.z / 5.0f };
-		break;
-	case BaseKind::Third:
-		return { m_tFieldParam.pos.x - m_tFieldParam.size.x / 5.0f, m_tFieldParam.pos.y, m_tFieldParam.pos.z + m_tFieldParam.size.z / 5.0f };
-		break;
-	default:
-		break;
-	}
+	return m_tBaseParam[(int)No].pos;
+}
+
+DirectX::XMFLOAT3 CField::GetBaseSize(BaseKind No)
+{
+	return m_tBaseParam[(int)No].size;
 }
 
 DirectX::XMFLOAT3 CField::GetSize()
@@ -166,14 +155,14 @@ void CField::InitModel()
 	m_tBaseParam[(int)BaseKind::Home].size = { 1.5f,0.5f,1.5f };
 	m_tBaseParam[(int)BaseKind::Home].rotate = { 0.0f,0.0f,0.0f };
 
-	for (int i = (int)BaseKind::First; i < (int)BaseKind::Max; i++)
+	for (int i = (int)BaseKind::First; i < (int)BaseKind::Third; i++)
 	{
 		m_tBaseParam[i].size = { 3.0f,3.0f,3.0f };
 		m_tBaseParam[i].rotate = { 0.0f,DirectX::XMConvertToRadians(45.0f),0.0f};
 	}
-	m_tBaseParam[(int)BaseKind::First].pos = { ce_fPitcherPos.x - 70.0f,ce_fPitcherPos.y,ce_fPitcherPos.z};
-	m_tBaseParam[(int)BaseKind::Second].pos = { ce_fPitcherPos.x ,ce_fPitcherPos.y,ce_fPitcherPos.z - 57.0f };
-	m_tBaseParam[(int)BaseKind::Third].pos = { ce_fPitcherPos.x + 70.0f,ce_fPitcherPos.y,ce_fPitcherPos.z};
+	m_tBaseParam[(int)BaseKind::First].pos = { ce_fPitcherPos.x - 75.0f,ce_fPitcherPos.y,ce_fPitcherPos.z - 35.0f};
+	m_tBaseParam[(int)BaseKind::Second].pos = { ce_fPitcherPos.x ,ce_fPitcherPos.y,ce_fPitcherPos.z - 115.0f };
+	m_tBaseParam[(int)BaseKind::Third].pos = { ce_fPitcherPos.x + 75.0f,ce_fPitcherPos.y,ce_fPitcherPos.z - 35.0f };
 }
 
 void CField::InitCollision()

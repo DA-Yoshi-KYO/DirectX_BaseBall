@@ -45,10 +45,14 @@ public:
 	/// <summary> AddScore:引数のチームのスコアを1増やす </summary>
 	/// <param name="No:"> どちらのチームか(0 or 1) </param>
 	void AddScore(int No);
-	/// <summary> AddScore:引数番目のベース状況を変える </summary>
+	/// <summary> SetBaseState:引数番目のベース状況を変える </summary>
 	/// <param name="base:"> ベース番号(0 ～ 3) </param>
 	/// <param name="state:"> 塁状況(true:ランナー有,false:ランナー無) </param>
 	void SetBaseState(int base, bool state);
+	/// <summary> SetBaseState:引数番目のベース状況を取得する </summary>
+	/// <param name="base:"> ベース番号(0 ～ 3) </param>
+	///  <returns> 塁状況(true:ランナー有,false:ランナー無) </returns>
+	bool GetBaseState(int base);
 	/// <summary> ResetCount:ストライク・ボールのカウントを0にリセットする </summary>
 	void ResetCount();
 	/// <summary> ChangeInning:どちらかのチームの攻撃が終わったら呼び出し、次のイニングの準備をする </summary>

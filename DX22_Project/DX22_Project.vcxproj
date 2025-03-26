@@ -194,6 +194,7 @@
     <ClCompile Include="PitchingCursor.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PolylineEffect.cpp" />
+    <ClCompile Include="Running.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneGame.cpp" />
     <ClCompile Include="SceneTitle.cpp" />
@@ -256,6 +257,7 @@
     <ClInclude Include="PitchingCursor.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PolylineEffect.h" />
+    <ClInclude Include="Running.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneGame.h" />
     <ClInclude Include="SceneTitle.h" />

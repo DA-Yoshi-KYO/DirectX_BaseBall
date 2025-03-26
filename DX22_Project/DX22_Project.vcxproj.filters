@@ -171,9 +171,6 @@
     <ClCompile Include="Minimap.cpp">
       <Filter>ソース ファイル\2DObject</Filter>
     </ClCompile>
-    <ClCompile Include="Object.cpp">
-      <Filter>ソース ファイル\3DObject</Filter>
-    </ClCompile>
     <ClCompile Include="Player.cpp">
       <Filter>ソース ファイル\3DObject</Filter>
     </ClCompile>
@@ -200,12 +197,6 @@
     </ClCompile>
     <ClCompile Include="Model.cpp">
       <Filter>ソース ファイル\Work</Filter>
-    </ClCompile>
-    <ClCompile Include="Goal.cpp">
-      <Filter>ソース ファイル\2DObject</Filter>
-    </ClCompile>
-    <ClCompile Include="CameraPlayer.cpp">
-      <Filter>ソース ファイル\Camera</Filter>
     </ClCompile>
     <ClCompile Include="BallUI.cpp">
       <Filter>ソース ファイル\2DObject</Filter>
@@ -285,6 +276,12 @@
     <ClCompile Include="CameraInplay.cpp">
       <Filter>ソース ファイル\Camera</Filter>
     </ClCompile>
+    <ClCompile Include="Fielding.cpp">
+      <Filter>ソース ファイル\BaseBall\Difence</Filter>
+    </ClCompile>
+    <ClCompile Include="Running.cpp">
+      <Filter>ソース ファイル\BaseBall\Attack</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MeshBuffer.h">
@@ -356,13 +353,7 @@
     <ClInclude Include="Field.h">
       <Filter>ヘッダー ファイル\3DObject</Filter>
     </ClInclude>
-    <ClInclude Include="Object.h">
-      <Filter>ヘッダー ファイル\3DObject</Filter>
-    </ClInclude>
     <ClInclude Include="Minimap.h">
-      <Filter>ヘッダー ファイル\2DObject</Filter>
-    </ClInclude>
-    <ClInclude Include="Goal.h">
       <Filter>ヘッダー ファイル\2DObject</Filter>
     </ClInclude>
     <ClInclude Include="Player.h">
@@ -391,9 +382,6 @@
     </ClInclude>
     <ClInclude Include="Model.h">
       <Filter>ヘッダー ファイル\Work</Filter>
-    </ClInclude>
-    <ClInclude Include="CameraPlayer.h">
-      <Filter>ヘッダー ファイル\Camera</Filter>
     </ClInclude>
     <ClInclude Include="BallUI.h">
       <Filter>ヘッダー ファイル\2DObject</Filter>
@@ -464,12 +452,21 @@
     <ClInclude Include="CameraInplay.h">
       <Filter>ヘッダー ファイル\Camera</Filter>
     </ClInclude>
+    <ClInclude Include="Fielding.h">
+      <Filter>ヘッダー ファイル\BaseBall\Difence</Filter>
+    </ClInclude>
+    <ClInclude Include="Running.h">
+      <Filter>ヘッダー ファイル\BaseBall\Attack</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="History.txt">
       <Filter>リソース ファイル\memo</Filter>
     </Text>
     <Text Include="task.txt">
+      <Filter>リソース ファイル\memo</Filter>
+    </Text>
+    <Text Include="Schedule.txt">
       <Filter>リソース ファイル\memo</Filter>
     </Text>
   </ItemGroup>

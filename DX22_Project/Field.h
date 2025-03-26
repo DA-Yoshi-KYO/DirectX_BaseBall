@@ -11,10 +11,10 @@ constexpr DirectX::XMFLOAT3 ce_fPitcherPos = { WORLD_AJUST, WORLD_AJUST-8.0f, WO
 
 enum class BaseKind
 {
-	Home,
 	First,
 	Second,
 	Third,
+	Home,
 
 	Max
 };
@@ -31,8 +31,9 @@ public:
 	void OnCollision(Collision::Result collision);
 	static std::unique_ptr<CField>& GetInstance();
 	DirectX::XMFLOAT3 GetPos();
-	DirectX::XMFLOAT3 GetBasePos(BaseKind No);
 	DirectX::XMFLOAT3 GetSize();
+	DirectX::XMFLOAT3 GetBasePos(BaseKind No);
+	DirectX::XMFLOAT3 GetBaseSize(BaseKind No);
 	DirectX::XMFLOAT3 GetRotation();
 private:
 	std::unique_ptr<Model> m_pField;
