@@ -205,6 +205,11 @@ void CBallCount::SetBaseState(int base, bool state)
 	m_tCount.m_bBaseState[base] = state;
 }
 
+bool CBallCount::GetBaseState(int base)
+{
+	return m_tCount.m_bBaseState[base];
+}
+
 void CBallCount::ResetCount()
 {
 	m_tCount.m_nStrikeCount = 0;

@@ -4,8 +4,8 @@
 #include "Collision.h"
 #include "PitchingCursor.h"
 
-constexpr float ce_fJustTyming = 133.0f;
-constexpr float ce_fHittingTyming = 5.0f;
+constexpr float ce_fJustTyming = 134.0f;
+constexpr float ce_fHittingTyming = 4.0f;
 constexpr float ce_fAngleMax = 60.0f;
 constexpr float ce_fHomeRunAngle = 30.0f;
 

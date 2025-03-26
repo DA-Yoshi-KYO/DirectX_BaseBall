@@ -16,8 +16,8 @@ enum class BallPhase
 	InPlay,
 };
 
-constexpr DirectX::XMFLOAT3 ce_fBallPos = { 0.0f,5.0f,70.0f };
-constexpr DirectX::XMFLOAT3 ce_fBallEndPos = { 0.0f,-4.0f,148.0f };
+constexpr DirectX::XMFLOAT3 ce_fBallPos = { 0.0f,-3.0f,30.0f };
+constexpr DirectX::XMFLOAT3 ce_fBallEndPos = { 0.0f,-5.0f,148.0f };
 
 class CBall : public CGameObject
 {
@@ -39,6 +39,7 @@ public:
 
 	DirectX::XMFLOAT3 GetPos();
 	void SetPos(DirectX::XMFLOAT3 pos);
+	void SetMove(DirectX::XMFLOAT3 direction);
 
 	static std::unique_ptr<CBall>& GetInstance();
 	BallPhase GetPhase();

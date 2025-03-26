@@ -5,7 +5,6 @@
 #include "Main.h"
 #include "BallCount.h"
 
-constexpr DirectX::XMFLOAT2 ce_fBallEndCenter = { 0.0f,0.0f };
 constexpr DirectX::XMFLOAT2 ce_fBallLimitX = { 2.7f,-2.7f };
 constexpr DirectX::XMFLOAT2 ce_fBallLimitY = { -2.7f,2.3f };
 constexpr  DirectX::XMFLOAT3 ce_fBallSize = { 0.5f,0.5f,0.5f };
@@ -199,6 +198,11 @@ DirectX::XMFLOAT3 CBall::GetPos()
 void CBall::SetPos(DirectX::XMFLOAT3 pos)
 {
 	m_tParam.pos = pos;
+}
+
+void CBall::SetMove(DirectX::XMFLOAT3 direction)
+{
+	m_fMove = direction;
 }
 
 std::unique_ptr<CBall>& CBall::GetInstance()
