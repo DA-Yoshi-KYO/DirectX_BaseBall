@@ -4,6 +4,7 @@
 #include "Ball.h"
 #include "BallCount.h"
 #include "Input.h"
+#include "Running.h"
 
 constexpr  float ce_fDifencePower = 0.2f;
 constexpr  float ce_fThrowingPower = 4.0f;
@@ -65,59 +66,61 @@ void CFielding::Update()
 		m_bHold = false;
 		break;
 	case BallPhase::InPlay:
-		if (!m_bHold) m_nOperationNo = OperationSearch();
-		else
+		if (!pBallCount->GetEndInplay())
 		{
-			m_nOperationNo = nHoldNo;
-			pBall->SetPos(m_tParam[m_nOperationNo].pos);
-			m_fThrowDirection = {};
-		}
-
-		if (IsKeyPress('W')) m_tParam[m_nOperationNo].pos.z -= 0.5f;
-		if (IsKeyPress('S')) m_tParam[m_nOperationNo].pos.z += 0.5f;
-		if (IsKeyPress('D')) m_tParam[m_nOperationNo].pos.x -= 0.5f;
-		if (IsKeyPress('A')) m_tParam[m_nOperationNo].pos.x += 0.5f;
-		for (int i = 0; i < (int)BaseKind::Max; i++)
-		{
-			m_nBaseNearNo[i] = -1;
-		}
-		m_nBaseNearNo[(int)BaseKind::First] = BaseSearch(BaseKind::First);
-		m_nBaseNearNo[(int)BaseKind::Second] = BaseSearch(BaseKind::Second);
-		m_nBaseNearNo[(int)BaseKind::Third] = BaseSearch(BaseKind::Third);
-		m_nBaseNearNo[(int)BaseKind::Home] = BaseSearch(BaseKind::Home);
-		BaseCover();
-
-
-		if (!m_bHold)
-		{
-			Collision::Info ballCollision = pBall->GetCollision();
-			for (int i = 0; i < (int)FieldMember::Max; i++)
+			if (!m_bHold) m_nOperationNo = OperationSearch();
+			else
 			{
-				m_Collision[i].type = Collision::eBox;
-				m_Collision[i].box.center = m_tParam[i].pos;
-				m_Collision[i].box.size = m_tParam[i].size;
+				m_nOperationNo = nHoldNo;
+				pBall->SetPos(m_tParam[m_nOperationNo].pos);
+				m_fThrowDirection = {};
+			}
 
-				Collision::Result result = Collision::Hit(ballCollision, m_Collision[i]);
-				if (result.isHit)
+			if (IsKeyPress('W')) m_tParam[m_nOperationNo].pos.z -= 0.5f;
+			if (IsKeyPress('S')) m_tParam[m_nOperationNo].pos.z += 0.5f;
+			if (IsKeyPress('D')) m_tParam[m_nOperationNo].pos.x -= 0.5f;
+			if (IsKeyPress('A')) m_tParam[m_nOperationNo].pos.x += 0.5f;
+			for (int i = 0; i < (int)BaseKind::Max; i++)
+			{
+				m_nBaseNearNo[i] = -1;
+			}
+			m_nBaseNearNo[(int)BaseKind::First] = BaseSearch(BaseKind::First);
+			m_nBaseNearNo[(int)BaseKind::Second] = BaseSearch(BaseKind::Second);
+			m_nBaseNearNo[(int)BaseKind::Third] = BaseSearch(BaseKind::Third);
+			m_nBaseNearNo[(int)BaseKind::Home] = BaseSearch(BaseKind::Home);
+			BaseCover();
+
+
+			if (!m_bHold)
+			{
+				Collision::Info ballCollision = pBall->GetCollision();
+				for (int i = 0; i < (int)FieldMember::Max; i++)
 				{
-					nHoldNo = i;
-					m_bHold = true;
-					pBallCount->SetEndInplay(CBallCount::InplayElement::HoldBall, true);
-					if (pBall->GetIsFry())
+					m_Collision[i].type = Collision::eBox;
+					m_Collision[i].box.center = m_tParam[i].pos;
+					m_Collision[i].box.size = m_tParam[i].size;
+
+					Collision::Result result = Collision::Hit(ballCollision, m_Collision[i]);
+					if (result.isHit)
 					{
-						pBallCount->AddOutCount();
+						nHoldNo = i;
+						m_bHold = true;
+						pBallCount->SetEndInplay(CBallCount::InplayElement::HoldBall, true);
+						if (pBall->GetIsFry())
+						{
+							CRunning::SetOut(CRunning::RunnerKind::BatterRunner, true);
+						}
 					}
 				}
 			}
+			else
+			{
+				if (IsKeyPress('1'))Throwing(BaseKind::First);
+				if (IsKeyPress('2'))Throwing(BaseKind::Second);
+				if (IsKeyPress('3'))Throwing(BaseKind::Third);
+				if (IsKeyPress('4'))Throwing(BaseKind::Home);
+			}
 		}
-		else
-		{
-			if (IsKeyPress('1'))Throwing(BaseKind::First);
-			if (IsKeyPress('2'))Throwing(BaseKind::Second);
-			if (IsKeyPress('3'))Throwing(BaseKind::Third);
-			if (IsKeyPress('4'))Throwing(BaseKind::Home);
-		}
-
 		break;
 	default:
 		break;

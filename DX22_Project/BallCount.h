@@ -67,6 +67,7 @@ public:
 		TOP,
 		BOTTOM
 	};
+	Inning GetInning();
 
 	// 先行チーム・後攻チーム
 	enum class Team
@@ -78,6 +79,7 @@ public:
 	enum class InplayElement
 	{
 		HoldBall,
+		Running,
 		Max
 	};
 	bool m_bInplay[(int)InplayElement::Max];

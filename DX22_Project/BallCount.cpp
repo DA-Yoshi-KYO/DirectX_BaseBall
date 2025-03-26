@@ -268,6 +268,12 @@ bool CBallCount::IsEnd()
 	return m_tCount.m_bEnd;
 }
 
+CBallCount::Inning CBallCount::GetInning()
+{
+	if (m_tCount.m_bTop)Inning::TOP;
+	return Inning::BOTTOM;
+}
+
 void CBallCount::SetEndInplay(InplayElement ElemEndInplay, bool state)
 {
 	m_bInplay[(int)ElemEndInplay] = state;
