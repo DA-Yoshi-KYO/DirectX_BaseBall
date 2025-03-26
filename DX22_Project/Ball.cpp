@@ -4,6 +4,7 @@
 #include "Sprite.h"
 #include "Main.h"
 #include "BallCount.h"
+#include "Running.h"
 
 constexpr DirectX::XMFLOAT2 ce_fBallLimitX = { 2.7f,-2.7f };
 constexpr DirectX::XMFLOAT2 ce_fBallLimitY = { -2.7f,2.3f };
@@ -119,7 +120,11 @@ void CBall::SetModel(ModelParam param, Model* model, bool isAnime)
 void CBall::OnCollision(Collision::Result collision)
 {
 	// フェンスを越えていたらホームラン
-	if (m_tParam.pos.y >= ce_fFenceHeight + WORLD_AJUST)return;
+	if (m_tParam.pos.y >= ce_fFenceHeight + WORLD_AJUST)
+	{
+		CRunning::HomeRun();
+		return;
+	}
 
 	// 越えていなかったらフェンス反射の計算をする
 	// 計算に使用する変数を定義

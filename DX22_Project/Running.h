@@ -11,7 +11,7 @@ public:
 	virtual void Update()override;
 	virtual void Draw()override;
 	virtual void SetModel(ModelParam param, Model* model, bool isAnime = false)override;
-private:
+
 	enum class RunnerKind
 	{
 		FirstRunner,
@@ -19,16 +19,28 @@ private:
 		ThirdRunner,
 		BatterRunner,
 
-		Max
+		Max,
+
+		HomeIn = 99
 	};
+private:
 	std::unique_ptr<Model> m_pModel;
-	struct RunnnerParam
+
+	// ランナーの統合情報
+	struct RunnerParam
 	{
-		ModelParam m_tModelParam;
-		bool m_bAlive;
-		bool m_bStayPrevBase;
-		bool m_bRunning;
-		RunnerKind m_eArriveKind;
-		float m_fSpeed;
-	}m_tRunnerParam[(int)RunnerKind::Max];
+		ModelParam m_tModelParam;	// モデルの統合情報
+		bool m_bAlive;				// 自分が走者として生きているか
+		bool m_bStayPrevBase;		// インプレーが始まる前の自分の塁に着いているか
+		bool m_bRunning;			// 走塁中かどうか
+		RunnerKind m_eArriveKind;	// インプレー中に到達した塁
+		float m_fSpeed;				// 走力
+	}static m_tRunnerParam[(int)RunnerKind::Max];
+
+	void RunnerMove(RunnerKind kind);
+	void RunnerCheck();
+	void BaseStateCheck();
+public:
+	static void SetOut(RunnerKind kind,bool isForcePlay);
+	static void HomeRun();
 };
