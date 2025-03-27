@@ -4,6 +4,14 @@
 #include "GameObject.h"
 #include "Collision.h"
 #include "Field.h"
+#include "Running.h"
+
+enum class ChatchPattern
+{
+	Grounder,
+	Fry,
+	NotChatch
+};
 
 class CFielding : public CGameObject
 {
@@ -40,7 +48,10 @@ private:
 	int OperationSearch();
 	int BaseSearch(BaseKind kind);
 	DirectX::XMFLOAT3 m_fThrowDirection;
+	ChatchPattern m_eChatch;
+	void OutProcess(CRunning::RunnerParam* RunnerParam,BaseKind kind);
 public:
 	Collision::Info GetCollision(FieldMember Member);
 	DirectX::XMFLOAT3 GetThrowDirection();
+	ChatchPattern GetChatchPattern();
 };

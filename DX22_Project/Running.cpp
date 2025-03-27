@@ -133,6 +133,11 @@ void CRunning::SetModel(ModelParam param, Model* model, bool isAnime)
 	}
 }
 
+CRunning::RunnerParam CRunning::GetRannerParam(RunnerKind kind)
+{
+	return m_tRunnerParam[(int)kind];
+}
+
 void CRunning::RunnerMove(RunnerKind kind)
 {
 	CField* pField = CField::GetInstance().get();
@@ -259,29 +264,22 @@ void CRunning::BaseStateCheck()
 	{
 		for (int i = 0; i < (int)RunnerKind::Max; i++)
 		{
+			pBallCount->SetBaseState((int)m_tRunnerParam[i].m_eArriveKind, false);
 			if (m_tRunnerParam[i].m_eArriveKind == RunnerKind::HomeIn)continue;
 			if(m_tRunnerParam[i].m_bAlive)pBallCount->SetBaseState((int)m_tRunnerParam[i].m_eArriveKind, true);
 		}
 	}
 }
 
-void CRunning::SetOut(RunnerKind kind, bool isForcePlay)
+void CRunning::SetOut(RunnerKind kind)
 {
 	CBallCount* pBallCount = CBallCount::GetInstance().get();
 
 	if (m_tRunnerParam[(int)kind].m_bAlive)
 	{
-		if (!isForcePlay)
-		{
-
-		}
-		else 
-		{
-			m_tRunnerParam[(int)kind].m_bAlive = false;
-			pBallCount->AddOutCount();
-		}
+		m_tRunnerParam[(int)kind].m_bAlive = false;
+		pBallCount->AddOutCount();
 	}
-
 }
 
 void CRunning::HomeRun()

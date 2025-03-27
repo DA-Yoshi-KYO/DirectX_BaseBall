@@ -24,14 +24,20 @@ CAttack::~CAttack()
 
 void CAttack::Update()
 {
-	m_pBattingCursor->Update();
-	m_pBatting->Update();
+	if (CBall::GetInstance()->GetPhase() == BallPhase::Batting)
+	{
+		m_pBattingCursor->Update();
+		m_pBatting->Update();
+	}
 	m_pRunning->Update();
 }
 
 void CAttack::Draw()
 {
-	m_pBattingCursor->Draw();
-	m_pBatting->Draw();
+	if (CBall::GetInstance()->GetPhase() == BallPhase::Batting)
+	{
+		m_pBattingCursor->Draw();
+		m_pBatting->Draw();
+	}
 	m_pRunning->Draw();
 }

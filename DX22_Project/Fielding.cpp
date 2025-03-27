@@ -11,7 +11,7 @@ constexpr  float ce_fThrowingPower = 4.0f;
 
 CFielding::CFielding()
 	: m_bHold(false), m_nOperationNo(0), m_nBaseNearNo{ -1,-1,-1,-1 }
-	, m_bBaseCovered{}
+	, m_bBaseCovered{},m_eChatch(ChatchPattern::Fry)
 {
 	for (int i = 0; i < (int)FieldMember::Max; i++)
 	{
@@ -64,6 +64,7 @@ void CFielding::Update()
 		m_tParam[(int)FieldMember::Center].pos = { fFieldPos.x,fFieldPos.y, fFieldPos.z - fFieldPosLine.z * 2.0f };
 		m_tParam[(int)FieldMember::Right].pos = { fFieldPos.x - fFieldPosLine.x * 2.3f,fFieldPos.y, fFieldPos.z - fFieldPosLine.z * 1.3f };
 		m_bHold = false;
+		m_eChatch = ChatchPattern::NotChatch;
 		break;
 	case BallPhase::InPlay:
 		if (!pBallCount->GetEndInplay())
@@ -108,8 +109,11 @@ void CFielding::Update()
 						pBallCount->SetEndInplay(CBallCount::InplayElement::HoldBall, true);
 						if (pBall->GetIsFry())
 						{
-							CRunning::SetOut(CRunning::RunnerKind::BatterRunner, true);
+							// フライアウトの処理
+							CRunning::SetOut(CRunning::RunnerKind::BatterRunner);
+							m_eChatch = ChatchPattern::Fry;
 						}
+						if(m_eChatch != ChatchPattern::Fry)m_eChatch = ChatchPattern::Grounder;
 					}
 				}
 			}
@@ -119,6 +123,19 @@ void CFielding::Update()
 				if (IsKeyPress('2'))Throwing(BaseKind::Second);
 				if (IsKeyPress('3'))Throwing(BaseKind::Third);
 				if (IsKeyPress('4'))Throwing(BaseKind::Home);
+
+
+				// フォースプレイの処理
+				CRunning::RunnerParam tParam[(int)CRunning::RunnerKind::Max];
+				for (int i = 0; i < (int)CRunning::RunnerKind::Max; i++)
+				{
+					tParam[i] = CRunning::GetRannerParam((CRunning::RunnerKind)i);
+				}
+				for (int i = 0; i < (int)BaseKind::Max; i++)
+				{
+					OutProcess(tParam, (BaseKind)i);
+				}
+				
 			}
 		}
 		break;
@@ -219,14 +236,15 @@ void CFielding::BaseCover()
 
 void CFielding::Throwing(BaseKind kind)
 {
+	if(!m_bBaseCovered[(int)kind]) return;
+
 	CBall* pBall = CBall::GetInstance().get();
-	CField* pField = CField::GetInstance().get();
 	
-	DirectX::XMFLOAT3 fBasePos = pField->GetBasePos(kind);
+	DirectX::XMFLOAT3 fBaseCoverPos = m_tParam[m_nBaseNearNo[(int)kind]].pos;
 	DirectX::XMFLOAT3 fBallPos = pBall->GetPos();
 	DirectX::XMVECTOR vecBallPos = DirectX::XMLoadFloat3(&fBallPos);
-	DirectX::XMVECTOR vecBasePos = DirectX::XMLoadFloat3(&fBasePos);
-	DirectX::XMVECTOR vecDirection = DirectX::XMVectorSubtract(vecBasePos, vecBallPos);
+	DirectX::XMVECTOR vecBaseCoverPos = DirectX::XMLoadFloat3(&fBaseCoverPos);
+	DirectX::XMVECTOR vecDirection = DirectX::XMVectorSubtract(vecBaseCoverPos, vecBallPos);
 	DirectX::XMVECTOR vecThrowLength =  DirectX::XMVector3Length(vecDirection);
 	float fThrowAngle = DirectX::XMVectorGetX(vecThrowLength);
 	fThrowAngle /= 400.0f;
@@ -294,6 +312,95 @@ int CFielding::BaseSearch(BaseKind kind)
 	return nMostNearNo;
 }
 
+void CFielding::OutProcess(CRunning::RunnerParam* RunnerParam, BaseKind kind)
+{
+	CField* pField = CField::GetInstance().get();
+
+	DirectX::XMFLOAT3 fBasePos = pField->GetBasePos(kind);
+	DirectX::XMFLOAT3 fBaseSize = pField->GetBaseSize(kind);
+	Collision::Info2D op;
+	Collision::Info2D base;
+	op.type = Collision::eSquare;
+	op.square.pos = { m_tParam[m_nOperationNo].pos.x,m_tParam[m_nOperationNo].pos.z };
+	op.square.size = { m_tParam[m_nOperationNo].size.x,m_tParam[m_nOperationNo].size.z };
+	base.type = Collision::eSquare;
+	base.square.pos = { fBasePos.x,fBasePos.z };
+	base.square.size = { fBaseSize.x,fBaseSize.z };
+
+	// ベースを踏んだ時
+	if (Collision::Hit2D(op, base).isHit)
+	{
+		switch (kind)
+		{
+			// 一塁ベースを踏む事で取るアウト
+		case BaseKind::First:
+			// ランナー飛び出し時の処理
+			if (m_eChatch == ChatchPattern::Fry && // 打球がフライかつ
+				RunnerParam[(int)CRunning::RunnerKind::FirstRunner].m_bAlive &&	// 一塁ランナーが存在している状態かつ
+				!RunnerParam[(int)CRunning::RunnerKind::FirstRunner].m_bStayPrevBase)	// ランナーが元の塁から離れている状態
+			{
+				CRunning::SetOut(CRunning::RunnerKind::FirstRunner);	// 一塁ランナーをアウトにする
+			}
+			// 送球アウトの処理
+			if (m_eChatch == ChatchPattern::Grounder &&	// 打球がゴロかつ
+				RunnerParam[(int)CRunning::RunnerKind::BatterRunner].m_bAlive &&	// バッターランナーが存在している状態かつ
+				RunnerParam[(int)CRunning::RunnerKind::BatterRunner].m_eArriveKind != CRunning::RunnerKind::FirstRunner)	// バッターランナーが一塁に到達してない時
+			{
+				CRunning::SetOut(CRunning::RunnerKind::BatterRunner);	// バッターランナーをアウトにする
+			}
+			break;
+		case BaseKind::Second:
+			// ランナー飛び出し時の処理
+			if (m_eChatch == ChatchPattern::Fry && // 打球がフライかつ
+				RunnerParam[(int)CRunning::RunnerKind::SecondRunner].m_bAlive &&	// 二塁ランナーが存在している状態かつ
+				!RunnerParam[(int)CRunning::RunnerKind::SecondRunner].m_bStayPrevBase)	// ランナーが元の塁から離れている状態
+			{
+				CRunning::SetOut(CRunning::RunnerKind::SecondRunner);	// 二塁ランナーをアウトにする
+			}
+			// 送球アウトの処理
+			if (m_eChatch == ChatchPattern::Grounder &&	// 打球がゴロかつ
+				RunnerParam[(int)CRunning::RunnerKind::FirstRunner].m_bAlive &&	// 一塁ランナーが存在している状態かつ
+				RunnerParam[(int)CRunning::RunnerKind::FirstRunner].m_eArriveKind != CRunning::RunnerKind::SecondRunner &&	// 一塁ランナーが二塁に到達してない時かつ
+				RunnerParam[(int)CRunning::RunnerKind::BatterRunner].m_bAlive)	// 手前にランナーが詰まっている時
+			{
+				CRunning::SetOut(CRunning::RunnerKind::FirstRunner);	// 一塁ランナーをアウトにする
+			}
+			break;
+		case BaseKind::Third:
+			// ランナー飛び出し時の処理
+			if (m_eChatch == ChatchPattern::Fry && // 打球がフライかつ
+				RunnerParam[(int)CRunning::RunnerKind::ThirdRunner].m_bAlive &&	// 三塁ランナーが存在している状態かつ
+				!RunnerParam[(int)CRunning::RunnerKind::ThirdRunner].m_bStayPrevBase)	// ランナーが元の塁から離れている状態
+			{
+				CRunning::SetOut(CRunning::RunnerKind::ThirdRunner);	// 三塁ランナーをアウトにする
+			}
+			// 送球アウトの処理
+			if (m_eChatch == ChatchPattern::Grounder &&	// 打球がゴロかつ
+				RunnerParam[(int)CRunning::RunnerKind::SecondRunner].m_bAlive &&	// 二塁ランナーが存在している状態かつ
+				RunnerParam[(int)CRunning::RunnerKind::SecondRunner].m_eArriveKind != CRunning::RunnerKind::ThirdRunner &&	// 二塁ランナーが三塁に到達してない時かつ
+				RunnerParam[(int)CRunning::RunnerKind::FirstRunner].m_bAlive)	// 手前にランナーが詰まっている時
+			{
+				CRunning::SetOut(CRunning::RunnerKind::SecondRunner);	// 二塁ランナーをアウトにする
+			}
+			break;
+		case BaseKind::Home:
+			if (m_eChatch == ChatchPattern::Grounder &&	// 打球がゴロかつ
+				RunnerParam[(int)CRunning::RunnerKind::ThirdRunner].m_bAlive &&	// 三塁ランナーが存在している状態かつ
+				RunnerParam[(int)CRunning::RunnerKind::ThirdRunner].m_eArriveKind != CRunning::RunnerKind::HomeIn &&	// 三塁ランナーが本塁に到達してない時かつ
+				RunnerParam[(int)CRunning::RunnerKind::SecondRunner].m_bAlive)	// 手前にランナーが詰まっている時
+			{
+				CRunning::SetOut(CRunning::RunnerKind::ThirdRunner);	// 三塁ランナーをアウトにする
+			}
+			break;
+		case BaseKind::Max:
+			break;
+		default:
+			break;
+		}
+	}
+
+}
+
 Collision::Info CFielding::GetCollision(FieldMember Member)
 {
 	return Collision::Info();
@@ -302,4 +409,9 @@ Collision::Info CFielding::GetCollision(FieldMember Member)
 DirectX::XMFLOAT3 CFielding::GetThrowDirection()
 {
 	return m_fThrowDirection;
+}
+
+ChatchPattern CFielding::GetChatchPattern()
+{
+	return ChatchPattern();
 }
