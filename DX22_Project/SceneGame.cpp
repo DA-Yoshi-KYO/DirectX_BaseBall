@@ -89,6 +89,7 @@ void CSceneGame::Update()
 void CSceneGame::Draw()
 {
 	CCamera* pCamera = CCamera::GetInstance(CCamera::GetCameraKind()).get();
+	CBall* pBall = CBall::GetInstance().get();
 	//DrawMinimap();
 
 	// GeometoryへのView,Projection設定
@@ -103,7 +104,10 @@ void CSceneGame::Draw()
 	SetRender3D();
 
 	CField::GetInstance()->Draw();	// フィールドの描画
-	CStrikeZone::GetInstance()->Draw();
+	if (pBall->GetPhase() == BallPhase::Batting)
+	{
+		CStrikeZone::GetInstance()->Draw();
+	}
 	switch (m_nPlaying)
 	{
 	case (int)Playing::Attack:
@@ -116,9 +120,11 @@ void CSceneGame::Draw()
 	default:
 		break;
 	}
-	CBall::GetInstance()->Draw();
-	CBallCount::GetInstance()->Draw();
-
+	pBall->Draw();
+	if (pBall->GetPhase() == BallPhase::Batting)
+	{
+		CBallCount::GetInstance()->Draw();
+	}
 	//m_pPlayer->Draw();	// プレイヤーの描画
 
 	// 2D描画

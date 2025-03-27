@@ -23,10 +23,6 @@ public:
 
 		HomeIn = 99
 	};
-private:
-	std::unique_ptr<Model> m_pModel;
-
-	// ランナーの統合情報
 	struct RunnerParam
 	{
 		ModelParam m_tModelParam;	// モデルの統合情報
@@ -35,12 +31,17 @@ private:
 		bool m_bRunning;			// 走塁中かどうか
 		RunnerKind m_eArriveKind;	// インプレー中に到達した塁
 		float m_fSpeed;				// 走力
-	}static m_tRunnerParam[(int)RunnerKind::Max];
+	};
+private:
+	std::unique_ptr<Model> m_pModel; 
 
+	// ランナーの統合情報
+	static RunnerParam m_tRunnerParam[(int)RunnerKind::Max];
 	void RunnerMove(RunnerKind kind);
 	void RunnerCheck();
 	void BaseStateCheck();
 public:
-	static void SetOut(RunnerKind kind,bool isForcePlay);
+	static RunnerParam GetRannerParam(RunnerKind kind);
+	static void SetOut(RunnerKind kind);
 	static void HomeRun();
 };

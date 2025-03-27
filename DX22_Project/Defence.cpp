@@ -2,6 +2,7 @@
 #include "Camera.h"
 #include "StrikeZone.h"
 #include "SceneGame.h"
+#include "Ball.h"
 
 CDefence::CDefence()
 	: m_pPitchingCursor(nullptr)
@@ -29,14 +30,20 @@ CDefence::~CDefence()
 
 void CDefence::Update()
 {
-	m_pPitchingCursor->Update();
-	m_pPitching->Update();
+	if (CBall::GetInstance()->GetPhase() == BallPhase::Batting)
+	{
+		m_pPitchingCursor->Update();
+		m_pPitching->Update();
+	}
 	m_pFielding->Update();
 }
 
 void CDefence::Draw()
 {
-	m_pPitchingCursor->Draw();
-	m_pPitching->Draw();
+	if (CBall::GetInstance()->GetPhase() == BallPhase::Batting)
+	{
+		m_pPitchingCursor->Draw();
+		m_pPitching->Draw();
+	}
 	m_pFielding->Draw();
 }
