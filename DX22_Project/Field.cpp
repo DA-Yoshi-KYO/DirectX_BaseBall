@@ -151,7 +151,7 @@ void CField::InitModel()
 	m_pHomeBase = std::make_unique<Model>();
 	if(!m_pHomeBase->Load(MODELPASS("HomeBase.obj")))ERROR_MESSAGE("HomeBase.obj");
 
-	m_tBaseParam[(int)BaseKind::Home].pos = { ce_fPitcherPos.x, ce_fPitcherPos.y,ce_fPitcherPos.z + 75.0f };
+	m_tBaseParam[(int)BaseKind::Home].pos = { ce_fPitcherPos.x, m_tFieldParam.pos.y,ce_fPitcherPos.z + 75.0f };
 	m_tBaseParam[(int)BaseKind::Home].size = { 1.5f,0.5f,1.5f };
 	m_tBaseParam[(int)BaseKind::Home].rotate = { 0.0f,0.0f,0.0f };
 
@@ -160,9 +160,9 @@ void CField::InitModel()
 		m_tBaseParam[i].size = { 3.0f,3.0f,3.0f };
 		m_tBaseParam[i].rotate = { 0.0f,DirectX::XMConvertToRadians(45.0f),0.0f};
 	}
-	m_tBaseParam[(int)BaseKind::First].pos = { ce_fPitcherPos.x - 75.0f,ce_fPitcherPos.y,ce_fPitcherPos.z - 35.0f};
-	m_tBaseParam[(int)BaseKind::Second].pos = { ce_fPitcherPos.x ,ce_fPitcherPos.y,ce_fPitcherPos.z - 115.0f };
-	m_tBaseParam[(int)BaseKind::Third].pos = { ce_fPitcherPos.x + 75.0f,ce_fPitcherPos.y,ce_fPitcherPos.z - 35.0f };
+	m_tBaseParam[(int)BaseKind::First].pos = { ce_fPitcherPos.x - 75.0f,m_tFieldParam.pos.y,ce_fPitcherPos.z - 35.0f};
+	m_tBaseParam[(int)BaseKind::Second].pos = { ce_fPitcherPos.x ,m_tFieldParam.pos.y,ce_fPitcherPos.z - 115.0f };
+	m_tBaseParam[(int)BaseKind::Third].pos = { ce_fPitcherPos.x + 75.0f,m_tFieldParam.pos.y,ce_fPitcherPos.z - 35.0f };
 }
 
 void CField::InitCollision()

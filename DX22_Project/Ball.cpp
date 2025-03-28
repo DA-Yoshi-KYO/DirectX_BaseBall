@@ -294,7 +294,7 @@ void CBall::UpdateInPlay()
  
 	if (m_tParam.pos.y < 0.0f + WORLD_AJUST + ce_fGroundY)
 	{
-		m_bFry = false;
+		if(CFielding::GetChatchPattern() == ChatchPattern::NotChatch)m_bFry = false;
 		m_fMove.x *= 0.95f;
 		m_fMove.y *= 0.5f;
 		m_fMove.z *= 0.95f;

@@ -44,14 +44,16 @@ private:
 	void BaseCover();
 	void Throwing(BaseKind kind);
 	bool m_bHold;
+	static bool m_bFryChatched;
 	bool m_bBaseCovered[(int)BaseKind::Max];
 	int OperationSearch();
 	int BaseSearch(BaseKind kind);
 	DirectX::XMFLOAT3 m_fThrowDirection;
-	ChatchPattern m_eChatch;
+	static ChatchPattern m_eChatch;
 	void OutProcess(CRunning::RunnerParam* RunnerParam,BaseKind kind);
 public:
 	Collision::Info GetCollision(FieldMember Member);
 	DirectX::XMFLOAT3 GetThrowDirection();
-	ChatchPattern GetChatchPattern();
+	static ChatchPattern GetChatchPattern();
+	static bool GetFryChatched();
 };
