@@ -28,11 +28,18 @@
 
 class CBallCount
 {
+public:
+	enum class InningHalf
+	{
+		Top,
+		Bottom
+	};
+
 private:
 	CBallCount();
 public:
 	~CBallCount();
-	void Init();
+	void Init(InningHalf Player1Harf);
 	void Update();
 	void Draw();
 
@@ -43,9 +50,8 @@ public:
 	void AddStrikeCount(bool isFoul = false);
 	/// <summary> AddOutCount:アウトのカウントを1増やす </summary>
 	void AddOutCount();
-	/// <summary> AddScore:引数のチームのスコアを1増やす </summary>
-	/// <param name="No:"> どちらのチームか(0 or 1) </param>
-	void AddScore(int No);
+	/// <summary> AddScore:攻撃チームのスコアを1増やす </summary>
+	void AddScore();
 	/// <summary> SetBaseState:引数番目のベース状況を変える </summary>
 	/// <param name="base:"> ベース番号(0 ～ 3) </param>
 	/// <param name="state:"> 塁状況(true:ランナー有,false:ランナー無) </param>
@@ -63,19 +69,18 @@ public:
 	bool IsEnd();
 
 	// オモテ・ウラ
-	enum class Inning
-	{
-		TOP,
-		BOTTOM
-	};
-	Inning GetInning();
-
-	// 先行チーム・後攻チーム
 	enum class Team
 	{
-		TOP,
-		BOTTOM
+		Player1,
+		Player2
 	};
+
+	struct GameState 
+	{
+		InningHalf half = InningHalf::Top; // 最初は表
+		Team offense;
+		Team defense;
+	}m_tGameState;
 
 	// インプレー修了条件要素
 	enum class InplayElement
@@ -113,9 +118,10 @@ private:
 		bool m_bBaseState[4];
 		int m_nScore[2];
 		int m_nInning;
-		bool m_bTop;
 		bool m_bEnd;
 	}m_tCount;
+
+	bool m_bPlayer1Top;
 
 private:
 	// 内部処理

@@ -432,7 +432,7 @@ void CRunning::RunnerMove(RunnerKind kind)
 			{
 				m_tRunnerParam[(int)kind].m_eArriveKind = BaseKind::Home;
 				m_tRunnerParam[(int)kind].m_bAlive = false;
-				pBallCount->AddScore((int)pBallCount->GetInning());
+				pBallCount->AddScore();
 			}
 		}
 		break;
@@ -568,7 +568,7 @@ void CRunning::HomeRun()
 		if (m_tRunnerParam[i].m_bAlive)
 		{
 			// ランナーの数だけスコアを追加する
-			pBallCount->AddScore((int)pBallCount->GetInning());
+			pBallCount->AddScore();
 			// ランナーを消す
 			m_tRunnerParam[i].m_bAlive = false;
 			// 塁状況をリセットする

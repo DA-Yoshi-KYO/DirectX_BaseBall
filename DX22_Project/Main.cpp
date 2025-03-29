@@ -9,7 +9,6 @@
 #include "SceneTitle.h"
 #include "SceneGame.h"
 #include "FadeBlack.h"
-#include <dinput.h>
 #include "imgui.h"
 #include "imgui_impl_dx11.h"
 #include "imgui_impl_win32.h"
@@ -18,20 +17,12 @@
 CScene* g_pScene; // シーン 
 CFade* g_pFade; // フェード 
 
-IDirectInput8* g_pDirectInput = nullptr;
-IDirectInputDevice8* g_pKeyboardDevice = nullptr;
-
 HRESULT Init(HWND hWnd, UINT width, UINT height)
 {
 	HRESULT hr;
 	// DirectX初期化
 	hr = InitDirectX(hWnd, width, height, false);
 	// 初期化の例
-	hr = DirectInput8Create(GetModuleHandle(nullptr), DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&g_pDirectInput, nullptr);
-	hr = g_pDirectInput->CreateDevice(GUID_SysKeyboard, &g_pKeyboardDevice, nullptr);
-	hr = g_pKeyboardDevice->SetDataFormat(&c_dfDIKeyboard);
-	hr = g_pKeyboardDevice->SetCooperativeLevel(hWnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE);
-	g_pKeyboardDevice->Acquire();
 	if (FAILED(hr)) { return hr; }
 
 	IMGUI_CHECKVERSION();

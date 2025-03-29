@@ -101,7 +101,7 @@ void CBall::SetModel(ModelParam param, Model* model, bool isAnime)
 	// モデルに使用する頂点ピクセルシェーダーを設定
 	model->SetPixelShader(ShaderList::GetPS(ShaderList::PS_LAMBERT));
 
-	for (int i = 0; i < model->GetMeshNum(); i++)
+	for (UINT i = 0; i < model->GetMeshNum(); i++)
 	{
 		// モデルのメッシュの取得
 		Model::Mesh mesh = *model->GetMesh(i);
