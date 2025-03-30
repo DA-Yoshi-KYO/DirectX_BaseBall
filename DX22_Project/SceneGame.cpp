@@ -17,7 +17,7 @@ CSceneGame::CSceneGame()
 {
 
 	// 各種初期化処理
-	CBallCount::GetInstance()->Init();
+	CBallCount::GetInstance()->Init(CBallCount::InningHalf::Top);
 	m_pAttack = std::make_unique<CAttack>();
 	m_pDefence = std::make_unique<CDefence>();
 
@@ -63,9 +63,8 @@ void CSceneGame::Update()
 
 	CField::GetInstance()->Update();		// フィールド
 	CStrikeZone::GetInstance()->Update();
-		m_pDefence->Update();
-
-		m_pAttack->Update();
+	m_pDefence->Update();
+	m_pAttack->Update();
 
 	CBall::GetInstance()->Update();
 	CBallCount::GetInstance()->Update();
@@ -95,8 +94,8 @@ void CSceneGame::Draw()
 	{
 		CStrikeZone::GetInstance()->Draw();
 	}
-		m_pDefence->Draw();
-		m_pAttack->Draw();
+	m_pDefence->Draw();
+	m_pAttack->Draw();
 
 	pBall->Draw();
 	if (pBall->GetPhase() == BallPhase::Batting)

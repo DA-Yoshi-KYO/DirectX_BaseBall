@@ -12,6 +12,7 @@
 #include "imgui.h"
 #include "imgui_impl_dx11.h"
 #include "imgui_impl_win32.h"
+#include "Controller.h"
 
 //--- グローバル変数
 CScene* g_pScene; // シーン 
@@ -73,6 +74,8 @@ void Update()
 	UpdateInput();
 	g_pScene->RootUpdate();
 	srand(timeGetTime());
+
+	Controller_Update();
 
 	// シーン切り替え判定 
 	if (g_pScene->ChangeScene()) {

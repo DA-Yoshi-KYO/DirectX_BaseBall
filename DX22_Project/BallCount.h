@@ -81,6 +81,8 @@ public:
 		Team offense;
 		Team defense;
 	}m_tGameState;
+	Team GetOffenseTeam();
+	Team GetDefenseTeam();
 
 	// インプレー修了条件要素
 	enum class InplayElement

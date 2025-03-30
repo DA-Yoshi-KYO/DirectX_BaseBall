@@ -282,6 +282,9 @@
     <ClCompile Include="Running.cpp">
       <Filter>ソース ファイル\BaseBall\Attack</Filter>
     </ClCompile>
+    <ClCompile Include="Controller.cpp">
+      <Filter>ソース ファイル\Work</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MeshBuffer.h">
@@ -457,6 +460,9 @@
     </ClInclude>
     <ClInclude Include="Running.h">
       <Filter>ヘッダー ファイル\BaseBall\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="Controller.h">
+      <Filter>ヘッダー ファイル\Work</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -324,6 +324,16 @@ bool CBallCount::IsEnd()
 	return m_tCount.m_bEnd;
 }
 
+CBallCount::Team CBallCount::GetOffenseTeam()
+{
+	return m_tGameState.offense;
+}
+
+CBallCount::Team CBallCount::GetDefenseTeam()
+{
+	return m_tGameState.defense;
+}
+
 void CBallCount::SetEndInplay(InplayElement ElemEndInplay, bool state)
 {
 	m_bInplay[(int)ElemEndInplay] = state;
