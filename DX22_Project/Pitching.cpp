@@ -85,7 +85,7 @@ void CPitching::Update()
 	case (int)CPitching::PitchingPhase::Set:
 		m_pPitchingCursor->SetMove(true);
 		// スペースキーで位置決定
-		if (IsKeyTrigger(VK_SPACE))
+		if (pBallCount->GetDefenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::A) : IsKeyPress(InputPlayer2::A))
 		{
 			m_tParam[(int)TexKind::ReleasePoint].pos = m_tParam[(int)TexKind::PitchingCircle].pos = fCursorPos = m_pPitchingCursor->GetPos();
 			fPitchTime = 0.0f;
@@ -117,7 +117,7 @@ void CPitching::Update()
 		}
 
 		// リリースポイントのタイミングで投球の質を判断する
-		if (IsKeyTrigger(VK_SPACE))
+		if (pBallCount->GetDefenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::A) : IsKeyPress(InputPlayer2::A))
 		{
 			DirectX::XMFLOAT2 fDefCursorPos = m_pPitchingCursor->GetPos();
 			int randX = rand() % 20 - 10;

@@ -6,6 +6,7 @@
 #include "SceneGame.h"
 #include "ImGuiManager.h"
 #include "BattingCursor.h"
+#include "BallCount.h"
 
 Collision::Info2D CBattingCursor::m_Collision = {};
 
@@ -41,17 +42,22 @@ CBattingCursor::~CBattingCursor()
 
 void CBattingCursor::Update()
 {
+	CBallCount* pBallCount = CBallCount::GetInstance().get();
+
 	if (m_bMove)
 	{
-		if (IsKeyPress('D'))	m_tParam.pos.x += 1.0f;
-		if (IsKeyPress('A'))	m_tParam.pos.x -= 1.0f;
-		if (IsKeyPress('W'))	m_tParam.pos.y += 1.0f;
-		if (IsKeyPress('S'))	m_tParam.pos.y -= 1.0f;
+		if (pBallCount->GetOffenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::Right) : IsKeyPress(InputPlayer2::Right))	m_tParam.pos.x += 1.0f;
+		if (pBallCount->GetOffenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::Left) : IsKeyPress(InputPlayer2::Left))	m_tParam.pos.x -= 1.0f;
+		if (pBallCount->GetOffenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::Up) : IsKeyPress(InputPlayer2::Up))		m_tParam.pos.y += 1.0f;
+		if (pBallCount->GetOffenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::Down) : IsKeyPress(InputPlayer2::Down))	m_tParam.pos.y -= 1.0f;
 
-		if (m_tParam.pos.x >= m_pStrikeZone->GetPos().x + m_pStrikeZone->GetSize().x / 2.0f) m_tParam.pos.x = m_pStrikeZone->GetPos().x + m_pStrikeZone->GetSize().x / 2.0f;
-		if (m_tParam.pos.x <= m_pStrikeZone->GetPos().x - m_pStrikeZone->GetSize().x / 2.0f) m_tParam.pos.x = m_pStrikeZone->GetPos().x - m_pStrikeZone->GetSize().x / 2.0f;
-		if (m_tParam.pos.y >= m_pStrikeZone->GetPos().y + m_pStrikeZone->GetSize().y / 2.0f) m_tParam.pos.y = m_pStrikeZone->GetPos().y + m_pStrikeZone->GetSize().y / 2.0f;
-		if (m_tParam.pos.y <= m_pStrikeZone->GetPos().y - m_pStrikeZone->GetSize().y / 2.0f) m_tParam.pos.y = m_pStrikeZone->GetPos().y - m_pStrikeZone->GetSize().y / 2.0f;
+		DirectX::XMFLOAT2 fStrikeZonePos = m_pStrikeZone->GetPos();
+		DirectX::XMFLOAT2 fStrikeZoneSize = m_pStrikeZone->GetSize();
+
+		if (m_tParam.pos.x >= fStrikeZonePos.x + fStrikeZoneSize.x / 2.0f) m_tParam.pos.x = fStrikeZonePos.x + fStrikeZoneSize.x / 2.0f;
+		if (m_tParam.pos.x <= fStrikeZonePos.x - fStrikeZoneSize.x / 2.0f) m_tParam.pos.x = fStrikeZonePos.x - fStrikeZoneSize.x / 2.0f;
+		if (m_tParam.pos.y >= fStrikeZonePos.y + fStrikeZoneSize.y / 2.0f) m_tParam.pos.y = fStrikeZonePos.y + fStrikeZoneSize.y / 2.0f;
+		if (m_tParam.pos.y <= fStrikeZonePos.y - fStrikeZoneSize.y / 2.0f) m_tParam.pos.y = fStrikeZonePos.y - fStrikeZoneSize.y / 2.0f;
 	}
 	m_Collision.square.pos = m_tParam.pos;
 	m_Collision.square.size = m_tParam.size;

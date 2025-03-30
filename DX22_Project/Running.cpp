@@ -213,17 +213,19 @@ void CRunning::RunnerMove(RunnerKind kind)
 	}
 
 	// キー入力による移動処理
-	if (IsKeyPress(VK_TAB) && IsKeyPress(VK_SHIFT) && m_tRunnerParam[(int)kind].m_eDirection != Direction::Stop)
+	if (pBallCount->GetDefenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::Y) : IsKeyPress(InputPlayer2::Y) &&
+		pBallCount->GetDefenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::B) : IsKeyPress(InputPlayer2::B) && 
+		m_tRunnerParam[(int)kind].m_eDirection != Direction::Stop)
 	{
 		// ランナーを止める
 		m_tRunnerParam[(int)kind].m_eDirection = Direction::BaseBetween;
 	}
-	else if (IsKeyPress(VK_TAB))
+	else if (pBallCount->GetDefenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::Y) : IsKeyPress(InputPlayer2::Y))
 	{
 		// ランナーを進める
 		m_tRunnerParam[(int)kind].m_eDirection = Direction::Forward;
 	}
-	else if (IsKeyPress(VK_SHIFT))
+	else if (pBallCount->GetDefenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::B) : IsKeyPress(InputPlayer2::B))
 	{
 		// ランナーを戻す
 		m_tRunnerParam[(int)kind].m_eDirection = Direction::Backward;
@@ -432,7 +434,7 @@ void CRunning::RunnerMove(RunnerKind kind)
 			{
 				m_tRunnerParam[(int)kind].m_eArriveKind = BaseKind::Home;
 				m_tRunnerParam[(int)kind].m_bAlive = false;
-				pBallCount->AddScore((int)pBallCount->GetInning());
+				pBallCount->AddScore();
 			}
 		}
 		break;
@@ -568,7 +570,7 @@ void CRunning::HomeRun()
 		if (m_tRunnerParam[i].m_bAlive)
 		{
 			// ランナーの数だけスコアを追加する
-			pBallCount->AddScore((int)pBallCount->GetInning());
+			pBallCount->AddScore();
 			// ランナーを消す
 			m_tRunnerParam[i].m_bAlive = false;
 			// 塁状況をリセットする

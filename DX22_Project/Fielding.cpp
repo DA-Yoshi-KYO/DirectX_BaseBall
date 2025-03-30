@@ -81,10 +81,10 @@ void CFielding::Update()
 				m_fThrowDirection = {};
 			}
 
-			if (IsKeyPress('W')) m_tParam[m_nOperationNo].pos.z -= 0.5f;
-			if (IsKeyPress('S')) m_tParam[m_nOperationNo].pos.z += 0.5f;
-			if (IsKeyPress('D')) m_tParam[m_nOperationNo].pos.x -= 0.5f;
-			if (IsKeyPress('A')) m_tParam[m_nOperationNo].pos.x += 0.5f;
+			if (pBallCount->GetDefenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::Up) : IsKeyPress(InputPlayer2::Up)) m_tParam[m_nOperationNo].pos.z -= 0.5f;
+			if (pBallCount->GetDefenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::Down) : IsKeyPress(InputPlayer2::Down)) m_tParam[m_nOperationNo].pos.z += 0.5f;
+			if (pBallCount->GetDefenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::Right) : IsKeyPress(InputPlayer2::Right)) m_tParam[m_nOperationNo].pos.x -= 0.5f;
+			if (pBallCount->GetDefenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::Left) : IsKeyPress(InputPlayer2::Left)) m_tParam[m_nOperationNo].pos.x += 0.5f;
 			for (int i = 0; i < (int)BaseKind::Max; i++)
 			{
 				m_nBaseNearNo[i] = -1;
@@ -126,10 +126,10 @@ void CFielding::Update()
 			}
 			else
 			{
-				if (IsKeyPress('1'))Throwing(BaseKind::First);
-				if (IsKeyPress('2'))Throwing(BaseKind::Second);
-				if (IsKeyPress('3'))Throwing(BaseKind::Third);
-				if (IsKeyPress('4'))Throwing(BaseKind::Home);
+				if (pBallCount->GetDefenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::B) : IsKeyPress(InputPlayer2::B))Throwing(BaseKind::First);
+				if (pBallCount->GetDefenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::Y) : IsKeyPress(InputPlayer2::Y))Throwing(BaseKind::Second);
+				if (pBallCount->GetDefenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::X) : IsKeyPress(InputPlayer2::X))Throwing(BaseKind::Third);
+				if (pBallCount->GetDefenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::A) : IsKeyPress(InputPlayer2::A))Throwing(BaseKind::Home);
 
 
 				// フォースプレイの処理
@@ -201,7 +201,7 @@ void CFielding::SetModel(ModelParam param, Model* model, bool isAnime)
 	// モデルに使用する頂点ピクセルシェーダーを設定
 	model->SetPixelShader(ShaderList::GetPS(ShaderList::PS_LAMBERT));
 
-	for (int i = 0; i < model->GetMeshNum(); i++)
+	for (UINT i = 0; i < model->GetMeshNum(); i++)
 	{
 		// モデルのメッシュの取得
 		Model::Mesh mesh = *model->GetMesh(i);

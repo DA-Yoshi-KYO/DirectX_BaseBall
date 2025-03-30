@@ -57,7 +57,7 @@ CBallCount::~CBallCount()
 
 }
 
-void CBallCount::Init()
+void CBallCount::Init(InningHalf Player1Harf)
 {
 	m_pBack = std::make_unique<Texture>();
 	if (FAILED(m_pBack->Create(TEXPASS("BallCount.png"))))ERROR_MESSAGE("BallCount.png");
@@ -93,10 +93,25 @@ void CBallCount::Init()
 	{
 		m_tCount.m_bBaseState[i] = false;
 	}
-	m_tCount.m_nScore[(int)Team::TOP] = 0;
-	m_tCount.m_nScore[(int)Team::BOTTOM] = 0;
+	m_tCount.m_nScore[(int)Team::Player1] = 0;
+	m_tCount.m_nScore[(int)Team::Player2] = 0;
 	m_tCount.m_nInning = 1;
-	m_tCount.m_bTop = true;
+	m_tGameState.half = InningHalf::Top;
+	switch (Player1Harf)
+	{
+	case CBallCount::InningHalf::Top:
+		m_tGameState.offense = Team::Player1;
+		m_tGameState.defense = Team::Player2;
+		m_bPlayer1Top = true;
+		break;
+	case CBallCount::InningHalf::Bottom:
+		m_tGameState.defense = Team::Player1;
+		m_tGameState.offense = Team::Player2;
+		m_bPlayer1Top = false;
+		break;
+	default:
+		break;
+	}
 
 	for (int i = 0; i < (int)InplayElement::Max; i++)
 	{
@@ -134,8 +149,15 @@ void CBallCount::Update()
 		// どこも空いていなかったら満塁なので点を入れる
 		else
 		{
-			if (m_tCount.m_bTop)AddScore((int)Team::TOP);
-			else AddScore((int)Team::BOTTOM);
+			switch (m_tGameState.offense)
+			{
+			case CBallCount::Team::Player1:
+				break;
+			case CBallCount::Team::Player2:
+				break;
+			default:
+				break;
+			}
 		}
 		// ストライク・ボールのカウントをリセットする
 		ResetCount();
@@ -190,14 +212,9 @@ void CBallCount::AddOutCount()
 	m_tCount.m_nOutCount++;
 }
 
-void CBallCount::AddScore(int No)
+void CBallCount::AddScore()
 {
-	if (No != 0 && No != 1)
-	{
-		INFO_MESSAGE("TeamNo = Out of range");
-		return;
-	}
-	if (m_tCount.m_nScore[No] < MAX_SCORE)m_tCount.m_nScore[No]++;
+	if (m_tCount.m_nScore[(int)m_tGameState.offense] < MAX_SCORE)m_tCount.m_nScore[(int)m_tGameState.offense]++;
 }
 
 void CBallCount::SetBaseState(int base, bool state)
@@ -230,19 +247,36 @@ void CBallCount::ChangeInning()
 	}
 
 	// 9回の表終了時で後攻が勝っていたら試合を終了する
-	if (m_tCount.m_bTop && m_tCount.m_nInning == MAX_INNING)
+	if (m_tGameState.half == InningHalf::Top && m_tCount.m_nInning == MAX_INNING)
 	{
-		if (m_tCount.m_nScore[(int)Team::TOP] < m_tCount.m_nScore[(int)Team::BOTTOM])
+		if (m_bPlayer1Top)
 		{
-			m_tCount.m_bEnd = true;
-			return;
+			if (m_tCount.m_nScore[(int)Team::Player1] < m_tCount.m_nScore[(int)Team::Player2])
+			{
+				m_tCount.m_bEnd = true;
+				return;
+			}
+		}
+		else
+		{
+			if (m_tCount.m_nScore[(int)Team::Player2] < m_tCount.m_nScore[(int)Team::Player1])
+			{
+				m_tCount.m_bEnd = true;
+				return;
+			}
 		}
 	}
+
+	// 12回終了時の時の処理
+	if (m_tCount.m_nInning >= MAX_INNING && m_tGameState.half == InningHalf::Bottom)
+	{
+		m_tCount.m_bEnd = true;
+	}
 	// 9回以上の時の処理
-	if (m_tCount.m_nInning >= MAX_INNING)
+	else if (m_tCount.m_nInning >= MAX_INNING - 3)
 	{
 		// 後攻終了時に点数が違ったら試合を終了する
-		if (!m_tCount.m_bTop && m_tCount.m_nScore[(int)Team::TOP] != m_tCount.m_nScore[(int)Team::BOTTOM])
+		if (m_tGameState.half != InningHalf::Bottom && m_tCount.m_nScore[(int)Team::Player1] != m_tCount.m_nScore[(int)Team::Player1])
 		{
 			m_tCount.m_bEnd = true;
 			return;
@@ -250,16 +284,38 @@ void CBallCount::ChangeInning()
 		// 同じなら延長線に突入する
 		else
 		{
-			if (!m_tCount.m_bTop)m_tCount.m_nInning++;
-			m_tCount.m_bTop ^= true;
+			std::swap(m_tGameState.offense, m_tGameState.defense);
+			switch (m_tGameState.half)
+			{
+			case InningHalf::Top:
+				m_tGameState.half = InningHalf::Bottom;
+				break;
+			case InningHalf::Bottom:
+				m_tGameState.half = InningHalf::Top;
+				m_tCount.m_nInning++;
+				break;
+			default:
+				break;
+			}
 		}
 	}
 	// 8回までは通常通り処理をする
 	else
 	{
 		// 裏の時はイニングを進める
-		if (!m_tCount.m_bTop)m_tCount.m_nInning++;
-		m_tCount.m_bTop ^= true;
+		std::swap(m_tGameState.offense, m_tGameState.defense);
+		switch (m_tGameState.half)
+		{
+		case InningHalf::Top:
+			m_tGameState.half = InningHalf::Bottom;
+			break;
+		case InningHalf::Bottom:
+			m_tGameState.half = InningHalf::Top;
+			m_tCount.m_nInning++;
+			break;
+		default:
+			break;
+		}
 	}
 }
 
@@ -268,10 +324,14 @@ bool CBallCount::IsEnd()
 	return m_tCount.m_bEnd;
 }
 
-CBallCount::Inning CBallCount::GetInning()
+CBallCount::Team CBallCount::GetOffenseTeam()
 {
-	if (m_tCount.m_bTop)Inning::TOP;
-	return Inning::BOTTOM;
+	return m_tGameState.offense;
+}
+
+CBallCount::Team CBallCount::GetDefenseTeam()
+{
+	return m_tGameState.defense;
 }
 
 void CBallCount::SetEndInplay(InplayElement ElemEndInplay, bool state)
@@ -411,17 +471,17 @@ void CBallCount::DrawScore()
 	m_tSheetParam.color = { 1.0f,1.0f,1.0f,1.0f };	
 	m_tSheetParam.size = ce_fScoreSize;
 
-	// 先行の得点の描画
+	// Player2の得点の描画
 	for (int i = 0; i < 2; i++)
 	{
 		switch (i)
 		{
 		case 0:
-			nNum = m_tCount.m_nScore[(int)Team::TOP] % 10;
+			nNum = m_tCount.m_nScore[(int)Team::Player2] % 10;
 			break;
 		case 1:
-			if (m_tCount.m_nScore[(int)Team::TOP] < 10) continue;
-			nNum = m_tCount.m_nScore[(int)Team::TOP] / 10;
+			if (m_tCount.m_nScore[(int)Team::Player2] < 10) continue;
+			nNum = m_tCount.m_nScore[(int)Team::Player2] / 10;
 			break;
 		default:
 			break;
@@ -433,22 +493,22 @@ void CBallCount::DrawScore()
 		Sprite::Draw();
 	}
 
-	// 後攻の得点の描画
+	// Player1の得点の描画
 	for (int i = 0; i < 2; i++)
 	{
 		switch (i)
 		{
 		case 0:
-			nNum = m_tCount.m_nScore[(int)Team::BOTTOM] % 10;
+			nNum = m_tCount.m_nScore[(int)Team::Player1] % 10;
 			break;
 		case 1:
-			if (m_tCount.m_nScore[(int)Team::BOTTOM] < 10) continue;
-			nNum = m_tCount.m_nScore[(int)Team::BOTTOM] / 10;
+			if (m_tCount.m_nScore[(int)Team::Player1] < 10) continue;
+			nNum = m_tCount.m_nScore[(int)Team::Player1] / 10;
 			break;
 		default:
 			break;
 		}
-		if (m_tCount.m_nScore[(int)Team::BOTTOM] < 10)m_tSheetParam.pos = { ce_fScoreBottomPos.x + ce_fScoreAjust.x * i, ce_fScoreBottomPos.y };
+		if (m_tCount.m_nScore[(int)Team::Player1] < 10)m_tSheetParam.pos = { ce_fScoreBottomPos.x + ce_fScoreAjust.x * i, ce_fScoreBottomPos.y };
 		else m_tSheetParam.pos = { ce_fScoreBottomPos.x + ce_fScoreAjust.x * abs(i - 1), ce_fScoreBottomPos.y};
 		m_tSheetParam.uvPos = { (float)(nNum % ce_nCountSplitX) / (float)ce_nCountSplitX ,(float)(nNum / ce_nCountSplitX) / (float)ce_nCountSplitY };
 		Sprite::SetParam(m_tSheetParam);
@@ -503,8 +563,17 @@ void CBallCount::DrawInning()
 	// オモテ・ウラの描画
 	m_tSheetParam.pos = ce_fTopBottomPos;
 	m_tSheetParam.size = ce_fTopBottomSize;
-	if (m_tCount.m_bTop)m_tSheetParam.uvPos = { 2.0f / (float)ce_nCountSplitX ,2.0f / (float)ce_nCountSplitY };
-	else m_tSheetParam.uvPos = { 3.0f / (float)ce_nCountSplitX ,2.0f / (float)ce_nCountSplitY };
+	switch (m_tGameState.half)
+	{
+	case InningHalf::Top:
+		m_tSheetParam.uvPos = { 2.0f / (float)ce_nCountSplitX ,2.0f / (float)ce_nCountSplitY };
+		break;
+	case InningHalf::Bottom:
+		m_tSheetParam.uvPos = { 3.0f / (float)ce_nCountSplitX ,2.0f / (float)ce_nCountSplitY };
+		break;
+	default:
+		break;
+	}
 	Sprite::SetParam(m_tSheetParam);
 	Sprite::SetTexture(m_pSheet.get());
 	Sprite::Draw();

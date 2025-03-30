@@ -53,7 +53,6 @@ void CShadow::Draw()
 	float rate = (m_fObjectPos.y - m_fShadowPos.y) / METER(4.0f); // 距離が近ければ0,遠ければ1
 	float scale = (1.0f - rate); // rateを0なら1、1なら0になるよう反転
 	// 影を表示するための行列計算
-	DirectX::XMFLOAT4X4 mat;
 	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(scale, scale, scale); // scaleを元に拡縮
 	DirectX::XMMATRIX R = DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(90.0f)); // スプライトを横に倒す
 	DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(

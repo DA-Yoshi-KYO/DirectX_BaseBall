@@ -26,20 +26,12 @@ public:
 private:
 	std::unique_ptr<CAttack> m_pAttack;
 	std::unique_ptr<CDefence> m_pDefence;
-	static int m_nPlaying;
 
 	/*---------------“à•”ˆ—---------------*/
 	void CameraUpdate();
 	void DrawMinimap();
 
 public:
-	enum class Playing
-	{
-		Attack,
-		Defence
-	};
-	static void SetPlaying(Playing playing);
-	static Playing GetPlaying();
 };
 
 #endif // __SCENE_GAME_H__

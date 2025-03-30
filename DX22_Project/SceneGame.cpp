@@ -10,18 +10,14 @@
 #include "BallCount.h"
 #include "StrikeZone.h"
 
-int CSceneGame::m_nPlaying = 0;
-
 /*───────四大処理───────*/
 // コンストラクタ
 CSceneGame::CSceneGame()
 	: m_pAttack(nullptr), m_pDefence(nullptr)
 {
-	// 静的変数の初期化
-	m_nPlaying = (int)Playing::Attack;
 
 	// 各種初期化処理
-	CBallCount::GetInstance()->Init();
+	CBallCount::GetInstance()->Init(CBallCount::InningHalf::Top);
 	m_pAttack = std::make_unique<CAttack>();
 	m_pDefence = std::make_unique<CDefence>();
 
@@ -67,19 +63,9 @@ void CSceneGame::Update()
 
 	CField::GetInstance()->Update();		// フィールド
 	CStrikeZone::GetInstance()->Update();
-	switch (m_nPlaying)
-	{
-	case (int)Playing::Attack:
-		m_pDefence->Update();
+	m_pDefence->Update();
+	m_pAttack->Update();
 
-		m_pAttack->Update();
-		break;
-	case (int)Playing::Defence:
-		m_pDefence->Update();
-		break;
-	default:
-		break;
-	}
 	CBall::GetInstance()->Update();
 	CBallCount::GetInstance()->Update();
 
@@ -108,18 +94,9 @@ void CSceneGame::Draw()
 	{
 		CStrikeZone::GetInstance()->Draw();
 	}
-	switch (m_nPlaying)
-	{
-	case (int)Playing::Attack:
-		m_pDefence->Draw();
-		m_pAttack->Draw();
-		break;
-	case (int)Playing::Defence:
-		m_pDefence->Draw();
-		break;
-	default:
-		break;
-	}
+	m_pDefence->Draw();
+	m_pAttack->Draw();
+
 	pBall->Draw();
 	if (pBall->GetPhase() == BallPhase::Batting)
 	{
@@ -174,14 +151,4 @@ void CSceneGame::DrawMinimap()
 
 	// 各種カメラを元に戻す
 	//((CEffectGoal*)m_pEffect)->SetCamera(m_pCamera[m_eCameraKind]);
-}
-
-void CSceneGame::SetPlaying(Playing playing)
-{
-	m_nPlaying = (int)playing;
-}
-
-CSceneGame::Playing CSceneGame::GetPlaying()
-{
-	return (Playing)m_nPlaying;
 }
