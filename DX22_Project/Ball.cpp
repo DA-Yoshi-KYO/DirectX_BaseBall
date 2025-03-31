@@ -217,7 +217,7 @@ std::unique_ptr<CBall>& CBall::GetInstance()
 	return instance;
 }
 
-BallPhase CBall::GetPhase()
+CBall::BallPhase CBall::GetPhase()
 {
 	return (BallPhase)m_nPhase;
 }

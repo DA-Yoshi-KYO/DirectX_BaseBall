@@ -1,7 +1,6 @@
 #pragma once
 
 #include "PolylineEffect.h" 
-#include "Player.h" 
 
 class TrailEffect : public PolylineEffect 
 {

@@ -90,7 +90,7 @@ void CSceneGame::Draw()
 	SetRender3D();
 
 	CField::GetInstance()->Draw();	// フィールドの描画
-	if (pBall->GetPhase() == BallPhase::Batting)
+	if (pBall->GetPhase() == CBall::BallPhase::Batting)
 	{
 		CStrikeZone::GetInstance()->Draw();
 	}
@@ -98,7 +98,7 @@ void CSceneGame::Draw()
 	m_pAttack->Draw();
 
 	pBall->Draw();
-	if (pBall->GetPhase() == BallPhase::Batting)
+	if (pBall->GetPhase() == CBall::BallPhase::Batting)
 	{
 		CBallCount::GetInstance()->Draw();
 	}

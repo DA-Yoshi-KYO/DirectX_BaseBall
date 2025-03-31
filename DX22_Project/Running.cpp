@@ -57,7 +57,7 @@ void CRunning::Update()
 	switch (pBall->GetPhase())
 	{
 		// バッティング時
-	case BallPhase::Batting:
+	case CBall::BallPhase::Batting:
 		// 各ランナー要素の設定
 		for (int i = 0; i < (int)RunnerKind::Max - 1; i++)
 		{
@@ -80,7 +80,7 @@ void CRunning::Update()
 		m_bOnBase[(int)RunnerKind::BatterRunner] = false;
 		break;
 		// インプレー時
-	case  BallPhase::InPlay:
+	case  CBall::BallPhase::InPlay:
 		// インプレー終了まで処理をする
 		if (!pBallCount->GetEndInplay())
 		{
@@ -119,7 +119,7 @@ void CRunning::Draw()
 	for (int i = 0; i < (int)RunnerKind::Max; i++)
 	{
 		// バッティング時のバッターランナーは描画しない
-		if (pBall->GetPhase() == BallPhase::Batting && i == (int)RunnerKind::BatterRunner)continue;
+		if (pBall->GetPhase() == CBall::BallPhase::Batting && i == (int)RunnerKind::BatterRunner)continue;
 		// ランナーがいない時は描画しない
 		if (!m_tRunnerParam[i].m_bAlive)continue;
 		// 描画

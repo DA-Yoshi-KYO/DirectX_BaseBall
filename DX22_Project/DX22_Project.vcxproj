@@ -148,7 +148,6 @@
     <ClCompile Include="Attack.cpp" />
     <ClCompile Include="Ball.cpp" />
     <ClCompile Include="BallCount.cpp" />
-    <ClCompile Include="BallUI.cpp" />
     <ClCompile Include="Batting.cpp" />
     <ClCompile Include="BattingCursor.cpp" />
     <ClCompile Include="Camera.cpp" />
@@ -160,8 +159,6 @@
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="Controller.cpp" />
     <ClCompile Include="Defence.cpp" />
-    <ClCompile Include="DirectWriteCustomFont.cpp" />
-    <ClCompile Include="DirectWriteSample.cpp" />
     <ClCompile Include="DirectX.cpp" />
     <ClCompile Include="Effect.cpp" />
     <ClCompile Include="EffectGoal.cpp" />
@@ -170,8 +167,6 @@
     <ClCompile Include="Field.cpp" />
     <ClCompile Include="Fielding.cpp" />
     <ClCompile Include="GameObject.cpp" />
-    <ClCompile Include="GameUI.cpp" />
-    <ClCompile Include="GaugeUI.cpp" />
     <ClCompile Include="Geometory.cpp" />
     <ClCompile Include="imgui.cpp" />
     <ClCompile Include="ImGuiManager.cpp" />
@@ -190,10 +185,8 @@
     <ClCompile Include="Model_check.cpp" />
     <ClCompile Include="Model_get.cpp" />
     <ClCompile Include="Model_morph.cpp" />
-    <ClCompile Include="NumberUI.cpp" />
     <ClCompile Include="Pitching.cpp" />
     <ClCompile Include="PitchingCursor.cpp" />
-    <ClCompile Include="Player.cpp" />
     <ClCompile Include="PolylineEffect.cpp" />
     <ClCompile Include="Running.cpp" />
     <ClCompile Include="Scene.cpp" />
@@ -214,7 +207,6 @@
     <ClInclude Include="Attack.h" />
     <ClInclude Include="Ball.h" />
     <ClInclude Include="BallCount.h" />
-    <ClInclude Include="BallUI.h" />
     <ClInclude Include="Batting.h" />
     <ClInclude Include="BattingCursor.h" />
     <ClInclude Include="Camera.h" />
@@ -227,8 +219,6 @@
     <ClInclude Include="Controller.h" />
     <ClInclude Include="Defence.h" />
     <ClInclude Include="Defines.h" />
-    <ClInclude Include="DirectWriteCustomFont.h" />
-    <ClInclude Include="DirectWriteSample.h" />
     <ClInclude Include="DirectX.h" />
     <ClInclude Include="Effect.h" />
     <ClInclude Include="EffectGoal.h" />
@@ -237,8 +227,6 @@
     <ClInclude Include="Field.h" />
     <ClInclude Include="Fielding.h" />
     <ClInclude Include="GameObject.h" />
-    <ClInclude Include="GameUI.h" />
-    <ClInclude Include="GaugeUI.h" />
     <ClInclude Include="Geometory.h" />
     <ClInclude Include="imconfig.h" />
     <ClInclude Include="imgui.h" />
@@ -254,10 +242,8 @@
     <ClInclude Include="MeshBuffer.h" />
     <ClInclude Include="Minimap.h" />
     <ClInclude Include="Model.h" />
-    <ClInclude Include="NumberUI.h" />
     <ClInclude Include="Pitching.h" />
     <ClInclude Include="PitchingCursor.h" />
-    <ClInclude Include="Player.h" />
     <ClInclude Include="PolylineEffect.h" />
     <ClInclude Include="Running.h" />
     <ClInclude Include="Scene.h" />

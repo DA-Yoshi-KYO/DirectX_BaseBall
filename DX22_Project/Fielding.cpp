@@ -56,7 +56,7 @@ void CFielding::Update()
 
 	switch (CBall::GetInstance()->GetPhase())
 	{
-	case BallPhase::Batting:
+	case CBall::BallPhase::Batting:
 		m_tParam[(int)FieldMember::Pitcher].pos = { fFieldPos.x,fFieldPos.y, fFieldPos.z + fFieldPosLine.z * 4.5f };
 		m_tParam[(int)FieldMember::Chatcher].pos = { fFieldPos.x,fFieldPos.y, fFieldPos.z + fFieldPosLine.z * 7.3f };
 		m_tParam[(int)FieldMember::First].pos = { fFieldPos.x - fFieldPosLine.x * 1.7f,fFieldPos.y, fFieldPos.z + fFieldPosLine.z * 4.0f };
@@ -70,7 +70,7 @@ void CFielding::Update()
 		m_eChatch = ChatchPattern::NotChatch;
 		m_bFryChatched = false;
 		break;
-	case BallPhase::InPlay:
+	case CBall::BallPhase::InPlay:
 		if (!pBallCount->GetEndInplay())
 		{
 			if (!m_bHold) m_nOperationNo = OperationSearch();
@@ -165,7 +165,7 @@ void CFielding::Draw()
 	for (int i = 0; i < (int)FieldMember::Max; i++)
 	{
 
-		if (CBall::GetInstance()->GetPhase() == BallPhase::Batting && i == (int)FieldMember::Chatcher)continue;
+		if (CBall::GetInstance()->GetPhase() == CBall::BallPhase::Batting && i == (int)FieldMember::Chatcher)continue;
 
 		SetModel(m_tParam[i],m_pFieldMember[i].get());
 		Collision::DrawCollision(m_Collision[i]);

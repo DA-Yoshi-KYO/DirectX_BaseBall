@@ -30,7 +30,7 @@ CDefence::~CDefence()
 
 void CDefence::Update()
 {
-	if (CBall::GetInstance()->GetPhase() == BallPhase::Batting)
+	if (CBall::GetInstance()->GetPhase() == CBall::BallPhase::Batting)
 	{
 		m_pPitchingCursor->Update();
 		m_pPitching->Update();
@@ -40,7 +40,7 @@ void CDefence::Update()
 
 void CDefence::Draw()
 {
-	if (CBall::GetInstance()->GetPhase() == BallPhase::Batting)
+	if (CBall::GetInstance()->GetPhase() == CBall::BallPhase::Batting)
 	{
 		m_pPitchingCursor->Draw();
 		m_pPitching->Draw();

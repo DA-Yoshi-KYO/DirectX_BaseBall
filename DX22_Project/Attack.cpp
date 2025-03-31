@@ -24,7 +24,7 @@ CAttack::~CAttack()
 
 void CAttack::Update()
 {
-	if (CBall::GetInstance()->GetPhase() == BallPhase::Batting)
+	if (CBall::GetInstance()->GetPhase() == CBall::BallPhase::Batting)
 	{
 		m_pBattingCursor->Update();
 		m_pBatting->Update();
@@ -34,7 +34,7 @@ void CAttack::Update()
 
 void CAttack::Draw()
 {
-	if (CBall::GetInstance()->GetPhase() == BallPhase::Batting)
+	if (CBall::GetInstance()->GetPhase() == CBall::BallPhase::Batting)
 	{
 		m_pBattingCursor->Draw();
 		m_pBatting->Draw();
