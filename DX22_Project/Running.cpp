@@ -314,6 +314,11 @@ void CRunning::RunnerMove(RunnerKind kind)
 				m_tRunnerParam[(int)RunnerKind::FirstRunner].m_eDirection = Direction::BaseBetween;
 			}
 		}
+		// なにもしていない時はベースのそばから離れていない
+		else
+		{
+			m_tRunnerParam[(int)kind].m_bStayPrevBase = true;
+		}
 		break;
 	case CRunning::RunnerKind::ThirdRunner:
 		// 後ろにランナーがいない時は処理をしない
