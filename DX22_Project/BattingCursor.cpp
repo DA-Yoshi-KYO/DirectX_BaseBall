@@ -58,10 +58,10 @@ void CBattingCursor::Update()
 	if (m_bMove)
 	{
 		// ˆÚ“®ˆ—
-		if (pBallCount->GetOffenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::Right) : IsKeyPress(InputPlayer2::Right))	m_tParam.pos.x += 1.0f;
-		if (pBallCount->GetOffenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::Left) : IsKeyPress(InputPlayer2::Left))	m_tParam.pos.x -= 1.0f;
-		if (pBallCount->GetOffenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::Up) : IsKeyPress(InputPlayer2::Up))		m_tParam.pos.y += 1.0f;
-		if (pBallCount->GetOffenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::Down) : IsKeyPress(InputPlayer2::Down))	m_tParam.pos.y -= 1.0f;
+		if (pBallCount->GetOffenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::Left)	: IsKeyPress(InputPlayer2::Left))	m_tParam.pos.x += 1.0f;
+		if (pBallCount->GetOffenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::Right)	: IsKeyPress(InputPlayer2::Right))	m_tParam.pos.x -= 1.0f;
+		if (pBallCount->GetOffenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::Up)	: IsKeyPress(InputPlayer2::Up))		m_tParam.pos.y += 1.0f;
+		if (pBallCount->GetOffenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::Down)	: IsKeyPress(InputPlayer2::Down))	m_tParam.pos.y -= 1.0f;
 
 		// ˆÚ“®•â³
 		DirectX::XMFLOAT2 fStrikeZonePos = m_pStrikeZone->GetPos();

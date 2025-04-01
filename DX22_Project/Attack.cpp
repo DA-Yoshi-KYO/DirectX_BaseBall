@@ -1,3 +1,6 @@
+// ==============================
+//    インクルード部
+// ==============================
 #include "Attack.h"
 #include "Ball.h"
 #include "StrikeZone.h"
@@ -7,10 +10,12 @@ CAttack::CAttack()
 	, m_pBatting(nullptr)
 	, m_pRunning(nullptr)
 {
+	// メモリ初期化
 	m_pBattingCursor = std::make_unique<CBattingCursor>();
 	m_pBatting = std::make_unique<CBatting>();
 	m_pRunning = std::make_unique<CRunning>();
 
+	// コンポジションのセット
 	m_pBattingCursor->SetStrikeZone(CStrikeZone::GetInstance().get());
 	m_pBatting->SetCursor(m_pBattingCursor.get());
 	CBall* pBall = CBall::GetInstance().get();

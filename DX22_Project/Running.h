@@ -15,6 +15,7 @@ public:
 	virtual void Draw()override;
 	virtual void SetModel(ModelParam param, Model* model, bool isAnime = false)override;
 
+public:
 	// インプレー前のランナーの種類
 	enum class RunnerKind
 	{
@@ -42,11 +43,39 @@ public:
 		bool m_bAlive;				// 自分が走者として生きているか
 		bool m_bStayPrevBase;		// インプレーが始まる前の自分の塁に着いているか
 		bool m_bRunning;			// 走塁中かどうか
-		BaseKind m_eArriveKind;		// インプレー中に到達した塁
-		BaseKind m_ePrevArriveKind;	// インプレー中に到達した塁
+		CField::BaseKind m_eArriveKind;		// インプレー中に到達した塁
+		CField::BaseKind m_ePrevArriveKind;	// インプレー中に到達した塁
 		Direction m_eDirection;		// 進行方向
 		float m_fSpeed;				// 走力
 	};
+
+public:
+	// ==============================
+	//    アクセサ
+	// ==============================
+	// 
+	// ------------Setter------------
+	/// <summary> SetOut:引数のランナーをアウトにする </summary>
+	/// <param name="kind"> インプレー前のランナーの種類 </param>
+	static void SetOut(RunnerKind kind);
+
+	// ------------Getter------------
+	/// <summary> GetRannerParam:ランナーの情報を取得する </summary>
+	/// <param name="kind"> インプレー前のランナーの種類 </param>
+	/// <returns> 引数のランナーの統合情報 </returns>
+	static RunnerParam GetRannerParam(RunnerKind kind);
+	/// <summary> GetCollision:ランナーの当たり判定を取得する </summary>
+	/// <param name="kind"> インプレー前のランナーの種類 </param>
+	/// <returns> 引数のランナーの当たり判定情報(Box) </returns>
+	static Collision::Info GetCollision(RunnerKind kind);
+	/// <summary> GetOnBase:ランナーがいずれかのベース上にいるかを取得する </summary>
+	/// <param name="kind"> インプレー前のランナーの種類 </param>
+	/// <returns> 引数のランナーが true:いずれかのベース上にいる,false:いずれのベース上にもいない </returns>
+	static bool GetOnBase(RunnerKind kind);
+
+public:
+	/// <summary> HomeRun:ホームラン時の処理 </summary>
+	static void HomeRun();
 private:
 	// メンバ変数
 	std::unique_ptr<Model> m_pModel; // ランナーのモデル
@@ -64,10 +93,5 @@ private:
 	void RunnerCheck();
 	// ベース上に誰かいるかチェック
 	void BaseStateCheck();
-public:
-	static RunnerParam GetRannerParam(RunnerKind kind);
-	static void SetOut(RunnerKind kind);
-	static void HomeRun();
-	static Collision::Info GetCollision(int No);
-	static bool GetOnBase(int No);
+
 };

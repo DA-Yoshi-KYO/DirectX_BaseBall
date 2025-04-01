@@ -9,10 +9,12 @@ CDefence::CDefence()
 	, m_pPitching(nullptr)
 	, m_pFielding(nullptr)
 {
+	// メモリの初期化
 	m_pPitchingCursor = std::make_unique<CPitchingCursor>();
 	m_pPitching = std::make_unique<CPitching>();
 	m_pFielding = std::make_unique<CFielding>();
 
+	// コンポジションのセット
 	CStrikeZone* pStrikeZone = CStrikeZone::GetInstance().get();
 	m_pPitchingCursor->SetStrikeZone(pStrikeZone);
 	m_pPitching->SetStrikeZone(pStrikeZone);
@@ -21,7 +23,6 @@ CDefence::CDefence()
 	pBall->SetPitching(m_pPitching.get());
 	pBall->SetPitchingCursor(m_pPitchingCursor.get());
 }
-
 
 CDefence::~CDefence()
 {

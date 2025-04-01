@@ -1,5 +1,7 @@
+// ==============================
+//    インクルード部
+// ==============================
 #pragma once
-
 #include "Defines.h"
 #include "BattingCursor.h"
 #include "Batting.h"
@@ -12,8 +14,11 @@ public:
 	~CAttack();
 	void Update();
 	void Draw();
+
 private:
+	// コンポジション
 	std::unique_ptr<CBattingCursor> m_pBattingCursor;
 	std::unique_ptr<CBatting> m_pBatting;
 	std::unique_ptr<CRunning> m_pRunning;
+
 };

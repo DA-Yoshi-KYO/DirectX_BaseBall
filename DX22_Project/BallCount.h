@@ -67,7 +67,7 @@ public:
 	// ゲームの進行要素
 	struct GameState 
 	{
-		InningHalf half = InningHalf::Top; // 最初は表
+		InningHalf half;
 		Team offense;
 		Team defense;
 	}m_tGameState;

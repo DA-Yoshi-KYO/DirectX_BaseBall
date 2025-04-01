@@ -36,7 +36,7 @@ constexpr DirectX::XMFLOAT2 ce_fTopBottomSize = { 50.0f,50.0f };
 constexpr DirectX::XMFLOAT2 ce_fTopBottomAjust = { 30.0f,60.0f };
 
 CBallCount::CBallCount()
-	: m_tCount{},m_bInplay{}
+	: m_tCount{}, m_bInplay{}, m_bPlayer1Top(true), m_tGameState{}
 {
 
 }
@@ -206,6 +206,11 @@ void CBallCount::AddOutCount()
 
 void CBallCount::AddScore()
 {
+	if ((int)m_tGameState.offense >= 2)
+	{
+		RANGEERROR_MESSAGE("m_tGameState.offense");
+		return;
+	}
 	if (m_tCount.m_nScore[(int)m_tGameState.offense] < MAX_SCORE)m_tCount.m_nScore[(int)m_tGameState.offense]++;
 }
 

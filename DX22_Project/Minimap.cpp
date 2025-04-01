@@ -10,8 +10,8 @@ CMinimap::CMinimap()
 	: m_pRenderTarget(nullptr), m_pDepthStencil(nullptr)
 {
 	// 作成する書き込み先のサイズ
-	float width = 512;
-	float height = 512;
+	UINT width = 512;
+	UINT height = 512;
 	// レンダーターゲットの作成
 	m_pRenderTarget = new RenderTarget();
 	m_pRenderTarget->Create(DXGI_FORMAT_R8G8B8A8_UNORM, width, height);

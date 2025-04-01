@@ -28,6 +28,7 @@ class CBall : public CGameObject
 {
 private:
 	CBall();
+
 public:
 	virtual ~CBall();
 	virtual void Update();
@@ -48,13 +49,13 @@ public:
 	// ==============================
 	// 
 	// ------------Setter------------
-	/// <summary name="pitching"> SetPitching:CPitchingクラスのインスタンスをセットする </summary>
+	/// <summary> SetPitching:CPitchingクラスのインスタンスをセットする </summary>
 	/// <param name="pitching"> CPitchingクラスのインスタンス </param>
 	void SetPitching(CPitching* pitching);
-	/// <summary name="cursor"> SetPitchingCursor:CPitchingCursorクラスのインスタンスをセットする </summary>
+	/// <summary> SetPitchingCursor:CPitchingCursorクラスのインスタンスをセットする </summary>
 	/// <param name="cursor"> CPitchingCursorクラスのインスタンス </param>
 	void SetPitchingCursor(CPitchingCursor* cursor);
-	/// <summary name="batting"> SetBatting:CBattingクラスのインスタンスをセットする </summary>
+	/// <summary> SetBatting:CBattingクラスのインスタンスをセットする </summary>
 	/// <param name="batting"> CBattingクラスのインスタンス </param>
 	void SetBatting(CBatting* batting);
 	/// <summary> SetPos:ボールの座標をセットする </summary>
