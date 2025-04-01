@@ -217,7 +217,7 @@ std::unique_ptr<CBall>& CBall::GetInstance()
 	return instance;
 }
 
-BallPhase CBall::GetPhase()
+CBall::BallPhase CBall::GetPhase()
 {
 	return (BallPhase)m_nPhase;
 }
@@ -233,7 +233,7 @@ void CBall::UpdateBatting()
 	CCamera::SetCameraKind(CAM_BATTER);
 #endif // !_CAM_DEBUG
 	m_tParam.size = ce_fBallSize;
-	if (m_pPitching->GetPitchingPhase() == (int)CPitching::PitchingPhase::Release)
+	if (m_pPitching->GetPitchingPhase() == CPitching::PitchingPhase::Release)
 	{
 		float fChatch = m_pPitching->GetChatchTime();
 		DirectX::XMFLOAT2 fCursorPos = m_pCursor->GetPos();
@@ -273,7 +273,6 @@ void CBall::UpdateInPlay()
 		pBallCount->ResetCount();
 		//pBallCount->AddStrikeCount(true);
 		m_nPhase = (int)BallPhase::Batting;
-		m_pBatting->SetBatting(false);
 	}
 	m_tParam.size = ce_fInplayBallSize;
 #ifndef _CAM_DEBUG
@@ -294,7 +293,7 @@ void CBall::UpdateInPlay()
  
 	if (m_tParam.pos.y < 0.0f + WORLD_AJUST + ce_fGroundY)
 	{
-		if(CFielding::GetChatchPattern() == ChatchPattern::NotChatch)m_bFry = false;
+		if(CFielding::GetChatchPattern() == CFielding::ChatchPattern::NotChatch)m_bFry = false;
 		m_fMove.x *= 0.95f;
 		m_fMove.y *= 0.5f;
 		m_fMove.z *= 0.95f;

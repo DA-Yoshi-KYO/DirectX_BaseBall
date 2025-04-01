@@ -32,7 +32,7 @@ CRunning::CRunning()
 		m_tRunnerParam[i].m_bAlive = false;
 		m_tRunnerParam[i].m_bRunning = false;
 		m_tRunnerParam[i].m_bStayPrevBase = false;
-		m_tRunnerParam[i].m_eArriveKind = BaseKind::Max;
+		m_tRunnerParam[i].m_eArriveKind = CField::BaseKind::Max;
 		m_tRunnerParam[i].m_fSpeed = 0.2f;
 		m_tRunnerParam[i].m_tModelParam.size = { 5.0f,5.0f,5.0f };
 		m_tRunnerParam[i].m_tModelParam.rotate = { 0.0f,0.0f,0.0f };
@@ -57,7 +57,7 @@ void CRunning::Update()
 	switch (pBall->GetPhase())
 	{
 		// バッティング時
-	case BallPhase::Batting:
+	case CBall::BallPhase::Batting:
 		// 各ランナー要素の設定
 		for (int i = 0; i < (int)RunnerKind::Max - 1; i++)
 		{
@@ -65,22 +65,22 @@ void CRunning::Update()
 			m_tRunnerParam[i].m_bStayPrevBase = false;
 			m_tRunnerParam[i].m_bRunning = false;
 			m_tRunnerParam[i].m_fSpeed = 0.2f;
-			m_tRunnerParam[i].m_eArriveKind = (BaseKind)i;
-			m_tRunnerParam[i].m_ePrevArriveKind = (BaseKind)i; 
+			m_tRunnerParam[i].m_eArriveKind = (CField::BaseKind)i;
+			m_tRunnerParam[i].m_ePrevArriveKind = (CField::BaseKind)i; 
 			m_bOnBase[i] = true;
 
 			if (m_tRunnerParam[i].m_bAlive)
 			{
-				m_tRunnerParam[i].m_tModelParam.pos = pField->GetBasePos((BaseKind)i);
+				m_tRunnerParam[i].m_tModelParam.pos = pField->GetBasePos((CField::BaseKind)i);
 			}
 		}
-		m_tRunnerParam[(int)RunnerKind::BatterRunner].m_tModelParam.pos = pField->GetBasePos(BaseKind::Home);
+		m_tRunnerParam[(int)RunnerKind::BatterRunner].m_tModelParam.pos = pField->GetBasePos(CField::BaseKind::Home);
 		m_tRunnerParam[(int)RunnerKind::BatterRunner].m_bAlive = true;
-		m_tRunnerParam[(int)RunnerKind::BatterRunner].m_eArriveKind = BaseKind::Home;
+		m_tRunnerParam[(int)RunnerKind::BatterRunner].m_eArriveKind = CField::BaseKind::Home;
 		m_bOnBase[(int)RunnerKind::BatterRunner] = false;
 		break;
 		// インプレー時
-	case  BallPhase::InPlay:
+	case  CBall::BallPhase::InPlay:
 		// インプレー終了まで処理をする
 		if (!pBallCount->GetEndInplay())
 		{
@@ -119,7 +119,7 @@ void CRunning::Draw()
 	for (int i = 0; i < (int)RunnerKind::Max; i++)
 	{
 		// バッティング時のバッターランナーは描画しない
-		if (pBall->GetPhase() == BallPhase::Batting && i == (int)RunnerKind::BatterRunner)continue;
+		if (pBall->GetPhase() == CBall::BallPhase::Batting && i == (int)RunnerKind::BatterRunner)continue;
 		// ランナーがいない時は描画しない
 		if (!m_tRunnerParam[i].m_bAlive)continue;
 		// 描画
@@ -160,7 +160,7 @@ void CRunning::SetModel(ModelParam param, Model* model, bool isAnime)
 	// モデルに使用する頂点ピクセルシェーダーを設定
 	model->SetPixelShader(ShaderList::GetPS(ShaderList::PS_LAMBERT));
 
-	for (int i = 0; i < model->GetMeshNum(); i++)
+	for (UINT i = 0; i < model->GetMeshNum(); i++)
 	{
 		// モデルのメッシュの取得
 		Model::Mesh mesh = *model->GetMesh(i);
@@ -202,7 +202,7 @@ void CRunning::RunnerMove(RunnerKind kind)
 	vecPrevBase = DirectX::XMLoadFloat3(&fPrevBase);
 
 	// フライをキャッチして以降元のベースに居れば元の塁から離れていないものとする
-	if (DirectX::XMVector3NearEqual(vecRunnerPos, vecPrevBase, vecArriveEpsilon) && CFielding::GetChatchPattern() == ChatchPattern::Fry)
+	if (DirectX::XMVector3NearEqual(vecRunnerPos, vecPrevBase, vecArriveEpsilon) && CFielding::GetChatchPattern() == CFielding::ChatchPattern::Fry)
 	{
 		m_tRunnerParam[(int)kind].m_bStayPrevBase = true;
 	}
@@ -250,7 +250,7 @@ void CRunning::RunnerMove(RunnerKind kind)
 		if (m_tRunnerParam[(int)RunnerKind::BatterRunner].m_bAlive)
 		{
 			if (!pBall->GetIsFry() && m_tRunnerParam[(int)RunnerKind::BatterRunner].m_bAlive &&
-				m_tRunnerParam[(int)CRunning::RunnerKind::FirstRunner].m_eArriveKind == BaseKind::First)
+				m_tRunnerParam[(int)CRunning::RunnerKind::FirstRunner].m_eArriveKind == CField::BaseKind::First)
 			{
 				// ボールが落ちたタイミングで手前にランナーが居た時は進むことしかできない
 				m_tRunnerParam[(int)RunnerKind::FirstRunner].m_eDirection = Direction::Forward;
@@ -286,7 +286,7 @@ void CRunning::RunnerMove(RunnerKind kind)
 		{
 			// ボールが落ちたタイミングで手前にランナーが居た時は進むことしかできない
 			if (!pBall->GetIsFry() && m_tRunnerParam[(int)RunnerKind::FirstRunner].m_bAlive &&
-				m_tRunnerParam[(int)CRunning::RunnerKind::SecondRunner].m_eArriveKind == BaseKind::Second)
+				m_tRunnerParam[(int)CRunning::RunnerKind::SecondRunner].m_eArriveKind == CField::BaseKind::Second)
 			{
 				m_tRunnerParam[(int)RunnerKind::SecondRunner].m_eDirection = Direction::Forward;
 			}
@@ -314,6 +314,11 @@ void CRunning::RunnerMove(RunnerKind kind)
 				m_tRunnerParam[(int)RunnerKind::FirstRunner].m_eDirection = Direction::BaseBetween;
 			}
 		}
+		// なにもしていない時はベースのそばから離れていない
+		else
+		{
+			m_tRunnerParam[(int)kind].m_bStayPrevBase = true;
+		}
 		break;
 	case CRunning::RunnerKind::ThirdRunner:
 		// 後ろにランナーがいない時は処理をしない
@@ -321,7 +326,7 @@ void CRunning::RunnerMove(RunnerKind kind)
 		{
 			// ボールが落ちたタイミングで手前にランナーが居た時は進むことしかできない
 			if (!pBall->GetIsFry() && m_tRunnerParam[(int)RunnerKind::SecondRunner].m_bAlive &&
-				m_tRunnerParam[(int)CRunning::RunnerKind::ThirdRunner].m_eArriveKind == BaseKind::Third)
+				m_tRunnerParam[(int)CRunning::RunnerKind::ThirdRunner].m_eArriveKind == CField::BaseKind::Third)
 			{
 				m_tRunnerParam[(int)RunnerKind::ThirdRunner].m_eDirection = Direction::Forward;
 			}
@@ -334,19 +339,19 @@ void CRunning::RunnerMove(RunnerKind kind)
 		}
 
 		// ランナー飛び出し時にホームインしようとしていたら直前で止める
-		fHomeBasePos = pField->GetBasePos(BaseKind::Home);
+		fHomeBasePos = pField->GetBasePos(CField::BaseKind::Home);
 		vecHomeBasePos = DirectX::XMLoadFloat3(&fHomeBasePos);
 		vecHomeToThirdRunner = DirectX::XMVectorSubtract(vecHomeBasePos, vecRunnerPos);
 		vecHomeToThirdRunner = DirectX::XMVector3Length(vecHomeToThirdRunner);
 		fHomeInCheck = DirectX::XMVectorGetX(vecHomeToThirdRunner);
-		if (!m_tRunnerParam[(int)RunnerKind::ThirdRunner].m_bStayPrevBase && fFrontCheck <= ce_fBetweenLegnth)
+		if (!m_tRunnerParam[(int)RunnerKind::ThirdRunner].m_bStayPrevBase && fHomeInCheck <= ce_fBetweenLegnth)
 		{
 			m_tRunnerParam[(int)RunnerKind::ThirdRunner].m_eDirection = Direction::BaseBetween;
 		}
 		break;
 	case CRunning::RunnerKind::BatterRunner:
 		// バッターランナーが一塁に向かう時は進むことしか出来ない
-		if (m_tRunnerParam[(int)RunnerKind::BatterRunner].m_eArriveKind == BaseKind::Home)
+		if (m_tRunnerParam[(int)RunnerKind::BatterRunner].m_eArriveKind == CField::BaseKind::Home)
 		{
 			m_tRunnerParam[(int)RunnerKind::BatterRunner].m_eDirection = Direction::Forward;
 		}
@@ -371,24 +376,24 @@ void CRunning::RunnerMove(RunnerKind kind)
 	}
 
 	// 進行方向の決定
-	BaseKind eNextTarget;	// 次の塁
-	BaseKind eBackTarget;	// 前の塁
+	CField::BaseKind eNextTarget;	// 次の塁
+	CField::BaseKind eBackTarget;	// 前の塁
 	switch (m_tRunnerParam[(int)kind].m_eArriveKind)
 	{
-	case BaseKind::Home:
-		eNextTarget = BaseKind::First;
+	case CField::BaseKind::Home:
+		eNextTarget = CField::BaseKind::First;
 		break;
-	case BaseKind::First:
-		eBackTarget = BaseKind::First;
-		eNextTarget = BaseKind::Second;
+	case CField::BaseKind::First:
+		eBackTarget = CField::BaseKind::First;
+		eNextTarget = CField::BaseKind::Second;
 		break;
-	case BaseKind::Second:
-		eBackTarget = BaseKind::First;
-		eNextTarget = BaseKind::Third;
+	case CField::BaseKind::Second:
+		eBackTarget = CField::BaseKind::First;
+		eNextTarget = CField::BaseKind::Third;
 		break;
-	case BaseKind::Third:
-		eBackTarget = BaseKind::Second;
-		eNextTarget = BaseKind::Home;
+	case CField::BaseKind::Third:
+		eBackTarget = CField::BaseKind::Second;
+		eNextTarget = CField::BaseKind::Home;
 		break;
 	default:
 		break;
@@ -425,14 +430,14 @@ void CRunning::RunnerMove(RunnerKind kind)
 			m_tRunnerParam[(int)kind].m_eDirection = Direction::Stop;
 
 			// 次の塁を更新する
-			if (m_tRunnerParam[(int)kind].m_eArriveKind != BaseKind::Third)
+			if (m_tRunnerParam[(int)kind].m_eArriveKind != CField::BaseKind::Third)
 			{
 				m_tRunnerParam[(int)kind].m_eArriveKind = eNextTarget;
 			}
 			// 元の塁がサードの場合はランナー生存を無くし、一点を追加する
 			else
 			{
-				m_tRunnerParam[(int)kind].m_eArriveKind = BaseKind::Home;
+				m_tRunnerParam[(int)kind].m_eArriveKind = CField::BaseKind::Home;
 				m_tRunnerParam[(int)kind].m_bAlive = false;
 				pBallCount->AddScore();
 			}
@@ -461,7 +466,7 @@ void CRunning::RunnerMove(RunnerKind kind)
 			m_tRunnerParam[(int)kind].m_bRunning = false;
 
 			// ランナーが飛び出しており、元の塁まで戻れていなかったら前の塁を更新する
-			if (m_tRunnerParam[(int)kind].m_eArriveKind != m_tRunnerParam[(int)kind].m_ePrevArriveKind && CFielding::GetChatchPattern() != ChatchPattern::Grounder)
+			if (m_tRunnerParam[(int)kind].m_eArriveKind != m_tRunnerParam[(int)kind].m_ePrevArriveKind && CFielding::GetChatchPattern() != CFielding::ChatchPattern::Grounder)
 			{
 				m_tRunnerParam[(int)kind].m_eArriveKind = eBackTarget;
 			}
@@ -488,9 +493,9 @@ void CRunning::RunnerMove(RunnerKind kind)
 	m_bOnBase[(int)kind] = false;
 
 	// 全てのベースをチェックする
-	for (int i = 0; i < (int)BaseKind::Max; i++)
+	for (int i = 0; i < (int)CField::BaseKind::Max; i++)
 	{
-		fCheckBase = pField->GetBasePos((BaseKind)i);
+		fCheckBase = pField->GetBasePos((CField::BaseKind)i);
 		vecCheckBase = DirectX::XMLoadFloat3(&fCheckBase);
 
 		// いずれかのベース上にいたらtrueにする
@@ -533,7 +538,7 @@ void CRunning::BaseStateCheck()
 	if (pBallCount->GetEndInplay())
 	{
 		// インプレー前のベース状態を一度リセットする
-		for (int i = 0; i < (int)BaseKind::Max; i++)
+		for (int i = 0; i < (int)CField::BaseKind::Max; i++)
 		{
 			pBallCount->SetBaseState(i, false);
 		}
@@ -585,12 +590,12 @@ void CRunning::HomeRun()
 	}
 }
 
-Collision::Info CRunning::GetCollision(int No)
+Collision::Info CRunning::GetCollision(RunnerKind kind)
 {
-	return m_RunnerCollision[No];
+	return m_RunnerCollision[(int)kind];
 }
 
-bool CRunning::GetOnBase(int No)
+bool CRunning::GetOnBase(RunnerKind kind)
 {
-	return m_bOnBase[No];
+	return m_bOnBase[(int)kind];
 }

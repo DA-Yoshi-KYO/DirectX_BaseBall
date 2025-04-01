@@ -1,5 +1,7 @@
+// ==============================
+//    インクルード部
+// ==============================
 #pragma once
-
 #include "Defines.h"
 #include "BattingCursor.h"
 #include "Ball.h"
@@ -12,17 +14,40 @@ public:
 	void Update();
 	void Draw();
 
+public:
+	// ==============================
+	//    アクセサ
+	// ==============================
+	// 
+	// ------------Setter------------
+	/// <summary> SetCursor:CBattingCursorクラスのインスタンスをセットする </summary>
+	/// <param name="cursor:"> CBattingCursorクラスのインスタンス </param>
 	void SetCursor(CBattingCursor* cursor);
+	/// <summary> SetBall:CBallクラスのインスタンスをセットする </summary>
+	/// <param name="ball:"> CBallクラスのインスタンス </param>
 	void SetBall(CBall* ball);
+
+	// ------------Getter------------
+	/// <summary> GetDirection:打球の進行方向を取得する </summary>
+	/// <returns> 打球の進行方向 </returns>
 	DirectX::XMFLOAT3 GetDirection();
-	static bool GetSwing();
+	/// <summary> GetBatting:バットにボールが当たったか </summary>
+	/// <returns> true:当たった,false:当っていない </returns>
 	bool GetBatting();
-	void SetBatting(bool isBatting);
+	/// <summary> GetSwing:スイングを行ったか </summary>
+	/// <returns> true:スイングした,false:スイングしていない </returns>
+	static bool GetSwing();
+
 private:
+	// コンポジション
 	std::unique_ptr<CBattingCursor> m_pBattingCursor;
 	std::unique_ptr<CBall> m_pBall;
-	DirectX::XMFLOAT3 m_fMoveDirection;
-	static bool m_bSwing;
-	bool m_bBatting;
-	float m_fPower;
+
+	// メンバ変数
+	DirectX::XMFLOAT3 m_fMoveDirection;	// 打球の進行方向
+	bool m_bBatting;	// バットに当たったか
+	float m_fPower;		// 打者のパワー
+
+	// 静的メンバ変数
+	static bool m_bSwing;	// スイングしたか
 };

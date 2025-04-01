@@ -1,26 +1,37 @@
+// ==============================
+//    インクルード部
+// ==============================
 #include "Batting.h"
 #include "Input.h"
 #include "BallCount.h"
 #include "Collision.h"
 #include "PitchingCursor.h"
 
-constexpr float ce_fJustTyming = 134.0f;
-constexpr float ce_fHittingTyming = 4.0f;
-constexpr float ce_fAngleMax = 60.0f;
-constexpr float ce_fHomeRunAngle = 30.0f;
+// ==============================
+//    定数定義
+// ==============================
+constexpr float ce_fJustTyming = 134.0f;	// ジャストミートになるタイミング
+constexpr float ce_fHittingTyming = 4.0f;	// バットに当たれるタイミング(+-)
+constexpr float ce_fAngleMax = 60.0f;		// x方向打球角度の限界(+-)
+constexpr float ce_fHomeRunAngle = 30.0f;	// バッターの弾道
+constexpr float ce_fBatterPower = 4.5;		// バッターのパワー
 
+// ==============================
+//    静的変数の初期化
+// ==============================
 bool CBatting::m_bSwing = false;
 
 CBatting::CBatting()
 	: m_pBattingCursor(nullptr), m_pBall(nullptr)
 	, m_bBatting(false), m_fMoveDirection{}
-	, m_fPower(4.5f)
+	, m_fPower(ce_fBatterPower)
 {
 
 }
 
 CBatting::~CBatting()
 {
+	// コンポジションインスタンスの放棄
 	m_pBattingCursor.release();
 	m_pBall.release();
 }
@@ -28,12 +39,13 @@ CBatting::~CBatting()
 void CBatting::Update()
 {
 	DirectX::XMFLOAT3 fBallPos = m_pBall->GetPos();
-	CBallCount* pBallCount = CBallCount::GetInstance().get();	// ボールカウントクラスのインスタンスを取得
+	CBallCount* pBallCount = CBallCount::GetInstance().get();
 
-	if (fBallPos.z == ce_fBallPos.z + WORLD_AJUST)
+	// ピッチャーがボールを受け取ったらスイング可能にする
+	if (fBallPos.z == ce_fBallPos.z + WORLD_AJUST && m_pBall->GetPhase() == CBall::BallPhase::Batting)
 	{
-		// ピッチャーがボールを受け取ったらスイング可能にする
 		m_bSwing = false;
+		m_bBatting = false;
 	}
 
 	// 投球中にスイングを掛けていない時にスイングが出来る
@@ -42,8 +54,8 @@ void CBatting::Update()
 		float fTyming = ce_fJustTyming + WORLD_AJUST - fBallPos.z;	// どのタイミングで振ったか(0がジャスト、マイナスが遅れている、プラスが早い)
 		float fAngle = 30.0f;		// 打球角度
 		float fDirection = 0.0f;	// 打球方向
-		float fShotPower = 0.0f;			// ショットの強さ
-
+		float fShotPower = 0.0f;	// ショットの強さ
+		
 		do
 		{ 
 			// 早すぎるスイングはスイングとして扱わない
@@ -55,12 +67,14 @@ void CBatting::Update()
 			// タイミングチェック 
 			if (fTyming > ce_fHittingTyming || fTyming < -ce_fHittingTyming)
 			{
+				// スイングタイミングが違う時はストライクカウントを増やす
 				pBallCount->AddStrikeCount();
 				break;
 			}
 			else
 			{
 				Collision::Result2D result = Collision::Hit2D(m_pBattingCursor->GetCollision(false), CPitchingCursor::GetCollision(false));
+				// バットに当たった
 				if(result.isHit)
 				{
 					// ミートカーソルの中央がボールの中央からどれだけ離れているか線形補間で求める
@@ -147,9 +161,4 @@ bool CBatting::GetSwing()
 bool CBatting::GetBatting()
 {
 	return m_bBatting;
-}
-
-void CBatting::SetBatting(bool isBatting)
-{
-	m_bBatting = isBatting;
 }

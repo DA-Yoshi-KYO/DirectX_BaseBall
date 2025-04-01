@@ -72,13 +72,13 @@ void Geometory::MakeCylinder()
 	{
 		switch (i % 4)
 		{
-		case 0: vtxCylinder[i] = { cosf(DirectX::XMConvertToRadians(i * 45)) * 0.5f, 0.5f,sinf(DirectX::XMConvertToRadians(i * 45)) * 0.5f,{0.5f * cosf(DirectX::XMConvertToRadians(i * 45)) - 0.5f,0.5f * sinf(DirectX::XMConvertToRadians(i * 45)) - 0.5f} };
+		case 0: vtxCylinder[i] = { cosf(DirectX::XMConvertToRadians(i * 45.0f)) * 0.5f, 0.5f,sinf(DirectX::XMConvertToRadians(i * 45.0f)) * 0.5f,{0.5f * cosf(DirectX::XMConvertToRadians(i * 45.0f)) - 0.5f,0.5f * sinf(DirectX::XMConvertToRadians(i * 45.0f)) - 0.5f} };
 			  break;
-		case 1: vtxCylinder[i] = { cosf(DirectX::XMConvertToRadians(i * 45)) * 0.5f, 0.5f,sinf(DirectX::XMConvertToRadians(i * 45)) * 0.5f,{0.5f * cosf(DirectX::XMConvertToRadians(i * 45)) - 0.5f,0.5f * sinf(DirectX::XMConvertToRadians(i * 45)) - 0.5f} };
+		case 1: vtxCylinder[i] = { cosf(DirectX::XMConvertToRadians(i * 45.0f)) * 0.5f, 0.5f,sinf(DirectX::XMConvertToRadians(i * 45.0f)) * 0.5f,{0.5f * cosf(DirectX::XMConvertToRadians(i * 45.0f)) - 0.5f,0.5f * sinf(DirectX::XMConvertToRadians(i * 45.0f)) - 0.5f} };
 			  break;
-		case 2: vtxCylinder[i] = { cosf(DirectX::XMConvertToRadians(i * 45)) * 0.5f, 0.5f,sinf(DirectX::XMConvertToRadians(i * 45)) * 0.5f,{0.5f * cosf(DirectX::XMConvertToRadians(i * 45)) - 0.5f,0.5f * sinf(DirectX::XMConvertToRadians(i * 45)) - 0.5f} };
+		case 2: vtxCylinder[i] = { cosf(DirectX::XMConvertToRadians(i * 45.0f)) * 0.5f, 0.5f,sinf(DirectX::XMConvertToRadians(i * 45.0f)) * 0.5f,{0.5f * cosf(DirectX::XMConvertToRadians(i * 45.0f)) - 0.5f,0.5f * sinf(DirectX::XMConvertToRadians(i * 45.0f)) - 0.5f} };
 			  break;
-		case 3: vtxCylinder[i] = { cosf(DirectX::XMConvertToRadians(i * 45)) * 0.5f, 0.5f,sinf(DirectX::XMConvertToRadians(i * 45)) * 0.5f,{0.5f * cosf(DirectX::XMConvertToRadians(i * 45)) - 0.5f,0.5f * sinf(DirectX::XMConvertToRadians(i * 45)) - 0.5f} };
+		case 3: vtxCylinder[i] = { cosf(DirectX::XMConvertToRadians(i * 45.0f)) * 0.5f, 0.5f,sinf(DirectX::XMConvertToRadians(i * 45.0f)) * 0.5f,{0.5f * cosf(DirectX::XMConvertToRadians(i * 45.0f)) - 0.5f,0.5f * sinf(DirectX::XMConvertToRadians(i * 45.0f)) - 0.5f} };
 			  break;
 		default:
 			break;
@@ -88,13 +88,13 @@ void Geometory::MakeCylinder()
 	{
 		switch ((i - 9) % 4)
 		{
-		case 0: vtxCylinder[i] = { cosf(DirectX::XMConvertToRadians((i - 9) * 45)) * 0.5f,-0.5f,sinf(DirectX::XMConvertToRadians((i - 9) * 45)) * 0.5f,{0.5f * cosf(DirectX::XMConvertToRadians((i - 9) * 45)) - 0.5f ,0.5f * sinf(DirectX::XMConvertToRadians((i - 9) * 45)) - 0.5f} };
+		case 0: vtxCylinder[i] = { cosf(DirectX::XMConvertToRadians((i - 9) * 45.0f)) * 0.5f,-0.5f,sinf(DirectX::XMConvertToRadians((i - 9) * 45.0f)) * 0.5f,{0.5f * cosf(DirectX::XMConvertToRadians((i - 9) * 45.0f)) - 0.5f ,0.5f * sinf(DirectX::XMConvertToRadians((i - 9) * 45.0f)) - 0.5f} };
 			  break;
-		case 1: vtxCylinder[i] = { cosf(DirectX::XMConvertToRadians((i - 9) * 45)) * 0.5f,-0.5f,sinf(DirectX::XMConvertToRadians((i - 9) * 45)) * 0.5f,{0.5f * cosf(DirectX::XMConvertToRadians((i - 9) * 45)) - 0.5f ,0.5f * sinf(DirectX::XMConvertToRadians((i - 9) * 45)) - 0.5f} };
+		case 1: vtxCylinder[i] = { cosf(DirectX::XMConvertToRadians((i - 9) * 45.0f)) * 0.5f,-0.5f,sinf(DirectX::XMConvertToRadians((i - 9) * 45.0f)) * 0.5f,{0.5f * cosf(DirectX::XMConvertToRadians((i - 9) * 45.0f)) - 0.5f ,0.5f * sinf(DirectX::XMConvertToRadians((i - 9) * 45.0f)) - 0.5f} };
 			  break;
-		case 2: vtxCylinder[i] = { cosf(DirectX::XMConvertToRadians((i - 9) * 45)) * 0.5f,-0.5f,sinf(DirectX::XMConvertToRadians((i - 9) * 45)) * 0.5f,{0.5f * cosf(DirectX::XMConvertToRadians((i - 9) * 45)) - 0.5f ,0.5f * sinf(DirectX::XMConvertToRadians((i - 9) * 45)) - 0.5f} };
+		case 2: vtxCylinder[i] = { cosf(DirectX::XMConvertToRadians((i - 9) * 45.0f)) * 0.5f,-0.5f,sinf(DirectX::XMConvertToRadians((i - 9) * 45.0f)) * 0.5f,{0.5f * cosf(DirectX::XMConvertToRadians((i - 9) * 45.0f)) - 0.5f ,0.5f * sinf(DirectX::XMConvertToRadians((i - 9) * 45.0f)) - 0.5f} };
 			  break;
-		case 3: vtxCylinder[i] = { cosf(DirectX::XMConvertToRadians((i - 9) * 45)) * 0.5f,-0.5f,sinf(DirectX::XMConvertToRadians((i - 9) * 45)) * 0.5f,{0.5f * cosf(DirectX::XMConvertToRadians((i - 9) * 45)) - 0.5f ,0.5f * sinf(DirectX::XMConvertToRadians((i - 9) * 45)) - 0.5f} };
+		case 3: vtxCylinder[i] = { cosf(DirectX::XMConvertToRadians((i - 9) * 45.0f)) * 0.5f,-0.5f,sinf(DirectX::XMConvertToRadians((i - 9) * 45.0f)) * 0.5f,{0.5f * cosf(DirectX::XMConvertToRadians((i - 9) * 45.0f)) - 0.5f ,0.5f * sinf(DirectX::XMConvertToRadians((i - 9) * 45.0f)) - 0.5f} };
 			  break;
 		default:
 			break;
@@ -108,13 +108,13 @@ void Geometory::MakeCylinder()
 		if (i % 2 == 1)flag = -1.0f;
 		switch ((i - 18) % 4)
 		{
-		case 0: vtxCylinder[i] = { cosf(DirectX::XMConvertToRadians((i - 18) / 2 * 45)) * 0.5f, flag * 0.5f,sinf(DirectX::XMConvertToRadians((i - 18) / 2 * 45)) * 0.5f,{0.0f,0.0f} };
+		case 0: vtxCylinder[i] = { cosf(DirectX::XMConvertToRadians((i - 18) / 2 * 45.0f)) * 0.5f, flag * 0.5f,sinf(DirectX::XMConvertToRadians((i - 18) / 2 * 45.0f)) * 0.5f,{0.0f,0.0f} };
 			  break;
-		case 1: vtxCylinder[i] = { cosf(DirectX::XMConvertToRadians((i - 18) / 2 * 45)) * 0.5f, flag * 0.5f,sinf(DirectX::XMConvertToRadians((i - 18) / 2 * 45)) * 0.5f,{1.0f,0.0f} };
+		case 1: vtxCylinder[i] = { cosf(DirectX::XMConvertToRadians((i - 18) / 2 * 45.0f)) * 0.5f, flag * 0.5f,sinf(DirectX::XMConvertToRadians((i - 18) / 2 * 45.0f)) * 0.5f,{1.0f,0.0f} };
 			  break;
-		case 2: vtxCylinder[i] = { cosf(DirectX::XMConvertToRadians((i - 18) / 2 * 45)) * 0.5f, flag * 0.5f,sinf(DirectX::XMConvertToRadians((i - 18) / 2 * 45)) * 0.5f,{0.0f,1.0f} };
+		case 2: vtxCylinder[i] = { cosf(DirectX::XMConvertToRadians((i - 18) / 2 * 45.0f)) * 0.5f, flag * 0.5f,sinf(DirectX::XMConvertToRadians((i - 18) / 2 * 45.0f)) * 0.5f,{0.0f,1.0f} };
 			  break;
-		case 3: vtxCylinder[i] = { cosf(DirectX::XMConvertToRadians((i - 18) / 2 * 45)) * 0.5f, flag * 0.5f,sinf(DirectX::XMConvertToRadians((i - 18) / 2 * 45)) * 0.5f,{1.0f,1.0f} };
+		case 3: vtxCylinder[i] = { cosf(DirectX::XMConvertToRadians((i - 18) / 2 * 45.0f)) * 0.5f, flag * 0.5f,sinf(DirectX::XMConvertToRadians((i - 18) / 2 * 45.0f)) * 0.5f,{1.0f,1.0f} };
 			  break;
 		default:
 			break;
@@ -196,11 +196,11 @@ void Geometory::MakeSphere()
 		{
 			switch (j % 2)
 			{
-			case 0:if (i % 2 == 0)vtxSphere[i + j * 9] = { sinf(DirectX::XMConvertToRadians(i * 45)) * cosf(DirectX::XMConvertToRadians(j * 45)) * 0.5f,cosf(DirectX::XMConvertToRadians(i * 45)) * 0.5f,sinf(DirectX::XMConvertToRadians(i * 45)) * sinf(DirectX::XMConvertToRadians(j * 45)) * 0.5f,0.0f,0.0f };
-				  else vtxSphere[i + j * 9] = { sinf(DirectX::XMConvertToRadians(i * 45)) * cosf(DirectX::XMConvertToRadians(j * 45)) * 0.5f,cosf(DirectX::XMConvertToRadians(i * 45)) * 0.5f,sinf(DirectX::XMConvertToRadians(i * 45)) * sinf(DirectX::XMConvertToRadians(j * 45)) * 0.5f,1.0f,0.0f };
+			case 0:if (i % 2 == 0)vtxSphere[i + j * 9] = { sinf(DirectX::XMConvertToRadians(i * 45.0f)) * cosf(DirectX::XMConvertToRadians(j * 45.0f)) * 0.5f,cosf(DirectX::XMConvertToRadians(i * 45.0f)) * 0.5f,sinf(DirectX::XMConvertToRadians(i * 45.0f)) * sinf(DirectX::XMConvertToRadians(j * 45.0f)) * 0.5f,0.0f,0.0f };
+				  else vtxSphere[i + j * 9] = { sinf(DirectX::XMConvertToRadians(i * 45.0f)) * cosf(DirectX::XMConvertToRadians(j * 45.0f)) * 0.5f,cosf(DirectX::XMConvertToRadians(i * 45.0f)) * 0.5f,sinf(DirectX::XMConvertToRadians(i * 45.0f)) * sinf(DirectX::XMConvertToRadians(j * 45.0f)) * 0.5f,1.0f,0.0f };
 				  break;
-			case 1:if (i % 2 == 0)vtxSphere[i + j * 9] = { sinf(DirectX::XMConvertToRadians(i * 45)) * cosf(DirectX::XMConvertToRadians(j * 45)) * 0.5f,cosf(DirectX::XMConvertToRadians(i * 45)) * 0.5f,sinf(DirectX::XMConvertToRadians(i * 45)) * sinf(DirectX::XMConvertToRadians(j * 45)) * 0.5f,0.0f,1.0f };
-				  else vtxSphere[i + j * 9] = { sinf(DirectX::XMConvertToRadians(i * 45)) * cosf(DirectX::XMConvertToRadians(j * 45)) * 0.5f,cosf(DirectX::XMConvertToRadians(i * 45)) * 0.5f,sinf(DirectX::XMConvertToRadians(i * 45)) * sinf(DirectX::XMConvertToRadians(j * 45)) * 0.5f,1.0f,1.0f };
+			case 1:if (i % 2 == 0)vtxSphere[i + j * 9] = { sinf(DirectX::XMConvertToRadians(i * 45.0f)) * cosf(DirectX::XMConvertToRadians(j * 45.0f)) * 0.5f,cosf(DirectX::XMConvertToRadians(i * 45.0f)) * 0.5f,sinf(DirectX::XMConvertToRadians(i * 45.0f)) * sinf(DirectX::XMConvertToRadians(j * 45.0f)) * 0.5f,0.0f,1.0f };
+				  else vtxSphere[i + j * 9] = { sinf(DirectX::XMConvertToRadians(i * 45.0f)) * cosf(DirectX::XMConvertToRadians(j * 45.0f)) * 0.5f,cosf(DirectX::XMConvertToRadians(i * 45.0f)) * 0.5f,sinf(DirectX::XMConvertToRadians(i * 45.0f)) * sinf(DirectX::XMConvertToRadians(j * 45.0f)) * 0.5f,1.0f,1.0f };
 				  break;
 			default:
 				break;

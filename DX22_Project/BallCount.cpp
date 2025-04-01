@@ -1,14 +1,3 @@
-/*+===================================================================
-	File: BallCount.cpp
-	Summary: スコアボード内の処理
-	Author: 吉田京志郎
-	Date:	2025/03/16	初回作成
-						スコアボード、カウントの描画
-			2025/03/17	塁状況、イニングの描画
-						各種処理を描画に反映
-						ボールカウントの処理実装
-===================================================================+*/
-
 // ==============================
 //    インクルード部
 // ==============================
@@ -47,7 +36,7 @@ constexpr DirectX::XMFLOAT2 ce_fTopBottomSize = { 50.0f,50.0f };
 constexpr DirectX::XMFLOAT2 ce_fTopBottomAjust = { 30.0f,60.0f };
 
 CBallCount::CBallCount()
-	: m_tCount{},m_bInplay{}
+	: m_tCount{}, m_bInplay{}, m_bPlayer1Top(true), m_tGameState{}
 {
 
 }
@@ -59,6 +48,7 @@ CBallCount::~CBallCount()
 
 void CBallCount::Init(InningHalf Player1Harf)
 {
+	// モデル読み込み
 	m_pBack = std::make_unique<Texture>();
 	if (FAILED(m_pBack->Create(TEXPASS("BallCount.png"))))ERROR_MESSAGE("BallCount.png");
 	m_pSheet = std::make_unique<Texture>();
@@ -72,6 +62,7 @@ void CBallCount::Init(InningHalf Player1Harf)
 	wvp[1] = CCamera::Get2DViewMatrix();
 	wvp[2] = CCamera::Get2DProjectionMatrix();
 
+	// モデルパラメータの設定
 	m_tSheetParam.world = wvp[0];
 	m_tSheetParam.view = wvp[1];
 	m_tSheetParam.proj = wvp[2];
@@ -86,6 +77,7 @@ void CBallCount::Init(InningHalf Player1Harf)
 	m_tBackParam.view = wvp[1];
 	m_tBackParam.proj = wvp[2];
 
+	// 各要素の初期化
 	m_tCount.m_nBallCount = 0;
 	m_tCount.m_nStrikeCount = 0;
 	m_tCount.m_nOutCount = 0;
@@ -214,6 +206,11 @@ void CBallCount::AddOutCount()
 
 void CBallCount::AddScore()
 {
+	if ((int)m_tGameState.offense >= 2)
+	{
+		RANGEERROR_MESSAGE("m_tGameState.offense");
+		return;
+	}
 	if (m_tCount.m_nScore[(int)m_tGameState.offense] < MAX_SCORE)m_tCount.m_nScore[(int)m_tGameState.offense]++;
 }
 
