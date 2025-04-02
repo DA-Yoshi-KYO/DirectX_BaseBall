@@ -29,11 +29,9 @@ CAttack::~CAttack()
 
 void CAttack::Update()
 {
-	if (CBall::GetInstance()->GetPhase() == CBall::BallPhase::Batting)
-	{
-		m_pBattingCursor->Update();
-		m_pBatting->Update();
-	}
+
+	m_pBattingCursor->Update();
+	m_pBatting->Update();
 	m_pRunning->Update();
 }
 

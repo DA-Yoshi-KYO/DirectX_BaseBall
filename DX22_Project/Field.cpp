@@ -5,15 +5,20 @@
 #include "ImGuiManager.h"
 #include "Input.h"
 #include "Main.h"
+#include "Fielding.h"
 
 // ==============================
 //    定数定義
 // ==============================
 constexpr int ce_nHomerunPolyLine = 40;	// ホームランゾーンのポリライン分割数
-constexpr float ce_fHomerunZoneY = ce_fGroundY + 100.0f;	// ホームランゾーンの高さ
+constexpr int ce_nPlanePolyLine = 2;	// 直線平面のポリライン分割数
+constexpr float ce_fJudgeZoneY = ce_fGroundY + 100.0f;	// 判定用当たり判定の高さ
 constexpr float ce_fStartEndZ = -85.0f;	// 外野フェンスポリラインの最初のZ値
 constexpr float ce_fAjustZ = 98.0f;	// 外野フェンスの膨らみ
-constexpr float ce_fFence = 609.0f;	// 外野フェンスのX距離
+constexpr float ce_fFenceHarfX = 160.0f;	// 外野フェンスの半分の大きさ
+constexpr float ce_fFenceX = 320.0f;	// 外野フェンスのX距離
+constexpr float ce_fHomeToBatterBoxX = 0.0f;	// バッターボックスまでの距離
+constexpr float ce_fHomeToBatterBoxZ = 5.0f;	// バッターボックスまでの距離
 
 CField::CField()
 	: m_pField(nullptr),m_pBase(nullptr), m_pHomeBase(nullptr)
@@ -48,6 +53,16 @@ void CField::Update()
 				pBall->OnCollision(result);
 			}
 		}
+
+		for (int i = 0; i < m_FirstBaseLine.size(); i++)
+		{
+			Collision::Result result = Collision::Hit(ballCollision.line, m_FirstBaseLine[i].triangle);
+			if(CFielding::GetChatchPattern() != CFielding::ChatchPattern::Fry &&
+				result.isHit)
+			{
+				pBall->OnFoulZone(result);
+			}
+		}
 	}
 }
 
@@ -58,13 +73,21 @@ void CField::Draw()
 
 	// ベースの描画
 	SetModel(m_tBaseParam[(int)BaseKind::Home], m_pHomeBase.get());
-	for (int i = (int)BaseKind::First; i < (int)BaseKind::Third; i++)
+	for (int i = (int)BaseKind::First; i <= (int)BaseKind::Third; i++)
 	{
 		SetModel(m_tBaseParam[i], m_pBase.get());
 	}
 
-	Collision::DrawCollision(m_Ground);
+	//Collision::DrawCollision(m_Ground);
 	for (auto itr = m_HomeRunZone.begin(); itr != m_HomeRunZone.end(); itr++)
+	{
+		Collision::DrawCollision((*itr));
+	}
+	for (auto itr = m_FirstBaseLine.begin(); itr != m_FirstBaseLine.end(); itr++)
+	{
+		Collision::DrawCollision((*itr));
+	}
+	for (auto itr = m_ThirdBaseLine.begin(); itr != m_ThirdBaseLine.end(); itr++)
 	{
 		Collision::DrawCollision((*itr));
 	}
@@ -189,8 +212,8 @@ void CField::InitCollision()
 	int j = 0;	// ループ用(2回に1回)
 	m_HomeRunZone.clear();	// ベクターの初期化
 	m_HomeRunZone.resize(ce_nHomerunPolyLine);	// ベクターのリサイズ
-	float fStep = 609.0f / (m_HomeRunZone.size() - 1);	// フェンスx軸の大きさからポリライン一つあたりのステップを求める
-	float fBaseX = WORLD_AJUST + 160.0f;	// フェンスx軸の中央
+	const float fStep = ce_fFenceX * 2.0f / (m_HomeRunZone.size() - 1);	// フェンスx軸の大きさからポリライン一つあたりのステップを求める
+	const float fBaseX = WORLD_AJUST + 160.0f;	// フェンスx軸の左端
 
 	// ポリライン分割数の数だけ初期化する
 	for (auto itr = m_HomeRunZone.begin(); itr != m_HomeRunZone.end(); itr++, i++)
@@ -216,7 +239,7 @@ void CField::InitCollision()
 			fAngleZ = -sinf(fAngleZ);
 
 			// 左側の頂点
-			(*itr).triangle.point[0] = { fBaseX - fStep * (i / 2), ce_fHomerunZoneY + WORLD_AJUST, fAngleZ * ce_fAjustZ + WORLD_AJUST + ce_fStartEndZ };
+			(*itr).triangle.point[0] = { fBaseX - fStep * (i / 2), ce_fJudgeZoneY + WORLD_AJUST, fAngleZ * ce_fAjustZ + WORLD_AJUST + ce_fStartEndZ };
 			(*itr).triangle.point[1] = { fBaseX - fStep * (i / 2), ce_fGroundY + WORLD_AJUST, fAngleZ * ce_fAjustZ + WORLD_AJUST + ce_fStartEndZ };
 
 			// 2
@@ -226,7 +249,7 @@ void CField::InitCollision()
 			fAngleZ = -sinf(fAngleZ);
 
 			// 右側の頂点
-			(*itr).triangle.point[2] = { fBaseX - fStep * (i / 2 + 1), ce_fHomerunZoneY + WORLD_AJUST, fAngleZ * ce_fAjustZ + WORLD_AJUST + ce_fStartEndZ };
+			(*itr).triangle.point[2] = { fBaseX - fStep * (i / 2 + 1), ce_fJudgeZoneY + WORLD_AJUST, fAngleZ * ce_fAjustZ + WORLD_AJUST + ce_fStartEndZ };
 		}
 		// 下三角形(1,2,3)
 		else
@@ -247,10 +270,30 @@ void CField::InitCollision()
 			fAngleZ = -sinf(fAngleZ);
 
 			// 右側の頂点
-			(*itr).triangle.point[1] = { fBaseX - fStep * (i / 2 + 1), ce_fHomerunZoneY + WORLD_AJUST, fAngleZ * ce_fAjustZ + WORLD_AJUST + ce_fStartEndZ };
+			(*itr).triangle.point[1] = { fBaseX - fStep * (i / 2 + 1), ce_fJudgeZoneY + WORLD_AJUST, fAngleZ * ce_fAjustZ + WORLD_AJUST + ce_fStartEndZ };
 			(*itr).triangle.point[2] = { fBaseX - fStep * (i / 2 + 1), ce_fGroundY + WORLD_AJUST, fAngleZ * ce_fAjustZ + WORLD_AJUST + ce_fStartEndZ };
 
 			j += 1;
 		}
 	}
+
+	m_FirstBaseLine.resize(ce_nPlanePolyLine);
+	m_FirstBaseLine[0].type = Collision::eTriangle;
+	m_FirstBaseLine[0].triangle.point[0] = { m_tBaseParam[(int)BaseKind::Home].pos.x + ce_fHomeToBatterBoxX  ,ce_fJudgeZoneY + WORLD_AJUST , m_tBaseParam[(int)BaseKind::Home].pos.z + ce_fHomeToBatterBoxZ };
+	m_FirstBaseLine[0].triangle.point[1] = { m_tBaseParam[(int)BaseKind::Home].pos.x + ce_fHomeToBatterBoxX  ,ce_fGroundY + WORLD_AJUST , m_tBaseParam[(int)BaseKind::Home].pos.z + ce_fHomeToBatterBoxZ };
+	m_FirstBaseLine[0].triangle.point[2] = { fBaseX , ce_fJudgeZoneY + WORLD_AJUST , ce_fStartEndZ + WORLD_AJUST };
+	m_FirstBaseLine[1].type = Collision::eTriangle;
+	m_FirstBaseLine[1].triangle.point[0] = { m_tBaseParam[(int)BaseKind::Home].pos.x + ce_fHomeToBatterBoxX  ,ce_fGroundY + WORLD_AJUST, m_tBaseParam[(int)BaseKind::Home].pos.z + ce_fHomeToBatterBoxZ };
+	m_FirstBaseLine[1].triangle.point[1] = { fBaseX , ce_fJudgeZoneY + WORLD_AJUST , ce_fStartEndZ + WORLD_AJUST };
+	m_FirstBaseLine[1].triangle.point[2] = { fBaseX , ce_fGroundY + WORLD_AJUST, ce_fStartEndZ + WORLD_AJUST };
+
+	m_ThirdBaseLine.resize(ce_nPlanePolyLine);
+	m_ThirdBaseLine[0].type = Collision::eTriangle;
+	m_ThirdBaseLine[0].triangle.point[0] = { m_tBaseParam[(int)BaseKind::Home].pos.x - ce_fHomeToBatterBoxX ,ce_fJudgeZoneY + WORLD_AJUST , m_tBaseParam[(int)BaseKind::Home].pos.z + ce_fHomeToBatterBoxZ };
+	m_ThirdBaseLine[0].triangle.point[1] = { m_tBaseParam[(int)BaseKind::Home].pos.x - ce_fHomeToBatterBoxX ,ce_fGroundY + WORLD_AJUST , m_tBaseParam[(int)BaseKind::Home].pos.z + ce_fHomeToBatterBoxZ };
+	m_ThirdBaseLine[0].triangle.point[2] = { fBaseX - ce_fFenceX, ce_fJudgeZoneY + WORLD_AJUST , ce_fStartEndZ + WORLD_AJUST };
+	m_ThirdBaseLine[1].type = Collision::eTriangle;
+	m_ThirdBaseLine[1].triangle.point[0] = { m_tBaseParam[(int)BaseKind::Home].pos.x - ce_fHomeToBatterBoxX ,ce_fGroundY + WORLD_AJUST , m_tBaseParam[(int)BaseKind::Home].pos.z + ce_fHomeToBatterBoxZ };
+	m_ThirdBaseLine[1].triangle.point[1] = { fBaseX - ce_fFenceX, ce_fJudgeZoneY + WORLD_AJUST , ce_fStartEndZ + WORLD_AJUST };
+	m_ThirdBaseLine[1].triangle.point[2] = { fBaseX - ce_fFenceX, ce_fGroundY + WORLD_AJUST , ce_fStartEndZ + WORLD_AJUST };
 }

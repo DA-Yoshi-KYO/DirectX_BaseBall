@@ -68,150 +68,161 @@ void CPitching::Update()
 	static DirectX::XMFLOAT2 fCursorPos = { 0.0f,0.0f };	// ピッチカーソルの座標
 	CBallCount* pBallCount = CBallCount::GetInstance().get();	// ボールカウントクラスのインスタンスを取得
 
-	// ピッチング処理
-	switch (m_nPitchingPhase)
+	switch (CBall::GetInstance()->GetPhase())
 	{
-		// セットポジション
-	case (int)CPitching::PitchingPhase::Set:
-		m_pPitchingCursor->SetMove(true);
-		// スペースキーで位置決定
-		if (pBallCount->GetDefenseTeam() == CBallCount::Team::Player1 ? IsKeyTrigger(InputPlayer1::A) : IsKeyTrigger(InputPlayer2::A))
+	case CBall::BallPhase::Batting:
+		// ピッチング処理
+		switch (m_nPitchingPhase)
 		{
-			m_tParam[(int)TexKind::ReleasePoint].pos = m_tParam[(int)TexKind::PitchingCircle].pos = fCursorPos = m_pPitchingCursor->GetPos();
-			fPitchTime = 0.0f;
-			// 球速は乱数で一定値下がる可能性がある
-			m_fSpeed = m_fSpeed - (float)(rand() % 3);
-			// 最初はピッチングサークルを表示しない
-			m_tParam[(int)TexKind::PitchingCircle].size = { 0.0f,0.0f };
-			// 投球する場所を決めたらフェーズを移す
-			m_nPitchingPhase = (int)PitchingPhase::Pitch;
-			m_pPitchingCursor->SetMove(false);
-		}
-		break;
-		// リリースポイント
-	case (int)CPitching::PitchingPhase::Pitch:
-		fPitchTime += 1.0f / 60.0f;
-
-		// セットポジションから少し経ってからピッチングサークルを表示する
-		if (fPitchTime > ce_fSetPositionTime && !bSetCircle)
-		{
-			m_tParam[(int)TexKind::PitchingCircle].size = ce_fPitchingCircleFirstSize;
-			bSetCircle = true;
-		}
-		if(bSetCircle)
-		{
-			// ピッチングサークルを縮小し、ベストピッチのタイミングでボールの大きさにする
-			m_tParam[(int)TexKind::PitchingCircle].size.x -= (ce_fPitchingCircleFirstSize.x - ce_fPitchingCircleEndSize.x) / (ce_fCircleTime * fFPS);
-			m_tParam[(int)TexKind::PitchingCircle].size.y -= (ce_fPitchingCircleFirstSize.y - ce_fPitchingCircleEndSize.y) / (ce_fCircleTime * fFPS);
-		}
-
-		// リリースポイントのタイミングで投球の質を判断する
- 		if (pBallCount->GetDefenseTeam() == CBallCount::Team::Player1 ? IsKeyTrigger(InputPlayer1::A) : IsKeyTrigger(InputPlayer2::A))
-		{
-			DirectX::XMFLOAT2 fDefCursorPos = m_pPitchingCursor->GetPos();
-			int randX = rand() % 20 - 10;
-			int randY = rand() % 10 - 10;
-			int randMiss = rand() % 10;
-
-			// リリースが速い
-			if (m_tParam[(int)TexKind::PitchingCircle].size.x > ce_fReleasePointSize.x)
+			// セットポジション
+		case (int)CPitching::PitchingPhase::Set:
+			m_pPitchingCursor->SetMove(true);
+			// スペースキーで位置決定
+			if (pBallCount->GetDefenseTeam() == CBallCount::Team::Player1 ? IsKeyTrigger(InputPlayer1::A) : IsKeyTrigger(InputPlayer2::A))
 			{
-				switch (randMiss)
+				m_tParam[(int)TexKind::ReleasePoint].pos = m_tParam[(int)TexKind::PitchingCircle].pos = fCursorPos = m_pPitchingCursor->GetPos();
+				fPitchTime = 0.0f;
+				// 球速は乱数で一定値下がる可能性がある
+				m_fSpeed = m_fSpeed - (float)(rand() % 3);
+				// 最初はピッチングサークルを表示しない
+				m_tParam[(int)TexKind::PitchingCircle].size = { 0.0f,0.0f };
+				// 投球する場所を決めたらフェーズを移す
+				m_nPitchingPhase = (int)PitchingPhase::Pitch;
+				m_pPitchingCursor->SetMove(false);
+			}
+			break;
+			// リリースポイント
+		case (int)CPitching::PitchingPhase::Pitch:
+			fPitchTime += 1.0f / 60.0f;
+
+			// セットポジションから少し経ってからピッチングサークルを表示する
+			if (fPitchTime > ce_fSetPositionTime && !bSetCircle)
+			{
+				m_tParam[(int)TexKind::PitchingCircle].size = ce_fPitchingCircleFirstSize;
+				bSetCircle = true;
+			}
+			if (bSetCircle)
+			{
+				// ピッチングサークルを縮小し、ベストピッチのタイミングでボールの大きさにする
+				m_tParam[(int)TexKind::PitchingCircle].size.x -= (ce_fPitchingCircleFirstSize.x - ce_fPitchingCircleEndSize.x) / (ce_fCircleTime * fFPS);
+				m_tParam[(int)TexKind::PitchingCircle].size.y -= (ce_fPitchingCircleFirstSize.y - ce_fPitchingCircleEndSize.y) / (ce_fCircleTime * fFPS);
+			}
+
+			// リリースポイントのタイミングで投球の質を判断する
+			if (pBallCount->GetDefenseTeam() == CBallCount::Team::Player1 ? IsKeyTrigger(InputPlayer1::A) : IsKeyTrigger(InputPlayer2::A))
+			{
+				DirectX::XMFLOAT2 fDefCursorPos = m_pPitchingCursor->GetPos();
+				int randX = rand() % 20 - 10;
+				int randY = rand() % 10 - 10;
+				int randMiss = rand() % 10;
+
+				// リリースが速い
+				if (m_tParam[(int)TexKind::PitchingCircle].size.x > ce_fReleasePointSize.x)
 				{
-				case 0:
-					m_pPitchingCursor->SetPos(ce_fPitchingCursorPos);
-					break;
-				default:
-					m_pPitchingCursor->SetPos( { m_pStrikeZone->GetPos().x - m_pStrikeZone->GetSize().x / 1.3f,m_pStrikeZone->GetPos().y + m_pStrikeZone->GetSize().y / 1.3f });
-					break;												   
+					switch (randMiss)
+					{
+					case 0:
+						m_pPitchingCursor->SetPos(ce_fPitchingCursorPos);
+						break;
+					default:
+						m_pPitchingCursor->SetPos({ m_pStrikeZone->GetPos().x - m_pStrikeZone->GetSize().x / 1.3f,m_pStrikeZone->GetPos().y + m_pStrikeZone->GetSize().y / 1.3f });
+						break;
+					}
 				}
-			}
-			// リリースがやや速い
-			else if (m_tParam[(int)TexKind::PitchingCircle].size.x > ce_fPitchingCircleEndSize.x + 1.0f)
-			{
-				m_pPitchingCursor->SetPos( { fDefCursorPos.x + randX, fDefCursorPos.y + randY });
-			}
-			// ベストピッチ
-			else if (m_tParam[(int)TexKind::PitchingCircle].size.x > ce_fPitchingCircleEndSize.x - 1.0f)
-			{
-				m_pPitchingCursor->SetPos( { fDefCursorPos.x,fDefCursorPos.y });
-			}
-			// リリースがやや遅い
-			else if (m_tParam[(int)TexKind::PitchingCircle].size.x > ce_fPitchingCircleEndSize.x / 2.0f)
-			{
-				m_pPitchingCursor->SetPos( { fDefCursorPos.x + randX, fDefCursorPos.y + randY });
-			}
-			// リリースが遅い
-			else
-			{
-				switch (randMiss)
+				// リリースがやや速い
+				else if (m_tParam[(int)TexKind::PitchingCircle].size.x > ce_fPitchingCircleEndSize.x + 1.0f)
 				{
-				case 0:
-					m_pPitchingCursor->SetPos(ce_fPitchingCursorPos);
-					break;
-				default:
-					m_pPitchingCursor->SetPos( { m_pStrikeZone->GetPos().x - m_pStrikeZone->GetSize().x / 1.3f,m_pStrikeZone->GetPos().y + m_pStrikeZone->GetSize().y / 1.3f });
-					break;
+					m_pPitchingCursor->SetPos({ fDefCursorPos.x + randX, fDefCursorPos.y + randY });
 				}
-			}
-
-			// 投球したらボールをリリースする処理に移る
-			m_nPitchingPhase = (int)CPitching::PitchingPhase::Release;
-			fPitchTime = 0.0f;
-			fCursorPos = m_pPitchingCursor->GetPos();
-		}
-		else if(m_tParam[(int)TexKind::PitchingCircle].size.x < 0.0f)
-		{
-			int randMiss = rand() % 10;
-			// 時間切れはミス投球になる
-			switch (randMiss)
-			{
-			case 0:
-				m_pPitchingCursor->SetPos(ce_fPitchingCursorPos);
-				break;
-			default:
-				m_pPitchingCursor->SetPos( { m_pStrikeZone->GetPos().x - m_pStrikeZone->GetSize().x / 1.3f,m_pStrikeZone->GetPos().y + m_pStrikeZone->GetSize().y / 1.3f });
-				break;
-			}
-			// 投球したらボールをリリースする処理に移る
-			m_nPitchingPhase = (int)CPitching::PitchingPhase::Release;
-			fPitchTime = 0.0f;
-			fCursorPos = m_pPitchingCursor->GetPos();
-		}
-		// 球速に応じて捕球までの時間を決める
-		m_fChatchTime = ce_fSpeed_Ajust / KMETER(m_fSpeed) * 60.0f * 60.0f;
-		break;
-		// 投球
-	case (int)CPitching::PitchingPhase::Release:
-		fPitchTime += 1.0f / 60.0f;
-		bSetCircle = false;
-		// リリースしたらリリースサークルの表示を消す
-		m_tParam[(int)TexKind::PitchingCircle].size = m_tParam[(int)TexKind::ReleasePoint].size = { 0.0f,0.0f };
-
-		// タイマーが捕球までの時間になったら
-		if (fPitchTime >= m_fChatchTime)
-		{
-			// バッターが見逃した時
-			if (!CBatting::GetSwing())
-			{
-				// ストライクゾーンにカーソルのポジションが入っていればストライクのカウント
-				// 入っていなければボールのカウントを増やす
-				if (Collision::Hit2D(m_pPitchingCursor->GetCollision(true, Collision::eSquare), m_pStrikeZone->GetCollision()).isHit)
+				// ベストピッチ
+				else if (m_tParam[(int)TexKind::PitchingCircle].size.x > ce_fPitchingCircleEndSize.x - 1.0f)
 				{
-					pBallCount->AddStrikeCount();
+					m_pPitchingCursor->SetPos({ fDefCursorPos.x,fDefCursorPos.y });
 				}
+				// リリースがやや遅い
+				else if (m_tParam[(int)TexKind::PitchingCircle].size.x > ce_fPitchingCircleEndSize.x / 2.0f)
+				{
+					m_pPitchingCursor->SetPos({ fDefCursorPos.x + randX, fDefCursorPos.y + randY });
+				}
+				// リリースが遅い
 				else
 				{
-					pBallCount->AddBallCount();
+					switch (randMiss)
+					{
+					case 0:
+						m_pPitchingCursor->SetPos(ce_fPitchingCursorPos);
+						break;
+					default:
+						m_pPitchingCursor->SetPos({ m_pStrikeZone->GetPos().x - m_pStrikeZone->GetSize().x / 1.3f,m_pStrikeZone->GetPos().y + m_pStrikeZone->GetSize().y / 1.3f });
+						break;
+					}
 				}
-			}
-			// 振った時の処理はBatting.cppに記述する
 
-			// セットポジションに戻る
-			m_nPitchingPhase = (int)CPitching::PitchingPhase::Set;
-			// カーソルの位置をリセットする
-			m_pPitchingCursor->SetPos(ce_fPitchingCursorPos);
+				// 投球したらボールをリリースする処理に移る
+				m_nPitchingPhase = (int)CPitching::PitchingPhase::Release;
+				fPitchTime = 0.0f;
+				fCursorPos = m_pPitchingCursor->GetPos();
+			}
+			else if (m_tParam[(int)TexKind::PitchingCircle].size.x < 0.0f)
+			{
+				int randMiss = rand() % 10;
+				// 時間切れはミス投球になる
+				switch (randMiss)
+				{
+				case 0:
+					m_pPitchingCursor->SetPos(ce_fPitchingCursorPos);
+					break;
+				default:
+					m_pPitchingCursor->SetPos({ m_pStrikeZone->GetPos().x - m_pStrikeZone->GetSize().x / 1.3f,m_pStrikeZone->GetPos().y + m_pStrikeZone->GetSize().y / 1.3f });
+					break;
+				}
+				// 投球したらボールをリリースする処理に移る
+				m_nPitchingPhase = (int)CPitching::PitchingPhase::Release;
+				fPitchTime = 0.0f;
+				fCursorPos = m_pPitchingCursor->GetPos();
+			}
+			// 球速に応じて捕球までの時間を決める
+			m_fChatchTime = ce_fSpeed_Ajust / KMETER(m_fSpeed) * 60.0f * 60.0f;
+			break;
+			// 投球
+		case (int)CPitching::PitchingPhase::Release:
+			fPitchTime += 1.0f / 60.0f;
+			bSetCircle = false;
+			// リリースしたらリリースサークルの表示を消す
+			m_tParam[(int)TexKind::PitchingCircle].size = m_tParam[(int)TexKind::ReleasePoint].size = { 0.0f,0.0f };
+
+			// タイマーが捕球までの時間になったら
+			if (fPitchTime >= m_fChatchTime)
+			{
+				// バッターが見逃した時
+				if (!CBatting::GetSwing())
+				{
+					// ストライクゾーンにカーソルのポジションが入っていればストライクのカウント
+					// 入っていなければボールのカウントを増やす
+					if (Collision::Hit2D(m_pPitchingCursor->GetCollision(true, Collision::eSquare), m_pStrikeZone->GetCollision()).isHit)
+					{
+						pBallCount->AddStrikeCount();
+					}
+					else
+					{
+						pBallCount->AddBallCount();
+					}
+				}
+				// 振った時の処理はBatting.cppに記述する
+
+				// セットポジションに戻る
+				m_nPitchingPhase = (int)CPitching::PitchingPhase::Set;
+				// カーソルの位置をリセットする
+				m_pPitchingCursor->SetPos(ce_fPitchingCursorPos);
+			}
+			break;
+		default:
+			break;
 		}
+		break;
+	case CBall::BallPhase::InPlay:
+		m_nPitchingPhase = (int)CPitching::PitchingPhase::Set;
+		m_pPitchingCursor->SetPos(ce_fPitchingCursorPos);
 		break;
 	default:
 		break;

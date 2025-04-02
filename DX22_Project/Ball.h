@@ -90,6 +90,9 @@ public:
 	/// <summary> OnCollision:ボールに当たった時の処理 </summary>
 	/// <param name="collision"> 当たった結果 </param>
 	void OnCollision(Collision::Result collision);
+	/// <summary> OnCollision:ボールに当たった時の処理 </summary>
+	/// <param name="collision"> 当たった結果 </param>
+	void OnFoulZone(Collision::Result collision);
 
 private:
 	// コンポジション
@@ -106,7 +109,9 @@ private:
 	
 	// メンバ変数
 	int m_nPhase;	// ボールの状態
+	DirectX::XMFLOAT3 m_fFaulZoneBallPos;	// ファールゾーンに入った時のボールの座標
 	bool m_bFry;	// フライ上がっている状態か
+	bool m_bBallFaulZone;	// ファール判定
 
 	// 当たり判定情報
 	Collision::Info m_BallCollision;	// 球体当たり判定

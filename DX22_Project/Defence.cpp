@@ -31,11 +31,8 @@ CDefence::~CDefence()
 
 void CDefence::Update()
 {
-	if (CBall::GetInstance()->GetPhase() == CBall::BallPhase::Batting)
-	{
 		m_pPitchingCursor->Update();
 		m_pPitching->Update();
-	}
 	m_pFielding->Update();
 }
 
