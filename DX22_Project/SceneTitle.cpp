@@ -16,10 +16,8 @@ CSceneTitle::CSceneTitle()
 		m_pTran[i] = new Texture();
 	}
 	if (FAILED(m_pLogo->Create("Assets/Texture/Title.jpeg"))) MessageBox(NULL, "Load failed SceneTitle.", "Error", MB_OK);
-	if (FAILED(m_pTran[0]->Create("Assets/Texture/004.png"))) MessageBox(NULL, "Load failed SceneTitle.", "Error", MB_OK);
-	if (FAILED(m_pTran[1]->Create("Assets/Texture/TransitionStarA.png"))) MessageBox(NULL, "Load failed SceneTitle.", "Error", MB_OK);
-	font = new DirectWriteSample();
-	font->Init();
+	//if (FAILED(m_pTran[0]->Create("Assets/Texture/004.png"))) MessageBox(NULL, "Load failed SceneTitle.", "Error", MB_OK);
+	//if (FAILED(m_pTran[1]->Create("Assets/Texture/TransitionStarA.png"))) MessageBox(NULL, "Load failed SceneTitle.", "Error", MB_OK);
 
 	m_StarPos = { 0.0f,0.0f };
 	m_StarSize = { SCREEN_WIDTH, SCREEN_HEIGHT };
@@ -60,7 +58,6 @@ CSceneTitle::~CSceneTitle()
 		SAFE_DELETE(m_pTran[i]);
 	}
 
-	font->Uninit();
 }
 
 void CSceneTitle::Update()
@@ -122,8 +119,7 @@ void CSceneTitle::Update()
 	if (IsKeyTrigger(VK_RETURN))
 	{
 		SetNext(1); // Ø‚è‘Ö‚¦æ‚ÌƒV[ƒ“‚ðÝ’èi‚P‚ÍƒQ[ƒ€ [
-	}
-	font->Update();
+	};
 }
 
 void CSceneTitle::Draw()

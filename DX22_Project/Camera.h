@@ -3,13 +3,15 @@
 #include <DirectXMath.h>
 #include <memory>
 
+#define _CAM_DEBUG
+
 enum CameraKind
 {
 	CAM_DEBUG,
-	CAM_PLAYER,
 	CAM_EVENT, // イベント用の定義 
-	CAM_MINIMAP, // ミニマップ用の定義
+	//CAM_MINIMAP, // ミニマップ用の定義
 	CAM_BATTER,
+	CAM_INPLAY,
 	MAX_CAMERA // カメラ最大数 
 };
 
@@ -30,6 +32,8 @@ public:
 	static const DirectX::XMFLOAT4X4 Get2DViewMatrix(bool transpose = true);
 	static const DirectX::XMFLOAT4X4 Get2DProjectionMatrix(bool transpose = true);
 	static std::unique_ptr<CCamera>& GetInstance(int CamKind);
+	static void SetCameraKind(CameraKind kind);
+	static CameraKind GetCameraKind();
 protected:
 	DirectX::XMFLOAT3 m_pos;
 	DirectX::XMFLOAT3 m_look;
@@ -38,5 +42,7 @@ protected:
 	float m_aspect;
 	float m_near;
 	float m_far;
+private:
+	static CameraKind m_eCameraKind;
 };
 

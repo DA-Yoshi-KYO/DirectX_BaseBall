@@ -74,11 +74,15 @@ public:
 	};
 
 	//--- 当たり判定の結果 
-	struct Result {
+	struct Result
+	{
 		bool isHit;					// 当たったかどうか 
 		DirectX::XMFLOAT3  point;	// ヒット位置 
 		DirectX::XMFLOAT3  normal;	// ヒット平面 
-		Info other;					// 当たり判定オブジェクト
+		Info other;					// 当たり判定オブジェクト]
+		float u;					// バリセン座標u
+		float v;					// バリセン座標v
+		float t;					// 始点から交点までの距離
 	};
 
 	// 2D
@@ -114,6 +118,7 @@ public:
 		bool isHit;	// 当たったかどうか 
 		DirectX::XMFLOAT2 posAtoB;
 		DirectX::XMFLOAT2 posBtoA;
+		DirectX::XMFLOAT2 distance;
 	};
 public:
 	// Info型での当たり判定
@@ -125,7 +130,10 @@ public:
 	static Result Hit(Plane plane, Line line);
 	static Result Hit(Plane plane, Ray ray, float lenght);
 	static Result Hit(Point point, Triangle triangle);
+	static Result Hit(Ray ray, Triangle triangle);
+	static Result Hit(Line line, Triangle triangle);
 	static Result2D Hit2D(Info2D a, Info2D b);
 	static Result2D Hit2D(Square a,Square b);
 	static Result2D Hit2D(Circle a, Circle b);
+	static void DrawCollision(Collision::Info collision);
 };

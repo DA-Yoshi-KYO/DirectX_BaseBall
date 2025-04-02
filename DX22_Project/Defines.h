@@ -8,14 +8,13 @@
 #include <DirectXMath.h>
 #include <memory>
 
-using namespace std;
-
 // defines
 #define MAP_X (19)	// txtファイルのマップ横幅
 #define MAP_Y (19)	// txtファイルのマップ縦幅
 
 static const int FPS = 60;
 static const float fFPS = static_cast<float>(FPS);
+
 // リソースパス
 #define MODELPASS(fbx) ("Assets/Model/" fbx)
 #define LOWPASS(fbx) ("Assets/Model/LowPolyNature/" fbx)
@@ -26,13 +25,8 @@ static const float fFPS = static_cast<float>(FPS);
 #define RANGEERROR_MESSAGE(value) do{ MessageBox(NULL,value,"Out of range",MB_OK); } while (0)
 
 // テクスチャパス
-#define TEX_BALLSHEET TEXPASS("BallCountSheet.png")
 constexpr int ce_nCountSplitX = 5;
 constexpr int ce_nCountSplitY = 5;
-#define TEX_BALLICON TEXPASS("Ball.png")
-#define TEX_STRIKEZONE TEXPASS("StrikeZone.png")
-#define TEX_SCOREBOARD TEXPASS("BallCount.png")
-#define TEX_PITCHINGCIRCLE TEXPASS("PitchingCircle.png")
 
 // 3D空間定義
 #define CMETER(value) (value * 0.01f)
@@ -44,7 +38,7 @@ constexpr int ce_nCountSplitY = 5;
 static const float GRAVITY = 0.98f;
 
 // タイトル
-static const char* APP_TITLE = "DX22_Golf";
+static const char* APP_TITLE = "DXBaseBall";
 
 // 画面サイズ
 static const int SCREEN_WIDTH = 1280;
@@ -62,9 +56,9 @@ struct SpriteParam
 	DirectX::XMFLOAT4 color = {1.0f,1.0f,1.0f,1.0f};
 	DirectX::XMFLOAT2 uvPos = { 0.0f,0.0f };
 	DirectX::XMFLOAT2 uvSize = {1.0f,1.0f};
-	DirectX::XMFLOAT4X4 world;
-	DirectX::XMFLOAT4X4 view;
-	DirectX::XMFLOAT4X4 proj;
+	DirectX::XMFLOAT4X4 world = {};
+	DirectX::XMFLOAT4X4 view = {};
+	DirectX::XMFLOAT4X4 proj = {};
 };
 
 struct ModelParam

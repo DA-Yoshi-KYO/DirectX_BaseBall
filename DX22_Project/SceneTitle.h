@@ -3,7 +3,6 @@
 #include "Scene.h"
 #include "Texture.h"
 #include "Camera.h"
-#include "DirectWriteSample.h"
 
 class CSceneTitle : public CScene 
 {
@@ -28,5 +27,4 @@ private:
 	DirectX::XMFLOAT2 m_StarSize;
 	DirectX::XMFLOAT2 m_BlackPos[4];
 	DirectX::XMFLOAT2 m_BlackSize[4];
-	DirectWriteSample* font;
 };

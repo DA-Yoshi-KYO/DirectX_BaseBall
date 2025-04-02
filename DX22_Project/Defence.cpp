@@ -2,24 +2,27 @@
 #include "Camera.h"
 #include "StrikeZone.h"
 #include "SceneGame.h"
+#include "Ball.h"
 
 CDefence::CDefence()
 	: m_pPitchingCursor(nullptr)
 	, m_pPitching(nullptr)
+	, m_pFielding(nullptr)
 {
+	// メモリの初期化
 	m_pPitchingCursor = std::make_unique<CPitchingCursor>();
 	m_pPitching = std::make_unique<CPitching>();
+	m_pFielding = std::make_unique<CFielding>();
 
+	// コンポジションのセット
 	CStrikeZone* pStrikeZone = CStrikeZone::GetInstance().get();
 	m_pPitchingCursor->SetStrikeZone(pStrikeZone);
 	m_pPitching->SetStrikeZone(pStrikeZone);
 	m_pPitching->SetCursor(m_pPitchingCursor.get());
 	CBall* pBall = CBall::GetInstance().get();
-	pBall->SetCamera(CCamera::GetInstance(CSceneGame::GetCameraKind()).get());
 	pBall->SetPitching(m_pPitching.get());
 	pBall->SetPitchingCursor(m_pPitchingCursor.get());
 }
-
 
 CDefence::~CDefence()
 {
@@ -28,12 +31,17 @@ CDefence::~CDefence()
 
 void CDefence::Update()
 {
-	m_pPitchingCursor->Update();
-	m_pPitching->Update();
+		m_pPitchingCursor->Update();
+		m_pPitching->Update();
+	m_pFielding->Update();
 }
 
 void CDefence::Draw()
 {
-	m_pPitchingCursor->Draw();
-	m_pPitching->Draw();
+	if (CBall::GetInstance()->GetPhase() == CBall::BallPhase::Batting)
+	{
+		m_pPitchingCursor->Draw();
+		m_pPitching->Draw();
+	}
+	m_pFielding->Draw();
 }

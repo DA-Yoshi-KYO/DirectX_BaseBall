@@ -1,14 +1,3 @@
-/*+===================================================================
-	File: BallCount.h
-	Summary: スコアボード内の処理
-	Author: 吉田京志郎
-	Date:	2025/03/16	初回作成
-						スコアボード、カウントの描画
-			2025/03/17	塁状況、イニングの描画
-						各種処理を描画に反映
-						ボールカウントの処理実装
-===================================================================+*/
-
 // ==============================
 //    インクルード部
 // ==============================
@@ -19,36 +8,47 @@
 // ==============================
 //    定数定義
 // ==============================
-#define MAX_BALL_COUNT 4
-#define MAX_STRIKE_COUNT 3
-#define MAX_OUT_COUNT 3
-#define MAX_BASE_COUNT 4
-#define MAX_SCORE 99
-#define MAX_INNING 12
+#define MAX_BALL_COUNT 4	// ボールのカウントの最大数
+#define MAX_STRIKE_COUNT 3	// ストライクのカウントの最大数
+#define MAX_OUT_COUNT 3		// アウトのカウントの最大数
+#define MAX_BASE_COUNT 4	// ベースの数の最大数
+#define MAX_SCORE 99		// スコアの最大値
+#define MAX_INNING 12		// イニングの最大数
 
 class CBallCount
 {
+public:
+	enum class InningHalf
+	{
+		Top,
+		Bottom
+	};
+
 private:
 	CBallCount();
 public:
 	~CBallCount();
-	void Init();
+	void Init(InningHalf Player1Harf);
 	void Update();
 	void Draw();
 
+public:
 	/// <summary> AddBallCount:ボールのカウントを1増やす </summary>
 	void AddBallCount();
 	/// <summary> AddStrikeCount:ストライクのカウントを1増やす </summary>
-	void AddStrikeCount();
+	void AddStrikeCount(bool isFoul = false);
 	/// <summary> AddOutCount:アウトのカウントを1増やす </summary>
 	void AddOutCount();
-	/// <summary> AddScore:引数のチームのスコアを1増やす </summary>
-	/// <param name="No:"> どちらのチームか(0 or 1) </param>
-	void AddScore(int No);
-	/// <summary> AddScore:引数番目のベース状況を変える </summary>
+	/// <summary> AddScore:攻撃チームのスコアを1増やす </summary>
+	void AddScore();
+	/// <summary> SetBaseState:引数番目のベース状況を変える </summary>
 	/// <param name="base:"> ベース番号(0 ～ 3) </param>
 	/// <param name="state:"> 塁状況(true:ランナー有,false:ランナー無) </param>
 	void SetBaseState(int base, bool state);
+	/// <summary> SetBaseState:引数番目のベース状況を取得する </summary>
+	/// <param name="base:"> ベース番号(0 ～ 3) </param>
+	///  <returns> 塁状況(true:ランナー有,false:ランナー無) </returns>
+	bool GetBaseState(int base);
 	/// <summary> ResetCount:ストライク・ボールのカウントを0にリセットする </summary>
 	void ResetCount();
 	/// <summary> ChangeInning:どちらかのチームの攻撃が終わったら呼び出し、次のイニングの準備をする </summary>
@@ -58,18 +58,38 @@ public:
 	bool IsEnd();
 
 	// オモテ・ウラ
-	enum class Inning
-	{
-		TOP,
-		BOTTOM
-	};
-
-	// 先行チーム・後攻チーム
 	enum class Team
 	{
-		TOP,
-		BOTTOM
+		Player1,
+		Player2
 	};
+
+	// ゲームの進行要素
+	struct GameState 
+	{
+		InningHalf half;
+		Team offense;
+		Team defense;
+	}m_tGameState;
+	Team GetOffenseTeam();
+	Team GetDefenseTeam();
+
+	// インプレー修了条件要素
+	enum class InplayElement
+	{
+		HoldBall,
+		Running,
+		Max
+	};
+	bool m_bInplay[(int)InplayElement::Max]; // インプレー修了条件
+
+	/// <summary> SetEndInplay:Inplay状態を終了していいかをセットする </summary>
+	/// <param name="ElemEndInplay:"> Inplay状態を継続している要素 </param>
+	/// <param name="state:"> true:Inplay中,false:終了 </param>
+	void SetEndInplay(InplayElement ElemEndInplay,bool state);
+	/// <summary> SetEndInplay:Inplay状態を終了していいかを取得する </summary>
+	/// <returns> true:Inplay終了,false:Inplay中 </returns>
+	bool GetEndInplay();
 
 	/// <summary> シングルトンインスタンスの取得 </summary>
 	static std::unique_ptr <CBallCount>& GetInstance();
@@ -90,9 +110,10 @@ private:
 		bool m_bBaseState[4];
 		int m_nScore[2];
 		int m_nInning;
-		bool m_bTop;
 		bool m_bEnd;
 	}m_tCount;
+
+	bool m_bPlayer1Top;
 
 private:
 	// 内部処理
