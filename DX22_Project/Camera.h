@@ -3,7 +3,7 @@
 #include <DirectXMath.h>
 #include <memory>
 
-//#define _CAM_DEBUG
+#define _CAM_DEBUG
 
 enum CameraKind
 {

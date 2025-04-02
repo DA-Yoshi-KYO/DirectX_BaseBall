@@ -49,7 +49,7 @@ void CBatting::Update()
 	}
 
 	// 投球中にスイングを掛けていない時にスイングが出来る
-	if (pBallCount->GetOffenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::A) : IsKeyPress(InputPlayer2::A) && !m_bSwing && !m_bBatting)
+	if ((pBallCount->GetOffenseTeam() == CBallCount::Team::Player1 ? IsKeyTrigger(InputPlayer1::A) : IsKeyTrigger(InputPlayer2::A)) && !m_bSwing)
 	{
 		float fTyming = ce_fJustTyming + WORLD_AJUST - fBallPos.z;	// どのタイミングで振ったか(0がジャスト、マイナスが遅れている、プラスが早い)
 		float fAngle = 30.0f;		// 打球角度
@@ -62,7 +62,7 @@ void CBatting::Update()
 			if (fTyming > 50.0f) break;
 			
 			// スイングした
-			m_bSwing = true;
+     		m_bSwing = true;
 
 			// タイミングチェック 
 			if (fTyming > ce_fHittingTyming || fTyming < -ce_fHittingTyming)

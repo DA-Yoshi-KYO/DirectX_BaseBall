@@ -16,7 +16,7 @@ CBall::CBall()
 	: m_pModel(nullptr), m_pPitching(nullptr)
 	, m_nPhase((int)BallPhase::Batting)
 	, m_fMove{}, m_fShadowPos{}
-	, m_bFry(true)
+	, m_bFry(true), m_bBallFaulZone(false), m_fFaulZoneBallPos{}
 {
 	// ボールのモデルの読み込み
 	m_pModel = std::make_unique<Model>();
@@ -170,6 +170,12 @@ void CBall::OnCollision(Collision::Result collision)
 	DirectX::XMStoreFloat3(&m_fMove, vecNewVelocity);
 }
 
+void CBall::OnFoulZone(Collision::Result collision)
+{
+	m_bBallFaulZone = true;
+	m_fFaulZoneBallPos = m_tParam.pos;
+}
+
 Collision::Info CBall::GetCollision()
 {
 	return m_BallCollision;
@@ -252,6 +258,7 @@ void CBall::UpdateBatting()
 			m_nPhase = (int)BallPhase::InPlay;
 			m_fMove = m_pBatting->GetDirection();
 			m_bFry = true;
+			m_bBallFaulZone = false;
 		}
 	}
 	else
@@ -263,17 +270,10 @@ void CBall::UpdateBatting()
 void CBall::UpdateInPlay()
 {
 	CBallCount* pBallCount = CBallCount::GetInstance().get();
-	if (pBallCount->GetEndInplay())
-	{
-		for (int i = 0; i < (int)CBallCount::InplayElement::Max; i++)
-		{
-			pBallCount->SetEndInplay((CBallCount::InplayElement)i, false);
-		}
-		// ファールの時はカウントをリセットしない
-		pBallCount->ResetCount();
-		//pBallCount->AddStrikeCount(true);
-		m_nPhase = (int)BallPhase::Batting;
-	}
+
+
+
+
 	m_tParam.size = ce_fInplayBallSize;
 #ifndef _CAM_DEBUG
 	CCamera::SetCameraKind(CAM_INPLAY);
@@ -316,12 +316,47 @@ void CBall::UpdateInPlay()
 	DirectX::XMVECTOR vMove = DirectX::XMLoadFloat3(&m_fMove);
 	DirectX::XMVECTOR vLen = DirectX::XMVector3Length(vMove);
 	DirectX::XMStoreFloat(&speed, vLen);
-	if (speed < CMSEC(0.01f)) 
-	{ 
-		std::string debug;
-		debug = std::to_string(ce_fBallEndPos.z - (m_tParam.pos.z - WORLD_AJUST));
-		debug += "M飛びました";
-		//INFO_MESSAGE(debug.c_str());
+	if (m_bBallFaulZone)
+	{
+		// ボールが落ちてからファール判定をする
+		if (!m_bFry)
+		{
+			// ファールゾーンに入った時外野にボールがある時は即時ファールにする
+			if (m_fFaulZoneBallPos.z <= ce_fInOutBorderZ)
+			{
+				for (int i = 0; i < (int)CBallCount::InplayElement::Max; i++)
+				{
+					pBallCount->SetEndInplay((CBallCount::InplayElement)i, true);
+				}
+			}
+			// ファールゾーンに入った時内野にボールがある時はボールを取った時か止まった時に判定する
+			else
+			{
+				if (CFielding::GetChatchPattern() == CFielding::ChatchPattern::Grounder ||
+					(speed < CMSEC(3.0f) && CFielding::GetChatchPattern() == CFielding::ChatchPattern::Grounder))
+				{
+					for (int i = 0; i < (int)CBallCount::InplayElement::Max; i++)
+					{
+						pBallCount->SetEndInplay((CBallCount::InplayElement)i, true);
+					}
+				}
+			}
+		}
+	}
+
+	// インプレーの終了
+	if (pBallCount->GetEndInplay())
+	{
+		for (int i = 0; i < (int)CBallCount::InplayElement::Max; i++)
+		{
+			pBallCount->SetEndInplay((CBallCount::InplayElement)i, false);
+		}
+		// ファールの時はカウントをリセットしない
+		if (m_bBallFaulZone && CFielding::GetChatchPattern() != CFielding::ChatchPattern::Fry) pBallCount->AddStrikeCount(true);
+		else pBallCount->ResetCount();
+		m_bBallFaulZone = false;
+		m_nPhase = (int)BallPhase::Batting;
+		return;
 	}
 }
 
