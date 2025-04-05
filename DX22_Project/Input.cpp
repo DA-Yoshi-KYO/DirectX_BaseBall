@@ -83,40 +83,38 @@ bool IsKeyPress(InputPlayer2 key)
 	switch (key)
 	{
 	case InputPlayer2::Right:
-		return IsKeyPress('D');
+		return CGetButtons(XINPUT_GAMEPAD_DPAD_LEFT);
 		break;
 	case InputPlayer2::Left:
-		return IsKeyPress('A');
+		return CGetButtons(XINPUT_GAMEPAD_DPAD_RIGHT);
 		break;
 	case InputPlayer2::Up:
-		return IsKeyPress('W');
+		return CGetButtons(XINPUT_GAMEPAD_DPAD_UP);
 		break;
 	case InputPlayer2::Down:
-		return IsKeyPress('S');
+		return CGetButtons(XINPUT_GAMEPAD_DPAD_DOWN);
 		break;
 	case InputPlayer2::A:
-		return IsKeyPress(VK_SPACE);
+		return CGetButtons(XINPUT_GAMEPAD_A);
 		break;
 	case InputPlayer2::B:
-		return IsKeyPress(VK_ESCAPE);
+		return CGetButtons(XINPUT_GAMEPAD_B);
 		break;
 	case InputPlayer2::X:
-		return IsKeyPress('Q');
+		return CGetButtons(XINPUT_GAMEPAD_X);
 		break;
 	case InputPlayer2::Y:
-		return IsKeyPress('E');
+		return CGetButtons(XINPUT_GAMEPAD_Y);
 		break;
 	case InputPlayer2::R1:
-		return IsKeyPress('T');
+		return CGetButtons(XINPUT_GAMEPAD_RIGHT_SHOULDER);
 		break;
 	case InputPlayer2::R2:
-		return IsKeyPress('G');
 		break;
 	case InputPlayer2::L1:
-		return IsKeyPress('F');
+		return CGetButtons(XINPUT_GAMEPAD_LEFT_SHOULDER);
 		break;
 	case InputPlayer2::L2:
-		return IsKeyPress('R');
 		break;
 	default:
 		return false;
@@ -136,10 +134,10 @@ bool IsKeyTrigger(InputPlayer1 key)
 	switch (key)
 	{
 	case InputPlayer1::Right:
-		return CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT);
+		return CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT);
 		break;
 	case InputPlayer1::Left:
-		return CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT);
+		return CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT);
 		break;
 	case InputPlayer1::Up:
 		return CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_UP);
@@ -182,40 +180,38 @@ bool IsKeyTrigger(InputPlayer2 key)
 	switch (key)
 	{
 	case InputPlayer2::Right:
-		return IsKeyTrigger('D');
+		return CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT);
 		break;
 	case InputPlayer2::Left:
-		return IsKeyTrigger('A');
+		return CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT);
 		break;
 	case InputPlayer2::Up:
-		return IsKeyTrigger('W');
+		return CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_UP);
 		break;
 	case InputPlayer2::Down:
-		return IsKeyTrigger('S');
+		return CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_DOWN);
 		break;
 	case InputPlayer2::A:
-		return IsKeyTrigger(VK_SPACE);
+		return CGetButtonsTriger(XINPUT_GAMEPAD_A);
 		break;
 	case InputPlayer2::B:
-		return IsKeyTrigger(VK_ESCAPE);
+		return CGetButtonsTriger(XINPUT_GAMEPAD_B);
 		break;
 	case InputPlayer2::X:
-		return IsKeyTrigger('Q');
+		return CGetButtonsTriger(XINPUT_GAMEPAD_X);
 		break;
 	case InputPlayer2::Y:
-		return IsKeyTrigger('E');
+		return CGetButtonsTriger(XINPUT_GAMEPAD_Y);
 		break;
 	case InputPlayer2::R1:
-		return IsKeyTrigger('T');
+		return CGetButtonsTriger(XINPUT_GAMEPAD_RIGHT_SHOULDER);
 		break;
 	case InputPlayer2::R2:
-		return IsKeyTrigger('G');
 		break;
 	case InputPlayer2::L1:
-		return IsKeyTrigger('F');
+		return CGetButtonsTriger(XINPUT_GAMEPAD_LEFT_SHOULDER);
 		break;
 	case InputPlayer2::L2:
-		return IsKeyTrigger('R');
 		break;
 	default:
 		return false;

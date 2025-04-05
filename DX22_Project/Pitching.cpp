@@ -52,6 +52,18 @@ CPitching::CPitching()
 	m_tParam[(int)TexKind::PitchingCircle].world = wvp[0];
 	m_tParam[(int)TexKind::PitchingCircle].view = wvp[1];
 	m_tParam[(int)TexKind::PitchingCircle].proj = wvp[2];
+
+	m_tPitcherState.m_bLeftPitcher = false;
+	m_tPitcherState.m_fSpeed = 148.0f;
+	m_tPitcherState.m_fStamina = 70.0f;
+	m_tPitcherState.m_fControl = 70.0f;
+	m_tPitcherState.m_nBenderQuality[(int)BenderKind::Fourseam] = 1;
+	m_tPitcherState.m_nBenderQuality[(int)BenderKind::Twoseam] = 2;
+	m_tPitcherState.m_nBenderQuality[(int)BenderKind::Slider] = 3;
+	m_tPitcherState.m_nBenderQuality[(int)BenderKind::Curve] = 4;
+	m_tPitcherState.m_nBenderQuality[(int)BenderKind::Split] = 5;
+	m_tPitcherState.m_nBenderQuality[(int)BenderKind::Sinker] = 6;
+	m_tPitcherState.m_nBenderQuality[(int)BenderKind::Shoot] = 7;
 }
 
 CPitching::~CPitching()
@@ -67,6 +79,7 @@ void CPitching::Update()
 	static bool bSetCircle = false;	// ピッチングサークルを表示しているかどうか
 	static DirectX::XMFLOAT2 fCursorPos = { 0.0f,0.0f };	// ピッチカーソルの座標
 	CBallCount* pBallCount = CBallCount::GetInstance().get();	// ボールカウントクラスのインスタンスを取得
+	CBallCount::Team eDefenceTeam = pBallCount->GetDefenseTeam();
 
 	switch (CBall::GetInstance()->GetPhase())
 	{
@@ -76,24 +89,90 @@ void CPitching::Update()
 		{
 			// セットポジション
 		case (int)CPitching::PitchingPhase::Set:
-			m_pPitchingCursor->SetMove(true);
-			// スペースキーで位置決定
-			if (pBallCount->GetDefenseTeam() == CBallCount::Team::Player1 ? IsKeyTrigger(InputPlayer1::A) : IsKeyTrigger(InputPlayer2::A))
+			// ストレート
+			if (eDefenceTeam == CBallCount::Team::Player1 ? IsKeyTrigger(InputPlayer1::Up) : IsKeyTrigger(InputPlayer2::Up))
 			{
-				m_tParam[(int)TexKind::ReleasePoint].pos = m_tParam[(int)TexKind::PitchingCircle].pos = fCursorPos = m_pPitchingCursor->GetPos();
+				if (m_tPitcherState.m_nBenderQuality[(int)BenderKind::Fourseam] != 0) m_tPitcherState.m_eThrowKind = BenderKind::Fourseam;
+			}
+			// ツーシーム
+			if (eDefenceTeam == CBallCount::Team::Player1 ? IsKeyTrigger(InputPlayer1::R1) : IsKeyTrigger(InputPlayer2::R1))
+			{
+				if (m_tPitcherState.m_nBenderQuality[(int)BenderKind::Twoseam] != 0 && m_tPitcherState.m_eThrowKind == BenderKind::Fourseam) m_tPitcherState.m_eThrowKind = BenderKind::Twoseam;
+			}
+			// スライダー
+			if (eDefenceTeam == CBallCount::Team::Player1 ? IsKeyTrigger(InputPlayer1::Right) : IsKeyTrigger(InputPlayer2::Right))
+			{
+				if (m_tPitcherState.m_bLeftPitcher)
+				{
+					if (m_tPitcherState.m_nBenderQuality[(int)BenderKind::Shoot] != 0) m_tPitcherState.m_eThrowKind = BenderKind::Shoot;
+				}
+				else
+				{
+					if (m_tPitcherState.m_nBenderQuality[(int)BenderKind::Slider] != 0) m_tPitcherState.m_eThrowKind = BenderKind::Slider;
+				}
+			}
+			// フォーク
+			if (eDefenceTeam == CBallCount::Team::Player1 ? IsKeyTrigger(InputPlayer1::Down) : IsKeyTrigger(InputPlayer2::Down))
+			{
+				if (m_tPitcherState.m_nBenderQuality[(int)BenderKind::Split] != 0) m_tPitcherState.m_eThrowKind = BenderKind::Split;
+			}
+			// シュート
+			if (eDefenceTeam == CBallCount::Team::Player1 ? IsKeyTrigger(InputPlayer1::Left) : IsKeyTrigger(InputPlayer2::Left))
+			{
+				if (m_tPitcherState.m_bLeftPitcher)
+				{
+					if (m_tPitcherState.m_nBenderQuality[(int)BenderKind::Slider] != 0) m_tPitcherState.m_eThrowKind = BenderKind::Slider;
+				}
+				else
+				{
+					if (m_tPitcherState.m_nBenderQuality[(int)BenderKind::Shoot] != 0) m_tPitcherState.m_eThrowKind = BenderKind::Shoot;
+				}
+			}
+			// カーブ
+			if ((eDefenceTeam == CBallCount::Team::Player1 ? IsKeyTrigger(InputPlayer1::Right) : IsKeyTrigger(InputPlayer2::Right)) && 
+				(eDefenceTeam == CBallCount::Team::Player1 ? IsKeyTrigger(InputPlayer1::Down) : IsKeyTrigger(InputPlayer2::Down)))
+			{
+				if (m_tPitcherState.m_bLeftPitcher)
+				{
+					if (m_tPitcherState.m_nBenderQuality[(int)BenderKind::Sinker] != 0) m_tPitcherState.m_eThrowKind = BenderKind::Sinker;
+				}
+				else
+				{
+					if (m_tPitcherState.m_nBenderQuality[(int)BenderKind::Curve] != 0) m_tPitcherState.m_eThrowKind = BenderKind::Curve;
+				}
+			}
+			// シンカー
+			if ((eDefenceTeam == CBallCount::Team::Player1 ? IsKeyTrigger(InputPlayer1::Left) : IsKeyTrigger(InputPlayer2::Left)) &&
+				(eDefenceTeam == CBallCount::Team::Player1 ? IsKeyTrigger(InputPlayer1::Down) : IsKeyTrigger(InputPlayer2::Down)))
+			{
+				if (m_tPitcherState.m_bLeftPitcher)
+				{
+					if (m_tPitcherState.m_nBenderQuality[(int)BenderKind::Curve] != 0) m_tPitcherState.m_eThrowKind = BenderKind::Curve;
+				}
+				else
+				{
+					if (m_tPitcherState.m_nBenderQuality[(int)BenderKind::Sinker] != 0) m_tPitcherState.m_eThrowKind = BenderKind::Sinker;
+				}
+			}
+
+			// Aボタンで球種決定
+			if (eDefenceTeam == CBallCount::Team::Player1 ? IsKeyTrigger(InputPlayer1::A) : IsKeyTrigger(InputPlayer2::A))
+			{
+
 				fPitchTime = 0.0f;
 				// 球速は乱数で一定値下がる可能性がある
 				m_fSpeed = m_fSpeed - (float)(rand() % 3);
 				// 最初はピッチングサークルを表示しない
 				m_tParam[(int)TexKind::PitchingCircle].size = { 0.0f,0.0f };
-				// 投球する場所を決めたらフェーズを移す
+				// 球種を決めたらフェーズを移す
 				m_nPitchingPhase = (int)PitchingPhase::Pitch;
-				m_pPitchingCursor->SetMove(false);
 			}
 			break;
 			// リリースポイント
 		case (int)CPitching::PitchingPhase::Pitch:
 			fPitchTime += 1.0f / 60.0f;
+			m_pPitchingCursor->SetMove(true);
+			m_tParam[(int)TexKind::ReleasePoint].pos = m_tParam[(int)TexKind::PitchingCircle].pos = fCursorPos = m_pPitchingCursor->GetPos();
 
 			// セットポジションから少し経ってからピッチングサークルを表示する
 			if (fPitchTime > ce_fSetPositionTime && !bSetCircle)
@@ -109,9 +188,10 @@ void CPitching::Update()
 			}
 
 			// リリースポイントのタイミングで投球の質を判断する
-			if (pBallCount->GetDefenseTeam() == CBallCount::Team::Player1 ? IsKeyTrigger(InputPlayer1::A) : IsKeyTrigger(InputPlayer2::A))
+			if (eDefenceTeam == CBallCount::Team::Player1 ? IsKeyTrigger(InputPlayer1::A) : IsKeyTrigger(InputPlayer2::A))
 			{
 				DirectX::XMFLOAT2 fDefCursorPos = m_pPitchingCursor->GetPos();
+				DirectX::XMFLOAT2 fDefPredPos = m_pPitchingCursor->GetPredPos();
 				int randX = rand() % 20 - 10;
 				int randY = rand() % 10 - 10;
 				int randMiss = rand() % 10;
@@ -133,16 +213,19 @@ void CPitching::Update()
 				else if (m_tParam[(int)TexKind::PitchingCircle].size.x > ce_fPitchingCircleEndSize.x + 1.0f)
 				{
 					m_pPitchingCursor->SetPos({ fDefCursorPos.x + randX, fDefCursorPos.y + randY });
+					m_pPitchingCursor->SetPredPos({ fDefPredPos.x + randX, fDefPredPos.y + randY });
 				}
 				// ベストピッチ
 				else if (m_tParam[(int)TexKind::PitchingCircle].size.x > ce_fPitchingCircleEndSize.x - 1.0f)
 				{
 					m_pPitchingCursor->SetPos({ fDefCursorPos.x,fDefCursorPos.y });
+					m_pPitchingCursor->SetPredPos({ fDefPredPos.x, fDefPredPos.y });
 				}
 				// リリースがやや遅い
 				else if (m_tParam[(int)TexKind::PitchingCircle].size.x > ce_fPitchingCircleEndSize.x / 2.0f)
 				{
 					m_pPitchingCursor->SetPos({ fDefCursorPos.x + randX, fDefCursorPos.y + randY });
+					m_pPitchingCursor->SetPredPos({ fDefPredPos.x + randX, fDefPredPos.y + randY });
 				}
 				// リリースが遅い
 				else
@@ -190,6 +273,7 @@ void CPitching::Update()
 			bSetCircle = false;
 			// リリースしたらリリースサークルの表示を消す
 			m_tParam[(int)TexKind::PitchingCircle].size = m_tParam[(int)TexKind::ReleasePoint].size = { 0.0f,0.0f };
+			m_pPitchingCursor->SetMove(false);
 
 			// タイマーが捕球までの時間になったら
 			if (fPitchTime >= m_fChatchTime)
@@ -251,7 +335,17 @@ CPitching::PitchingPhase CPitching::GetPitchingPhase()
 
 float CPitching::GetChatchTime()
 {
-	return m_fChatchTime * fFPS;
+	return m_fChatchTime;
+}
+
+float CPitching::GetBendStartTime()
+{
+	return m_fChatchTime * 0.5f;
+}
+
+CPitching::PitchState CPitching::GetPitchState()
+{
+	return m_tPitcherState;
 }
 
 void CPitching::DrawCircle()

@@ -7,7 +7,7 @@
 
 /* Include */
 #include"Controller.h"
-
+#include <string>
 
 
 /* Global変数 */
@@ -28,7 +28,13 @@ void Controller_Update()
 	for (int i = 0; i < PAD_MAX; i++)
 	{
 		OldButtons[i] = state[i];
-		XInputGetState(i, &state[i]);
+		if (XInputGetState(i, &state[i]) != ERROR_SUCCESS)
+		{
+			std::string strErrMsg = "No";
+			strErrMsg += std::to_string(i + 1);
+			strErrMsg += "Controller DisConnect";
+		MessageBox(NULL, strErrMsg.c_str(),"ControllerError", MB_OK);
+		}
 		XInputSetState(i, &vibration[i]);
 
 		/* 一定Frame経過時のバイブの無効化 */
@@ -55,12 +61,33 @@ void Controller_Update()
 
 /* 左アナログスティックの座標獲得 */
 /* -32768 ～ 32767 */
-DirectX::XMFLOAT2 CGetLStick()
+DirectX::XMFLOAT2 CGetLStick(int index)
 {
 	DirectX::XMFLOAT2 Pos;
+	g_nControllerIndex = index;
 
 	Pos.x = state[g_nControllerIndex].Gamepad.sThumbLX;
 	Pos.y = state[g_nControllerIndex].Gamepad.sThumbLY;
+
+	if (fabsf(Pos.x) < XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE) Pos.x = 0.0f;
+	if (fabsf(Pos.y) < XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE) Pos.y = 0.0f;
+	
+	if (Pos.x < 0.0f) Pos.x += XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE;
+	else if(Pos.x > 0.0f) Pos.x -= XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE;
+
+	if (Pos.y < 0.0f) Pos.y += XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE;
+	else if(Pos.y > 0.0f) Pos.y -= XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE;
+
+	const float maxPow = 32767.0f - XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE;
+	Pos.x = Pos.x / maxPow;
+	Pos.y = Pos.y / maxPow;
+
+	if (Pos.x >= 1.0f) Pos.x = 1.0f;
+	if (Pos.x <= -1.0f) Pos.x = -1.0f;
+	if (Pos.y >= 1.0f) Pos.y = 1.0f;
+	if (Pos.y <= -1.0f) Pos.y = -1.0f;
+
+	//Pos.y *= -1;
 
 	return Pos;
 }

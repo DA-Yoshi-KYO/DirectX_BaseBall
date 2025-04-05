@@ -238,18 +238,43 @@ void CBall::UpdateBatting()
 #ifndef _CAM_DEBUG
 	CCamera::SetCameraKind(CAM_BATTER);
 #endif // !_CAM_DEBUG
+
+	static float fTime = 0.0f;
 	m_tParam.size = ce_fBallSize;
 	if (m_pPitching->GetPitchingPhase() == CPitching::PitchingPhase::Release)
 	{
-		float fChatch = m_pPitching->GetChatchTime();
+
+		float fChatch = m_pPitching->GetChatchTime() * fFPS;
+		fTime += 1.0f / 60.0f;
+		bool bBendStart = false;
 		DirectX::XMFLOAT2 fCursorPos = m_pCursor->GetPos();
 		DirectX::XMFLOAT2 fCenterToCursor = { ce_fPitchingCursorPos.x - fCursorPos.x,ce_fPitchingCursorPos.y - fCursorPos.y };
 		DirectX::XMFLOAT2 fZoneSizeHarf = { ce_fStrikeZoneSize.x / 2.0f,ce_fStrikeZoneSize.y / 2.0f };
 		DirectX::XMFLOAT2 fCenterToCursorPow = { fCenterToCursor.x / fZoneSizeHarf.x,fCenterToCursor.y / fZoneSizeHarf.y };
-		DirectX::XMFLOAT2 fCenterToBall = { ce_fBallLimitX.x * fCenterToCursorPow.x,  ce_fBallLimitX.y * fCenterToCursorPow.y + ce_fBallEndPos.y };
+		DirectX::XMFLOAT2 fCenterToBall = { ce_fBallLimitX.x * fCenterToCursorPow.x,  ce_fBallLimitX.y * fCenterToCursorPow.y};
 
-		m_tParam.pos.x += (fCenterToBall.x - ce_fBallPos.x) / fChatch;
-		m_tParam.pos.y += (fCenterToBall.y - ce_fBallPos.y) / fChatch;
+		DirectX::XMFLOAT2 fPredPos = m_pCursor->GetPredPos();
+		DirectX::XMFLOAT2 fCenterToPred = { fPredPos.x - fCursorPos.x,fPredPos.y - fCursorPos.y  };
+		DirectX::XMFLOAT2 fCenterToPredPow = { fCenterToPred.x / fZoneSizeHarf.x,fCenterToPred.y / fZoneSizeHarf.y };
+		DirectX::XMFLOAT2 fPredToBall = { ce_fBallLimitX.x * fCenterToPredPow.x,  ce_fBallLimitX.y * fCenterToPredPow.y};
+
+		if (fTime >= m_pPitching->GetBendStartTime())
+		{
+			bBendStart = true;
+		}
+
+		float fBend = fChatch - m_pPitching->GetBendStartTime() * fFPS;
+		if(bBendStart)
+		{
+			m_tParam.pos.x += (fCenterToBall.x + fPredToBall.x) / fBend + (ce_fBallEndPos.x - ce_fBallPos.x) / fBend;
+			m_tParam.pos.y += (fCenterToBall.y + fPredToBall.y) / fBend + (ce_fBallEndPos.y - ce_fBallPos.y) / fBend;
+		}
+		else
+		{
+			m_tParam.pos.x += (fCenterToBall.x) / fChatch + (ce_fBallEndPos.x - ce_fBallPos.x) / fChatch;
+			m_tParam.pos.y += (fCenterToBall.y) / fChatch + (ce_fBallEndPos.y - ce_fBallPos.y) / fChatch;
+
+		}
 		m_tParam.pos.z += (ce_fBallEndPos.z - ce_fBallPos.z) / fChatch;
 		m_tParam.rotate.x += DirectX::XMConvertToRadians(ce_nBallRotateSec * 360.0f) / fChatch;
 
@@ -263,6 +288,7 @@ void CBall::UpdateBatting()
 	}
 	else
 	{
+		fTime = 0.0f;
 		m_tParam.pos = { ce_fBallPos.x + WORLD_AJUST ,ce_fBallPos.y + WORLD_AJUST, ce_fBallPos.z + WORLD_AJUST };
 	}
 }

@@ -19,7 +19,7 @@ class CBatting;
 //    定数定義
 // ==============================
 constexpr DirectX::XMFLOAT3 ce_fBallPos = { 0.0f,-3.0f,30.0f };
-constexpr DirectX::XMFLOAT3 ce_fBallEndPos = { 0.0f,-5.0f,148.0f };
+constexpr DirectX::XMFLOAT3 ce_fBallEndPos = { 0.0f,-4.1f,148.0f };
 
 // ==============================
 //    シングルトンインスタンス
