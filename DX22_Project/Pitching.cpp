@@ -77,7 +77,6 @@ void CPitching::Update()
 {
 	static float fPitchTime = 0.0f;	// ナイスピッチや着弾までに使うタイム
 	static bool bSetCircle = false;	// ピッチングサークルを表示しているかどうか
-	static DirectX::XMFLOAT2 fCursorPos = { 0.0f,0.0f };	// ピッチカーソルの座標
 	CBallCount* pBallCount = CBallCount::GetInstance().get();	// ボールカウントクラスのインスタンスを取得
 	CBallCount::Team eDefenceTeam = pBallCount->GetDefenseTeam();
 
@@ -172,7 +171,7 @@ void CPitching::Update()
 		case (int)CPitching::PitchingPhase::Pitch:
 			fPitchTime += 1.0f / 60.0f;
 			m_pPitchingCursor->SetMove(true);
-			m_tParam[(int)TexKind::ReleasePoint].pos = m_tParam[(int)TexKind::PitchingCircle].pos = fCursorPos = m_pPitchingCursor->GetPos();
+			m_tParam[(int)TexKind::ReleasePoint].pos = m_tParam[(int)TexKind::PitchingCircle].pos = m_pPitchingCursor->GetPos();
 
 			// セットポジションから少し経ってからピッチングサークルを表示する
 			if (fPitchTime > ce_fSetPositionTime && !bSetCircle)
@@ -203,9 +202,11 @@ void CPitching::Update()
 					{
 					case 0:
 						m_pPitchingCursor->SetPos(ce_fPitchingCursorPos);
+						m_pPitchingCursor->SetPredPos(ce_fPitchingCursorPos);
 						break;
 					default:
 						m_pPitchingCursor->SetPos({ m_pStrikeZone->GetPos().x - m_pStrikeZone->GetSize().x / 1.3f,m_pStrikeZone->GetPos().y + m_pStrikeZone->GetSize().y / 1.3f });
+						m_pPitchingCursor->SetPredPos({ m_pStrikeZone->GetPos().x - m_pStrikeZone->GetSize().x / 1.3f,m_pStrikeZone->GetPos().y + m_pStrikeZone->GetSize().y / 1.3f });
 						break;
 					}
 				}
@@ -234,9 +235,11 @@ void CPitching::Update()
 					{
 					case 0:
 						m_pPitchingCursor->SetPos(ce_fPitchingCursorPos);
+						m_pPitchingCursor->SetPredPos(ce_fPitchingCursorPos);
 						break;
 					default:
 						m_pPitchingCursor->SetPos({ m_pStrikeZone->GetPos().x - m_pStrikeZone->GetSize().x / 1.3f,m_pStrikeZone->GetPos().y + m_pStrikeZone->GetSize().y / 1.3f });
+						m_pPitchingCursor->SetPredPos({ m_pStrikeZone->GetPos().x - m_pStrikeZone->GetSize().x / 1.3f,m_pStrikeZone->GetPos().y + m_pStrikeZone->GetSize().y / 1.3f });
 						break;
 					}
 				}
@@ -244,7 +247,6 @@ void CPitching::Update()
 				// 投球したらボールをリリースする処理に移る
 				m_nPitchingPhase = (int)CPitching::PitchingPhase::Release;
 				fPitchTime = 0.0f;
-				fCursorPos = m_pPitchingCursor->GetPos();
 			}
 			else if (m_tParam[(int)TexKind::PitchingCircle].size.x < 0.0f)
 			{
@@ -254,15 +256,16 @@ void CPitching::Update()
 				{
 				case 0:
 					m_pPitchingCursor->SetPos(ce_fPitchingCursorPos);
+					m_pPitchingCursor->SetPredPos(ce_fPitchingCursorPos);
 					break;
 				default:
 					m_pPitchingCursor->SetPos({ m_pStrikeZone->GetPos().x - m_pStrikeZone->GetSize().x / 1.3f,m_pStrikeZone->GetPos().y + m_pStrikeZone->GetSize().y / 1.3f });
+					m_pPitchingCursor->SetPredPos({ m_pStrikeZone->GetPos().x - m_pStrikeZone->GetSize().x / 1.3f,m_pStrikeZone->GetPos().y + m_pStrikeZone->GetSize().y / 1.3f });
 					break;
 				}
 				// 投球したらボールをリリースする処理に移る
 				m_nPitchingPhase = (int)CPitching::PitchingPhase::Release;
 				fPitchTime = 0.0f;
-				fCursorPos = m_pPitchingCursor->GetPos();
 			}
 			// 球速に応じて捕球までの時間を決める
 			m_fChatchTime = ce_fSpeed_Ajust / KMETER(m_fSpeed) * 60.0f * 60.0f;
