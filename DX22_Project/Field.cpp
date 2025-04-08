@@ -12,11 +12,11 @@
 // ==============================
 constexpr int ce_nHomerunPolyLine = 40;	// ホームランゾーンのポリライン分割数
 constexpr int ce_nPlanePolyLine = 2;	// 直線平面のポリライン分割数
+constexpr float ce_nEasPow = 2.5f;	// イージングの強さ
 constexpr float ce_fJudgeZoneY = ce_fGroundY + 100.0f;	// 判定用当たり判定の高さ
-constexpr float ce_fStartEndZ = -85.0f;	// 外野フェンスポリラインの最初のZ値
-constexpr float ce_fAjustZ = 98.0f;	// 外野フェンスの膨らみ
-constexpr float ce_fFenceHarfX = 160.0f;	// 外野フェンスの半分の大きさ
-constexpr float ce_fFenceX = 320.0f;	// 外野フェンスのX距離
+constexpr float ce_fStartEndZ = -110.0f;	// 外野フェンスポリラインの最初のZ値
+constexpr float ce_fAjustZ = 200.0f;	// 外野フェンスの頂点(ce_fStartEndZから見た膨らみの最大値)
+constexpr float ce_fFenceX = 500.0f;	// 外野フェンスのX距離
 constexpr float ce_fHomeToBatterBoxX = 0.0f;	// バッターボックスまでの距離
 constexpr float ce_fHomeToBatterBoxZ = 5.0f;	// バッターボックスまでの距離
 
@@ -68,15 +68,18 @@ void CField::Update()
 
 void CField::Draw()
 {
+	// スカイドームの描画
+	//SetModel(m_tSkydomeParam, m_pSkydome.get());
+
 	// グラウンドの描画
 	SetModel(m_tFieldParam, m_pField.get());
 
-	// ベースの描画
-	SetModel(m_tBaseParam[(int)BaseKind::Home], m_pHomeBase.get());
-	for (int i = (int)BaseKind::First; i <= (int)BaseKind::Third; i++)
-	{
-		SetModel(m_tBaseParam[i], m_pBase.get());
-	}
+	//// ベースの描画
+	//SetModel(m_tBaseParam[(int)BaseKind::Home], m_pHomeBase.get());
+	//for (int i = (int)BaseKind::First; i <= (int)BaseKind::Third; i++)
+	//{
+	//	SetModel(m_tBaseParam[i], m_pBase.get());
+	//}
 
 	//Collision::DrawCollision(m_Ground);
 	for (auto itr = m_HomeRunZone.begin(); itr != m_HomeRunZone.end(); itr++)
@@ -173,7 +176,9 @@ void CField::InitModel()
 {
 	// モデルの読み込み
 	m_pField = std::make_unique<Model>();
-	m_pField->Load(MODELPASS("BaseBallPark.fbx"));
+	if (!m_pField->Load(MODELPASS("Baseball_Ground.fbx"),0.1f)) ERROR_MESSAGE("Baseball_Ground.fbx");
+	m_pSkydome = std::make_unique<Model>();
+	if (!m_pSkydome->Load(MODELPASS("basic_skybox_3d_flip.fbx"))) ERROR_MESSAGE("basic_skybox_3d_flip.fbx");
 	m_pBase = std::make_unique<Model>();
 	if(!m_pBase->Load(MODELPASS("base.obj"))) ERROR_MESSAGE("base.obj");
 	m_pHomeBase = std::make_unique<Model>();
@@ -181,9 +186,13 @@ void CField::InitModel()
 
 	// パラメータの初期化
 	// グラウンド
-	m_tFieldParam.pos = { 0.0f + WORLD_AJUST,-10.0f + WORLD_AJUST,0.0f + WORLD_AJUST  - 150.0f };
+	m_tFieldParam.pos = { 0.0f + WORLD_AJUST,-10.0f + WORLD_AJUST,0.0f + WORLD_AJUST - 40.0f };
 	m_tFieldParam.size = { 50.0f,50.0f,50.0f };
 	m_tFieldParam.rotate = { 0.0f,0.0f,0.0f };
+
+	m_tSkydomeParam.pos = { 0.0f + WORLD_AJUST,-10.0f + WORLD_AJUST,0.0f + WORLD_AJUST  - 150.0f };
+	m_tSkydomeParam.size = { 500.0f,500.0f,500.0f };
+	m_tSkydomeParam.rotate = { 0.0f,0.0f,0.0f };
 
 	// 各種ベース
 	m_tBaseParam[(int)BaseKind::Home].pos = { ce_fPitcherPos.x, m_tFieldParam.pos.y,ce_fPitcherPos.z + 75.0f };
@@ -194,9 +203,9 @@ void CField::InitModel()
 		m_tBaseParam[i].size = { 3.0f,3.0f,3.0f };
 		m_tBaseParam[i].rotate = { 0.0f,DirectX::XMConvertToRadians(45.0f),0.0f};
 	}
-	m_tBaseParam[(int)BaseKind::First].pos = { ce_fPitcherPos.x - 75.0f,m_tFieldParam.pos.y,ce_fPitcherPos.z - 35.0f};
-	m_tBaseParam[(int)BaseKind::Second].pos = { ce_fPitcherPos.x ,m_tFieldParam.pos.y,ce_fPitcherPos.z - 115.0f };
-	m_tBaseParam[(int)BaseKind::Third].pos = { ce_fPitcherPos.x + 75.0f,m_tFieldParam.pos.y,ce_fPitcherPos.z - 35.0f };
+	m_tBaseParam[(int)BaseKind::First].pos = { ce_fPitcherPos.x - 70.0f,m_tFieldParam.pos.y,ce_fPitcherPos.z };
+	m_tBaseParam[(int)BaseKind::Second].pos = { ce_fPitcherPos.x ,m_tFieldParam.pos.y,ce_fPitcherPos.z - 75.0f };
+	m_tBaseParam[(int)BaseKind::Third].pos = { ce_fPitcherPos.x + 70.0f,m_tFieldParam.pos.y,ce_fPitcherPos.z };
 }
 
 void CField::InitCollision()
@@ -212,8 +221,20 @@ void CField::InitCollision()
 	int j = 0;	// ループ用(2回に1回)
 	m_HomeRunZone.clear();	// ベクターの初期化
 	m_HomeRunZone.resize(ce_nHomerunPolyLine);	// ベクターのリサイズ
-	const float fStep = ce_fFenceX * 2.0f / (m_HomeRunZone.size() - 1);	// フェンスx軸の大きさからポリライン一つあたりのステップを求める
-	const float fBaseX = WORLD_AJUST + 160.0f;	// フェンスx軸の左端
+	const float fStep = ce_fFenceX * 2.0f / (m_HomeRunZone.size());	// フェンスx軸の大きさからポリライン一つあたりのステップを求める
+	const float fBaseX = WORLD_AJUST + ce_fFenceX / 2.0f;	// フェンスx軸の左端
+
+	float fEasValue[ce_nHomerunPolyLine / 2 + 1];
+
+	for (int i = 0; i < ce_nHomerunPolyLine / 2 + 1; i++)
+	{
+		int nEasCount = (i) - m_HomeRunZone.size() / 4;
+		nEasCount = abs(nEasCount);
+		nEasCount = m_HomeRunZone.size() / 4 - nEasCount;
+		float fT = (float)nEasCount / ((float)m_HomeRunZone.size() / 4);
+		fEasValue[i] = powf(1 - fT, ce_nEasPow);
+		fEasValue[i] += 1.0f;
+	}
 
 	// ポリライン分割数の数だけ初期化する
 	for (auto itr = m_HomeRunZone.begin(); itr != m_HomeRunZone.end(); itr++, i++)
@@ -221,7 +242,10 @@ void CField::InitCollision()
 		float fAngleZ = 0;	// ポリラインの角度
 		(*itr).type = Collision::eTriangle;	// コリジョンの形は三角形
 
-		// イメージ三角形を使用した当たり判定のイメージ
+		// イージングを使って弧を急にする...？
+
+
+		// 三角形を使用した当たり判定のイメージ
 		//(0)  (2)
 		//  *─*
 		// │／│
@@ -232,21 +256,22 @@ void CField::InitCollision()
 		// 上三角形(インデックス:0,1,2)
 		if (i % 2 == 0)
 		{
+
 			// 0,1
 			// ポリラインの場所に応じて角度を決める
 			fAngleZ = DirectX::XMConvertToRadians(360.0f) / m_HomeRunZone.size() * (i / 2);
 			// 角度に応じてZ値をサインカーブで求める
-			fAngleZ = -sinf(fAngleZ);
+			fAngleZ = -sinf(fAngleZ) * fEasValue[j];	// ここにイージング...?
+
 
 			// 左側の頂点
 			(*itr).triangle.point[0] = { fBaseX - fStep * (i / 2), ce_fJudgeZoneY + WORLD_AJUST, fAngleZ * ce_fAjustZ + WORLD_AJUST + ce_fStartEndZ };
 			(*itr).triangle.point[1] = { fBaseX - fStep * (i / 2), ce_fGroundY + WORLD_AJUST, fAngleZ * ce_fAjustZ + WORLD_AJUST + ce_fStartEndZ };
-
 			// 2
 			// ポリラインの場所に応じて角度を決める
 			fAngleZ = DirectX::XMConvertToRadians(360.0f) / m_HomeRunZone.size() * (i / 2 + 1);
 			// 角度に応じてZ値をサインカーブで求める
-			fAngleZ = -sinf(fAngleZ);
+			fAngleZ = -sinf(fAngleZ) * fEasValue[j + 1];
 
 			// 右側の頂点
 			(*itr).triangle.point[2] = { fBaseX - fStep * (i / 2 + 1), ce_fJudgeZoneY + WORLD_AJUST, fAngleZ * ce_fAjustZ + WORLD_AJUST + ce_fStartEndZ };
@@ -258,7 +283,7 @@ void CField::InitCollision()
 			// ポリラインの場所に応じて角度を決める
 			fAngleZ = DirectX::XMConvertToRadians(360.0f) / m_HomeRunZone.size() * (i / 2);
 			// 角度に応じてZ値をサインカーブで求める
-			fAngleZ = -sinf(fAngleZ);
+			fAngleZ = -sinf(fAngleZ) * fEasValue[j];
 
 			// 左側の頂点
 			(*itr).triangle.point[0] = { fBaseX - fStep * (i / 2), ce_fGroundY + WORLD_AJUST, fAngleZ * ce_fAjustZ + WORLD_AJUST + ce_fStartEndZ };
@@ -267,7 +292,7 @@ void CField::InitCollision()
 			// ポリラインの場所に応じて角度を決める
 			fAngleZ = DirectX::XMConvertToRadians(360.0f) / m_HomeRunZone.size() * (i / 2 + 1);
 			// 角度に応じてZ値をサインカーブで求める
-			fAngleZ = -sinf(fAngleZ);
+			fAngleZ = -sinf(fAngleZ) * fEasValue[j + 1];
 
 			// 右側の頂点
 			(*itr).triangle.point[1] = { fBaseX - fStep * (i / 2 + 1), ce_fJudgeZoneY + WORLD_AJUST, fAngleZ * ce_fAjustZ + WORLD_AJUST + ce_fStartEndZ };

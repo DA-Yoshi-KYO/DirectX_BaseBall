@@ -14,7 +14,7 @@ CStrikeZone::CStrikeZone()
 	if (FAILED(m_pTexture->Create(TEXPASS("StrikeZone.png")))) MessageBox(NULL, "StrikeZone.png", "Error", MB_OK);
 
 	// ƒpƒ‰ƒ[ƒ^‚Ì‰Šú‰»
-	m_tParam.pos = { 0.0f,-150.0f };
+	m_tParam.pos = { 0.0f,-100.0f };
 	m_tParam.size = ce_fStrikeZoneSize;
 	m_tParam.rotate = 0.0f;
 	m_tParam.color = { 1.0f,1.0f,1.0f,1.0f };

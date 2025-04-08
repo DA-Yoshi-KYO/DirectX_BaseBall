@@ -12,7 +12,7 @@
 constexpr float ce_fGroundY = -5.0f;	// グラウンドの見た目上の高さ
 constexpr float ce_fFenceHeight = ce_fGroundY + 15.0f;	// フェンスの高さ
 constexpr float ce_fInOutBorderZ = WORLD_AJUST;	// 内外野の境目
-constexpr DirectX::XMFLOAT3 ce_fPitcherPos = { WORLD_AJUST, WORLD_AJUST - 8.0f, WORLD_AJUST + 60.0f };	// グラウンドにいるピッチャーの位置(基準値)
+constexpr DirectX::XMFLOAT3 ce_fPitcherPos = { WORLD_AJUST, WORLD_AJUST - 8.0f, WORLD_AJUST + 65.0f };	// グラウンドにいるピッチャーの位置(基準値)
 
 class CField : public CGameObject
 {
@@ -69,11 +69,13 @@ public:
 private:
 	// コンポジション
 	std::unique_ptr<Model> m_pField;
+	std::unique_ptr<Model> m_pSkydome;
 	std::unique_ptr<Model> m_pBase;
 	std::unique_ptr<Model> m_pHomeBase;
 
 	// モデルのパラメータ
 	ModelParam m_tFieldParam;
+	ModelParam m_tSkydomeParam;
 	ModelParam m_tBaseParam[(int)BaseKind::Max];
 
 	// 当たり判定情報

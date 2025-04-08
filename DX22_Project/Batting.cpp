@@ -10,7 +10,7 @@
 // ==============================
 //    定数定義
 // ==============================
-constexpr float ce_fJustTyming = 134.0f;	// ジャストミートになるタイミング
+constexpr float ce_fJustTyming = 139.0f;	// ジャストミートになるタイミング
 constexpr float ce_fHittingTyming = 4.0f;	// バットに当たれるタイミング(+-)
 constexpr float ce_fAngleMax = 60.0f;		// x方向打球角度の限界(+-)
 constexpr float ce_fHomeRunAngle = 30.0f;	// バッターの弾道

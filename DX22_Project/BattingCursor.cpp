@@ -6,10 +6,10 @@
 #include "Main.h"
 #include "Camera.h"
 #include "Input.h"
-#include "SceneGame.h"
 #include "ImGuiManager.h"
 #include "BattingCursor.h"
 #include "BallCount.h"
+#include "Controller.h"
 
 // ==============================
 //    Ã“I•Ï”‚Ì‰Šú‰»
@@ -58,14 +58,13 @@ void CBattingCursor::Update()
 	if (m_bMove)
 	{
 		// ˆÚ“®ˆ—
-		if (pBallCount->GetOffenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::Left)	: IsKeyPress(InputPlayer2::Left))	m_tParam.pos.x += 1.0f;
-		if (pBallCount->GetOffenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::Right)	: IsKeyPress(InputPlayer2::Right))	m_tParam.pos.x -= 1.0f;
-		if (pBallCount->GetOffenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::Up)	: IsKeyPress(InputPlayer2::Up))		m_tParam.pos.y += 1.0f;
-		if (pBallCount->GetOffenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::Down)	: IsKeyPress(InputPlayer2::Down))	m_tParam.pos.y -= 1.0f;
-
-		// ˆÚ“®•â³
 		DirectX::XMFLOAT2 fStrikeZonePos = m_pStrikeZone->GetPos();
 		DirectX::XMFLOAT2 fStrikeZoneSize = m_pStrikeZone->GetSize();
+		DirectX::XMFLOAT2 fInput = pBallCount->GetOffenseTeam() == CBallCount::Team::Player1 ? CGetLStick((int)CBallCount::Team::Player1) : CGetLStick((int)CBallCount::Team::Player2);
+		DirectX::XMFLOAT2 fMaxPos = { fabsf(fStrikeZonePos.x) + fStrikeZoneSize.x / 1.5f , fabsf(fStrikeZonePos.y) + fStrikeZoneSize.y / 1.5f };
+		m_tParam.pos = { fStrikeZonePos.x + fInput.x * fMaxPos.x,fStrikeZonePos.y + fInput.y * fMaxPos.y };
+
+		// ˆÚ“®•â³
 		if (m_tParam.pos.x >= fStrikeZonePos.x + fStrikeZoneSize.x / 2.0f) m_tParam.pos.x = fStrikeZonePos.x + fStrikeZoneSize.x / 2.0f;
 		if (m_tParam.pos.x <= fStrikeZonePos.x - fStrikeZoneSize.x / 2.0f) m_tParam.pos.x = fStrikeZonePos.x - fStrikeZoneSize.x / 2.0f;
 		if (m_tParam.pos.y >= fStrikeZonePos.y + fStrikeZoneSize.y / 2.0f) m_tParam.pos.y = fStrikeZonePos.y + fStrikeZoneSize.y / 2.0f;

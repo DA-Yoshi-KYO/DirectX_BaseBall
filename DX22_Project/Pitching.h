@@ -15,7 +15,61 @@ public:
 	void Update();
 	void Draw();
 
+private:
+	enum class SliderKind
+	{
+		Slider,
+		HSlider,
+		Cut,
+
+		None
+	};
+
+	enum class CurveKind
+	{
+		Curve,
+		SlowCurve,
+		DropCurve,
+		Slerve,
+	};
+
+	enum class SplitKind
+	{
+		Fork,
+		Split,
+		ChangeUp,
+		VSlider,
+	};
+
+	enum class SinkerKind
+	{
+		Sinker,
+		HSinker,
+		Screw,
+	};
+
+	enum class ShootKind
+	{
+		Shoot,
+		HShoot,
+		Screw,
+	};
+
 public:
+	// 球種
+	enum class BenderKind
+	{
+		Fourseam,
+		Twoseam,
+		Slider,
+		Curve,
+		Split,
+		Sinker,
+		Shoot,
+
+		Max
+	};
+
 	// 投球の流れ
 	enum class PitchingPhase
 	{
@@ -24,6 +78,16 @@ public:
 		Release,// リリース中
 	};
 	
+	struct PitchState
+	{
+		float m_fSpeed;
+		float m_fControl;
+		float m_fStamina;
+		int m_nBenderQuality[(int)BenderKind::Max];
+		BenderKind m_eThrowKind;
+		bool m_bLeftPitcher;
+	}m_tPitcherState;
+
 public:
 	// ==============================
 	//    アクセサ
@@ -41,9 +105,15 @@ public:
 	/// <summary> GetPitchingPhase:現在の投球フェーズを取得する </summary>
 	/// <returns> 現在の投球フェーズ </returns>
 	PitchingPhase GetPitchingPhase();
+	/// <summary> ピッチャーのステータスを取得する </summary>
+	/// <returns> ピッチャーの統合情報 </returns>
+	PitchState GetPitchState();
 	/// <summary> GetChatchTime:捕球までの時間を取得する </summary>
 	/// <returns> 捕球までの時間 </returns>
 	float GetChatchTime();
+	/// <summary> GetBendStartTime:捕球までの時間を取得する </summary>
+	/// <returns> 捕球までの時間 </returns>
+	float GetBendStartTime();
 
 private:
 	// テクスチャの種類
