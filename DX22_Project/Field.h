@@ -12,7 +12,7 @@
 constexpr float ce_fGroundY = -5.0f;	// グラウンドの見た目上の高さ
 constexpr float ce_fFenceHeight = ce_fGroundY + 15.0f;	// フェンスの高さ
 constexpr float ce_fInOutBorderZ = WORLD_AJUST;	// 内外野の境目
-constexpr DirectX::XMFLOAT3 ce_fPitcherPos = { WORLD_AJUST, WORLD_AJUST - 8.0f, WORLD_AJUST + 60.0f };	// グラウンドにいるピッチャーの位置(基準値)
+constexpr DirectX::XMFLOAT3 ce_fPitcherPos = { WORLD_AJUST, WORLD_AJUST - 8.0f, WORLD_AJUST + 65.0f };	// グラウンドにいるピッチャーの位置(基準値)
 
 class CField : public CGameObject
 {

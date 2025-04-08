@@ -9,7 +9,7 @@
 #include "Pitching.h"
 #include "PitchingCursor.h"
 #include "Texture.h"
-
+ 
 // ==============================
 //    前方宣言
 // ==============================
@@ -18,8 +18,8 @@ class CBatting;
 // ==============================
 //    定数定義
 // ==============================
-constexpr DirectX::XMFLOAT3 ce_fBallPos = { 0.0f,-3.0f,30.0f };
-constexpr DirectX::XMFLOAT3 ce_fBallEndPos = { 0.0f,-5.6f,148.0f };
+constexpr DirectX::XMFLOAT3 ce_fBallPos = { 0.0f,-3.0f,65.0f };
+constexpr DirectX::XMFLOAT3 ce_fBallEndPos = { 0.0f,-5.0f,148.0f };
 
 // ==============================
 //    シングルトンインスタンス

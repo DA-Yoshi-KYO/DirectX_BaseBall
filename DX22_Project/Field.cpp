@@ -74,12 +74,12 @@ void CField::Draw()
 	// グラウンドの描画
 	SetModel(m_tFieldParam, m_pField.get());
 
-	// ベースの描画
-	SetModel(m_tBaseParam[(int)BaseKind::Home], m_pHomeBase.get());
-	for (int i = (int)BaseKind::First; i <= (int)BaseKind::Third; i++)
-	{
-		SetModel(m_tBaseParam[i], m_pBase.get());
-	}
+	//// ベースの描画
+	//SetModel(m_tBaseParam[(int)BaseKind::Home], m_pHomeBase.get());
+	//for (int i = (int)BaseKind::First; i <= (int)BaseKind::Third; i++)
+	//{
+	//	SetModel(m_tBaseParam[i], m_pBase.get());
+	//}
 
 	//Collision::DrawCollision(m_Ground);
 	for (auto itr = m_HomeRunZone.begin(); itr != m_HomeRunZone.end(); itr++)
@@ -186,7 +186,7 @@ void CField::InitModel()
 
 	// パラメータの初期化
 	// グラウンド
-	m_tFieldParam.pos = { 0.0f + WORLD_AJUST,-10.0f + WORLD_AJUST,0.0f + WORLD_AJUST -40.0f };
+	m_tFieldParam.pos = { 0.0f + WORLD_AJUST,-10.0f + WORLD_AJUST,0.0f + WORLD_AJUST - 40.0f };
 	m_tFieldParam.size = { 50.0f,50.0f,50.0f };
 	m_tFieldParam.rotate = { 0.0f,0.0f,0.0f };
 
@@ -203,9 +203,9 @@ void CField::InitModel()
 		m_tBaseParam[i].size = { 3.0f,3.0f,3.0f };
 		m_tBaseParam[i].rotate = { 0.0f,DirectX::XMConvertToRadians(45.0f),0.0f};
 	}
-	m_tBaseParam[(int)BaseKind::First].pos = { ce_fPitcherPos.x - 75.0f,m_tFieldParam.pos.y,ce_fPitcherPos.z - 35.0f};
-	m_tBaseParam[(int)BaseKind::Second].pos = { ce_fPitcherPos.x ,m_tFieldParam.pos.y,ce_fPitcherPos.z - 115.0f };
-	m_tBaseParam[(int)BaseKind::Third].pos = { ce_fPitcherPos.x + 75.0f,m_tFieldParam.pos.y,ce_fPitcherPos.z - 35.0f };
+	m_tBaseParam[(int)BaseKind::First].pos = { ce_fPitcherPos.x - 70.0f,m_tFieldParam.pos.y,ce_fPitcherPos.z };
+	m_tBaseParam[(int)BaseKind::Second].pos = { ce_fPitcherPos.x ,m_tFieldParam.pos.y,ce_fPitcherPos.z - 75.0f };
+	m_tBaseParam[(int)BaseKind::Third].pos = { ce_fPitcherPos.x + 70.0f,m_tFieldParam.pos.y,ce_fPitcherPos.z };
 }
 
 void CField::InitCollision()

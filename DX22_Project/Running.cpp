@@ -213,19 +213,19 @@ void CRunning::RunnerMove(RunnerKind kind)
 	}
 
 	// キー入力による移動処理
-	if (pBallCount->GetDefenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::Y) : IsKeyPress(InputPlayer2::Y) &&
-		pBallCount->GetDefenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::B) : IsKeyPress(InputPlayer2::B) && 
+	if (pBallCount->GetOffenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::Y) : IsKeyPress(InputPlayer2::Y) &&
+		pBallCount->GetOffenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::B) : IsKeyPress(InputPlayer2::B) && 
 		m_tRunnerParam[(int)kind].m_eDirection != Direction::Stop)
 	{
 		// ランナーを止める
 		m_tRunnerParam[(int)kind].m_eDirection = Direction::BaseBetween;
 	}
-	else if (pBallCount->GetDefenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::Y) : IsKeyPress(InputPlayer2::Y))
+	else if (pBallCount->GetOffenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::Y) : IsKeyPress(InputPlayer2::Y))
 	{
 		// ランナーを進める
 		m_tRunnerParam[(int)kind].m_eDirection = Direction::Forward;
 	}
-	else if (pBallCount->GetDefenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::B) : IsKeyPress(InputPlayer2::B))
+	else if (pBallCount->GetOffenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::B) : IsKeyPress(InputPlayer2::B))
 	{
 		// ランナーを戻す
 		m_tRunnerParam[(int)kind].m_eDirection = Direction::Backward;

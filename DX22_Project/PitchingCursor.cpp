@@ -81,13 +81,12 @@ void CPitchingCursor::Update()
 {
 	CPitching::PitchState tState = m_pPitching->GetPitchState();
 	m_tPredParam.pos = m_tParam.pos;
-
+	DirectX::XMFLOAT2 fStrikeZonePos = m_pStrikeZone->GetPos();
+	DirectX::XMFLOAT2 fStrikeZoneSize = m_pStrikeZone->GetSize();
 	// カーソル移動可能なときに移動処理をする
 	if (m_bMove && m_pPitching->GetPitchingPhase() == CPitching::PitchingPhase::Pitch)
 	{
 		CBallCount* pBallCount = CBallCount::GetInstance().get();
-		DirectX::XMFLOAT2 fStrikeZonePos = m_pStrikeZone->GetPos();
-		DirectX::XMFLOAT2 fStrikeZoneSize = m_pStrikeZone->GetSize();
 
 		// 移動処理
 		DirectX::XMFLOAT2 fInput = pBallCount->GetDefenseTeam() == CBallCount::Team::Player1 ? CGetLStick((int)CBallCount::Team::Player1) : CGetLStick((int)CBallCount::Team::Player2);
@@ -100,6 +99,10 @@ void CPitchingCursor::Update()
 		if (m_tParam.pos.x <= fStrikeZonePos.x - fStrikeZoneSize.x / 1.3f) m_tParam.pos.x = fStrikeZonePos.x - fStrikeZoneSize.x / 1.3f;
 		if (m_tParam.pos.y >= fStrikeZonePos.y + fStrikeZoneSize.y / 1.3f) m_tParam.pos.y = fStrikeZonePos.y + fStrikeZoneSize.y / 1.3f;
 		if (m_tParam.pos.y <= fStrikeZonePos.y - fStrikeZoneSize.y / 1.3f) m_tParam.pos.y = fStrikeZonePos.y - fStrikeZoneSize.y / 1.3f;
+	}
+	else if(m_pPitching->GetPitchingPhase() == CPitching::PitchingPhase::Set)
+	{
+		m_tParam.pos = fStrikeZonePos;
 	}
 
 	// 予測地点
