@@ -69,11 +69,13 @@ public:
 private:
 	// コンポジション
 	std::unique_ptr<Model> m_pField;
+	std::unique_ptr<Model> m_pSkydome;
 	std::unique_ptr<Model> m_pBase;
 	std::unique_ptr<Model> m_pHomeBase;
 
 	// モデルのパラメータ
 	ModelParam m_tFieldParam;
+	ModelParam m_tSkydomeParam;
 	ModelParam m_tBaseParam[(int)BaseKind::Max];
 
 	// 当たり判定情報
