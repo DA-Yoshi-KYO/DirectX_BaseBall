@@ -35,7 +35,7 @@ constexpr int ce_nCountSplitY = 5;
 #define MSEC(value) (value / fFPS)
 #define CMSEC(value) MSEC(CMETER(value))
 #define WORLD_AJUST 10000.0f
-static const float GRAVITY = 0.98f;
+static const float GRAVITY = 0.70f;
 
 // ƒ^ƒCƒgƒ‹
 static const char* APP_TITLE = "DXBaseBall";

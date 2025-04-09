@@ -20,6 +20,13 @@ CRunning::RunnerParam CRunning::m_tRunnerParam[(int)RunnerKind::Max] = {};
 Collision::Info CRunning::m_RunnerCollision[(int)RunnerKind::Max] = {};
 bool CRunning::m_bOnBase[(int)RunnerKind::Max] = {};
 
+// ==============================
+//    ÉÅÉÇ
+// ==============================
+// Speed0.2f...ëñóÕG
+// Speed0.35f...ëñóÕD
+// Speed0.5f...ëñóÕS
+
 CRunning::CRunning()
 {
 	// ÉÇÉfÉãì«Ç›çûÇ›
@@ -33,7 +40,7 @@ CRunning::CRunning()
 		m_tRunnerParam[i].m_bRunning = false;
 		m_tRunnerParam[i].m_bStayPrevBase = false;
 		m_tRunnerParam[i].m_eArriveKind = CField::BaseKind::Max;
-		m_tRunnerParam[i].m_fSpeed = 0.2f;
+		m_tRunnerParam[i].m_fSpeed = 0.35f;
 		m_tRunnerParam[i].m_tModelParam.size = { 5.0f,5.0f,5.0f };
 		m_tRunnerParam[i].m_tModelParam.rotate = { 0.0f,0.0f,0.0f };
 		m_RunnerCollision[i].type = Collision::eBox;

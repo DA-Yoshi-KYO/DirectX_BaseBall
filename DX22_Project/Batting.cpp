@@ -14,7 +14,19 @@ constexpr float ce_fJustTyming = 139.0f;	// ジャストミートになるタイミング
 constexpr float ce_fHittingTyming = 4.0f;	// バットに当たれるタイミング(+-)
 constexpr float ce_fAngleMax = 60.0f;		// x方向打球角度の限界(+-)
 constexpr float ce_fHomeRunAngle = 30.0f;	// バッターの弾道
-constexpr float ce_fBatterPower = 4.5;		// バッターのパワー
+constexpr float ce_fBatterPower = 2.5f;		// バッターのパワー
+
+// ==============================
+//    メモ
+// ==============================
+// Power4.5f...パワーD
+// Power2.5f...パワーG
+// 
+// Angle40.0f...弾道4
+// Angle30.0f...弾道3
+// Angle20.0f...弾道2
+// Angle10.0f...弾道1
+
 
 // ==============================
 //    静的変数の初期化
@@ -82,8 +94,10 @@ void CBatting::Update()
 					DirectX::XMFLOAT2 fSlowDown = {};
 
 					// 打球速度決定
-					if (fabsf(fDistanceRatio.x) >= 10.0f)fSlowDown.x = (100 - fabsf(fDistanceRatio.x)) / 150.0f;
-					if (fabsf(fDistanceRatio.y) >= 10.0f)fSlowDown.y = (100 - fabsf(fDistanceRatio.y)) / 150.0f;
+					if (fabsf(fDistanceRatio.x) >= 20.0f)fSlowDown.x = (100 - fabsf(fDistanceRatio.x)) / 150.0f;
+					else if (fabsf(fDistanceRatio.x) >= 10.0f)fSlowDown.x = (100 - fabsf(fDistanceRatio.x)) / 150.0f;
+					if (fabsf(fDistanceRatio.y) >= 20.0f)fSlowDown.y = (100 - fabsf(fDistanceRatio.y)) / 150.0f;
+					else if (fabsf(fDistanceRatio.y) >= 10.0f)fSlowDown.y = (100 - fabsf(fDistanceRatio.y)) / 150.0f;
 
 					// 減速を元のパワーと掛け合わせて打球の強さを求める
 					// 減速がない場合元の強さをそのまま計算する

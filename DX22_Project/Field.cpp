@@ -69,7 +69,6 @@ void CField::Update()
 void CField::Draw()
 {
 	// スカイドームの描画
-	//SetModel(m_tSkydomeParam, m_pSkydome.get());
 
 	// グラウンドの描画
 	SetModel(m_tFieldParam, m_pField.get());
@@ -94,6 +93,8 @@ void CField::Draw()
 	{
 		Collision::DrawCollision((*itr));
 	}
+
+	SetModel(m_tSkydomeParam, m_pSkydome.get());
 }
 
 void CField::SetModel(ModelParam param, Model* model, bool isAnime)
@@ -178,7 +179,7 @@ void CField::InitModel()
 	m_pField = std::make_unique<Model>();
 	if (!m_pField->Load(MODELPASS("Baseball_Ground.fbx"),0.1f)) ERROR_MESSAGE("Baseball_Ground.fbx");
 	m_pSkydome = std::make_unique<Model>();
-	if (!m_pSkydome->Load(MODELPASS("basic_skybox_3d_flip.fbx"))) ERROR_MESSAGE("basic_skybox_3d_flip.fbx");
+	if (!m_pSkydome->Load(MODELPASS("SkyBox.fbx"))) ERROR_MESSAGE("SkyBox.fbx");
 	m_pBase = std::make_unique<Model>();
 	if(!m_pBase->Load(MODELPASS("base.obj"))) ERROR_MESSAGE("base.obj");
 	m_pHomeBase = std::make_unique<Model>();
@@ -191,7 +192,7 @@ void CField::InitModel()
 	m_tFieldParam.rotate = { 0.0f,0.0f,0.0f };
 
 	m_tSkydomeParam.pos = { 0.0f + WORLD_AJUST,-10.0f + WORLD_AJUST,0.0f + WORLD_AJUST  - 150.0f };
-	m_tSkydomeParam.size = { 500.0f,500.0f,500.0f };
+	m_tSkydomeParam.size = { 2.0f,2.0f,2.0f };
 	m_tSkydomeParam.rotate = { 0.0f,0.0f,0.0f };
 
 	// 各種ベース
