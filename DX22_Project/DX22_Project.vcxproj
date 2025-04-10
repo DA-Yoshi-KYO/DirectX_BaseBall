@@ -187,7 +187,10 @@
     <ClCompile Include="Model_morph.cpp" />
     <ClCompile Include="Pitching.cpp" />
     <ClCompile Include="PitchingCursor.cpp" />
-    <ClCompile Include="PlayerManager.cpp" />
+    <ClCompile Include="SceneMemberselect.cpp" />
+    <ClCompile Include="SceneTeamselect.cpp" />
+    <ClCompile Include="TeamBears.cpp" />
+    <ClCompile Include="TeamManager.cpp" />
     <ClCompile Include="PolylineEffect.cpp" />
     <ClCompile Include="Running.cpp" />
     <ClCompile Include="Scene.cpp" />
@@ -245,7 +248,10 @@
     <ClInclude Include="Model.h" />
     <ClInclude Include="Pitching.h" />
     <ClInclude Include="PitchingCursor.h" />
-    <ClInclude Include="PlayerManager.h" />
+    <ClInclude Include="SceneMemberselect.h" />
+    <ClInclude Include="SceneTeamselect.h" />
+    <ClInclude Include="TeamBears.h" />
+    <ClInclude Include="TeamManager.h" />
     <ClInclude Include="PolylineEffect.h" />
     <ClInclude Include="Running.h" />
     <ClInclude Include="Scene.h" />
