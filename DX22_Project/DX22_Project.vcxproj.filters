@@ -252,6 +252,9 @@
     <ClCompile Include="Field.cpp">
       <Filter>ソース ファイル\BaseBall\System</Filter>
     </ClCompile>
+    <ClCompile Include="PlayerManager.cpp">
+      <Filter>ソース ファイル\BaseBall\System</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MeshBuffer.h">
@@ -409,6 +412,9 @@
     </ClInclude>
     <ClInclude Include="GameObject.h">
       <Filter>ヘッダー ファイル\Work</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerManager.h">
+      <Filter>ヘッダー ファイル\BaseBall\System</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
