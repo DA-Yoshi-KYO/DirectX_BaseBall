@@ -94,7 +94,7 @@ void CField::Draw()
 		Collision::DrawCollision((*itr));
 	}
 
-	SetModel(m_tSkydomeParam, m_pSkydome.get());
+//	SetModel(m_tSkydomeParam, m_pSkydome.get());
 }
 
 void CField::SetModel(ModelParam param, Model* model, bool isAnime)

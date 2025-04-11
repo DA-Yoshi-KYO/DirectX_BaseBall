@@ -36,7 +36,7 @@ CPitching::CPitching()
 
 	// パラメータの初期化
 	DirectX::XMFLOAT4X4 wvp[3];
-	wvp[0] = CCamera::Get2DWolrdMatrix();
+	wvp[0] = CCamera::Get2DWolrdMatrix({0.0f,0.0f},0.0f);
 	wvp[1] = CCamera::Get2DViewMatrix();
 	wvp[2] = CCamera::Get2DProjectionMatrix();
 
@@ -361,12 +361,12 @@ void CPitching::DrawCircle()
 	// ピッチング時に描画する
 	if (m_nPitchingPhase == (int)CPitching::PitchingPhase::Pitch)
 	{
-		Sprite::SetParam(m_tParam[(int)TexKind::ReleasePoint]);
-		Sprite::SetTexture(m_pTexture[(int)TexKind::ReleasePoint].get());
-		Sprite::Draw();
-
-		Sprite::SetParam(m_tParam[(int)TexKind::PitchingCircle]);
-		Sprite::SetTexture(m_pTexture[(int)TexKind::PitchingCircle].get());
-		Sprite::Draw();
+		for (int i = 0; i < (int)TexKind::Max; i++)
+		{
+			m_tParam[i].world = CCamera::Get2DWolrdMatrix(m_tParam[i].pos, m_tParam[i].rotate);
+			Sprite::SetParam(m_tParam[i]);
+			Sprite::SetTexture(m_pTexture[i].get());
+			Sprite::Draw();
+		}
 	}
 }

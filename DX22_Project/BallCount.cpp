@@ -54,18 +54,14 @@ void CBallCount::Init(InningHalf Player1Harf)
 	m_pSheet = std::make_unique<Texture>();
 	if (FAILED(m_pSheet->Create(TEXPASS("BallCountSheet.png"))))ERROR_MESSAGE("BallCountSheet.png");
 
+
 	// [0]:world
 	// [1]:view
 	// [2]:projection
 	DirectX::XMFLOAT4X4 wvp[3];
-	wvp[0] = CCamera::Get2DWolrdMatrix();
+	wvp[0] = CCamera::Get2DWolrdMatrix({0.0f,0.0f},0.0f);
 	wvp[1] = CCamera::Get2DViewMatrix();
 	wvp[2] = CCamera::Get2DProjectionMatrix();
-
-	// モデルパラメータの設定
-	m_tSheetParam.world = wvp[0];
-	m_tSheetParam.view = wvp[1];
-	m_tSheetParam.proj = wvp[2];
 
 	m_tBackParam.pos = ce_fBackPos;
 	m_tBackParam.size = ce_fBackSize;
@@ -77,6 +73,10 @@ void CBallCount::Init(InningHalf Player1Harf)
 	m_tBackParam.view = wvp[1];
 	m_tBackParam.proj = wvp[2];
 
+	// モデルパラメータの設定
+	m_tSheetParam.world = wvp[0];
+	m_tSheetParam.view = wvp[1];
+	m_tSheetParam.proj = wvp[2];
 	// 各要素の初期化
 	m_tCount.m_nBallCount = 0;
 	m_tCount.m_nStrikeCount = 0;
@@ -167,6 +167,7 @@ void CBallCount::Draw()
 {
 	SetRender2D();
 	// スコアボードの描画
+	m_tBackParam.world = CCamera::Get2DWolrdMatrix(m_tBackParam.pos, m_tBackParam.rotate);
 	Sprite::SetParam(m_tBackParam);
 	Sprite::SetTexture(m_pBack.get());
 	Sprite::Draw();
@@ -206,7 +207,8 @@ void CBallCount::AddOutCount()
 
 void CBallCount::AddScore()
 {
-	if ((int)m_tGameState.offense >= 2)
+	
+	if (std::_Cmp_less((int)m_tGameState.offense,2))
 	{
 		RANGEERROR_MESSAGE("m_tGameState.offense");
 		return;
@@ -385,6 +387,7 @@ void CBallCount::DrawBallCount()
 
 		if (m_tCount.m_nBallCount >= i + 1)m_tSheetParam.color = { 0.0f,1.0f,0.0f,1.0f };
 		else m_tSheetParam.color = { 0.0f,1.0f,0.0f,0.3f };
+		m_tSheetParam.world = CCamera::Get2DWolrdMatrix(m_tSheetParam.pos, m_tSheetParam.rotate);
 		Sprite::SetParam(m_tSheetParam);
 		Sprite::SetTexture(m_pSheet.get());
 		Sprite::Draw();
@@ -396,6 +399,7 @@ void CBallCount::DrawBallCount()
 		m_tSheetParam.pos = { m_tSheetParam.size.x * i + ce_fCountPos.x,-ce_fCountAjustY + ce_fCountPos.y };
 		if (m_tCount.m_nStrikeCount >= i + 1)m_tSheetParam.color = { 1.0f,1.0f,0.0f,1.0f };
 		else m_tSheetParam.color = { 1.0f,1.0f,0.0f,0.3f };
+		m_tSheetParam.world = CCamera::Get2DWolrdMatrix(m_tSheetParam.pos, m_tSheetParam.rotate);
 		Sprite::SetParam(m_tSheetParam);
 		Sprite::SetTexture(m_pSheet.get());
 		Sprite::Draw();
@@ -407,6 +411,7 @@ void CBallCount::DrawBallCount()
 		m_tSheetParam.pos = { m_tSheetParam.size.x * i + ce_fCountPos.x,-ce_fCountAjustY * 2.0f + ce_fCountPos.y };
 		if (m_tCount.m_nOutCount >= i + 1)m_tSheetParam.color = { 1.0f,0.0f,0.0f,1.0f };
 		else m_tSheetParam.color = { 1.0f,0.0f,0.0f,0.3f };
+		m_tSheetParam.world = CCamera::Get2DWolrdMatrix(m_tSheetParam.pos, m_tSheetParam.rotate);
 		Sprite::SetParam(m_tSheetParam);
 		Sprite::SetTexture(m_pSheet.get());
 		Sprite::Draw();
@@ -446,6 +451,7 @@ void CBallCount::DrawBaseCount()
 		default:
 			break;
 		}
+		m_tSheetParam.world = CCamera::Get2DWolrdMatrix(m_tSheetParam.pos, m_tSheetParam.rotate);
 		Sprite::SetParam(m_tSheetParam);
 		Sprite::SetTexture(m_pSheet.get());
 		Sprite::Draw();
@@ -485,6 +491,7 @@ void CBallCount::DrawScore()
 		}
 		m_tSheetParam.pos = { ce_fScoreTopPos.x - ce_fScoreAjust.x * i, ce_fScoreTopPos.y };
 		m_tSheetParam.uvPos = { (float)(nNum % ce_nCountSplitX) / (float)ce_nCountSplitX ,(float)(nNum / ce_nCountSplitX) / (float)ce_nCountSplitY };
+		m_tSheetParam.world = CCamera::Get2DWolrdMatrix(m_tSheetParam.pos, m_tSheetParam.rotate);
 		Sprite::SetParam(m_tSheetParam);
 		Sprite::SetTexture(m_pSheet.get());
 		Sprite::Draw();
@@ -508,6 +515,7 @@ void CBallCount::DrawScore()
 		if (m_tCount.m_nScore[(int)Team::Player1] < 10)m_tSheetParam.pos = { ce_fScoreBottomPos.x + ce_fScoreAjust.x * i, ce_fScoreBottomPos.y };
 		else m_tSheetParam.pos = { ce_fScoreBottomPos.x + ce_fScoreAjust.x * abs(i - 1), ce_fScoreBottomPos.y};
 		m_tSheetParam.uvPos = { (float)(nNum % ce_nCountSplitX) / (float)ce_nCountSplitX ,(float)(nNum / ce_nCountSplitX) / (float)ce_nCountSplitY };
+		m_tSheetParam.world = CCamera::Get2DWolrdMatrix(m_tSheetParam.pos, m_tSheetParam.rotate);
 		Sprite::SetParam(m_tSheetParam);
 		Sprite::SetTexture(m_pSheet.get());
 		Sprite::Draw();
@@ -549,10 +557,12 @@ void CBallCount::DrawInning()
 		}
 		m_tSheetParam.pos = { ce_fInningPos.x - ce_fInningAjust.x * i, ce_fInningPos.y };
 		m_tSheetParam.uvPos = { (float)(nNum % ce_nCountSplitX) / (float)ce_nCountSplitX ,(float)(nNum / ce_nCountSplitX) / (float)ce_nCountSplitY };
+		m_tSheetParam.world = CCamera::Get2DWolrdMatrix(m_tSheetParam.pos, m_tSheetParam.rotate);
 		Sprite::SetParam(m_tSheetParam);
 		Sprite::SetTexture(m_pSheet.get());
 		Sprite::Draw();
 	}
+	m_tSheetParam.world = CCamera::Get2DWolrdMatrix(m_tSheetParam.pos, m_tSheetParam.rotate);
 	Sprite::SetParam(m_tSheetParam);
 	Sprite::SetTexture(m_pSheet.get());
 	Sprite::Draw();
@@ -571,6 +581,7 @@ void CBallCount::DrawInning()
 	default:
 		break;
 	}
+	m_tSheetParam.world = CCamera::Get2DWolrdMatrix(m_tSheetParam.pos, m_tSheetParam.rotate);
 	Sprite::SetParam(m_tSheetParam);
 	Sprite::SetTexture(m_pSheet.get());
 	Sprite::Draw();

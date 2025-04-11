@@ -51,6 +51,7 @@ static const float	DEBUG_GRID_MARGIN = METER(1.0f);	// グリッド配置幅
 struct SpriteParam
 {
 	DirectX::XMFLOAT2 pos = {0.0f,0.0f};
+	DirectX::XMFLOAT2 offsetPos = {0.0f,0.0f};
 	DirectX::XMFLOAT2 size = {100.0f,100.0f};
 	float rotate = 0.0f;
 	DirectX::XMFLOAT4 color = {1.0f,1.0f,1.0f,1.0f};

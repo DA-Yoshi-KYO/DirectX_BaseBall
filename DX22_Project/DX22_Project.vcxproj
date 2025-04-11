@@ -160,6 +160,7 @@
     <ClCompile Include="Controller.cpp" />
     <ClCompile Include="Defence.cpp" />
     <ClCompile Include="DirectX.cpp" />
+    <ClCompile Include="Easing.cpp" />
     <ClCompile Include="Effect.cpp" />
     <ClCompile Include="EffectGoal.cpp" />
     <ClCompile Include="Fade.cpp" />
@@ -224,6 +225,7 @@
     <ClInclude Include="Defence.h" />
     <ClInclude Include="Defines.h" />
     <ClInclude Include="DirectX.h" />
+    <ClInclude Include="Easing.h" />
     <ClInclude Include="Effect.h" />
     <ClInclude Include="EffectGoal.h" />
     <ClInclude Include="Fade.h" />
