@@ -31,7 +31,6 @@ public:
 	CTeamManager();
 	virtual ~CTeamManager();
 	virtual void Load() = 0;
-
 	
 private:
 	struct PitcherState
@@ -42,10 +41,12 @@ private:
 		bool m_bLefty;
 		bool m_bEntry;
 		bool m_bLeave;
+		bool m_bBentch;
 	};
 	
 	struct BatterState
 	{
+		int nLineupNo;
 		int Trajectory;
 		float m_fMeat;
 		float m_fPower;
@@ -61,6 +62,7 @@ private:
 protected:
 	std::vector<PitcherState> m_tVecPitcherMember;
 	std::vector<BatterState> m_tVecBatterMember;
-	std::vector<BatterState> m_tVecLineup;
 
+	std::vector<PitcherState> GetPitcherState();
+	std::vector<BatterState> GetBatterState();
 };

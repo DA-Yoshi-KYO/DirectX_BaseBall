@@ -1,7 +1,7 @@
 #include "Scene.h"
 
 CScene::CScene()
-	: m_pFade(nullptr), m_next(-1) 
+	: m_pFade(nullptr), m_next(SceneKind::Max) 
 {
 
 }
@@ -30,12 +30,12 @@ bool CScene::ChangeScene()
 	return false;
 }
 
-int CScene::NextScene()
+CScene::SceneKind CScene::NextScene()
 {
 	return m_next;
 }
 
-void CScene::SetNext(int next)
+void CScene::SetNext(SceneKind next)
 {
 	m_next = next;
 	// 切り替え先が発生した際にフェードも実行 

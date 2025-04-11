@@ -2,29 +2,36 @@
 
 #include "Scene.h"
 #include "Texture.h"
-#include "Camera.h"
+#include "Defines.h"
 
 class CSceneTitle : public CScene 
 {
 public:
 	CSceneTitle();
 	~CSceneTitle();
-
-	// 更新処理 
 	void Update() final;
-
-	// 描画処理 
 	void Draw() final;
 
 private:
-	void DrawStar();
-	void DrawBlack();
+	enum class TitlePhase
+	{
+		Animation,
+		Select
+	}m_eTitlePhase;
 
-	float m_Angle;
-	Texture* m_pLogo; // タイトル画面に表示する画像
-	Texture* m_pTran[2]; // タイトル画面に表示する画像
-	DirectX::XMFLOAT2 m_StarPos;
-	DirectX::XMFLOAT2 m_StarSize;
-	DirectX::XMFLOAT2 m_BlackPos[4];
-	DirectX::XMFLOAT2 m_BlackSize[4];
+	enum class TextureKind
+	{
+		Back,
+		Logo,
+
+		Max
+	};
+	std::unique_ptr<Texture> m_pTexture[(int)TextureKind::Max];
+	SpriteParam m_tParam[(int)TextureKind::Max];
+	bool m_bSelected;
+private:
+	void UpdateAnimation();
+	void UpdateSelect();
+
+	void ResetSpriteParam();
 };

@@ -8,6 +8,20 @@ public:
 	CScene();
 	virtual ~CScene();
 
+public:
+	enum class SceneKind
+	{
+		Title,
+		TeamSelect,
+		MemberSelect,
+		Game,
+		Result,
+
+		Max
+	};
+
+public:
+
 	// シーン内で継承先の更新処理とフェードの処理を呼び出すための更新関数 
 	void RootUpdate();
 
@@ -25,11 +39,12 @@ public:
 	virtual bool ChangeScene();
 
 	// 次の切り替え先シーンを取得 
-	int NextScene();
+	SceneKind NextScene();
 
 	// 切り替え先のシーンを設定 
-	void SetNext(int next);
+	void SetNext(SceneKind next);
+
 protected:
 	CFade* m_pFade; // フェード処理クラス 
-	int  m_next;  // 切り替え先のシーン 
+	SceneKind  m_next;  // 切り替え先のシーン 
 };

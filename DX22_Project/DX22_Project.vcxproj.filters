@@ -252,8 +252,17 @@
     <ClCompile Include="Field.cpp">
       <Filter>ソース ファイル\BaseBall\System</Filter>
     </ClCompile>
-    <ClCompile Include="PlayerManager.cpp">
-      <Filter>ソース ファイル\BaseBall\System</Filter>
+    <ClCompile Include="SceneMemberselect.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneTeamselect.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="TeamBears.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="TeamManager.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -413,7 +422,16 @@
     <ClInclude Include="GameObject.h">
       <Filter>ヘッダー ファイル\Work</Filter>
     </ClInclude>
-    <ClInclude Include="PlayerManager.h">
+    <ClInclude Include="SceneMemberselect.h">
+      <Filter>ヘッダー ファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneTeamselect.h">
+      <Filter>ヘッダー ファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="TeamBears.h">
+      <Filter>ヘッダー ファイル\BaseBall\System</Filter>
+    </ClInclude>
+    <ClInclude Include="TeamManager.h">
       <Filter>ヘッダー ファイル\BaseBall\System</Filter>
     </ClInclude>
   </ItemGroup>

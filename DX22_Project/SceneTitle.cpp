@@ -2,225 +2,75 @@
 #include "Input.h"
 #include "Main.h"
 #include "Sprite.h"
-#include "Defines.h"
+#include "Camera.h"
 
 CSceneTitle::CSceneTitle()
-	: m_pLogo(nullptr), m_pTran{}
-	, m_BlackPos{}, m_BlackSize{}
-	, m_StarPos{}, m_StarSize{}
-	, m_Angle(0.0f)
+	: m_pTexture{}, m_eTitlePhase(TitlePhase::Animation)
+	, m_bSelected(false)
 {
-	m_pLogo = new Texture();
-	for (int i = 0; i < 2; i++)
+	for (int i = 0; i < (int)TextureKind::Max; i++)
 	{
-		m_pTran[i] = new Texture();
+		m_pTexture[i] = std::make_unique<Texture>();
+		m_tParam[i].pos = { 0.0f,0.0f };
+		m_tParam[i].size = { 100.0f,100.0f };
+		m_tParam[i].rotate = 0.0f;
+		m_tParam[i].color = { 1.0f,1.0f,1.0f,1.0f };
+		m_tParam[i].uvPos = { 0.0f,0.0f };
+		m_tParam[i].uvSize = { 1.0f,1.0f };
+		m_tParam[i].world = CCamera::Get2DWolrdMatrix();
+		m_tParam[i].view = CCamera::Get2DViewMatrix();
+		m_tParam[i].proj = CCamera::Get2DProjectionMatrix();
 	}
-	if (FAILED(m_pLogo->Create("Assets/Texture/Title.jpeg"))) MessageBox(NULL, "Load failed SceneTitle.", "Error", MB_OK);
-	//if (FAILED(m_pTran[0]->Create("Assets/Texture/004.png"))) MessageBox(NULL, "Load failed SceneTitle.", "Error", MB_OK);
-	//if (FAILED(m_pTran[1]->Create("Assets/Texture/TransitionStarA.png"))) MessageBox(NULL, "Load failed SceneTitle.", "Error", MB_OK);
+	if (FAILED(m_pTexture[(int)TextureKind::Back]->Create("Assets/Texture/TitleBack.jpg"))) MessageBox(NULL, "Load failed SceneTitle.", "Error", MB_OK);
+	m_tParam[(int)TextureKind::Back].size = { SCREEN_WIDTH,SCREEN_HEIGHT };
 
-	m_StarPos = { 0.0f,0.0f };
-	m_StarSize = { SCREEN_WIDTH, SCREEN_HEIGHT };
+	if (FAILED(m_pTexture[(int)TextureKind::Logo]->Create("Assets/Texture/Ball.png"))) MessageBox(NULL, "Load failed SceneTitle.", "Error", MB_OK);
 
-	for (int i = 0; i < 4; i++)
-	{
-		m_BlackSize[i] = { SCREEN_WIDTH * 2.0f, SCREEN_HEIGHT * 2.0f};
-		switch (i)
-		{
-		case 0:
-			m_BlackPos[i] = { 0.0f,-(SCREEN_HEIGHT + SCREEN_HEIGHT / 2.0f)};
 
-			break;
-		case 1:
-			m_BlackPos[i] = {0.0f,(SCREEN_HEIGHT + SCREEN_HEIGHT / 2.0f) };
-			break;
-		case 2:
-			m_BlackPos[i] = { -(SCREEN_WIDTH + SCREEN_WIDTH / 2.0f),0.0f};
-			break;
-		case 3:
-			m_BlackPos[i] = { (SCREEN_WIDTH + SCREEN_WIDTH / 2.0f),0.0f};
-			break;
-		default:
-			break;
-		}
-	}
 }
 
 CSceneTitle::~CSceneTitle()
 {
-	if (m_pLogo) {
-		delete m_pLogo;
-		m_pLogo = nullptr;
-	}
-
-	for (int i = 0; i < 2; i++)
-	{
-		SAFE_DELETE(m_pTran[i]);
-	}
 
 }
 
 void CSceneTitle::Update()
 {
-	if (IsKeyPress('Q'))
-	{
-		m_Angle += DirectX::XMConvertToRadians(5.0f);
-		m_StarSize.x -= SCREEN_WIDTH / 10.0f;
-		m_StarSize.y -= SCREEN_HEIGHT / 10.0f;
-		for (int i = 0; i < 4; i++)
-		{
-			switch (i)
-			{
-			case 0:
-				m_BlackPos[i].y += SCREEN_HEIGHT / 2.0f / 10.0f;
-				break;
-			case 1:
-				m_BlackPos[i].y -= SCREEN_HEIGHT / 2.0f / 10.0f;
-				break;
-			case 2:
-				m_BlackPos[i].x += SCREEN_WIDTH / 2.0f / 10.0f;
-				break;
-			case 3:
-				m_BlackPos[i].x -= SCREEN_WIDTH / 2.0f / 10.0f;
-				break;
-			default:
-				break;
-			}
-		}
-	}
-	if (IsKeyPress('E'))
-	{
-		m_Angle -= DirectX::XMConvertToRadians(5.0f);
-		m_StarSize.x += SCREEN_WIDTH / 10.0f;
-		m_StarSize.y += SCREEN_HEIGHT / 10.0f;
-		for (int i = 0; i < 4; i++)
-		{
-			switch (i)
-			{
-			case 0:
-				m_BlackPos[i].y -= SCREEN_HEIGHT / 2.0f / 10.0f;
-				break;
-			case 1:
-				m_BlackPos[i].y += SCREEN_HEIGHT / 2.0f / 10.0f;
-				break;
-			case 2:
-				m_BlackPos[i].x -= SCREEN_WIDTH / 2.0f / 10.0f;
-				break;
-			case 3:
-				m_BlackPos[i].x += SCREEN_WIDTH / 2.0f / 10.0f;
-				break;
-			default:
-				break;
-			}
-		}
-	}
-	
 
-	if (IsKeyTrigger(VK_RETURN))
+	switch (m_eTitlePhase)
 	{
-		SetNext(1); // 切り替え先のシーンを設定（１はゲーム [
-	};
+	case CSceneTitle::TitlePhase::Animation: UpdateAnimation();  break;
+	case CSceneTitle::TitlePhase::Select: UpdateSelect(); break;
+	default: break;
+	}
 }
 
 void CSceneTitle::Draw()
 {
 	SetRender2D();
 
-	DirectX::XMFLOAT4X4 world, view, proj;
-	DirectX::XMMATRIX mView = DirectX::XMMatrixLookAtLH(
-		DirectX::XMVectorSet(0.0f, 0.0f, -0.3f, 0.0f),
-		DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f),
-		DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
-	DirectX::XMMATRIX mProj = DirectX::XMMatrixOrthographicOffCenterLH(
-		0.0f, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f, 0.1f, 100.0f);
-	mView = DirectX::XMMatrixTranspose(mView);
-	mProj = DirectX::XMMatrixTranspose(mProj);
-	DirectX::XMStoreFloat4x4(&view, mView);
-	DirectX::XMStoreFloat4x4(&proj, mProj);
-
-	DirectX::XMFLOAT2 size = { SCREEN_WIDTH, SCREEN_HEIGHT };
-	DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f, 0.0f);
-	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(1.0f, -1.0f, 1.0f);// フレームは倍率を変更せずに表示 
-	DirectX::XMMATRIX mWorld = S * T;
-	mWorld = DirectX::XMMatrixTranspose(mWorld);
-	DirectX::XMStoreFloat4x4(&world, mWorld);
-
-	Sprite::SetWorld(world);
-	Sprite::SetView(view);
-	Sprite::SetProjection(proj);
-	Sprite::SetTexture(m_pLogo);
-	Sprite::SetSize(size);
-	Sprite::SetOffset({ 0.0f, 0.0f });
-	Sprite::SetColor({ 1.0f, 1.0f, 1.0f, 1.0f });
-	Sprite::Draw();
-
-	//DrawStar();
-	//DrawBlack();
-
-	//font->Draw();
-}
-
-void CSceneTitle::DrawStar()
-{
-	DirectX::XMFLOAT4X4 world, view, proj;
-	DirectX::XMMATRIX mView = DirectX::XMMatrixLookAtLH(
-		DirectX::XMVectorSet(0.0f, 0.0f, -0.3f, 0.0f),
-		DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f),
-		DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
-	DirectX::XMMATRIX mProj = DirectX::XMMatrixOrthographicOffCenterLH(
-		0.0f, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f, 0.1f, 100.0f);
-	mView = DirectX::XMMatrixTranspose(mView);
-	mProj = DirectX::XMMatrixTranspose(mProj);
-	DirectX::XMStoreFloat4x4(&view, mView);
-	DirectX::XMStoreFloat4x4(&proj, mProj);
-
-	DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f, 0.0f);
-	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(1.0f, -1.0f, 1.0f);// フレームは倍率を変更せずに表示 
-	DirectX::XMMATRIX Rz = DirectX::XMMatrixRotationZ(m_Angle);
-	DirectX::XMMATRIX mWorld = S * Rz * T;
-	mWorld = DirectX::XMMatrixTranspose(mWorld);
-	DirectX::XMStoreFloat4x4(&world, mWorld);
-
-	Sprite::SetWorld(world);
-	Sprite::SetView(view);
-	Sprite::SetProjection(proj);
-	Sprite::SetTexture(m_pTran[1]);
-	Sprite::SetSize(m_StarSize);
-	Sprite::SetOffset(m_StarPos);
-	Sprite::SetColor({ 1.0f, 1.0f, 1.0f, 1.0f });
-	Sprite::Draw();
-}
-
-void CSceneTitle::DrawBlack()
-{
-	DirectX::XMFLOAT4X4 world, view, proj;
-	DirectX::XMMATRIX mView = DirectX::XMMatrixLookAtLH(
-		DirectX::XMVectorSet(0.0f, 0.0f, -0.3f, 0.0f),
-		DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f),
-		DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
-	DirectX::XMMATRIX mProj = DirectX::XMMatrixOrthographicOffCenterLH(
-		0.0f, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f, 0.1f, 100.0f);
-	mView = DirectX::XMMatrixTranspose(mView);
-	mProj = DirectX::XMMatrixTranspose(mProj);
-	DirectX::XMStoreFloat4x4(&view, mView);
-	DirectX::XMStoreFloat4x4(&proj, mProj);
-
-	DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f, 0.0f);
-	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(1.0f, -1.0f, 1.0f);// フレームは倍率を変更せずに表示 
-	DirectX::XMMATRIX Rz = DirectX::XMMatrixRotationZ(m_Angle);
-	DirectX::XMMATRIX mWorld = S * Rz * T;
-	mWorld = DirectX::XMMatrixTranspose(mWorld);
-	DirectX::XMStoreFloat4x4(&world, mWorld);
-
-	Sprite::SetWorld(world);
-	Sprite::SetView(view);
-	Sprite::SetProjection(proj);
-	Sprite::SetTexture(m_pTran[0]);
-	Sprite::SetColor({ 1.0f, 1.0f, 1.0f, 1.0f });
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < (int)TextureKind::Max; i++)
 	{
-		Sprite::SetSize(m_BlackSize[i]);
-		Sprite::SetOffset(m_BlackPos[i]);
+		Sprite::SetParam(m_tParam[i]);
+		Sprite::SetTexture(m_pTexture[i].get());
 		Sprite::Draw();
 	}
+}
+
+void CSceneTitle::UpdateAnimation()
+{
+	if (IsKeyTrigger(VK_RETURN)) m_eTitlePhase = TitlePhase::Select;
+}
+
+void CSceneTitle::UpdateSelect()
+{
+	if (IsKeyTrigger(VK_RETURN) && !m_bSelected)
+	{
+		SetNext(SceneKind::Game); 
+		m_bSelected = true;
+	}
+}
+
+void CSceneTitle::ResetSpriteParam()
+{
 }

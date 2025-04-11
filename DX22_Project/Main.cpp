@@ -6,13 +6,15 @@
 #include "Sprite.h"
 #include "Input.h"
 #include "ShaderList.h"
-#include "SceneTitle.h"
-#include "SceneGame.h"
 #include "FadeBlack.h"
 #include "imgui.h"
 #include "imgui_impl_dx11.h"
 #include "imgui_impl_win32.h"
 #include "Controller.h"
+#include "SceneTitle.h"
+#include "SceneGame.h"
+#include "SceneTeamselect.h"
+#include "SceneMemberselect.h"
 
 //--- グローバル変数
 CScene* g_pScene; // シーン 
@@ -80,15 +82,18 @@ void Update()
 	// シーン切り替え判定 
 	if (g_pScene->ChangeScene()) {
 		// 次のシーンの情報を取得 
-		int scene = g_pScene->NextScene();
+		CScene::SceneKind scene = g_pScene->NextScene();
 
 		// 現在のシーンを削除 
 		delete g_pScene;
 
 		// シーンの切り替え 
-		switch (scene) {
-		case 0: g_pScene = new CSceneTitle(); break; // TITLE 
-		case 1: g_pScene = new CSceneGame(); break; // GAME 
+		switch (scene) 
+		{
+			case CScene::SceneKind::Title: g_pScene = new CSceneTitle(); break;
+			case CScene::SceneKind::TeamSelect: g_pScene = new CSceneTeamSelect(); break;
+			case CScene::SceneKind::MemberSelect: g_pScene = new CSceneMemberselect(CSceneTeamSelect::GetTeam(0), CSceneTeamSelect::GetTeam(1)); break;
+			case CScene::SceneKind::Game: g_pScene = new CSceneGame(); break; 
 		}
 
 		// 次シーンに向けて初期設定 
