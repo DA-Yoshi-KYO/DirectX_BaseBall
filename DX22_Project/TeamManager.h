@@ -12,6 +12,9 @@ public:
 	{
 		Bears,
 		Rabbits,
+		Tigers,
+		Elephants,
+		Monkeys,
 
 		Max
 	};

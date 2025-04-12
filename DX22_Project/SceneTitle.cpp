@@ -7,10 +7,13 @@
 
 constexpr DirectX::XMFLOAT4 ce_fStartEndBallPos = { -700.0f,700.0f, 0.0f,150.0f};
 constexpr DirectX::XMFLOAT4 ce_fStartEndBatPos = { 0.0f,-800.0f, 0.0f, 20.0f};
+constexpr DirectX::XMFLOAT4 ce_fStartEndLogoSize = { 0.0f, 0.0f, 1000.0f,600.0f };
+constexpr DirectX::XMFLOAT4 ce_fStartEndStartButtonPos = { 1000.0f,-180.0f, 0.0f, -180.0f };
+constexpr DirectX::XMFLOAT4 ce_fStartEndEndButtonPos = { 1000.0f,-300.0f, 0.0f, -300.0f };
 
 CSceneTitle::CSceneTitle()
 	: m_pTexture{}, m_eTitlePhase(TitlePhase::Animation)
-	, m_bSelected(false), m_bAnime{false}
+	, m_bSelected(false), m_bCursorAnim(false), m_bAnime{false}, m_nSelectKind((int)SelectKind::Start)
 {
 	for (int i = 0; i < (int)TextureKind::Max; i++)
 	{
@@ -41,6 +44,24 @@ CSceneTitle::CSceneTitle()
 	m_tParam[(int)TextureKind::Bat2].pos = { ce_fStartEndBatPos.x,ce_fStartEndBatPos.y };
 	m_tParam[(int)TextureKind::Bat2].size = { 600.0f,600.0f };
 
+	if (FAILED(m_pTexture[(int)TextureKind::Logo]->Create(TEXPASS("TitleLogo.png")))) ERROR_MESSAGE("TitleLogo.png");
+	m_tParam[(int)TextureKind::Logo].pos = { 0.0f,-20.0f };
+	m_tParam[(int)TextureKind::Logo].size = { ce_fStartEndLogoSize.x,ce_fStartEndLogoSize.y };
+
+	if (FAILED(m_pTexture[(int)TextureKind::Start]->Create(TEXPASS("Fade.png")))) ERROR_MESSAGE("Fade.png");
+	m_tParam[(int)TextureKind::Start].pos = { ce_fStartEndStartButtonPos.x,ce_fStartEndStartButtonPos.y };
+	m_tParam[(int)TextureKind::Start].size = { 300.0f,100.0 };
+
+	if (FAILED(m_pTexture[(int)TextureKind::End]->Create(TEXPASS("Fade.png")))) ERROR_MESSAGE("Fade.png");
+	m_tParam[(int)TextureKind::End].pos = { ce_fStartEndEndButtonPos.x,ce_fStartEndEndButtonPos.y };
+	m_tParam[(int)TextureKind::End].size = { 300.0f,100.0 };
+
+	if (FAILED(m_pTexture[(int)TextureKind::Cursor]->Create(TEXPASS("PositionSeeat.png")))) ERROR_MESSAGE("PositionSeeat.png");
+	m_tParam[(int)TextureKind::Cursor].pos = { -200.0f, ce_fStartEndStartButtonPos.y };
+	m_tParam[(int)TextureKind::Cursor].size = { 100.0f,100.0 };
+	m_tParam[(int)TextureKind::Cursor].color = { 0.0f,0.0f,0.0f,1.0f };
+	m_tParam[(int)TextureKind::Cursor].uvPos = { 3.0f / (float)ce_nCountSplitX, 2.0f / (float)ce_nCountSplitY };
+	m_tParam[(int)TextureKind::Cursor].uvSize = { 1.0f / (float)ce_nCountSplitX, 1.0f / (float)ce_nCountSplitY };
 }
 
 CSceneTitle::~CSceneTitle()
@@ -65,6 +86,7 @@ void CSceneTitle::Draw()
 
 	for (int i = 0; i < (int)TextureKind::Max; i++)
 	{
+		if (i == (int)TextureKind::Cursor && !m_bAnime[(int)AnimePhase::Buttons])continue;
 		m_tParam[i].world = CCamera::Get2DWolrdMatrix(m_tParam[i].pos, m_tParam[i].rotate);
 		Sprite::SetParam(m_tParam[i]);
 		Sprite::SetTexture(m_pTexture[i].get());
@@ -74,14 +96,21 @@ void CSceneTitle::Draw()
 
 void CSceneTitle::UpdateAnimation()
 {
-	if (IsKeyTrigger(VK_RETURN)) m_eTitlePhase = TitlePhase::Select;
+	if (IsKeyTrigger(VK_RETURN))
+	{
+		m_eTitlePhase = TitlePhase::Select;
+	}
 
 	// 現在のアニメーションが終わるまで次のアニメーションを行わない疑似コルーチン
 	if (BallAnimation())
 	{
 		if (BatAnimation())
 		{
-			m_eTitlePhase = TitlePhase::Select;
+			if (LogoAnimation())
+			{
+
+				m_eTitlePhase = TitlePhase::Select;
+			}
 		}
 	}
 }
@@ -89,10 +118,78 @@ void CSceneTitle::UpdateAnimation()
 void CSceneTitle::UpdateSelect()
 {
 	ResetSpriteParam();
-	if (IsKeyTrigger(VK_RETURN) && !m_bSelected)
+	
+
+	if (ButtonAnimation())
 	{
-		SetNext(SceneKind::Game); 
-		m_bSelected = true;
+		static float fTime = 0.0f;
+		constexpr float ce_fSwapTime = 1.0f;
+		if (!m_bCursorAnim)
+		{
+			m_tParam[(int)TextureKind::Cursor].uvPos.y = (1.0f / (float)ce_nCountSplitY) * (fTime * ce_fSwapTime) + 2.0f / (float)ce_nCountSplitY;
+			m_tParam[(int)TextureKind::Cursor].uvSize.y = (-1.0f / (float)ce_nCountSplitY * 1.0f) * (fTime * ce_fSwapTime) + 3.0f / (float)ce_nCountSplitY;
+			fTime += 1.0f / fFPS;
+
+			if (m_tParam[(int)TextureKind::Cursor].uvPos.y >= 3.0f / (float)ce_nCountSplitY)
+			{
+				fTime = 0.0f;
+				m_bCursorAnim = true;
+			}
+		}
+		else
+		{
+			m_tParam[(int)TextureKind::Cursor].uvPos.y = (-1.0f / (float)ce_nCountSplitY) * (fTime * ce_fSwapTime) + 3.0f / (float)ce_nCountSplitY;
+			m_tParam[(int)TextureKind::Cursor].uvSize.y = (1.0f / (float)ce_nCountSplitY * 1.0f) * (fTime * ce_fSwapTime) + 2.0f / (float)ce_nCountSplitY;
+			fTime += 1.0f / fFPS;
+
+			if (m_tParam[(int)TextureKind::Cursor].uvPos.y <= 2.0f / (float)ce_nCountSplitY)
+			{
+				fTime = 0.0f;
+				m_bCursorAnim = false;
+			}
+		}
+
+		if (IsKeyTrigger(VK_UP))
+		{
+			m_nSelectKind--;
+			if (m_nSelectKind < (int)SelectKind::Start) m_nSelectKind = (int)SelectKind::End;
+		}
+
+		if (IsKeyTrigger(VK_DOWN))
+		{
+			m_nSelectKind++;
+			if (m_nSelectKind > (int)SelectKind::End) m_nSelectKind = (int)SelectKind::Start;
+		}
+
+		if (IsKeyTrigger(VK_RETURN) && !m_bSelected)
+		{
+			switch (m_nSelectKind)
+			{
+			case (int)CSceneTitle::SelectKind::Start:
+				m_tParam[(int)TextureKind::Cursor].pos.y = m_tParam[(int)TextureKind::Start].pos.y;
+				SetNext(SceneKind::TeamSelect);
+				break;
+			case (int)CSceneTitle::SelectKind::End:
+				m_tParam[(int)TextureKind::Cursor].pos.y = m_tParam[(int)TextureKind::End].pos.y;
+				SetEnd(true);
+				break;
+			default:
+				break;
+			}
+			m_bSelected = true;
+		}
+	}
+
+	switch (m_nSelectKind)
+	{
+	case (int)CSceneTitle::SelectKind::Start:
+		m_tParam[(int)TextureKind::Cursor].pos.y = m_tParam[(int)TextureKind::Start].pos.y;
+		break;
+	case (int)CSceneTitle::SelectKind::End:
+		m_tParam[(int)TextureKind::Cursor].pos.y = m_tParam[(int)TextureKind::End].pos.y;
+		break;
+	default:
+		break;
 	}
 }
 
@@ -107,17 +204,18 @@ bool CSceneTitle::BallAnimation()
 	{
 		return true;
 	}
+
+	
+	m_tParam[(int)TextureKind::Ball].pos.x = easeOutBack(fTime, easePosXTime, ce_fStartEndBallPos.x, ce_fStartEndBallPos.z, 3.0f);
+	m_tParam[(int)TextureKind::Ball].pos.y = easeOutBounce(fTime, easePosYTime, ce_fStartEndBallPos.y, ce_fStartEndBallPos.w);
+	m_tParam[(int)TextureKind::Ball].rotate = easeOutBack(fTime, easeRotateTime, 0.0f, DirectX::XMConvertToRadians(1800.0f));
+
 	if (fTime > easePosXTime)
 	{
 		fTime = 0.0f;
 		m_bAnime[(int)AnimePhase::Ball] = true;
 		return true;
 	}
-	
-	m_tParam[(int)TextureKind::Ball].pos.x = easeOutBack(fTime, easePosXTime, ce_fStartEndBallPos.x, ce_fStartEndBallPos.z, 3.0f);
-	m_tParam[(int)TextureKind::Ball].pos.y = easeOutBounce(fTime, easePosYTime, ce_fStartEndBallPos.y, ce_fStartEndBallPos.w);
-	m_tParam[(int)TextureKind::Ball].rotate = easeOutBack(fTime, easeRotateTime, 0.0f, DirectX::XMConvertToRadians(1800.0f));
-
 	fTime += 1.0f / fFPS;
 	return false;
 }
@@ -127,6 +225,12 @@ bool CSceneTitle::BatAnimation()
 	constexpr float ce_fGroveMoveTime = 0.5f;
 	constexpr float ce_fGroveMoveX = 200.0f;
 	static float fTime = 0.0f;
+
+
+	if (m_bAnime[(int)AnimePhase::BatGrove])
+	{
+		return true;
+	}
 
 	float fRad = fTime / ce_fGroveMoveTime * 180.0f;
 	fRad = DirectX::XMConvertToRadians(fRad);
@@ -148,15 +252,64 @@ bool CSceneTitle::BatAnimation()
 		(ce_fStartEndBatPos.w - ce_fStartEndBatPos.y) *  (fTime / ce_fGroveMoveTime) +
 		ce_fStartEndBatPos.y;
 	m_tParam[(int)TextureKind::Bat2].rotate = (0.0f - DirectX::XMConvertToRadians(-1870.0f)) * (fTime / ce_fGroveMoveTime);
-
-	if (m_bAnime[(int)AnimePhase::BatGrove])
-	{
-		return true;
-	}
 	if (fTime > ce_fGroveMoveTime)
 	{
 		fTime = 0.0f;
 		m_bAnime[(int)AnimePhase::BatGrove] = true;
+		return true;
+	}
+
+
+	fTime += 1.0f / fFPS;
+	return false;
+}
+
+bool CSceneTitle::LogoAnimation()
+{
+	static float fTime = 0.0f;
+	constexpr float easeSizeTime = 0.5f;
+
+	if (m_bAnime[(int)AnimePhase::Logo])
+	{
+		return true;
+	}
+	m_tParam[(int)TextureKind::Logo].size.x = easeOutBack(fTime, easeSizeTime, ce_fStartEndLogoSize.x, ce_fStartEndLogoSize.z);
+	m_tParam[(int)TextureKind::Logo].size.y = easeOutBack(fTime, easeSizeTime, ce_fStartEndLogoSize.y, ce_fStartEndLogoSize.w);
+
+
+	if (fTime > easeSizeTime)
+	{
+		fTime = 0.0f;
+		m_bAnime[(int)AnimePhase::Logo] = true;
+		return true;
+	}
+
+	fTime += 1.0f / fFPS;
+	return false;
+}
+
+bool CSceneTitle::ButtonAnimation()
+{
+	static float fTime = 0.0f;
+	constexpr float easePosTimeStartButton = 0.5f;
+	constexpr float easePosTimeEndButton = 0.7f;
+	constexpr float easePow = 2.5f;
+
+	if (m_bAnime[(int)AnimePhase::Buttons])
+	{
+		return true;
+	}
+
+	m_tParam[(int)TextureKind::Start].pos.x = easeOutBack(fTime, easePosTimeStartButton, ce_fStartEndStartButtonPos.x, ce_fStartEndStartButtonPos.z, easePow);
+	m_tParam[(int)TextureKind::Start].pos.y = easeOutBack(fTime, easePosTimeStartButton, ce_fStartEndStartButtonPos.y, ce_fStartEndStartButtonPos.w, easePow);
+
+	m_tParam[(int)TextureKind::End].pos.x = easeOutBack(fTime, easePosTimeEndButton, ce_fStartEndEndButtonPos.x, ce_fStartEndEndButtonPos.z, easePow);
+	m_tParam[(int)TextureKind::End].pos.y = easeOutBack(fTime, easePosTimeEndButton, ce_fStartEndEndButtonPos.y, ce_fStartEndEndButtonPos.w, easePow);
+
+	if (fTime > easePosTimeEndButton)
+	{
+		fTime = 0.0f;
+		m_bAnime[(int)AnimePhase::Buttons] = true;
 		return true;
 	}
 
@@ -168,4 +321,11 @@ void CSceneTitle::ResetSpriteParam()
 {
 	m_tParam[(int)TextureKind::Ball].pos = { ce_fStartEndBallPos.z ,ce_fStartEndBallPos.w };
 	m_tParam[(int)TextureKind::Ball].rotate = 0.0f;
+	m_tParam[(int)TextureKind::Bat].pos = { ce_fStartEndBatPos.z ,ce_fStartEndBatPos.w };
+	m_tParam[(int)TextureKind::Bat].rotate = DirectX::XMConvertToRadians(1870.0f);
+	m_tParam[(int)TextureKind::Bat2].pos = { ce_fStartEndBatPos.z ,ce_fStartEndBatPos.w };
+	m_tParam[(int)TextureKind::Bat2].rotate = DirectX::XMConvertToRadians(-1870.0f);
+	m_tParam[(int)TextureKind::Logo].size = { ce_fStartEndLogoSize.z ,ce_fStartEndLogoSize.w };
+	m_tParam[(int)TextureKind::Start].pos = { ce_fStartEndStartButtonPos.z , ce_fStartEndStartButtonPos.w };
+	m_tParam[(int)TextureKind::End].pos = { ce_fStartEndEndButtonPos.z , ce_fStartEndEndButtonPos.w };
 }

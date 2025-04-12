@@ -28,6 +28,10 @@ private:
 		Ball,
 		Bat,
 		Bat2,
+		Logo,
+		Start,
+		End,
+		Cursor,
 
 		Max
 	};
@@ -39,15 +43,29 @@ private:
 	{
 		Ball,
 		BatGrove,
+		Logo,
+		Buttons,
+
 		Max
 	};
 	bool m_bAnime[(int)AnimePhase::Max];
+
+	enum class SelectKind
+	{
+		Start,
+		End
+	};
+	int m_nSelectKind;
+	bool m_bCursorAnim;
 private:
 	void UpdateAnimation();
 	void UpdateSelect();
 
 	bool BallAnimation();
 	bool BatAnimation();
+	bool LogoAnimation();
+
+	bool ButtonAnimation();
 
 	void ResetSpriteParam();
 };

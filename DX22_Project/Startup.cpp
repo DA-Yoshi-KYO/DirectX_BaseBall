@@ -11,6 +11,7 @@
 //--- プロトタイプ宣言
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+bool g_bEnd = false;
 
 // エントリポイント
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
@@ -78,7 +79,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	DWORD fpsTime = time;		//fpsの計測し始め
 
 	//--- ウィンドウの管理
-	while (1)
+	while (!g_bEnd)
 	{
 		if (PeekMessage(&message, NULL, 0, 0, PM_NOREMOVE))
 		{
@@ -144,4 +145,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		break;
 	}
 	return DefWindowProc(hWnd, message, wParam, lParam);
+}
+
+void SetEnd(bool isEnd)
+{
+	g_bEnd = isEnd;
 }
