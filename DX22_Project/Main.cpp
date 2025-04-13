@@ -15,6 +15,7 @@
 #include "SceneGame.h"
 #include "SceneTeamselect.h"
 #include "SceneMemberselect.h"
+#include <dwrite.h>
 
 //--- グローバル変数
 CScene* g_pScene; // シーン 

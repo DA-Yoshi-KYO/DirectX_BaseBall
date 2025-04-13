@@ -38,7 +38,7 @@ CPitchingCursor::CPitchingCursor()
 {
 	// テクスチャの読み込み
 	m_pTexture = std::make_unique<Texture>();
-	if (FAILED(m_pTexture->Create(TEXPASS("Ball.png")))) MessageBox(NULL, "Ball.png", "Error", MB_OK);
+	if (FAILED(m_pTexture->Create(PATH_TEX("Ball.png")))) MessageBox(NULL, "Ball.png", "Error", MB_OK);
 
 	// テクスチャパラメータの初期化
 	m_tParam.pos = ce_fPitchingCursorPos;

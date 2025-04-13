@@ -22,7 +22,7 @@ CBattingCursor::CBattingCursor()
 {
 	// テクスチャの読み込み
 	m_pTexture = std::make_unique<Texture>();
-	if (FAILED(m_pTexture->Create(TEXPASS("Cursor.png")))) MessageBox(NULL, "Cursor.png", "Error", MB_OK);
+	if (FAILED(m_pTexture->Create(PATH_TEX("Cursor.png")))) MessageBox(NULL, "Cursor.png", "Error", MB_OK);
 
 	// テクスチャパラメータの初期化
 	m_tParam.pos = ce_fBattingCursorPos;

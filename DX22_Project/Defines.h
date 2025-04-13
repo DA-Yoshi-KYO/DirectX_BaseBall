@@ -9,24 +9,20 @@
 #include <memory>
 
 // defines
-#define MAP_X (19)	// txtファイルのマップ横幅
-#define MAP_Y (19)	// txtファイルのマップ縦幅
 
 static const int FPS = 60;
 static const float fFPS = static_cast<float>(FPS);
 
 // リソースパス
-#define MODELPASS(fbx) ("Assets/Model/" fbx)
-#define LOWPASS(fbx) ("Assets/Model/LowPolyNature/" fbx)
-#define TXTPASS(txt) ("Assets/txt/" txt)
-#define TEXPASS(png) ("Assets/Texture/" png)
+#define PATH_MODEL(fbx) ("Assets/Model/" fbx)
+#define PATH_TEX(png) ("Assets/Texture/" png)
+#define PATH_FONT(ttf) (L"Assets\\Font\\" ttf)
+#define PATH_DATA(data) (L"Assets/Data/" data)
 #define ERROR_MESSAGE(asset) do{ MessageBox(NULL,asset,"LoadError",MB_OK); } while (0)
 #define INFO_MESSAGE(information) do{ MessageBox(NULL,information,"Information",MB_OK); } while (0)
 #define RANGEERROR_MESSAGE(value) do{ MessageBox(NULL,value,"Out of range",MB_OK); } while (0)
 
-// テクスチャパス
-constexpr int ce_nCountSplitX = 5;
-constexpr int ce_nCountSplitY = 5;
+constexpr int ce_nSheetSplit = 5;
 
 // 3D空間定義
 #define CMETER(value) (value * 0.01f)

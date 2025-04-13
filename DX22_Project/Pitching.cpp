@@ -31,8 +31,8 @@ CPitching::CPitching()
 	{
 		m_pTexture[i] = std::make_unique<Texture>();
 	}
-	m_pTexture[(int)TexKind::ReleasePoint]->Create(TEXPASS("BallCountSheet.png"));
-	m_pTexture[(int)TexKind::PitchingCircle]->Create(TEXPASS("PitchingCircle.png"));
+	m_pTexture[(int)TexKind::ReleasePoint]->Create(PATH_TEX("BallCountSheet.png"));
+	m_pTexture[(int)TexKind::PitchingCircle]->Create(PATH_TEX("PitchingCircle.png"));
 
 	// ÉpÉâÉÅÅ[É^ÇÃèâä˙âª
 	DirectX::XMFLOAT4X4 wvp[3];
@@ -44,8 +44,8 @@ CPitching::CPitching()
 	m_tParam[(int)TexKind::ReleasePoint].world = wvp[0];
 	m_tParam[(int)TexKind::ReleasePoint].view = wvp[1];
 	m_tParam[(int)TexKind::ReleasePoint].proj = wvp[2];
-	m_tParam[(int)TexKind::ReleasePoint].uvPos = { 1.0f / (float)ce_nCountSplitX,2.0f / (float)ce_nCountSplitY };
-	m_tParam[(int)TexKind::ReleasePoint].uvSize = { 1.0f / (float)ce_nCountSplitX,1.0f / (float)ce_nCountSplitY };
+	m_tParam[(int)TexKind::ReleasePoint].uvPos = { 1.0f / (float)ce_nSheetSplit,2.0f / (float)ce_nSheetSplit };
+	m_tParam[(int)TexKind::ReleasePoint].uvSize = { 1.0f / (float)ce_nSheetSplit,1.0f / (float)ce_nSheetSplit };
 
 	m_tParam[(int)TexKind::PitchingCircle].size = ce_fPitchingCircleFirstSize;
 	m_tParam[(int)TexKind::PitchingCircle].color = { 1.0f,1.0f,1.0f,0.5f };

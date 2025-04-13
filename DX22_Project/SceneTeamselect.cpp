@@ -18,7 +18,7 @@ constexpr float ce_fTeamPosY[ce_nMaxRender] =
 constexpr float ce_fMovePos = 300.0f;
 CSceneTeamSelect::CSceneTeamSelect()
 	: m_pTeamTexture{}, m_pTexture{}, m_bCanMove{true,true}, m_fMovePow{}
-	, m_bSelected{}, m_bEnd(false)
+	, m_bSelected{}, m_bEnd(false), m_fOriginPos{}
 {
 	m_nTeam[0] = CTeamManager::Teams::Bears;
 	m_nTeam[1] = CTeamManager::Teams::Bears;
@@ -36,7 +36,7 @@ CSceneTeamSelect::CSceneTeamSelect()
 		m_tParam[i].view = CCamera::Get2DViewMatrix();
 		m_tParam[i].proj = CCamera::Get2DProjectionMatrix();
 	}
-	if(m_pTexture[(int)TextureKind::Back]->Create(TEXPASS("TeamSelectBack.jpg")))ERROR_MESSAGE("TeamSelectBack.jpg");
+	if(m_pTexture[(int)TextureKind::Back]->Create(PATH_TEX("TeamSelectBack.jpg")))ERROR_MESSAGE("TeamSelectBack.jpg");
 	m_tParam[(int)TextureKind::Back].size = { SCREEN_WIDTH,SCREEN_HEIGHT };
 
 	for (int i = 0; i < 2; i++)
@@ -55,11 +55,11 @@ CSceneTeamSelect::CSceneTeamSelect()
 			m_tTeamParam[i][j].proj = CCamera::Get2DProjectionMatrix();
 		}
 	}
-	if (m_pTeamTexture[(int)CTeamManager::Teams::Bears]->Create(TEXPASS("Teams/Bears.png")))ERROR_MESSAGE("Teams/Bears.png");
-	if (m_pTeamTexture[(int)CTeamManager::Teams::Rabbits]->Create(TEXPASS("Teams/Rabbits.png")))ERROR_MESSAGE("Teams/Rabbits.png");
-	if (m_pTeamTexture[(int)CTeamManager::Teams::Tigers]->Create(TEXPASS("Teams/Tigers.png")))ERROR_MESSAGE("Teams/Tigers.png");
-	if (m_pTeamTexture[(int)CTeamManager::Teams::Elephants]->Create(TEXPASS("Teams/Elephants.png")))ERROR_MESSAGE("Teams/Elephants.png");
-	if (m_pTeamTexture[(int)CTeamManager::Teams::Monkeys]->Create(TEXPASS("Teams/Monkeys.png")))ERROR_MESSAGE("Teams/Monkeys.png");
+	if (m_pTeamTexture[(int)CTeamManager::Teams::Bears]->Create(PATH_TEX("Teams/Bears.png")))ERROR_MESSAGE("Teams/Bears.png");
+	if (m_pTeamTexture[(int)CTeamManager::Teams::Rabbits]->Create(PATH_TEX("Teams/Rabbits.png")))ERROR_MESSAGE("Teams/Rabbits.png");
+	if (m_pTeamTexture[(int)CTeamManager::Teams::Tigers]->Create(PATH_TEX("Teams/Tigers.png")))ERROR_MESSAGE("Teams/Tigers.png");
+	if (m_pTeamTexture[(int)CTeamManager::Teams::Elephants]->Create(PATH_TEX("Teams/Elephants.png")))ERROR_MESSAGE("Teams/Elephants.png");
+	if (m_pTeamTexture[(int)CTeamManager::Teams::Monkeys]->Create(PATH_TEX("Teams/Monkeys.png")))ERROR_MESSAGE("Teams/Monkeys.png");
 
 }
 
@@ -77,7 +77,7 @@ void CSceneTeamSelect::Update()
 	{
 		for (int teamNo = 0; teamNo < 2; teamNo++)
 		{
-			if (m_bCanMove[teamNo] && m_bSelected[teamNo])
+			if (m_bCanMove[teamNo] && !m_bSelected[teamNo])
 			{
 
 				for (int i = 0; i < (int)CTeamManager::Teams::Max; i++)

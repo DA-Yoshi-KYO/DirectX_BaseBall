@@ -1,5 +1,9 @@
 #include "SceneMemberselect.h"
 #include "TeamBears.h"
+#include "TeamRabbits.h"
+#include "TeamTigers.h"
+#include "TeamElephants.h"
+#include "TeamMonkeys.h"
 
 std::unique_ptr<CTeamManager> CSceneMemberselect::m_pTeam[2] = { nullptr,nullptr };
 
@@ -46,6 +50,16 @@ void CSceneMemberselect::InitMember(CTeamManager::Teams team, int teamNo)
 		m_pTeam[teamNo] = std::make_unique<CTeamBears>();
 		break;
 	case CTeamManager::Rabbits:
+		m_pTeam[teamNo] = std::make_unique<CTeamRabbits>();
+		break;
+	case CTeamManager::Tigers:
+		m_pTeam[teamNo] = std::make_unique<CTeamTigers>();
+		break;
+	case CTeamManager::Elephants:
+		m_pTeam[teamNo] = std::make_unique<CTeamElephants>();
+		break;
+	case CTeamManager::Monkeys:
+		m_pTeam[teamNo] = std::make_unique<CTeamMonkeys>();
 		break;
 	case CTeamManager::Max:
 		break;

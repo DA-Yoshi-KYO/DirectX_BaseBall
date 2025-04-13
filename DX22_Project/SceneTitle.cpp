@@ -29,14 +29,14 @@ CSceneTitle::CSceneTitle()
 		m_tParam[i].view = CCamera::Get2DViewMatrix();
 		m_tParam[i].proj = CCamera::Get2DProjectionMatrix();
 	}
-	if (FAILED(m_pTexture[(int)TextureKind::Back]->Create(TEXPASS("TitleBack.jpg")))) ERROR_MESSAGE("TitleBack.jpg");
+	if (FAILED(m_pTexture[(int)TextureKind::Back]->Create(PATH_TEX("TitleBack.jpg")))) ERROR_MESSAGE("TitleBack.jpg");
 	m_tParam[(int)TextureKind::Back].size = { SCREEN_WIDTH,SCREEN_HEIGHT };
 
-	if (FAILED(m_pTexture[(int)TextureKind::Ball]->Create(TEXPASS("Ball.png")))) ERROR_MESSAGE("Ball.png");
+	if (FAILED(m_pTexture[(int)TextureKind::Ball]->Create(PATH_TEX("Ball.png")))) ERROR_MESSAGE("Ball.png");
 	m_tParam[(int)TextureKind::Ball].pos = { ce_fStartEndBallPos.x,ce_fStartEndBallPos.y };
 	m_tParam[(int)TextureKind::Ball].size = { 300.0f,300.0f };
 
-	if (FAILED(m_pTexture[(int)TextureKind::Bat]->Create(TEXPASS("Bat.png")))) ERROR_MESSAGE("Bat.png");
+	if (FAILED(m_pTexture[(int)TextureKind::Bat]->Create(PATH_TEX("Bat.png")))) ERROR_MESSAGE("Bat.png");
 	m_tParam[(int)TextureKind::Bat].pos = { ce_fStartEndBatPos.x,ce_fStartEndBatPos.y };
 	m_tParam[(int)TextureKind::Bat].size = { 600.0f,600.0f };
 
@@ -44,24 +44,24 @@ CSceneTitle::CSceneTitle()
 	m_tParam[(int)TextureKind::Bat2].pos = { ce_fStartEndBatPos.x,ce_fStartEndBatPos.y };
 	m_tParam[(int)TextureKind::Bat2].size = { 600.0f,600.0f };
 
-	if (FAILED(m_pTexture[(int)TextureKind::Logo]->Create(TEXPASS("TitleLogo.png")))) ERROR_MESSAGE("TitleLogo.png");
+	if (FAILED(m_pTexture[(int)TextureKind::Logo]->Create(PATH_TEX("TitleLogo.png")))) ERROR_MESSAGE("TitleLogo.png");
 	m_tParam[(int)TextureKind::Logo].pos = { 0.0f,-20.0f };
 	m_tParam[(int)TextureKind::Logo].size = { ce_fStartEndLogoSize.x,ce_fStartEndLogoSize.y };
 
-	if (FAILED(m_pTexture[(int)TextureKind::Start]->Create(TEXPASS("Fade.png")))) ERROR_MESSAGE("Fade.png");
+	if (FAILED(m_pTexture[(int)TextureKind::Start]->Create(PATH_TEX("Fade.png")))) ERROR_MESSAGE("Fade.png");
 	m_tParam[(int)TextureKind::Start].pos = { ce_fStartEndStartButtonPos.x,ce_fStartEndStartButtonPos.y };
 	m_tParam[(int)TextureKind::Start].size = { 300.0f,100.0 };
 
-	if (FAILED(m_pTexture[(int)TextureKind::End]->Create(TEXPASS("Fade.png")))) ERROR_MESSAGE("Fade.png");
+	if (FAILED(m_pTexture[(int)TextureKind::End]->Create(PATH_TEX("Fade.png")))) ERROR_MESSAGE("Fade.png");
 	m_tParam[(int)TextureKind::End].pos = { ce_fStartEndEndButtonPos.x,ce_fStartEndEndButtonPos.y };
 	m_tParam[(int)TextureKind::End].size = { 300.0f,100.0 };
 
-	if (FAILED(m_pTexture[(int)TextureKind::Cursor]->Create(TEXPASS("PositionSeeat.png")))) ERROR_MESSAGE("PositionSeeat.png");
+	if (FAILED(m_pTexture[(int)TextureKind::Cursor]->Create(PATH_TEX("PositionSeeat.png")))) ERROR_MESSAGE("PositionSeeat.png");
 	m_tParam[(int)TextureKind::Cursor].pos = { -200.0f, ce_fStartEndStartButtonPos.y };
 	m_tParam[(int)TextureKind::Cursor].size = { 100.0f,100.0 };
 	m_tParam[(int)TextureKind::Cursor].color = { 0.0f,0.0f,0.0f,1.0f };
-	m_tParam[(int)TextureKind::Cursor].uvPos = { 3.0f / (float)ce_nCountSplitX, 2.0f / (float)ce_nCountSplitY };
-	m_tParam[(int)TextureKind::Cursor].uvSize = { 1.0f / (float)ce_nCountSplitX, 1.0f / (float)ce_nCountSplitY };
+	m_tParam[(int)TextureKind::Cursor].uvPos = { 3.0f / (float)ce_nSheetSplit, 2.0f / (float)ce_nSheetSplit };
+	m_tParam[(int)TextureKind::Cursor].uvSize = { 1.0f / (float)ce_nSheetSplit, 1.0f / (float)ce_nSheetSplit };
 }
 
 CSceneTitle::~CSceneTitle()
@@ -126,11 +126,11 @@ void CSceneTitle::UpdateSelect()
 		constexpr float ce_fSwapTime = 1.0f;
 		if (!m_bCursorAnim)
 		{
-			m_tParam[(int)TextureKind::Cursor].uvPos.y = (1.0f / (float)ce_nCountSplitY) * (fTime * ce_fSwapTime) + 2.0f / (float)ce_nCountSplitY;
-			m_tParam[(int)TextureKind::Cursor].uvSize.y = (-1.0f / (float)ce_nCountSplitY * 1.0f) * (fTime * ce_fSwapTime) + 3.0f / (float)ce_nCountSplitY;
+			m_tParam[(int)TextureKind::Cursor].uvPos.y = (1.0f / (float)ce_nSheetSplit) * (fTime * ce_fSwapTime) + 2.0f / (float)ce_nSheetSplit;
+			m_tParam[(int)TextureKind::Cursor].uvSize.y = (-1.0f / (float)ce_nSheetSplit * 1.0f) * (fTime * ce_fSwapTime) + 3.0f / (float)ce_nSheetSplit;
 			fTime += 1.0f / fFPS;
 
-			if (m_tParam[(int)TextureKind::Cursor].uvPos.y >= 3.0f / (float)ce_nCountSplitY)
+			if (m_tParam[(int)TextureKind::Cursor].uvPos.y >= 3.0f / (float)ce_nSheetSplit)
 			{
 				fTime = 0.0f;
 				m_bCursorAnim = true;
@@ -138,11 +138,11 @@ void CSceneTitle::UpdateSelect()
 		}
 		else
 		{
-			m_tParam[(int)TextureKind::Cursor].uvPos.y = (-1.0f / (float)ce_nCountSplitY) * (fTime * ce_fSwapTime) + 3.0f / (float)ce_nCountSplitY;
-			m_tParam[(int)TextureKind::Cursor].uvSize.y = (1.0f / (float)ce_nCountSplitY * 1.0f) * (fTime * ce_fSwapTime) + 2.0f / (float)ce_nCountSplitY;
+			m_tParam[(int)TextureKind::Cursor].uvPos.y = (-1.0f / (float)ce_nSheetSplit) * (fTime * ce_fSwapTime) + 3.0f / (float)ce_nSheetSplit;
+			m_tParam[(int)TextureKind::Cursor].uvSize.y = (1.0f / (float)ce_nSheetSplit * 1.0f) * (fTime * ce_fSwapTime) + 2.0f / (float)ce_nSheetSplit;
 			fTime += 1.0f / fFPS;
 
-			if (m_tParam[(int)TextureKind::Cursor].uvPos.y <= 2.0f / (float)ce_nCountSplitY)
+			if (m_tParam[(int)TextureKind::Cursor].uvPos.y <= 2.0f / (float)ce_nSheetSplit)
 			{
 				fTime = 0.0f;
 				m_bCursorAnim = false;

@@ -119,6 +119,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -191,6 +192,7 @@
     <ClCompile Include="SceneMemberselect.cpp" />
     <ClCompile Include="SceneTeamselect.cpp" />
     <ClCompile Include="TeamBears.cpp" />
+    <ClCompile Include="TeamElephants.cpp" />
     <ClCompile Include="TeamManager.cpp" />
     <ClCompile Include="PolylineEffect.cpp" />
     <ClCompile Include="Running.cpp" />
@@ -203,8 +205,12 @@
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="Startup.cpp" />
     <ClCompile Include="StrikeZone.cpp" />
+    <ClCompile Include="TeamMonkeys.cpp" />
+    <ClCompile Include="TeamRabbits.cpp" />
+    <ClCompile Include="TeamTigers.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="TrailEffect.cpp" />
+    <ClCompile Include="Write.cpp" />
     <ClCompile Include="_geometory.cpp" />
     <ClCompile Include="_model.cpp" />
   </ItemGroup>
@@ -253,6 +259,7 @@
     <ClInclude Include="SceneMemberselect.h" />
     <ClInclude Include="SceneTeamselect.h" />
     <ClInclude Include="TeamBears.h" />
+    <ClInclude Include="TeamElephants.h" />
     <ClInclude Include="TeamManager.h" />
     <ClInclude Include="PolylineEffect.h" />
     <ClInclude Include="Running.h" />
@@ -264,8 +271,12 @@
     <ClInclude Include="Shadow.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="StrikeZone.h" />
+    <ClInclude Include="TeamMonkeys.h" />
+    <ClInclude Include="TeamRabbits.h" />
+    <ClInclude Include="TeamTigers.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TrailEffect.h" />
+    <ClInclude Include="Write.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="History.txt" />

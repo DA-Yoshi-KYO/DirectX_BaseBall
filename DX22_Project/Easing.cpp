@@ -28,20 +28,20 @@ float easeOutBounce(float t, float tMax, float origin, float end)
     constexpr float fCalc2 = 2.75f;
     float fValue = end - origin;
 
-    if (t < 1 / fCalc2)
+    if (t < 1.0f / fCalc2)
     {
         return (fCalc1 * t * t) * fValue + origin;
     }
-    else if (t < 2 / fCalc2)
+    else if (t < 2.0f / fCalc2)
     {
-        return (fCalc1 * (t -= 1.5 / fCalc2) * t + 0.75) * fValue + origin;
+        return (fCalc1 * (t -= 1.5f / fCalc2) * t + 0.75f) * fValue + origin;
     }
-    else if (t < 2.5 / fCalc2)
+    else if (t < 2.5f / fCalc2)
     {
-        return (fCalc1 * (t -= 2.25 / fCalc2) * t + 0.9375) * fValue + origin;
+        return (fCalc1 * (t -= 2.25f / fCalc2) * t + 0.9375f) * fValue + origin;
     }
     else
     {
-        return (fCalc1 * (t -= 2.625 / fCalc2) * t + 0.984375) * fValue + origin;
+        return (fCalc1 * (t -= 2.625f / fCalc2) * t + 0.984375f) * fValue + origin;
     }
 }

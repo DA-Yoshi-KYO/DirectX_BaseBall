@@ -11,7 +11,7 @@ CStrikeZone::CStrikeZone()
 {
 	// テクスチャの読み込み
 	m_pTexture = std::make_unique<Texture>();
-	if (FAILED(m_pTexture->Create(TEXPASS("StrikeZone.png")))) MessageBox(NULL, "StrikeZone.png", "Error", MB_OK);
+	if (FAILED(m_pTexture->Create(PATH_TEX("StrikeZone.png")))) MessageBox(NULL, "StrikeZone.png", "Error", MB_OK);
 
 	// パラメータの初期化
 	m_tParam.pos = { 0.0f,-100.0f };

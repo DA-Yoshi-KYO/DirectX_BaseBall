@@ -2,11 +2,11 @@
 
 #include "TeamManager.h"
 
-class CTeamBears : public CTeamManager
+class CTeamElephants : public CTeamManager
 {
 public:
-	CTeamBears();
-	~CTeamBears();
+	CTeamElephants();
+	~CTeamElephants();
 	virtual bool Load() override;
 private:
 

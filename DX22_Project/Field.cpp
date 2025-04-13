@@ -177,13 +177,13 @@ void CField::InitModel()
 {
 	// モデルの読み込み
 	m_pField = std::make_unique<Model>();
-	if (!m_pField->Load(MODELPASS("Baseball_Ground.fbx"),0.1f)) ERROR_MESSAGE("Baseball_Ground.fbx");
+	if (!m_pField->Load(PATH_MODEL("Baseball_Ground.fbx"),0.1f)) ERROR_MESSAGE("Baseball_Ground.fbx");
 	m_pSkydome = std::make_unique<Model>();
-	if (!m_pSkydome->Load(MODELPASS("SkyBox.fbx"))) ERROR_MESSAGE("SkyBox.fbx");
+	if (!m_pSkydome->Load(PATH_MODEL("SkyBox.fbx"))) ERROR_MESSAGE("SkyBox.fbx");
 	m_pBase = std::make_unique<Model>();
-	if(!m_pBase->Load(MODELPASS("base.obj"))) ERROR_MESSAGE("base.obj");
+	if(!m_pBase->Load(PATH_MODEL("base.obj"))) ERROR_MESSAGE("base.obj");
 	m_pHomeBase = std::make_unique<Model>();
-	if(!m_pHomeBase->Load(MODELPASS("HomeBase.obj")))ERROR_MESSAGE("HomeBase.obj");
+	if(!m_pHomeBase->Load(PATH_MODEL("HomeBase.obj")))ERROR_MESSAGE("HomeBase.obj");
 
 	// パラメータの初期化
 	// グラウンド

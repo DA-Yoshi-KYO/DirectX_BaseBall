@@ -50,9 +50,9 @@ void CBallCount::Init(InningHalf Player1Harf)
 {
 	// モデル読み込み
 	m_pBack = std::make_unique<Texture>();
-	if (FAILED(m_pBack->Create(TEXPASS("BallCount.png"))))ERROR_MESSAGE("BallCount.png");
+	if (FAILED(m_pBack->Create(PATH_TEX("BallCount.png"))))ERROR_MESSAGE("BallCount.png");
 	m_pSheet = std::make_unique<Texture>();
-	if (FAILED(m_pSheet->Create(TEXPASS("BallCountSheet.png"))))ERROR_MESSAGE("BallCountSheet.png");
+	if (FAILED(m_pSheet->Create(PATH_TEX("BallCountSheet.png"))))ERROR_MESSAGE("BallCountSheet.png");
 
 
 	// [0]:world
@@ -377,8 +377,8 @@ void CBallCount::DrawBallCount()
 
 	// ボールカウント共通の処理
 	m_tSheetParam.size = ce_fCountSize;
-	m_tSheetParam.uvPos = { 1.0f / (float)ce_nCountSplitX,2.0f / (float)ce_nCountSplitY };
-	m_tSheetParam.uvSize = { 1.0f / (float)ce_nCountSplitX,1.0f / (float)ce_nCountSplitY };
+	m_tSheetParam.uvPos = { 1.0f / (float)ce_nSheetSplit,2.0f / (float)ce_nSheetSplit };
+	m_tSheetParam.uvSize = { 1.0f / (float)ce_nSheetSplit,1.0f / (float)ce_nSheetSplit };
 
 	// ボールカウントの描画
 	for (int i = 0; i < MAX_BALL_COUNT - 1; i++)
@@ -427,8 +427,8 @@ void CBallCount::DrawBaseCount()
 #endif // _IMGUI
 
 	// 塁状況共通の処理
-	m_tSheetParam.uvPos = { 0.0f / (float)ce_nCountSplitX,2.0f / (float)ce_nCountSplitY };
-	m_tSheetParam.uvSize = { 1.0f / (float)ce_nCountSplitX,1.0f / (float)ce_nCountSplitY };
+	m_tSheetParam.uvPos = { 0.0f / (float)ce_nSheetSplit,2.0f / (float)ce_nSheetSplit };
+	m_tSheetParam.uvSize = { 1.0f / (float)ce_nSheetSplit,1.0f / (float)ce_nSheetSplit };
 
 	// 塁状況の描画
 	for (int i = 0; i < MAX_BASE_COUNT - 1; i++)
@@ -470,7 +470,7 @@ void CBallCount::DrawScore()
 	int nNum = 0;
 
 	// 得点共通の処理
-	m_tSheetParam.uvSize = { 1.0f / (float)ce_nCountSplitX,1.0f / (float)ce_nCountSplitX };
+	m_tSheetParam.uvSize = { 1.0f / (float)ce_nSheetSplit,1.0f / (float)ce_nSheetSplit };
 	m_tSheetParam.color = { 1.0f,1.0f,1.0f,1.0f };	
 	m_tSheetParam.size = ce_fScoreSize;
 
@@ -490,7 +490,7 @@ void CBallCount::DrawScore()
 			break;
 		}
 		m_tSheetParam.pos = { ce_fScoreTopPos.x - ce_fScoreAjust.x * i, ce_fScoreTopPos.y };
-		m_tSheetParam.uvPos = { (float)(nNum % ce_nCountSplitX) / (float)ce_nCountSplitX ,(float)(nNum / ce_nCountSplitX) / (float)ce_nCountSplitY };
+		m_tSheetParam.uvPos = { (float)(nNum % ce_nSheetSplit) / (float)ce_nSheetSplit ,(float)(nNum / ce_nSheetSplit) / (float)ce_nSheetSplit };
 		m_tSheetParam.world = CCamera::Get2DWolrdMatrix(m_tSheetParam.pos, m_tSheetParam.rotate);
 		Sprite::SetParam(m_tSheetParam);
 		Sprite::SetTexture(m_pSheet.get());
@@ -514,7 +514,7 @@ void CBallCount::DrawScore()
 		}
 		if (m_tCount.m_nScore[(int)Team::Player1] < 10)m_tSheetParam.pos = { ce_fScoreBottomPos.x + ce_fScoreAjust.x * i, ce_fScoreBottomPos.y };
 		else m_tSheetParam.pos = { ce_fScoreBottomPos.x + ce_fScoreAjust.x * abs(i - 1), ce_fScoreBottomPos.y};
-		m_tSheetParam.uvPos = { (float)(nNum % ce_nCountSplitX) / (float)ce_nCountSplitX ,(float)(nNum / ce_nCountSplitX) / (float)ce_nCountSplitY };
+		m_tSheetParam.uvPos = { (float)(nNum % ce_nSheetSplit) / (float)ce_nSheetSplit ,(float)(nNum / ce_nSheetSplit) / (float)ce_nSheetSplit };
 		m_tSheetParam.world = CCamera::Get2DWolrdMatrix(m_tSheetParam.pos, m_tSheetParam.rotate);
 		Sprite::SetParam(m_tSheetParam);
 		Sprite::SetTexture(m_pSheet.get());
@@ -538,7 +538,7 @@ void CBallCount::DrawInning()
 	// イニング共通の処理
 	m_tSheetParam.size = ce_fInningSize;
 	m_tSheetParam.color = { 1.0f,1.0f,1.0f,1.0f };
-	m_tSheetParam.uvSize = { 1.0f / (float)ce_nCountSplitX,1.0f / (float)ce_nCountSplitY };
+	m_tSheetParam.uvSize = { 1.0f / (float)ce_nSheetSplit,1.0f / (float)ce_nSheetSplit };
 
 	// イニングの描画
 	for (int i = 0; i < 2; i++)
@@ -556,7 +556,7 @@ void CBallCount::DrawInning()
 			break;
 		}
 		m_tSheetParam.pos = { ce_fInningPos.x - ce_fInningAjust.x * i, ce_fInningPos.y };
-		m_tSheetParam.uvPos = { (float)(nNum % ce_nCountSplitX) / (float)ce_nCountSplitX ,(float)(nNum / ce_nCountSplitX) / (float)ce_nCountSplitY };
+		m_tSheetParam.uvPos = { (float)(nNum % ce_nSheetSplit) / (float)ce_nSheetSplit ,(float)(nNum / ce_nSheetSplit) / (float)ce_nSheetSplit };
 		m_tSheetParam.world = CCamera::Get2DWolrdMatrix(m_tSheetParam.pos, m_tSheetParam.rotate);
 		Sprite::SetParam(m_tSheetParam);
 		Sprite::SetTexture(m_pSheet.get());
@@ -573,10 +573,10 @@ void CBallCount::DrawInning()
 	switch (m_tGameState.half)
 	{
 	case InningHalf::Top:
-		m_tSheetParam.uvPos = { 2.0f / (float)ce_nCountSplitX ,2.0f / (float)ce_nCountSplitY };
+		m_tSheetParam.uvPos = { 2.0f / (float)ce_nSheetSplit ,2.0f / (float)ce_nSheetSplit };
 		break;
 	case InningHalf::Bottom:
-		m_tSheetParam.uvPos = { 3.0f / (float)ce_nCountSplitX ,2.0f / (float)ce_nCountSplitY };
+		m_tSheetParam.uvPos = { 3.0f / (float)ce_nSheetSplit ,2.0f / (float)ce_nSheetSplit };
 		break;
 	default:
 		break;
