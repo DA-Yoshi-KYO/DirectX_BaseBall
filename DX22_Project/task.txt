@@ -5,13 +5,13 @@
 	└ふたり対戦(mile:A)
 	└CPU対戦(mile:B)
 	└インターネット対戦(mile:D)
-└アニメーション(mile:C)
+└アニメーション(mile:C)☑
 └エフェクト(mile:C)
 └音(mile:C)
 
 ■チーム選択画面
-└チーム作成(mile:C)
-└選手能力決定(mile:B)
+└チーム作成(mile:C)☑
+└選手能力決定(mile:B)☑
 └難易度選択(mile:D)
 └アニメーション(mile:C)
 └エフェクト(mile:C)
