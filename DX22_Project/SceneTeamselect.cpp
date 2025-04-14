@@ -2,6 +2,7 @@
 #include "Sprite.h"
 #include "Camera.h"
 #include "Input.h"
+#include "TeamManager.h"
 
 int CSceneTeamSelect::m_nTeam[2] = { 0, 0 };
 
@@ -61,6 +62,10 @@ CSceneTeamSelect::CSceneTeamSelect()
 	if (m_pTeamTexture[(int)CTeamManager::Teams::Elephants]->Create(PATH_TEX("Teams/Elephants.png")))ERROR_MESSAGE("Teams/Elephants.png");
 	if (m_pTeamTexture[(int)CTeamManager::Teams::Monkeys]->Create(PATH_TEX("Teams/Monkeys.png")))ERROR_MESSAGE("Teams/Monkeys.png");
 
+	for (int i = 0; i < 2; i++)
+	{
+		CTeamManager::GetInstance(i)->Init();
+	}
 }
 
 CSceneTeamSelect::~CSceneTeamSelect()

@@ -9,9 +9,5 @@ public:
 	virtual ~CSceneMemberselect();
 	virtual void Update() final;
 	virtual void Draw() final;
-	static std::unique_ptr<CTeamManager>& GetInstance(int teamNo);
-
 private:
-	static std::unique_ptr<CTeamManager> m_pTeam[2];
-	void InitMember(CTeamManager::Teams team, int teamNo);
 };

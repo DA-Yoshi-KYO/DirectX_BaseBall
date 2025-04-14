@@ -10,8 +10,6 @@
 
 class CTeamManager
 {
-private:
-
 public:
 	enum Teams
 	{
@@ -36,10 +34,11 @@ public:
 		S
 	};
 
+	
 	enum FieldingNo
 	{
 		None = -1,	// 不出場
-		Pitcher,
+		Pitcher = 1,
 		Chatcher,
 		First,
 		Second,
@@ -76,7 +75,7 @@ public:
 		Power,			// パワー
 		Speed,			// 走力
 		Throwing,		// 肩力
-		Deiffence,		// 守備力
+		Defence,		// 守備力
 		Chatch,			// 捕球
 		Position,		// ポジション
 		SubPosition,	// サブポジション
@@ -86,9 +85,10 @@ public:
 	{
 		std::wstring m_sName;
 		FieldingNo m_eFieldingNo;	// 守備位置
+		FieldingNo m_eAptitude;		// ポジション適性
 		float m_fSpeed;		// 球速
-		float m_fStamina;	// スタミナ
-		float m_fControl;	// コントロール
+		Quality m_eStamina;	// スタミナ
+		Quality m_eControl;	// コントロール
 		bool m_bLefty;		// 左投手か
 		bool m_bEntry;		// 出場しているか
 		bool m_bLeave;		// 試合から退いたか
@@ -99,30 +99,37 @@ public:
 	{
 		std::wstring m_sName;
 		FieldingNo m_eFieldingNo;	// 守備位置
+		FieldingNo m_eAptitude;		// ポジション適性
+		FieldingNo m_eSubAptitude;	// サブポジション適性
 		int m_nLineupNo;	// 打順
 		int m_nTrajectory;	// 弾道
-		float m_fMeat;		// ミート
-		float m_fPower;		// パワー
-		float m_fSpeed;		// 走力
-		float m_fThrowing;	// 肩力
-		float m_fDeiffence;	// 守備力
-		float m_fChatch;	// 捕球
+		Quality m_eMeat;		// ミート
+		Quality m_ePower;		// パワー
+		Quality m_eSpeed;		// 走力
+		Quality m_eThrowing;	// 肩力
+		Quality m_eDefence;	// 守備力
+		Quality m_eChatch;	// 捕球
 		bool m_bLefty;		// 左打者か
 		bool m_bEntry;		// 出場しているか
 		bool m_bLeave;		// 試合から退いたか
 	};
-public:
-	CTeamManager();
-	virtual ~CTeamManager();
-	virtual bool Load() = 0;
-	
+
 private:
+	CTeamManager();
 
-
-protected:
-	std::vector<PitcherState> m_tVecPitcherMember;
-	std::vector<BatterState> m_tVecBatterMember;
-
+public:
+	void Init();
+	~CTeamManager();
+	bool Load(Teams team);
+	static std::unique_ptr<CTeamManager>& GetInstance(int teamNo);
 	std::vector<PitcherState> GetPitcherState();
 	std::vector<BatterState> GetBatterState();
+	Teams GetTeam();
+
+private:
+	std::vector<PitcherState> m_tVecPitcherMember;
+	std::vector<BatterState> m_tVecBatterMember;
+	Teams m_eTeamKind;
+	static std::unique_ptr<CTeamManager> m_pTeam[2];
+
 };

@@ -264,9 +264,6 @@
     <ClCompile Include="SceneTeamselect.cpp">
       <Filter>ソース ファイル\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="TeamBears.cpp">
-      <Filter>ソース ファイル\BaseBall\Team</Filter>
-    </ClCompile>
     <ClCompile Include="TeamManager.cpp">
       <Filter>ソース ファイル\BaseBall\Team</Filter>
     </ClCompile>
@@ -275,18 +272,6 @@
     </ClCompile>
     <ClCompile Include="Write.cpp">
       <Filter>ソース ファイル\Work</Filter>
-    </ClCompile>
-    <ClCompile Include="TeamRabbits.cpp">
-      <Filter>ソース ファイル\BaseBall\Team</Filter>
-    </ClCompile>
-    <ClCompile Include="TeamTigers.cpp">
-      <Filter>ソース ファイル\BaseBall\Team</Filter>
-    </ClCompile>
-    <ClCompile Include="TeamMonkeys.cpp">
-      <Filter>ソース ファイル\BaseBall\Team</Filter>
-    </ClCompile>
-    <ClCompile Include="TeamElephants.cpp">
-      <Filter>ソース ファイル\BaseBall\Team</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -458,22 +443,7 @@
     <ClInclude Include="Write.h">
       <Filter>ヘッダー ファイル\Work</Filter>
     </ClInclude>
-    <ClInclude Include="TeamRabbits.h">
-      <Filter>ヘッダー ファイル\BaseBall\Team</Filter>
-    </ClInclude>
-    <ClInclude Include="TeamBears.h">
-      <Filter>ヘッダー ファイル\BaseBall\Team</Filter>
-    </ClInclude>
     <ClInclude Include="TeamManager.h">
-      <Filter>ヘッダー ファイル\BaseBall\Team</Filter>
-    </ClInclude>
-    <ClInclude Include="TeamTigers.h">
-      <Filter>ヘッダー ファイル\BaseBall\Team</Filter>
-    </ClInclude>
-    <ClInclude Include="TeamMonkeys.h">
-      <Filter>ヘッダー ファイル\BaseBall\Team</Filter>
-    </ClInclude>
-    <ClInclude Include="TeamElephants.h">
       <Filter>ヘッダー ファイル\BaseBall\Team</Filter>
     </ClInclude>
   </ItemGroup>
