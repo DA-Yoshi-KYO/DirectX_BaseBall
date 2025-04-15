@@ -24,7 +24,7 @@ namespace FontList
 
 class CustomFontCollectionLoader;
 
-class CWritre
+class CWrite
 {
 public:
 	struct FontData
@@ -61,7 +61,7 @@ public:
 	};
 public:
 	// FontDataの初期化
-	CWritre(FontData* outFont);
+	CWrite(FontData* outFont);
 	// DirectX関係の初期化
 	HRESULT Init(IDXGISwapChain* swapChain);
 
@@ -79,7 +79,23 @@ public:
 	// rect：領域指定
 	// options：テキストの整形
 	HRESULT DrawString(std::string str, D2D1_RECT_F rect, D2D1_DRAW_TEXT_OPTIONS options, bool shadow = false);	
+
+	// 文字描画
+	// wstring：文字列
+	// pos：描画ポジション
+	// options：テキストの整形
+	HRESULT DrawWString(std::wstring str, DirectX::XMFLOAT2 pos, D2D1_DRAW_TEXT_OPTIONS options, bool shadow = false);
+
+	// 文字描画
+	// wstring：文字列
+	// rect：領域指定
+	// options：テキストの整形
+	HRESULT DrawWString(std::wstring str, D2D1_RECT_F rect, D2D1_DRAW_TEXT_OPTIONS options, bool shadow = false);	
 	
+
+	// フォント名を取得する
+	std::wstring GetFontName(int num);
+
 	// フォントのファイル名を取得する
 	WCHAR* GetFontFileNameWithoutExtension(const std::wstring& filePath);
 private:

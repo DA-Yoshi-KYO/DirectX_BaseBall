@@ -70,6 +70,7 @@ public:
 		SinkerKind,		// シンカー変化量系球種
 		ShootKind,		// シュート系球種
 		TwoseamKind,	// ツーシーム系球種
+		StarterRelief,	// 先発か中継ぎか
 		Trajectory,		// 弾道
 		Meat,			// ミート
 		Power,			// パワー
@@ -79,6 +80,8 @@ public:
 		Chatch,			// 捕球
 		Position,		// ポジション
 		SubPosition,	// サブポジション
+		PositionEntry,	// 出場ポジション
+		LineupNo		// 打順
 	};
 
 	struct PitcherState
@@ -93,6 +96,7 @@ public:
 		bool m_bEntry;		// 出場しているか
 		bool m_bLeave;		// 試合から退いたか
 		bool m_bBentch;		// ベンチ登録されているか	
+		bool m_bStarter;	// 先発かどうか
 	};
 
 	struct BatterState
@@ -125,7 +129,7 @@ public:
 	std::vector<PitcherState> GetPitcherState();
 	std::vector<BatterState> GetBatterState();
 	Teams GetTeam();
-
+	void SetEntry(int No, bool isEntry, bool isPitcher);
 private:
 	std::vector<PitcherState> m_tVecPitcherMember;
 	std::vector<BatterState> m_tVecBatterMember;

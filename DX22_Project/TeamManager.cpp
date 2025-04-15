@@ -99,6 +99,7 @@ bool CTeamManager::Load(Teams team)
             tState.m_fSpeed = std::stof(rows[i][csvData::BallSpeed]);
             tState.m_eStamina = (Quality)std::stoi(rows[i][csvData::Stamina]);
             tState.m_eControl = (Quality)std::stoi(rows[i][csvData::Control]);
+            tState.m_bStarter = rows[i][csvData::StarterRelief] == L"êÊî≠";
             tState.m_bEntry = false;
             tState.m_bLeave = false;
             tState.m_bBentch = true;
@@ -122,8 +123,8 @@ bool CTeamManager::Load(Teams team)
             tState.m_eSubAptitude = (FieldingNo)std::stoi(rows[i][csvData::SubPosition]);
             tState.m_bEntry = false;
             tState.m_bLeave = false;
-            tState.m_nLineupNo = 0;
-            tState.m_eFieldingNo = FieldingNo::None;
+            tState.m_nLineupNo = (FieldingNo)std::stoi(rows[i][csvData::LineupNo]);
+            tState.m_eFieldingNo = (FieldingNo)std::stoi(rows[i][csvData::PositionEntry]);
             m_tVecBatterMember.push_back(tState);
         }
         else
@@ -137,6 +138,12 @@ bool CTeamManager::Load(Teams team)
 CTeamManager::Teams CTeamManager::GetTeam()
 {
     return m_eTeamKind;
+}
+
+void CTeamManager::SetEntry(int No, bool isEntry, bool isPitcher)
+{
+    if (isPitcher) m_tVecPitcherMember[No].m_bEntry = isEntry;
+    else m_tVecBatterMember[No].m_bEntry = isEntry;
 }
 
 std::unique_ptr<CTeamManager>& CTeamManager::GetInstance(int teamNo)

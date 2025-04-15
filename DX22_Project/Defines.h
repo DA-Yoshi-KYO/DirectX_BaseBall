@@ -72,7 +72,9 @@ struct ModelParam
 enum Player
 {
 	One,
-	Two
+	Two,
+
+	MaxPlayer
 };
 
 #endif // __DEFINES_H__

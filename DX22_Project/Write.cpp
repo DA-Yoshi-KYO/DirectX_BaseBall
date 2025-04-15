@@ -143,13 +143,13 @@ private:
 };
 
 
-CWritre::CWritre(FontData* outFont)
+CWrite::CWrite(FontData* outFont)
 	: m_tSetting(*outFont)
 {
 
 }
 
-HRESULT CWritre::Init(IDXGISwapChain* swapChain)
+HRESULT CWrite::Init(IDXGISwapChain* swapChain)
 {
 	HRESULT result = S_OK;
 
@@ -198,7 +198,7 @@ HRESULT CWritre::Init(IDXGISwapChain* swapChain)
 	return result;
 }
 
-HRESULT CWritre::SetFont(FontData data)
+HRESULT CWrite::SetFont(FontData data)
 {
 	HRESULT result = S_OK;
 
@@ -245,7 +245,7 @@ HRESULT CWritre::SetFont(FontData data)
 	return result;
 }
 
-HRESULT CWritre::DrawString(std::string str, DirectX::XMFLOAT2 pos, D2D1_DRAW_TEXT_OPTIONS options, bool shadow)
+HRESULT CWrite::DrawString(std::string str, DirectX::XMFLOAT2 pos, D2D1_DRAW_TEXT_OPTIONS options, bool shadow)
 {
 	HRESULT result = S_OK;
 
@@ -262,7 +262,7 @@ HRESULT CWritre::DrawString(std::string str, DirectX::XMFLOAT2 pos, D2D1_DRAW_TE
 	// 描画位置の確定
 	D2D1_POINT_2F pounts;
 	pounts.x = pos.x;
-	pounts.y = pos.y;
+	pounts.y = pos.y + SCREEN_HEIGHT / 2.0f;
 
 	// 描画の開始
 	m_pRenderTarget->BeginDraw();
@@ -287,7 +287,7 @@ HRESULT CWritre::DrawString(std::string str, DirectX::XMFLOAT2 pos, D2D1_DRAW_TE
 	return S_OK;
 }
 
-HRESULT CWritre::DrawString(std::string str, D2D1_RECT_F rect, D2D1_DRAW_TEXT_OPTIONS options, bool shadow)
+HRESULT CWrite::DrawString(std::string str, D2D1_RECT_F rect, D2D1_DRAW_TEXT_OPTIONS options, bool shadow)
 {
 	HRESULT result = S_OK;
 
@@ -318,7 +318,97 @@ HRESULT CWritre::DrawString(std::string str, D2D1_RECT_F rect, D2D1_DRAW_TEXT_OP
 	return S_OK;
 }
 
-WCHAR* CWritre::GetFontFileNameWithoutExtension(const std::wstring& filePath)
+HRESULT CWrite::DrawWString(std::wstring str, DirectX::XMFLOAT2 pos, D2D1_DRAW_TEXT_OPTIONS options, bool shadow)
+{
+	HRESULT result = S_OK;
+
+	// 文字列の変換
+	std::wstring wstr = str;
+
+	// ターゲットサイズの取得
+	D2D1_SIZE_F TargetSize = m_pRenderTarget->GetSize();
+
+	// テキストレイアウトを作成
+	result = m_pDWriteFactory->CreateTextLayout(wstr.c_str(), wstr.size(), m_pTextFormat.Get(), TargetSize.width, TargetSize.height, m_pTextLayout.GetAddressOf());
+	if (FAILED(result)) { return result; }
+
+	// 描画位置の確定
+	D2D1_POINT_2F pounts;
+	pounts.x = pos.x;
+	pounts.y = pos.y + SCREEN_HEIGHT / 2.0f;
+
+	// 描画の開始
+	m_pRenderTarget->BeginDraw();
+
+	// 影を描画する場合
+	if (shadow)
+	{
+		// 影の描画
+		m_pRenderTarget->DrawTextLayout(D2D1::Point2F(pounts.x - m_tSetting.m_ShadowOffset.x, pounts.y - m_tSetting.m_ShadowOffset.y),
+			m_pTextLayout.Get(),
+			m_pShadowBrush.Get(),
+			options);
+	}
+
+	// 描画処理
+	m_pRenderTarget->DrawTextLayout(pounts, m_pTextLayout.Get(), m_pBrush.Get(), options);
+
+	// 描画の終了
+	result = m_pRenderTarget->EndDraw();
+	if (FAILED(result)) { return result; }
+
+	return S_OK;
+}
+
+HRESULT CWrite::DrawWString(std::wstring str, D2D1_RECT_F rect, D2D1_DRAW_TEXT_OPTIONS options, bool shadow)
+{
+	HRESULT result = S_OK;
+
+	// 文字列の変換
+	std::wstring wstr = str;
+
+	// 描画の開始
+	m_pRenderTarget->BeginDraw();
+
+	if (shadow)
+	{
+		// 影の描画
+		m_pRenderTarget->DrawText(wstr.c_str(),
+			wstr.size(),
+			m_pTextFormat.Get(),
+			D2D1::RectF(rect.left - m_tSetting.m_ShadowOffset.x, rect.top - m_tSetting.m_ShadowOffset.y, rect.right - m_tSetting.m_ShadowOffset.x, rect.bottom - m_tSetting.m_ShadowOffset.y),
+			m_pShadowBrush.Get(), options);
+	}
+
+	// 描画処理
+	m_pRenderTarget->DrawText(wstr.c_str(), wstr.size(), m_pTextFormat.Get(), rect, m_pBrush.Get(), options);
+
+	// 描画の終了
+	result = m_pRenderTarget->EndDraw();
+	if (FAILED(result)) { return result; }
+
+
+	return S_OK;
+}
+
+std::wstring CWrite::GetFontName(int num)
+{
+	// フォント名のリストが空だった場合
+	if (m_wsFontNameList.empty())
+	{
+		return nullptr;
+	}
+
+	// リストのサイズを超えていた場合
+	if (num >= static_cast<int>(m_wsFontNameList.size()))
+	{
+		return m_wsFontNameList[0];
+	}
+
+	return m_wsFontNameList[num];
+}
+
+WCHAR* CWrite::GetFontFileNameWithoutExtension(const std::wstring& filePath)
 {
 	// 末尾から検索してファイル名と拡張子の位置を取得
 	size_t start = filePath.find_last_of(L"/\\") + 1;
@@ -337,7 +427,7 @@ WCHAR* CWritre::GetFontFileNameWithoutExtension(const std::wstring& filePath)
 	return fileName;
 }
 
-std::wstring CWritre::StringToWString(std::string oString)
+std::wstring CWrite::StringToWString(std::string oString)
 {
 	// SJIS → wstring
 	int iBufferSize = MultiByteToWideChar(CP_ACP, 0, oString.c_str(), -1, (wchar_t*)NULL, 0);
@@ -358,7 +448,7 @@ std::wstring CWritre::StringToWString(std::string oString)
 	return oRet;
 }
 
-HRESULT CWritre::FontLoader()
+HRESULT CWrite::FontLoader()
 {
 	HRESULT result = S_OK;
 
@@ -379,7 +469,7 @@ HRESULT CWritre::FontLoader()
 	return S_OK;
 }
 
-HRESULT CWritre::GetFontFamilyName(IDWriteFontCollection* customFontCollection, const WCHAR* locale)
+HRESULT CWrite::GetFontFamilyName(IDWriteFontCollection* customFontCollection, const WCHAR* locale)
 {
 	HRESULT result = S_OK;
 
@@ -434,7 +524,7 @@ HRESULT CWritre::GetFontFamilyName(IDWriteFontCollection* customFontCollection, 
 	return result;
 }
 
-HRESULT CWritre::GetAllFontFamilyName(IDWriteFontCollection* customFontCollection)
+HRESULT CWrite::GetAllFontFamilyName(IDWriteFontCollection* customFontCollection)
 {
 	HRESULT result = S_OK;
 

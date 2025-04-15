@@ -37,7 +37,7 @@ CSceneTeamSelect::CSceneTeamSelect()
 		m_tParam[i].view = CCamera::Get2DViewMatrix();
 		m_tParam[i].proj = CCamera::Get2DProjectionMatrix();
 	}
-	if(m_pTexture[(int)TextureKind::Back]->Create(PATH_TEX("TeamSelectBack.jpg")))ERROR_MESSAGE("TeamSelectBack.jpg");
+	if(FAILED(m_pTexture[(int)TextureKind::Back]->Create(PATH_TEX("TeamSelectBack.jpg"))))ERROR_MESSAGE("TeamSelectBack.jpg");
 	m_tParam[(int)TextureKind::Back].size = { SCREEN_WIDTH,SCREEN_HEIGHT };
 
 	for (int i = 0; i < 2; i++)
@@ -56,11 +56,11 @@ CSceneTeamSelect::CSceneTeamSelect()
 			m_tTeamParam[i][j].proj = CCamera::Get2DProjectionMatrix();
 		}
 	}
-	if (m_pTeamTexture[(int)CTeamManager::Teams::Bears]->Create(PATH_TEX("Teams/Bears.png")))ERROR_MESSAGE("Teams/Bears.png");
-	if (m_pTeamTexture[(int)CTeamManager::Teams::Rabbits]->Create(PATH_TEX("Teams/Rabbits.png")))ERROR_MESSAGE("Teams/Rabbits.png");
-	if (m_pTeamTexture[(int)CTeamManager::Teams::Tigers]->Create(PATH_TEX("Teams/Tigers.png")))ERROR_MESSAGE("Teams/Tigers.png");
-	if (m_pTeamTexture[(int)CTeamManager::Teams::Elephants]->Create(PATH_TEX("Teams/Elephants.png")))ERROR_MESSAGE("Teams/Elephants.png");
-	if (m_pTeamTexture[(int)CTeamManager::Teams::Monkeys]->Create(PATH_TEX("Teams/Monkeys.png")))ERROR_MESSAGE("Teams/Monkeys.png");
+	if (FAILED(m_pTeamTexture[(int)CTeamManager::Teams::Bears]->Create(PATH_TEX("Teams/Bears.png"))))ERROR_MESSAGE("Teams/Bears.png");
+	if (FAILED(m_pTeamTexture[(int)CTeamManager::Teams::Rabbits]->Create(PATH_TEX("Teams/Rabbits.png"))))ERROR_MESSAGE("Teams/Rabbits.png");
+	if (FAILED(m_pTeamTexture[(int)CTeamManager::Teams::Tigers]->Create(PATH_TEX("Teams/Tigers.png"))))ERROR_MESSAGE("Teams/Tigers.png");
+	if (FAILED(m_pTeamTexture[(int)CTeamManager::Teams::Elephants]->Create(PATH_TEX("Teams/Elephants.png"))))ERROR_MESSAGE("Teams/Elephants.png");
+	if (FAILED(m_pTeamTexture[(int)CTeamManager::Teams::Monkeys]->Create(PATH_TEX("Teams/Monkeys.png"))))ERROR_MESSAGE("Teams/Monkeys.png");
 
 	for (int i = 0; i < 2; i++)
 	{
