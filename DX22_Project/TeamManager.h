@@ -97,6 +97,8 @@ public:
 		bool m_bLeave;		// 試合から退いたか
 		bool m_bBentch;		// ベンチ登録されているか	
 		bool m_bStarter;	// 先発かどうか
+		int m_nStarterNo;		// ベンチナンバー
+		int m_nBenchNo;		// ベンチナンバー
 	};
 
 	struct BatterState
@@ -116,6 +118,7 @@ public:
 		bool m_bLefty;		// 左打者か
 		bool m_bEntry;		// 出場しているか
 		bool m_bLeave;		// 試合から退いたか
+		int m_nBenchNo;		// ベンチナンバー
 	};
 
 private:
@@ -125,15 +128,20 @@ public:
 	void Init();
 	~CTeamManager();
 	bool Load(Teams team);
-	static std::unique_ptr<CTeamManager>& GetInstance(int teamNo);
+	static std::shared_ptr<CTeamManager>& GetInstance(int teamNo);
 	std::vector<PitcherState> GetPitcherState();
 	std::vector<BatterState> GetBatterState();
 	Teams GetTeam();
+	void InitStarter();
 	void SetEntry(int No, bool isEntry, bool isPitcher);
+	void SetBenchNo(int No, int BenchNo, bool isPitcher);
+	void SetPosition(int No, FieldingNo position, bool isPitcher);
+	void SetPitcherState(std::vector<PitcherState> state);
+	void SetBatterState(std::vector<BatterState> state);
 private:
 	std::vector<PitcherState> m_tVecPitcherMember;
 	std::vector<BatterState> m_tVecBatterMember;
 	Teams m_eTeamKind;
-	static std::unique_ptr<CTeamManager> m_pTeam[2];
+	static std::shared_ptr<CTeamManager> m_pTeam[2];
 
 };

@@ -17,7 +17,7 @@ static const float fFPS = static_cast<float>(FPS);
 #define PATH_MODEL(fbx) ("Assets/Model/" fbx)
 #define PATH_TEX(png) ("Assets/Texture/" png)
 #define PATH_FONT(ttf) (L"Assets\\Font\\" ttf)
-#define PATH_DATA(data) (L"Assets/Data/" + data)
+#define PATH_DATA(data) (std::wstring(L"Assets/Data/") + (data))
 #define ERROR_MESSAGE(asset) do{ MessageBox(NULL,asset,"LoadError",MB_OK); } while (0)
 #define INFO_MESSAGE(information) do{ MessageBox(NULL,information,"Information",MB_OK); } while (0)
 #define RANGEERROR_MESSAGE(value) do{ MessageBox(NULL,value,"Out of range",MB_OK); } while (0)

@@ -37,11 +37,29 @@ private:
 	};
 	int m_nCursor[Player::MaxPlayer];
 
+	enum class BenchCursorPhase
+	{
+		Cancel,
+		Accept,
+		BenchBatter,
+		Lineup,
+		LineupNo,
+		StarterPitcher,
+		Relief,
+	
+		Max
+	};
+	int m_nBenchCursor[Player::MaxPlayer];
+	int m_nSelect[Player::MaxPlayer];
+
 	enum class TextureKind
 	{
 		Back,
 		PlayerSeeat,
 		Cursor,
+		PositionSeeat,
+		BenchPitcher,
+		BenchBatter,
 
 		Max
 	};
@@ -51,11 +69,29 @@ private:
 	std::vector<SpriteParam> m_tVecBatterSpriteParam[Player::MaxPlayer];
 	SpriteParam m_tBackParam;
 	SpriteParam m_tCursorParam[Player::MaxPlayer];
+	SpriteParam m_tPositionSpriteParam;
+	SpriteParam m_tBenchPitcherSpriteParam;
+	SpriteParam m_tBenchBatterSpriteParam;
 	CWrite::FontData m_tFont;
 	std::unique_ptr<CWrite> m_pWrite;
+	std::vector<CTeamManager::PitcherState> m_tVecPrevPitcherMember;
+	std::vector<CTeamManager::BatterState> m_tVecPrevBatterMember;
 
+	DirectX::XMFLOAT4 m_fBenchOriginPos;
+	bool m_bChanging;
+	bool m_bChangingPitcher;
 	bool m_bEnd;
 	bool m_bReady[Player::MaxPlayer];
+	bool m_bMemberChange;
+
+	void SetBenchParam(Player player);
+	void SetHomeParam(Player player,bool isCancel);
 
 	void UpdateHome(Player player);
+	void UpdateBenchPitcher(Player player);
+	void UpdateBenchBatter(Player player);
+
+	void DrawMain();
+	void DrawBench();
+	void DrawCursor();
 };

@@ -35,7 +35,7 @@ public:
 		DWRITE_FONT_STYLE m_eFontStyle;				// フォントスタイル
 		DWRITE_FONT_STRETCH m_eFontStretch;			// フォントの幅
 		FLOAT m_fFontSize;							// フォントサイズ
-		WCHAR const* m_wsLocaleName;					// ロケール名
+		std::wstring m_wsLocaleName;					// ロケール名
 		DWRITE_TEXT_ALIGNMENT m_eTextAlignment;		// テキストの配置
 		D2D1_COLOR_F m_Color;							// フォントの色
 
@@ -97,7 +97,7 @@ public:
 	std::wstring GetFontName(int num);
 
 	// フォントのファイル名を取得する
-	WCHAR* GetFontFileNameWithoutExtension(const std::wstring& filePath);
+	std::wstring GetFontFileNameWithoutExtension(const std::wstring& filePath);
 private:
 	// ComオブジェクトはComPtrで定義する
 	Microsoft::WRL::ComPtr <ID2D1Factory>			m_pD2DFactory = nullptr;	// Direct2Dリソース

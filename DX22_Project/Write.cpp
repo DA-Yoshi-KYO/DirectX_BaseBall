@@ -213,16 +213,17 @@ HRESULT CWrite::SetFont(FontData data)
 	//第5引数：フォントの幅（DWRITE_FONT_STRETCH_NORMAL,DWRITE_FONT_STRETCH_EXTRA_EXPANDED等）
 	//第6引数：フォントサイズ（20, 30等）
 	//第7引数：ロケール名（L""）
-	//第8引数：テキストフォーマット（&g_pTextFormat）
+	//第8引数：テキストフォーマット（&g_pTextFormat
+	std::wstring FamiryName = GetFontFileNameWithoutExtension(m_tSetting.m_wsFont);
 	result = m_pDWriteFactory->CreateTextFormat
 	(
-		GetFontFileNameWithoutExtension(m_tSetting.m_wsFont.c_str()),
+		FamiryName.c_str(),
 		m_pFontCollection.Get(),
 		m_tSetting.m_eFontThick,
 		m_tSetting.m_eFontStyle,
 		m_tSetting.m_eFontStretch,
 		m_tSetting.m_fFontSize,
-		m_tSetting.m_wsLocaleName,
+		m_tSetting.m_wsLocaleName.c_str(),
 		m_pTextFormat.GetAddressOf()
 	);
 	if (FAILED(result)) { return result; }
@@ -408,23 +409,14 @@ std::wstring CWrite::GetFontName(int num)
 	return m_wsFontNameList[num];
 }
 
-WCHAR* CWrite::GetFontFileNameWithoutExtension(const std::wstring& filePath)
+std::wstring CWrite::GetFontFileNameWithoutExtension(const std::wstring& filePath)
 {
 	// 末尾から検索してファイル名と拡張子の位置を取得
-	size_t start = filePath.find_last_of(L"/\\") + 1;
-	size_t end = filePath.find_last_of(L'.');
-
-	// ファイル名を取得
-	std::wstring fileNameWithoutExtension = filePath.substr(start, end - start).c_str();
-
-	// 新しいWCHAR配列を作成
-	WCHAR* fileName = new WCHAR[fileNameWithoutExtension.length() + 1];
-
-	// 文字列をコピー
-	wcscpy_s(fileName, fileNameWithoutExtension.length() + 1, fileNameWithoutExtension.c_str());
+	unsigned __int64 start = filePath.find_last_of(L"/\\") + 1;
+	unsigned __int64 end = filePath.find_last_of(L'.');
 
 	// ファイル名を返す
-	return fileName;
+	return filePath.substr(start, end - start);
 }
 
 std::wstring CWrite::StringToWString(std::string oString)
@@ -492,8 +484,8 @@ HRESULT CWrite::GetFontFamilyName(IDWriteFontCollection* customFontCollection, c
 		if (FAILED(result)) { return result; }
 
 		// 指定されたロケールに対応するインデックスを検索
-		UINT32 index = 0;
-		BOOL exists = FALSE;
+		unsigned __int32 index = 0;
+		int exists = 0;
 		result = familyNames->FindLocaleName(locale, &index, &exists);
 		if (FAILED(result)) { return result; }
 
@@ -505,20 +497,17 @@ HRESULT CWrite::GetFontFamilyName(IDWriteFontCollection* customFontCollection, c
 		}
 
 		// フォントファミリー名の長さを取得
-		UINT32 length = 0;
+		unsigned __int32 length = 0;
 		result = familyNames->GetStringLength(index, &length);
 		if (FAILED(result)) { return result; }
 
 		// フォントファミリー名の取得
-		WCHAR* name = new WCHAR[length + 1];
-		result = familyNames->GetString(index, name, length + 1);
+		std::wstring name(length, L'\0');
+		result = familyNames->GetString(index, &name[0], length + 1);
 		if (FAILED(result)) { return result; }
 
 		// フォントファミリー名を追加
 		m_wsFontNameList.push_back(name);
-
-		// フォントファミリー名の破棄
-		delete[] name;
 	}
 
 	return result;
@@ -558,15 +547,12 @@ HRESULT CWrite::GetAllFontFamilyName(IDWriteFontCollection* customFontCollection
 			if (FAILED(result)) { return result; }
 
 			// フォントファミリー名の取得
-			WCHAR* name = new WCHAR[length + 1];
-			result = familyNames->GetString(j, name, length + 1);
+			std::wstring name(length, L'\0');
+			result = familyNames->GetString(j, &name[0], length + 1);
 			if (FAILED(result)) { return result; }
 
 			// フォントファミリー名を追加
 			m_wsFontNameList.push_back(name);
-
-			// フォントファミリー名の破棄
-			delete[] name;
 		}
 	}
 

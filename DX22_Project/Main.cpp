@@ -23,6 +23,7 @@ CFade* g_pFade; // フェード
 
 HRESULT Init(HWND hWnd, UINT width, UINT height)
 {
+
 	HRESULT hr;
 	// DirectX初期化
 	hr = InitDirectX(hWnd, width, height, false);
@@ -52,8 +53,9 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 	g_pFade->SetFade(1.0f, true);
 
 	// シーン作成 
-	g_pScene = new CSceneTitle();
+	g_pScene = new CSceneTeamSelect();
 	g_pScene->SetFade(g_pFade); // シーンに使用するフェードを設定 
+
 
 	return hr;
 }
@@ -70,6 +72,8 @@ void Uninit()
 	ImGui_ImplWin32_Shutdown();
 	ImGui::DestroyContext();
 	UninitDirectX();
+
+	_CrtDumpMemoryLeaks();
 }
 
 void Update()
