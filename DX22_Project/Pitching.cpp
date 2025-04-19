@@ -31,12 +31,12 @@ CPitching::CPitching()
 	{
 		m_pTexture[i] = std::make_unique<Texture>();
 	}
-	m_pTexture[(int)TexKind::ReleasePoint]->Create(TEXPASS("BallCountSheet.png"));
-	m_pTexture[(int)TexKind::PitchingCircle]->Create(TEXPASS("PitchingCircle.png"));
+	m_pTexture[(int)TexKind::ReleasePoint]->Create(PATH_TEX("BallCountSheet.png"));
+	m_pTexture[(int)TexKind::PitchingCircle]->Create(PATH_TEX("PitchingCircle.png"));
 
 	// パラメータの初期化
 	DirectX::XMFLOAT4X4 wvp[3];
-	wvp[0] = CCamera::Get2DWolrdMatrix();
+	wvp[0] = CCamera::Get2DWolrdMatrix({0.0f,0.0f},0.0f);
 	wvp[1] = CCamera::Get2DViewMatrix();
 	wvp[2] = CCamera::Get2DProjectionMatrix();
 
@@ -44,8 +44,8 @@ CPitching::CPitching()
 	m_tParam[(int)TexKind::ReleasePoint].world = wvp[0];
 	m_tParam[(int)TexKind::ReleasePoint].view = wvp[1];
 	m_tParam[(int)TexKind::ReleasePoint].proj = wvp[2];
-	m_tParam[(int)TexKind::ReleasePoint].uvPos = { 1.0f / (float)ce_nCountSplitX,2.0f / (float)ce_nCountSplitY };
-	m_tParam[(int)TexKind::ReleasePoint].uvSize = { 1.0f / (float)ce_nCountSplitX,1.0f / (float)ce_nCountSplitY };
+	m_tParam[(int)TexKind::ReleasePoint].uvPos = { 1.0f / (float)ce_nSheetSplit,2.0f / (float)ce_nSheetSplit };
+	m_tParam[(int)TexKind::ReleasePoint].uvSize = { 1.0f / (float)ce_nSheetSplit,1.0f / (float)ce_nSheetSplit };
 
 	m_tParam[(int)TexKind::PitchingCircle].size = ce_fPitchingCircleFirstSize;
 	m_tParam[(int)TexKind::PitchingCircle].color = { 1.0f,1.0f,1.0f,0.5f };
@@ -361,12 +361,12 @@ void CPitching::DrawCircle()
 	// ピッチング時に描画する
 	if (m_nPitchingPhase == (int)CPitching::PitchingPhase::Pitch)
 	{
-		Sprite::SetParam(m_tParam[(int)TexKind::ReleasePoint]);
-		Sprite::SetTexture(m_pTexture[(int)TexKind::ReleasePoint].get());
-		Sprite::Draw();
-
-		Sprite::SetParam(m_tParam[(int)TexKind::PitchingCircle]);
-		Sprite::SetTexture(m_pTexture[(int)TexKind::PitchingCircle].get());
-		Sprite::Draw();
+		for (int i = 0; i < (int)TexKind::Max; i++)
+		{
+			m_tParam[i].world = CCamera::Get2DWolrdMatrix(m_tParam[i].pos, m_tParam[i].rotate);
+			Sprite::SetParam(m_tParam[i]);
+			Sprite::SetTexture(m_pTexture[i].get());
+			Sprite::Draw();
+		}
 	}
 }

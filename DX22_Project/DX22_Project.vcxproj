@@ -119,6 +119,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -160,6 +161,7 @@
     <ClCompile Include="Controller.cpp" />
     <ClCompile Include="Defence.cpp" />
     <ClCompile Include="DirectX.cpp" />
+    <ClCompile Include="Easing.cpp" />
     <ClCompile Include="Effect.cpp" />
     <ClCompile Include="EffectGoal.cpp" />
     <ClCompile Include="Fade.cpp" />
@@ -189,7 +191,6 @@
     <ClCompile Include="PitchingCursor.cpp" />
     <ClCompile Include="SceneMemberselect.cpp" />
     <ClCompile Include="SceneTeamselect.cpp" />
-    <ClCompile Include="TeamBears.cpp" />
     <ClCompile Include="TeamManager.cpp" />
     <ClCompile Include="PolylineEffect.cpp" />
     <ClCompile Include="Running.cpp" />
@@ -204,6 +205,7 @@
     <ClCompile Include="StrikeZone.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="TrailEffect.cpp" />
+    <ClCompile Include="Write.cpp" />
     <ClCompile Include="_geometory.cpp" />
     <ClCompile Include="_model.cpp" />
   </ItemGroup>
@@ -224,6 +226,7 @@
     <ClInclude Include="Defence.h" />
     <ClInclude Include="Defines.h" />
     <ClInclude Include="DirectX.h" />
+    <ClInclude Include="Easing.h" />
     <ClInclude Include="Effect.h" />
     <ClInclude Include="EffectGoal.h" />
     <ClInclude Include="Fade.h" />
@@ -250,7 +253,6 @@
     <ClInclude Include="PitchingCursor.h" />
     <ClInclude Include="SceneMemberselect.h" />
     <ClInclude Include="SceneTeamselect.h" />
-    <ClInclude Include="TeamBears.h" />
     <ClInclude Include="TeamManager.h" />
     <ClInclude Include="PolylineEffect.h" />
     <ClInclude Include="Running.h" />
@@ -264,6 +266,7 @@
     <ClInclude Include="StrikeZone.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TrailEffect.h" />
+    <ClInclude Include="Write.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="History.txt" />

@@ -3,7 +3,7 @@
 #include <DirectXMath.h>
 #include <memory>
 
-//#define _CAM_DEBUG
+#define _CAM_DEBUG
 
 enum CameraKind
 {
@@ -28,7 +28,7 @@ public:
 	DirectX::XMFLOAT3 GetLook() { return m_look; }
 	DirectX::XMFLOAT3 GetForward() { return m_look; }
 
-	static const DirectX::XMFLOAT4X4 Get2DWolrdMatrix(float rotate = 0.0f,bool transpose = true);
+	static const DirectX::XMFLOAT4X4 Get2DWolrdMatrix(DirectX::XMFLOAT2 pos,float rotate,bool transpose = true);
 	static const DirectX::XMFLOAT4X4 Get2DViewMatrix(bool transpose = true);
 	static const DirectX::XMFLOAT4X4 Get2DProjectionMatrix(bool transpose = true);
 	static std::unique_ptr<CCamera>& GetInstance(int CamKind);

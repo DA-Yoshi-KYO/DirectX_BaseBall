@@ -22,16 +22,17 @@ CBattingCursor::CBattingCursor()
 {
 	// テクスチャの読み込み
 	m_pTexture = std::make_unique<Texture>();
-	if (FAILED(m_pTexture->Create(TEXPASS("Cursor.png")))) MessageBox(NULL, "Cursor.png", "Error", MB_OK);
+	if (FAILED(m_pTexture->Create(PATH_TEX("Cursor.png")))) MessageBox(NULL, "Cursor.png", "Error", MB_OK);
 
 	// テクスチャパラメータの初期化
 	m_tParam.pos = ce_fBattingCursorPos;
+	m_tParam.offsetPos = { 0.0f,0.0f };
 	m_tParam.size = DirectX::XMFLOAT2(50.0f, 50.0f);
 	m_tParam.rotate = 0.0f;
 	m_tParam.color = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	m_tParam.uvPos = DirectX::XMFLOAT2(0.0f, 0.0f);
 	m_tParam.uvSize = DirectX::XMFLOAT2(1.0f, 1.0f);
-	m_tParam.world = CCamera::Get2DWolrdMatrix();
+	m_tParam.world = CCamera::Get2DWolrdMatrix(m_tParam.pos, m_tParam.rotate);
 	m_tParam.view = CCamera::Get2DViewMatrix();
 	m_tParam.proj = CCamera::Get2DProjectionMatrix();
 
@@ -90,6 +91,7 @@ void CBattingCursor::Draw()
 #endif // _COLLISION_DEBUG
 
 	SetRender2D();
+	m_tParam.world = CCamera::Get2DWolrdMatrix(m_tParam.pos, m_tParam.rotate);
 	Sprite::SetParam(m_tParam);
 	Sprite::SetTexture(m_pTexture.get());
 	Sprite::Draw();

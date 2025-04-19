@@ -31,7 +31,7 @@ CRunning::CRunning()
 {
 	// モデル読み込み
 	m_pModel = std::make_unique<Model>();
-	if(!m_pModel->Load(MODELPASS("ball.obj")))ERROR_MESSAGE("");
+	if(!m_pModel->Load(PATH_MODEL("ball.obj")))ERROR_MESSAGE("");
 
 	// ランナー要素の初期化
 	for (int i = 0; i < (int)RunnerKind::Max; i++)

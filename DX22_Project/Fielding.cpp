@@ -47,15 +47,15 @@ CFielding::CFielding()
 	}
 
 	// ƒ‚ƒfƒ‹‚Ì“Ç‚Ýž‚Ý
-	if (!m_pFieldMember[(int)FieldMember::Pitcher]->Load(MODELPASS("ball.obj"))) ERROR_MESSAGE("");
-	if (!m_pFieldMember[(int)FieldMember::Chatcher]->Load(MODELPASS("ball.obj")))ERROR_MESSAGE("");
-	if (!m_pFieldMember[(int)FieldMember::First]->Load(MODELPASS("ball.obj")))ERROR_MESSAGE("");
-	if (!m_pFieldMember[(int)FieldMember::Second]->Load(MODELPASS("ball.obj")))ERROR_MESSAGE("");
-	if (!m_pFieldMember[(int)FieldMember::Third]->Load(MODELPASS("ball.obj")))ERROR_MESSAGE("");
-	if (!m_pFieldMember[(int)FieldMember::Short]->Load(MODELPASS("ball.obj")))ERROR_MESSAGE("");
-	if (!m_pFieldMember[(int)FieldMember::Left]->Load(MODELPASS("ball.obj")))ERROR_MESSAGE("");
-	if (!m_pFieldMember[(int)FieldMember::Center]->Load(MODELPASS("ball.obj")))ERROR_MESSAGE("");
-	if (!m_pFieldMember[(int)FieldMember::Right]->Load(MODELPASS("ball.obj")))ERROR_MESSAGE("");
+	if (!m_pFieldMember[(int)FieldMember::Pitcher]->Load(PATH_MODEL("ball.obj"))) ERROR_MESSAGE("");
+	if (!m_pFieldMember[(int)FieldMember::Chatcher]->Load(PATH_MODEL("ball.obj")))ERROR_MESSAGE("");
+	if (!m_pFieldMember[(int)FieldMember::First]->Load(PATH_MODEL("ball.obj")))ERROR_MESSAGE("");
+	if (!m_pFieldMember[(int)FieldMember::Second]->Load(PATH_MODEL("ball.obj")))ERROR_MESSAGE("");
+	if (!m_pFieldMember[(int)FieldMember::Third]->Load(PATH_MODEL("ball.obj")))ERROR_MESSAGE("");
+	if (!m_pFieldMember[(int)FieldMember::Short]->Load(PATH_MODEL("ball.obj")))ERROR_MESSAGE("");
+	if (!m_pFieldMember[(int)FieldMember::Left]->Load(PATH_MODEL("ball.obj")))ERROR_MESSAGE("");
+	if (!m_pFieldMember[(int)FieldMember::Center]->Load(PATH_MODEL("ball.obj")))ERROR_MESSAGE("");
+	if (!m_pFieldMember[(int)FieldMember::Right]->Load(PATH_MODEL("ball.obj")))ERROR_MESSAGE("");
 }
 
 CFielding::~CFielding()

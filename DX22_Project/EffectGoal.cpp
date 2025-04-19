@@ -7,7 +7,7 @@ class CEffectGoalEmitter : public Emitter
 public:
 	CEffectGoalEmitter()
 		// ‰æ‘œ‚ÌƒpƒX,¶¬ŠÔŠu(•b),¶‘¶ŠÔ(•b)
-		: Emitter(TEXPASS("Star.png"), {10, 0.1f, 1.0f})
+		: Emitter(PATH_TEX("Star.png"), {10, 0.1f, 1.0f})
 	{
 
 	}

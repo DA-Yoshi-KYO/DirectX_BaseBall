@@ -21,10 +21,10 @@ CBall::CBall()
 {
 	// ボールのモデルの読み込み
 	m_pModel = std::make_unique<Model>();
-	if (!m_pModel->Load(MODELPASS("ball.obj"))) ERROR_MESSAGE("ball.fbx");
+	if (!m_pModel->Load(PATH_MODEL("ball.obj"))) ERROR_MESSAGE("ball.fbx");
 
 	m_pShadow = std::make_unique<Texture>();
-	if (FAILED(m_pShadow->Create(TEXPASS("Shadow.png")))) ERROR_MESSAGE("Shadow.png");
+	if (FAILED(m_pShadow->Create(PATH_TEX("Shadow.png")))) ERROR_MESSAGE("Shadow.png");
 
 	m_tParam.pos = { ce_fBallPos.x + WORLD_AJUST ,ce_fBallPos.y + WORLD_AJUST, ce_fBallPos.z + WORLD_AJUST };
 	m_tParam.size = ce_fBallSize;
