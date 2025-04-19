@@ -126,6 +126,7 @@ private:
 
 public:
 	void Init();
+	void Release(int teamNo);
 	~CTeamManager();
 	bool Load(Teams team);
 	static std::shared_ptr<CTeamManager>& GetInstance(int teamNo);
@@ -133,6 +134,10 @@ public:
 	std::vector<BatterState> GetBatterState();
 	Teams GetTeam();
 	void InitStarter();
+	void ResetStarter(int StarterNo);
+	void ResetLineup(int BenchNo,int LineupNo);
+	void ResetLineupNo(int LineupNo1,int LineupNo2);
+	void ResetFielding(FieldingNo LineupNo1, FieldingNo LineupNo2);
 	void SetEntry(int No, bool isEntry, bool isPitcher);
 	void SetBenchNo(int No, int BenchNo, bool isPitcher);
 	void SetPosition(int No, FieldingNo position, bool isPitcher);

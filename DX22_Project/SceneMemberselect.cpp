@@ -22,9 +22,10 @@ constexpr DirectX::XMFLOAT2 ce_fBenchSize = { 1320.0f,720.0f };
 CSceneMemberselect::CSceneMemberselect(CTeamManager::Teams player1, CTeamManager::Teams player2)
 	: m_pTexture{}
 	, m_tVecPitcherSpriteParam{}, m_tVecBatterSpriteParam{},m_fBenchOriginPos{},m_nSelect{}
-	, m_ePhase(SelectPhase::Home), m_nCursor{ (int)CursorPhase::Start,(int)CursorPhase::Start }, m_nBenchCursor{(int)BenchCursorPhase::Cancel,(int)BenchCursorPhase::Cancel}
+	, m_ePhase(SelectPhase::Home), m_eBatterChange(BatterChange::None)
+	, m_nCursor{ (int)CursorPhase::Start,(int)CursorPhase::Start }, m_nBenchCursor{(int)BenchCursorPhase::Cancel,(int)BenchCursorPhase::Cancel}
 	, m_tBackParam{}, m_tCursorParam{}
-	, m_bEnd(false), m_bReady{false,false}, m_bMemberChange(false), m_bChanging(false),m_bChangingPitcher(false)
+	, m_bEnd(false), m_bReady{ false,false }, m_bMemberChange(false), m_bChanging(false), m_bChangingPitcher(false)
 {
 	auto& spPlayer1 = CTeamManager::GetInstance(Player::One);
 	CTeamManager* pPlayer1 = spPlayer1.get();
@@ -420,6 +421,7 @@ void CSceneMemberselect::UpdateHome(Player player)
 		if (player == Player::One ? IsKeyTrigger(InputPlayer1::B) : IsKeyTrigger(InputPlayer2::B))
 		{
 			m_bEnd = true;
+			SetNext(SceneKind::TeamSelect);
 			return;
 		}
 	}
@@ -590,14 +592,7 @@ void CSceneMemberselect::UpdateBenchPitcher(Player player)
 			}
 			if (player == Player::One ? IsKeyTrigger(InputPlayer1::A) : IsKeyTrigger(InputPlayer2::A))
 			{
-				for (auto itr = tVecPitcherState.begin(); itr != tVecPitcherState.end(); itr++)
-				{
-					if (!itr->m_bStarter) continue;
-					if (itr->m_bStarter == m_nCursor[player])
-					{
-
-					}
-				}
+				CTeamManager::GetInstance(player)->ResetStarter(m_nSelect[player]);
 			}
 			break;
 		case (int)BenchCursorPhase::Relief:
@@ -695,25 +690,42 @@ void CSceneMemberselect::UpdateBenchBatter(Player player)
 {
 	static float fTime = 0.0f;
 	constexpr float easeMaxTime = 0.5f;
-	constexpr DirectX::XMFLOAT2 fStarterMove = { 312.0f,50.0f };
-	constexpr DirectX::XMFLOAT2 fReliefMove = { 312.0f,50.0f };
-	DirectX::XMFLOAT2 fStarterOrigin;
-	DirectX::XMFLOAT2 fReliefOrigin;
+	constexpr DirectX::XMFLOAT2 fBenchBatterMove = { 312.0f,50.0f };
+	constexpr DirectX::XMFLOAT2 fLineupNoMove = { 0.0f,48.0f };
+	constexpr DirectX::XMFLOAT2 fLineupMove = { 0.0f,48.0f };
+	DirectX::XMFLOAT2 fBenchBatterOrigin;
+	DirectX::XMFLOAT2 fLineupNoOrigin;
+	DirectX::XMFLOAT2 fLineupOrigin;
+	auto& spPlayer = CTeamManager::GetInstance(player);
+	CTeamManager* pPlayer = spPlayer.get();
+	std::vector<CTeamManager::BatterState> tVecState = pPlayer->GetBatterState();;
 	switch (player)
 	{
 	case One:
-		fStarterOrigin = { -70.0f,138.0f };
-		fReliefOrigin = { -70.0f,-80.0f };
+		fBenchBatterOrigin = { -70.0f,138.0f };
+		fLineupNoOrigin = { -410.0f,170.0f };
+		fLineupOrigin = { -465.0f,170.0f };
 		break;
 	case Two:
-		fStarterOrigin = { -420.0f, 140.0f };
-		fReliefOrigin = { -420.0f, -80.0f };
+		fBenchBatterOrigin = { -420.0f, 138.0f };
+		fLineupNoOrigin = { 272.0, 170.0f };
+		fLineupOrigin = { 220.0, 170.0f };
 		break;
 	case MaxPlayer:
 		break;
 	default:
 		break;
 	}
+	struct ChangePlayer
+	{
+		int m_nNo;
+		BenchCursorPhase m_ePhase;
+	};
+	static ChangePlayer tChangePlayer[2] = { 
+		{-1,BenchCursorPhase::Cancel },
+		{-1,BenchCursorPhase::Cancel }
+	};
+
 
 	if (fTime > easeMaxTime)
 	{
@@ -722,6 +734,7 @@ void CSceneMemberselect::UpdateBenchBatter(Player player)
 		switch (m_nBenchCursor[player])
 		{
 		case (int)BenchCursorPhase::Cancel:
+			tChangePlayer[2] = { -1,BenchCursorPhase::Cancel };
 			if ((player == Player::One ? IsKeyTrigger(InputPlayer1::Right) : IsKeyTrigger(InputPlayer2::Right)) ||
 				(player == Player::One ? IsKeyTrigger(InputPlayer1::Left) : IsKeyTrigger(InputPlayer2::Left)))
 			{
@@ -741,11 +754,12 @@ void CSceneMemberselect::UpdateBenchBatter(Player player)
 			}
 			if (player == Player::One ? IsKeyTrigger(InputPlayer1::Down) : IsKeyTrigger(InputPlayer2::Down))
 			{
-				m_nBenchCursor[player] = (int)BenchCursorPhase::StarterPitcher;
+				m_nBenchCursor[player] = (int)BenchCursorPhase::BenchBatter;
 				m_nSelect[player] = 0;
 			}
 			break;
 		case (int)BenchCursorPhase::Accept:
+			tChangePlayer[2] = { -1,BenchCursorPhase::Cancel };
 			if ((player == Player::One ? IsKeyTrigger(InputPlayer1::Right) : IsKeyTrigger(InputPlayer2::Right)) ||
 				(player == Player::One ? IsKeyTrigger(InputPlayer1::Left) : IsKeyTrigger(InputPlayer2::Left)))
 			{
@@ -770,27 +784,24 @@ void CSceneMemberselect::UpdateBenchBatter(Player player)
 			}
 			break;
 		case (int)BenchCursorPhase::BenchBatter:
-			m_tCursorParam[player].pos = { fStarterOrigin.x + fStarterMove.x * (m_nSelect[player] % 2),fStarterOrigin.y - fStarterMove.y * (m_nSelect[player] / 2) };
+			m_tCursorParam[player].pos = { fBenchBatterOrigin.x + fBenchBatterMove.x * (m_nSelect[player] % 2),fBenchBatterOrigin.y - fBenchBatterMove.y * (m_nSelect[player] / 2) };
 			if (player == Player::One ? IsKeyTrigger(InputPlayer1::Right) : IsKeyTrigger(InputPlayer2::Right))
 			{
-				if (m_nSelect[player] == 6)m_nSelect[player]--;
-				else
+				if (m_nSelect[player] % 2 == 0 && m_nSelect[player] != 6)m_nSelect[player]++;
+				else if(player == Player::Two)
 				{
-					if (m_nSelect[player] % 2 == 0)m_nSelect[player]++;
+					 m_nBenchCursor[player] = (int)BenchCursorPhase::LineupNo;
+					 m_nSelect[player] = 0;
 				}
 			}
 			if (player == Player::One ? IsKeyTrigger(InputPlayer1::Left) : IsKeyTrigger(InputPlayer2::Left))
 			{
-				if (m_nSelect[player] == 6)m_nSelect[player]--;
-				else
+				if (m_nSelect[player] % 2 == 0)
 				{
-					if (m_nSelect[player] % 2 == 0)
-					{
-						m_nBenchCursor[player] = (int)BenchCursorPhase::LineupNo;
-						m_nSelect[player] = 0;
-					}
-					else m_nSelect[player]--;
+					if (player == Player::One) m_nBenchCursor[player] = (int)BenchCursorPhase::LineupNo;
+					m_nSelect[player] = 0;
 				}
+				else m_nSelect[player]--;
 			}
 			if (player == Player::One ? IsKeyTrigger(InputPlayer1::Down) : IsKeyTrigger(InputPlayer2::Down))
 			{
@@ -845,18 +856,33 @@ void CSceneMemberselect::UpdateBenchBatter(Player player)
 					break;
 				}
 			}
+			if (player == Player::One ? IsKeyTrigger(InputPlayer1::A) : IsKeyTrigger(InputPlayer2::A))
+			{
+				if (tChangePlayer[0].m_nNo == -1)
+				{
+					tChangePlayer[0].m_nNo = m_nSelect[player];
+					tChangePlayer[0].m_ePhase = (BenchCursorPhase)m_nBenchCursor[player];
+				}
+				else
+				{
+					tChangePlayer[1].m_nNo = m_nSelect[player];
+					tChangePlayer[1].m_ePhase = (BenchCursorPhase)m_nBenchCursor[player];
+				}
+			}
 			break;
 		case (int)BenchCursorPhase::LineupNo:
-			m_tCursorParam[player].pos = { fReliefOrigin.x + fReliefMove.x * (m_nSelect[player] % 2),fReliefOrigin.y - fReliefMove.y * (m_nSelect[player] / 2) };
+			m_tCursorParam[player].pos = { fLineupNoOrigin.x ,fLineupNoOrigin.y - fLineupNoMove.y * m_nSelect[player] };
 
-			if (player == Player::One ? IsKeyTrigger(InputPlayer1::Right) : IsKeyTrigger(InputPlayer2::Right))
+			if (player == Player::One ? IsKeyTrigger(InputPlayer1::Right) : IsKeyTrigger(InputPlayer2::Left))
 			{
 				m_nBenchCursor[player] = (int)BenchCursorPhase::BenchBatter;
+			
 				m_nSelect[player] = 0;
 			}
 			if (player == Player::One ? IsKeyTrigger(InputPlayer1::Left) : IsKeyTrigger(InputPlayer2::Left))
 			{
 				m_nBenchCursor[player] = (int)BenchCursorPhase::Lineup;
+
 				m_nSelect[player] = 0;
 			}
 			if (player == Player::One ? IsKeyTrigger(InputPlayer1::Down) : IsKeyTrigger(InputPlayer2::Down))
@@ -893,14 +919,32 @@ void CSceneMemberselect::UpdateBenchBatter(Player player)
 					break;
 				}
 			}
+			if (player == Player::One ? IsKeyTrigger(InputPlayer1::A) : IsKeyTrigger(InputPlayer2::A))
+			{
+				if (tChangePlayer[0].m_nNo == -1)
+				{
+					tChangePlayer[0].m_nNo = m_nSelect[player];
+					tChangePlayer[0].m_ePhase = (BenchCursorPhase)m_nBenchCursor[player];
+				}
+				else
+				{
+					tChangePlayer[1].m_nNo = m_nSelect[player];
+					tChangePlayer[1].m_ePhase = (BenchCursorPhase)m_nBenchCursor[player];
+				}
+			}
 			break;
 		case (int)BenchCursorPhase::Lineup:
-
+			m_tCursorParam[player].pos = { fLineupOrigin.x ,fLineupOrigin.y - fLineupMove.y * m_nSelect[player] };
 			if (player == Player::One ? IsKeyTrigger(InputPlayer1::Right) : IsKeyTrigger(InputPlayer2::Right))
 			{
 				m_nBenchCursor[player] = (int)BenchCursorPhase::LineupNo;
 				m_nSelect[player] = 0;
 			}
+			if (player == Player::One ? false : IsKeyTrigger(InputPlayer2::Left))
+			{
+				m_nBenchCursor[player] = (int)BenchCursorPhase::BenchBatter;
+				m_nSelect[player] = 0;
+			}
 			if (player == Player::One ? IsKeyTrigger(InputPlayer1::Down) : IsKeyTrigger(InputPlayer2::Down))
 			{
 				m_nSelect[player]++;
@@ -933,6 +977,19 @@ void CSceneMemberselect::UpdateBenchBatter(Player player)
 					break;
 				default:
 					break;
+				}
+			}
+			if (player == Player::One ? IsKeyTrigger(InputPlayer1::A) : IsKeyTrigger(InputPlayer2::A))
+			{
+				if (tChangePlayer[0].m_nNo == -1)
+				{
+					tChangePlayer[0].m_nNo = m_nSelect[player];
+					tChangePlayer[0].m_ePhase = (BenchCursorPhase)m_nBenchCursor[player];
+				}
+				else
+				{
+					tChangePlayer[1].m_nNo = m_nSelect[player];
+					tChangePlayer[1].m_ePhase = (BenchCursorPhase)m_nBenchCursor[player];
 				}
 			}
 			break;
@@ -940,6 +997,51 @@ void CSceneMemberselect::UpdateBenchBatter(Player player)
 			break;
 		}
 
+		if (tChangePlayer[0].m_nNo != -1 && tChangePlayer[1].m_nNo != -1)
+		{
+			if (tChangePlayer[0].m_ePhase == BenchCursorPhase::Lineup && tChangePlayer[1].m_ePhase == BenchCursorPhase::Lineup)
+			{
+				auto itrBatter1 = tVecState.begin();
+				auto itrBatter2 = tVecState.begin();
+				for (int i = 0; i < Player::MaxPlayer; i++)
+				{
+					for (auto itr = tVecState.begin(); itr < tVecState.end(); itr++)
+					{
+						if (itr->m_nLineupNo == tChangePlayer[i].m_nNo + 1)
+						{
+							switch (i)
+							{
+							case 0:
+								itrBatter1 = itr;
+								break;
+							case 1:
+								itrBatter2 = itr;
+								break;
+							default:
+								break;
+							}
+							break;
+						}
+					}
+				}
+				CTeamManager::GetInstance(player)->ResetFielding(itrBatter1->m_eFieldingNo, itrBatter2->m_eFieldingNo);
+			}
+			else
+			{
+				if (tChangePlayer[0].m_ePhase == BenchCursorPhase::LineupNo && tChangePlayer[1].m_ePhase == BenchCursorPhase::LineupNo)
+				{
+					CTeamManager::GetInstance(player)->ResetLineupNo(tChangePlayer[0].m_nNo + 1, tChangePlayer[1].m_nNo + 1);
+				}
+				else if ((tChangePlayer[0].m_ePhase == BenchCursorPhase::BenchBatter && tChangePlayer[1].m_ePhase == BenchCursorPhase::LineupNo) ||
+					(tChangePlayer[0].m_ePhase == BenchCursorPhase::LineupNo && tChangePlayer[1].m_ePhase == BenchCursorPhase::BenchBatter))
+				{
+					if (tChangePlayer[0].m_ePhase == BenchCursorPhase::BenchBatter) CTeamManager::GetInstance(player)->ResetLineup(tChangePlayer[0].m_nNo + 1, tChangePlayer[1].m_nNo + 1);
+					else CTeamManager::GetInstance(player)->ResetLineup(tChangePlayer[1].m_nNo + 1, tChangePlayer[0].m_nNo + 1);
+				}
+			}
+			tChangePlayer[0].m_nNo = -1;
+			tChangePlayer[1].m_nNo = -1;
+		}
 
 
 	}
@@ -948,10 +1050,10 @@ void CSceneMemberselect::UpdateBenchBatter(Player player)
 		switch (player)
 		{
 		case One:
-			m_tBenchPitcherSpriteParam.pos.x = easeOutBack(fTime, easeMaxTime, ce_fOriginBenchPos1.x, ce_fOriginBenchPos1.z, 3.0f);
+			m_tBenchBatterSpriteParam.pos.x = easeOutBack(fTime, easeMaxTime, ce_fOriginBenchPos1.x, ce_fOriginBenchPos1.z, 3.0f);
 			break;
 		case Two:
-			m_tBenchPitcherSpriteParam.pos.x = easeOutBack(fTime, easeMaxTime, ce_fOriginBenchPos2.x, ce_fOriginBenchPos2.z, 3.0f);
+			m_tBenchBatterSpriteParam.pos.x = easeOutBack(fTime, easeMaxTime, ce_fOriginBenchPos2.x, ce_fOriginBenchPos2.z, 3.0f);
 			break;
 		case MaxPlayer:
 			break;

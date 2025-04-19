@@ -70,7 +70,10 @@ CSceneTeamSelect::CSceneTeamSelect()
 
 CSceneTeamSelect::~CSceneTeamSelect()
 {
-
+	for (int i = 0; i < 2; i++)
+	{
+		CTeamManager::GetInstance(i)->Release(i);
+	}
 }
 
 void CSceneTeamSelect::Update()

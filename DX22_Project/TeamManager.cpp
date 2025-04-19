@@ -10,6 +10,11 @@ void CTeamManager::Init()
     m_tVecPitcherMember.clear();
 }
 
+void CTeamManager::Release(int teamNo)
+{
+    m_pTeam[teamNo].reset();
+}
+
 CTeamManager::CTeamManager()
     : m_eTeamKind(Teams::Monkeys)
     , m_tVecBatterMember{}, m_tVecPitcherMember{}
@@ -19,7 +24,10 @@ CTeamManager::CTeamManager()
 
 CTeamManager::~CTeamManager()
 {
-
+    for (int i = 0; i < Player::MaxPlayer; i++)
+    {
+        m_pTeam[i].reset();
+    }
 }
 
 bool CTeamManager::Load(Teams team)
@@ -49,7 +57,8 @@ bool CTeamManager::Load(Teams team)
         return false;
     }
 
-    fFile.imbue(std::locale("Japanese_Japan.932"));
+    std::locale jpLocale("Japanese_Japan.932");
+    fFile.imbue(jpLocale);
 
     std::wstring line;
     std::vector<std::wstring> row;
@@ -160,19 +169,114 @@ void CTeamManager::InitStarter()
 {
     int nRand = rand() % 6;
     int i = 0;
+    int j = 0;
 
     for (auto itr = m_tVecPitcherMember.begin(); itr != m_tVecPitcherMember.end(); itr++)
     {
-        if (!itr->m_bStarter)continue;
-        if (nRand == i)
+        if (!itr->m_bStarter)
+        {
+            itr->m_nStarterNo = -1;
+            continue;
+        }
+
+        if (nRand == j)
         {
             itr->m_bEntry = true;
             itr->m_eFieldingNo = FieldingNo::Pitcher;
+            itr->m_nStarterNo = -1;
         }
         else
         {
             itr->m_nStarterNo = i;
             i++;
+        }
+        j++;
+    }
+}
+
+void CTeamManager::ResetStarter(int StarterNo)
+{
+    for (auto itr = m_tVecPitcherMember.begin(); itr != m_tVecPitcherMember.end(); itr++)
+    {
+        if (!itr->m_bStarter) continue;
+        if (itr->m_bEntry)
+        {
+            for (auto itr2 = m_tVecPitcherMember.begin(); itr2 != m_tVecPitcherMember.end(); itr2++)
+            {
+                if (!itr2->m_bStarter) continue;
+                if (itr2->m_nStarterNo == StarterNo)
+                {
+                    std::swap(itr->m_eFieldingNo, itr2->m_eFieldingNo);
+                    std::swap(itr->m_nStarterNo, itr2->m_nStarterNo);
+                    itr->m_bEntry = false;
+                    itr2->m_bEntry = true;
+                    break;
+                }
+            }
+            break;
+        }
+    }
+
+
+}
+
+void CTeamManager::ResetLineup(int BenchNo, int inLineupNo)
+{
+    for (auto itr = m_tVecBatterMember.begin(); itr != m_tVecBatterMember.end(); itr++)
+    {
+        if (itr->m_nLineupNo == inLineupNo)
+        {
+            for (auto itr2 = m_tVecBatterMember.begin(); itr2 != m_tVecBatterMember.end(); itr2++)
+            {
+                if (itr2->m_nBenchNo == BenchNo)
+                {
+                    std::swap(itr->m_eFieldingNo, itr2->m_eFieldingNo);
+                    std::swap(itr->m_nLineupNo, itr2->m_nLineupNo);
+                    std::swap(itr->m_nBenchNo, itr2->m_nBenchNo);
+                    itr->m_bEntry = false;
+                    itr2->m_bEntry = true;
+                    break;
+                }
+            }
+            break;
+        }
+    }
+}
+
+void CTeamManager::ResetLineupNo(int LineupNo1, int LineupNo2)
+{
+    for (auto itr = m_tVecBatterMember.begin(); itr != m_tVecBatterMember.end(); itr++)
+    {
+        if (itr->m_nLineupNo == LineupNo1)
+        {
+            for (auto itr2 = m_tVecBatterMember.begin(); itr2 != m_tVecBatterMember.end(); itr2++)
+            {
+                if (itr2->m_nLineupNo == LineupNo2)
+                {
+                    std::swap(itr->m_nLineupNo, itr2->m_nLineupNo);
+                    break;
+                }
+            }
+            break;
+        }
+    }
+}
+
+void CTeamManager::ResetFielding(FieldingNo LineupNo1, FieldingNo LineupNo2)
+{
+    for (auto itr = m_tVecBatterMember.begin(); itr != m_tVecBatterMember.end(); itr++)
+    {
+        if (itr->m_eFieldingNo == LineupNo1)
+        {
+            for (auto itr2 = m_tVecBatterMember.begin(); itr2 != m_tVecBatterMember.end(); itr2++)
+            {
+                if (itr2->m_eFieldingNo == LineupNo2)
+                {
+                    std::swap(itr->m_eFieldingNo, itr2->m_eFieldingNo);
+                    break;
+                }
+            }
+            break;
         }
     }
 }

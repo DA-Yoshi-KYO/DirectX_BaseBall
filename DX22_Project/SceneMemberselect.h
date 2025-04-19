@@ -64,6 +64,13 @@ private:
 		Max
 	};
 
+	enum class BatterChange
+	{
+		None,
+		PlayerChange,
+		NoChange,
+	}m_eBatterChange;
+
 	std::unique_ptr<Texture> m_pTexture[(int)TextureKind::Max];
 	std::vector<SpriteParam> m_tVecPitcherSpriteParam[Player::MaxPlayer];
 	std::vector<SpriteParam> m_tVecBatterSpriteParam[Player::MaxPlayer];

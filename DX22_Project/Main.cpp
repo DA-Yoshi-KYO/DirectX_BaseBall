@@ -23,6 +23,7 @@ CFade* g_pFade; // フェード
 
 HRESULT Init(HWND hWnd, UINT width, UINT height)
 {
+	//_CrtSetBreakAlloc(131);
 
 	HRESULT hr;
 	// DirectX初期化
