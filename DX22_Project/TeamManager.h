@@ -119,6 +119,7 @@ public:
 		bool m_bEntry;		// 出場しているか
 		bool m_bLeave;		// 試合から退いたか
 		int m_nBenchNo;		// ベンチナンバー
+		int m_nBaseNo;		// どのベース上にいるか
 	};
 
 private:
@@ -132,6 +133,10 @@ public:
 	static std::shared_ptr<CTeamManager>& GetInstance(int teamNo);
 	std::vector<PitcherState> GetPitcherState();
 	std::vector<BatterState> GetBatterState();
+	PitcherState GetTakingPitcherState();
+	BatterState GetTakingBatterState(int LineupNo);
+	BatterState GetRunnerState(int BaseNo);
+	BatterState GetFielderState(FieldingNo No);
 	Teams GetTeam();
 	void InitStarter();
 	void ResetStarter(int StarterNo);

@@ -329,3 +329,51 @@ std::vector<CTeamManager::BatterState> CTeamManager::GetBatterState()
 {
     return m_tVecBatterMember;
 }
+
+CTeamManager::PitcherState CTeamManager::GetTakingPitcherState()
+{
+    int i = 0;
+    for (auto itr = m_tVecPitcherMember.begin(); itr != m_tVecPitcherMember.end(); itr++,i++)
+    {
+        if (itr->m_bEntry)
+        {
+            return m_tVecPitcherMember[i];
+        }
+    }
+}
+
+CTeamManager::BatterState CTeamManager::GetTakingBatterState(int LineupNo)
+{
+    int i = 0;
+    for (auto itr = m_tVecBatterMember.begin(); itr != m_tVecBatterMember.end(); itr++, i++)
+    {
+        if (itr->m_nLineupNo == LineupNo)
+        {
+            return m_tVecBatterMember[i];
+        }
+    }
+}
+
+CTeamManager::BatterState CTeamManager::GetRunnerState(int BaseNo)
+{
+    int i = 0;
+    for (auto itr = m_tVecBatterMember.begin(); itr != m_tVecBatterMember.end(); itr++, i++)
+    {
+        if (itr->m_nBaseNo == BaseNo)
+        {
+            return m_tVecBatterMember[i];
+        }
+    }
+}
+
+CTeamManager::BatterState CTeamManager::GetFielderState(FieldingNo No)
+{
+    int i = 0;
+    for (auto itr = m_tVecBatterMember.begin(); itr != m_tVecBatterMember.end(); itr++, i++)
+    {
+        if (itr->m_eFieldingNo == No)
+        {
+            return m_tVecBatterMember[i];
+        }
+    }
+}
