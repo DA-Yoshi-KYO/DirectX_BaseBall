@@ -17,13 +17,14 @@ CBall::CBall()
 	, m_nPhase((int)BallPhase::Batting)
 	, m_fMove{}, m_fShadowPos{}
 	, m_bFry(true), m_bBallFaulZone(false), m_fFaulZoneBallPos{}
+	, m_fPitchPos{}, m_fPredValue{}
 {
 	// ボールのモデルの読み込み
 	m_pModel = std::make_unique<Model>();
-	if (!m_pModel->Load(MODELPASS("ball.obj"))) ERROR_MESSAGE("ball.fbx");
+	if (!m_pModel->Load(PATH_MODEL("ball.obj"))) ERROR_MESSAGE("ball.fbx");
 
 	m_pShadow = std::make_unique<Texture>();
-	if (FAILED(m_pShadow->Create(TEXPASS("Shadow.png")))) ERROR_MESSAGE("Shadow.png");
+	if (FAILED(m_pShadow->Create(PATH_TEX("Shadow.png")))) ERROR_MESSAGE("Shadow.png");
 
 	m_tParam.pos = { ce_fBallPos.x + WORLD_AJUST ,ce_fBallPos.y + WORLD_AJUST, ce_fBallPos.z + WORLD_AJUST };
 	m_tParam.size = ce_fBallSize;
@@ -238,18 +239,55 @@ void CBall::UpdateBatting()
 #ifndef _CAM_DEBUG
 	CCamera::SetCameraKind(CAM_BATTER);
 #endif // !_CAM_DEBUG
+	DirectX::XMFLOAT2 fCursorPos;
+	DirectX::XMFLOAT2 fCenterToCursor;  
+	DirectX::XMFLOAT2 fZoneSizeHarf;
+	DirectX::XMFLOAT2 fCenterToCursorPow;
+	DirectX::XMFLOAT2 fPredPos;
+	DirectX::XMFLOAT2 fCenterToPred;
+	DirectX::XMFLOAT2 fCenterToPredPow;
+	static DirectX::XMFLOAT2 fBendValue;
+	static float fTime = 0.0f;
+	static bool bRelease;
+
 	m_tParam.size = ce_fBallSize;
 	if (m_pPitching->GetPitchingPhase() == CPitching::PitchingPhase::Release)
 	{
-		float fChatch = m_pPitching->GetChatchTime();
-		DirectX::XMFLOAT2 fCursorPos = m_pCursor->GetPos();
-		DirectX::XMFLOAT2 fCenterToCursor = { ce_fPitchingCursorPos.x - fCursorPos.x,ce_fPitchingCursorPos.y - fCursorPos.y };
-		DirectX::XMFLOAT2 fZoneSizeHarf = { ce_fStrikeZoneSize.x / 2.0f,ce_fStrikeZoneSize.y / 2.0f };
-		DirectX::XMFLOAT2 fCenterToCursorPow = { fCenterToCursor.x / fZoneSizeHarf.x,fCenterToCursor.y / fZoneSizeHarf.y };
-		DirectX::XMFLOAT2 fCenterToBall = { ce_fBallLimitX.x * fCenterToCursorPow.x,  ce_fBallLimitX.y * fCenterToCursorPow.y + ce_fBallEndPos.y };
+		if (!bRelease)
+		{
+			// 投球地点の取得
+			fCursorPos = m_pCursor->GetPos();
+			fCenterToCursor = { fCursorPos.x - ce_fPitchingCursorPos.x,fCursorPos.y - ce_fPitchingCursorPos.y };
+			fZoneSizeHarf = { ce_fStrikeZoneSize.x / 2.0f,ce_fStrikeZoneSize.y / 2.0f };
+			fCenterToCursorPow = { fCenterToCursor.x / fZoneSizeHarf.x,fCenterToCursor.y / fZoneSizeHarf.y };
+			m_fPitchPos = { ce_fBallLimitX.x * fCenterToCursorPow.x,  ce_fBallLimitX.y * fCenterToCursorPow.y };
+			m_fPitchPos.x *= -1.0f;
+			m_fPitchPos.y *= -1.0f;
 
-		m_tParam.pos.x += (fCenterToBall.x - ce_fBallPos.x) / fChatch;
-		m_tParam.pos.y += (fCenterToBall.y - ce_fBallPos.y) / fChatch;
+			// 予測地点の取得
+			fPredPos = m_pCursor->GetPredPos();
+			fCenterToPred = { fPredPos.x - fCursorPos.x,fPredPos.y - fCursorPos.y };
+			fCenterToPredPow = { fCenterToPred.x / fZoneSizeHarf.x,fCenterToPred.y / fZoneSizeHarf.y };
+			m_fPredValue = { ce_fBallLimitX.x * fCenterToPredPow.x,  ce_fBallLimitX.y * fCenterToPredPow.y };
+			m_fPredValue.x *= -1.0f;
+			m_fPredValue.y *= -1.0f;
+
+			// 予測地点の取得
+			m_fPredValue.x *= (ce_fBallEndPos.z - ce_fBallPos.z) / (134.0f - ce_fBallPos.z);
+			m_fPredValue.y *= (ce_fBallEndPos.z - ce_fBallPos.z) / (134.0f - ce_fBallPos.z);
+
+			bRelease = true;
+		}
+
+		float fChatch = m_pPitching->GetChatchTime() * fFPS;
+		fBendValue.x += m_fPredValue.x / fChatch;
+		fBendValue.y += m_fPredValue.y / fChatch;
+
+		fTime += 1.0f / 60.0f;
+
+		m_tParam.pos.x = m_fPitchPos.x + fBendValue.x + ce_fBallEndPos.x + WORLD_AJUST;
+		m_tParam.pos.y = m_fPitchPos.y + fBendValue.y + ce_fBallEndPos.y + WORLD_AJUST;
+
 		m_tParam.pos.z += (ce_fBallEndPos.z - ce_fBallPos.z) / fChatch;
 		m_tParam.rotate.x += DirectX::XMConvertToRadians(ce_nBallRotateSec * 360.0f) / fChatch;
 
@@ -263,7 +301,11 @@ void CBall::UpdateBatting()
 	}
 	else
 	{
+		fTime = 0.0f;
 		m_tParam.pos = { ce_fBallPos.x + WORLD_AJUST ,ce_fBallPos.y + WORLD_AJUST, ce_fBallPos.z + WORLD_AJUST };
+
+		bRelease = false;
+		fBendValue = {};
 	}
 }
 

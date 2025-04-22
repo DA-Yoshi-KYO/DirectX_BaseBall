@@ -20,11 +20,18 @@ CRunning::RunnerParam CRunning::m_tRunnerParam[(int)RunnerKind::Max] = {};
 Collision::Info CRunning::m_RunnerCollision[(int)RunnerKind::Max] = {};
 bool CRunning::m_bOnBase[(int)RunnerKind::Max] = {};
 
+// ==============================
+//    メモ
+// ==============================
+// Speed0.2f...走力G
+// Speed0.35f...走力D
+// Speed0.5f...走力S
+
 CRunning::CRunning()
 {
 	// モデル読み込み
 	m_pModel = std::make_unique<Model>();
-	if(!m_pModel->Load(MODELPASS("ball.obj")))ERROR_MESSAGE("");
+	if(!m_pModel->Load(PATH_MODEL("ball.obj")))ERROR_MESSAGE("");
 
 	// ランナー要素の初期化
 	for (int i = 0; i < (int)RunnerKind::Max; i++)
@@ -33,7 +40,7 @@ CRunning::CRunning()
 		m_tRunnerParam[i].m_bRunning = false;
 		m_tRunnerParam[i].m_bStayPrevBase = false;
 		m_tRunnerParam[i].m_eArriveKind = CField::BaseKind::Max;
-		m_tRunnerParam[i].m_fSpeed = 0.2f;
+		m_tRunnerParam[i].m_fSpeed = 0.35f;
 		m_tRunnerParam[i].m_tModelParam.size = { 5.0f,5.0f,5.0f };
 		m_tRunnerParam[i].m_tModelParam.rotate = { 0.0f,0.0f,0.0f };
 		m_RunnerCollision[i].type = Collision::eBox;
@@ -213,19 +220,19 @@ void CRunning::RunnerMove(RunnerKind kind)
 	}
 
 	// キー入力による移動処理
-	if (pBallCount->GetDefenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::Y) : IsKeyPress(InputPlayer2::Y) &&
-		pBallCount->GetDefenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::B) : IsKeyPress(InputPlayer2::B) && 
+	if (pBallCount->GetOffenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::Y) : IsKeyPress(InputPlayer2::Y) &&
+		pBallCount->GetOffenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::B) : IsKeyPress(InputPlayer2::B) && 
 		m_tRunnerParam[(int)kind].m_eDirection != Direction::Stop)
 	{
 		// ランナーを止める
 		m_tRunnerParam[(int)kind].m_eDirection = Direction::BaseBetween;
 	}
-	else if (pBallCount->GetDefenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::Y) : IsKeyPress(InputPlayer2::Y))
+	else if (pBallCount->GetOffenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::Y) : IsKeyPress(InputPlayer2::Y))
 	{
 		// ランナーを進める
 		m_tRunnerParam[(int)kind].m_eDirection = Direction::Forward;
 	}
-	else if (pBallCount->GetDefenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::B) : IsKeyPress(InputPlayer2::B))
+	else if (pBallCount->GetOffenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::B) : IsKeyPress(InputPlayer2::B))
 	{
 		// ランナーを戻す
 		m_tRunnerParam[(int)kind].m_eDirection = Direction::Backward;

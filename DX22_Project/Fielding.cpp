@@ -12,13 +12,23 @@
 // ==============================
 //    定数定義
 // ==============================
-constexpr  float ce_fDifencePower = 0.2f;	// 守備移動速度
-constexpr  float ce_fThrowingPower = 4.0f;	// 送球の強さ
+constexpr float ce_fDifencePower = 0.2f;	// 守備移動速度
+constexpr float ce_fDifence = 0.4f;			// 守備操作速度
+constexpr float ce_fThrowingPower = 2.0f;	// 送球の強さ
 
 // ==============================
 //    静的変数の初期化
 // ==============================
 CFielding::ChatchPattern CFielding::m_eChatch = ChatchPattern::NotChatch;
+
+// ==============================
+//    メモ
+// ==============================
+// Difence0.4f...守備D
+// Difence0.2f...守備G
+// 
+// Throwing2.0f...肩力D
+// Throwing0.5f...肩力G
 
 CFielding::CFielding()
 	: m_bHold(false), m_nOperationNo(0), m_nBaseNearNo{ -1,-1,-1,-1 }
@@ -37,15 +47,15 @@ CFielding::CFielding()
 	}
 
 	// モデルの読み込み
-	if (!m_pFieldMember[(int)FieldMember::Pitcher]->Load(MODELPASS("ball.obj"))) ERROR_MESSAGE("");
-	if (!m_pFieldMember[(int)FieldMember::Chatcher]->Load(MODELPASS("ball.obj")))ERROR_MESSAGE("");
-	if (!m_pFieldMember[(int)FieldMember::First]->Load(MODELPASS("ball.obj")))ERROR_MESSAGE("");
-	if (!m_pFieldMember[(int)FieldMember::Second]->Load(MODELPASS("ball.obj")))ERROR_MESSAGE("");
-	if (!m_pFieldMember[(int)FieldMember::Third]->Load(MODELPASS("ball.obj")))ERROR_MESSAGE("");
-	if (!m_pFieldMember[(int)FieldMember::Short]->Load(MODELPASS("ball.obj")))ERROR_MESSAGE("");
-	if (!m_pFieldMember[(int)FieldMember::Left]->Load(MODELPASS("ball.obj")))ERROR_MESSAGE("");
-	if (!m_pFieldMember[(int)FieldMember::Center]->Load(MODELPASS("ball.obj")))ERROR_MESSAGE("");
-	if (!m_pFieldMember[(int)FieldMember::Right]->Load(MODELPASS("ball.obj")))ERROR_MESSAGE("");
+	if (!m_pFieldMember[(int)FieldMember::Pitcher]->Load(PATH_MODEL("ball.obj"))) ERROR_MESSAGE("");
+	if (!m_pFieldMember[(int)FieldMember::Chatcher]->Load(PATH_MODEL("ball.obj")))ERROR_MESSAGE("");
+	if (!m_pFieldMember[(int)FieldMember::First]->Load(PATH_MODEL("ball.obj")))ERROR_MESSAGE("");
+	if (!m_pFieldMember[(int)FieldMember::Second]->Load(PATH_MODEL("ball.obj")))ERROR_MESSAGE("");
+	if (!m_pFieldMember[(int)FieldMember::Third]->Load(PATH_MODEL("ball.obj")))ERROR_MESSAGE("");
+	if (!m_pFieldMember[(int)FieldMember::Short]->Load(PATH_MODEL("ball.obj")))ERROR_MESSAGE("");
+	if (!m_pFieldMember[(int)FieldMember::Left]->Load(PATH_MODEL("ball.obj")))ERROR_MESSAGE("");
+	if (!m_pFieldMember[(int)FieldMember::Center]->Load(PATH_MODEL("ball.obj")))ERROR_MESSAGE("");
+	if (!m_pFieldMember[(int)FieldMember::Right]->Load(PATH_MODEL("ball.obj")))ERROR_MESSAGE("");
 }
 
 CFielding::~CFielding()
@@ -62,22 +72,22 @@ void CFielding::Update()
 	DirectX::XMFLOAT3 fFieldPos = pField->GetPos();
 	fFieldPos.y = WORLD_AJUST + ce_fGroundY;
 	DirectX::XMFLOAT3 fFieldSizeMin = pField->GetSize();
-	DirectX::XMFLOAT3 fFieldSize = { fFieldSizeMin.x * 8.0f , fFieldSizeMin.y * 8.0f , fFieldSizeMin.z * 8.0f };
-	DirectX::XMFLOAT3 fFieldPosLine = {fFieldSize.x / 10.0f,fFieldSize.y / 10.0f ,fFieldSize.z / 10.0f };
+	DirectX::XMFLOAT3 fFieldSize = { fFieldSizeMin.x * 8.0f , fFieldSizeMin.y , fFieldSizeMin.z * 8.0f };
+	DirectX::XMFLOAT3 fFieldPosLine = {fFieldSize.x / 10.0f,fFieldSize.y ,fFieldSize.z / 10.0f };
 
 	switch (CBall::GetInstance()->GetPhase())
 	{
 	case CBall::BallPhase::Batting:
 		// 守備位置の初期化
-		m_tParam[(int)FieldMember::Pitcher].pos = { fFieldPos.x,fFieldPos.y, fFieldPos.z + fFieldPosLine.z * 4.5f };
+		m_tParam[(int)FieldMember::Pitcher].pos = { fFieldPos.x,fFieldPos.y, fFieldPos.z + fFieldPosLine.z * 2.5f };
 		m_tParam[(int)FieldMember::Chatcher].pos = { fFieldPos.x,fFieldPos.y, fFieldPos.z + fFieldPosLine.z * 7.3f };
-		m_tParam[(int)FieldMember::First].pos = { fFieldPos.x - fFieldPosLine.x * 1.7f,fFieldPos.y, fFieldPos.z + fFieldPosLine.z * 4.0f };
-		m_tParam[(int)FieldMember::Second].pos = { fFieldPos.x - fFieldPosLine.x * 0.9f,fFieldPos.y, fFieldPos.z + fFieldPosLine.z * 2.8f };
-		m_tParam[(int)FieldMember::Third].pos = { fFieldPos.x + fFieldPosLine.x * 1.7f,fFieldPos.y, fFieldPos.z + fFieldPosLine.z * 4.0f };
-		m_tParam[(int)FieldMember::Short].pos = { fFieldPos.x + fFieldPosLine.x * 0.9f,fFieldPos.y, fFieldPos.z + fFieldPosLine.z * 2.5f };
-		m_tParam[(int)FieldMember::Left].pos = { fFieldPos.x + fFieldPosLine.x * 2.3f,fFieldPos.y, fFieldPos.z - fFieldPosLine.z * 1.3f };
-		m_tParam[(int)FieldMember::Center].pos = { fFieldPos.x,fFieldPos.y, fFieldPos.z - fFieldPosLine.z * 2.0f };
-		m_tParam[(int)FieldMember::Right].pos = { fFieldPos.x - fFieldPosLine.x * 2.3f,fFieldPos.y, fFieldPos.z - fFieldPosLine.z * 1.3f };
+		m_tParam[(int)FieldMember::First].pos = { fFieldPos.x - fFieldPosLine.x * 1.7f,fFieldPos.y, fFieldPos.z + fFieldPosLine.z * 2.5f };
+		m_tParam[(int)FieldMember::Second].pos = { fFieldPos.x - fFieldPosLine.x * 0.9f,fFieldPos.y, fFieldPos.z + fFieldPosLine.z * 1.2f };
+		m_tParam[(int)FieldMember::Third].pos = { fFieldPos.x + fFieldPosLine.x * 1.7f,fFieldPos.y, fFieldPos.z + fFieldPosLine.z * 2.5f };
+		m_tParam[(int)FieldMember::Short].pos = { fFieldPos.x + fFieldPosLine.x * 0.9f,fFieldPos.y, fFieldPos.z + fFieldPosLine.z * 1.2f };
+		m_tParam[(int)FieldMember::Left].pos = { fFieldPos.x + fFieldPosLine.x * 2.3f,fFieldPos.y, fFieldPos.z - fFieldPosLine.z * 1.7f };
+		m_tParam[(int)FieldMember::Center].pos = { fFieldPos.x,fFieldPos.y, fFieldPos.z - fFieldPosLine.z * 2.3f };
+		m_tParam[(int)FieldMember::Right].pos = { fFieldPos.x - fFieldPosLine.x * 2.3f,fFieldPos.y, fFieldPos.z - fFieldPosLine.z * 1.7f };
 		
 		m_bHold = false;
 		m_eChatch = ChatchPattern::NotChatch;
@@ -99,10 +109,10 @@ void CFielding::Update()
 			}
 
 			// 移動処理
-			if (pBallCount->GetDefenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::Up) : IsKeyPress(InputPlayer2::Up)) m_tParam[m_nOperationNo].pos.z -= 0.5f;
-			if (pBallCount->GetDefenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::Down) : IsKeyPress(InputPlayer2::Down)) m_tParam[m_nOperationNo].pos.z += 0.5f;
-			if (pBallCount->GetDefenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::Right) : IsKeyPress(InputPlayer2::Right)) m_tParam[m_nOperationNo].pos.x -= 0.5f;
-			if (pBallCount->GetDefenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::Left) : IsKeyPress(InputPlayer2::Left)) m_tParam[m_nOperationNo].pos.x += 0.5f;
+			if (pBallCount->GetDefenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::Up) : IsKeyPress(InputPlayer2::Up)) m_tParam[m_nOperationNo].pos.z -= ce_fDifence;
+			if (pBallCount->GetDefenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::Down) : IsKeyPress(InputPlayer2::Down)) m_tParam[m_nOperationNo].pos.z += ce_fDifence;
+			if (pBallCount->GetDefenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::Left) : IsKeyPress(InputPlayer2::Left)) m_tParam[m_nOperationNo].pos.x -= ce_fDifence;
+			if (pBallCount->GetDefenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::Right) : IsKeyPress(InputPlayer2::Right)) m_tParam[m_nOperationNo].pos.x += ce_fDifence;
 
 			// ベースに近い選手を初期化
 			for (int i = 0; i < (int)CField::BaseKind::Max; i++)

@@ -6,10 +6,10 @@
 #include "Main.h"
 #include "Camera.h"
 #include "Input.h"
-#include "SceneGame.h"
 #include "ImGuiManager.h"
 #include "BattingCursor.h"
 #include "BallCount.h"
+#include "Controller.h"
 
 // ==============================
 //    静的変数の初期化
@@ -22,16 +22,17 @@ CBattingCursor::CBattingCursor()
 {
 	// テクスチャの読み込み
 	m_pTexture = std::make_unique<Texture>();
-	if (FAILED(m_pTexture->Create(TEXPASS("Cursor.png")))) MessageBox(NULL, "Cursor.png", "Error", MB_OK);
+	if (FAILED(m_pTexture->Create(PATH_TEX("Cursor.png")))) MessageBox(NULL, "Cursor.png", "Error", MB_OK);
 
 	// テクスチャパラメータの初期化
 	m_tParam.pos = ce_fBattingCursorPos;
+	m_tParam.offsetPos = { 0.0f,0.0f };
 	m_tParam.size = DirectX::XMFLOAT2(50.0f, 50.0f);
 	m_tParam.rotate = 0.0f;
 	m_tParam.color = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	m_tParam.uvPos = DirectX::XMFLOAT2(0.0f, 0.0f);
 	m_tParam.uvSize = DirectX::XMFLOAT2(1.0f, 1.0f);
-	m_tParam.world = CCamera::Get2DWolrdMatrix();
+	m_tParam.world = CCamera::Get2DWolrdMatrix(m_tParam.pos, m_tParam.rotate);
 	m_tParam.view = CCamera::Get2DViewMatrix();
 	m_tParam.proj = CCamera::Get2DProjectionMatrix();
 
@@ -58,14 +59,13 @@ void CBattingCursor::Update()
 	if (m_bMove)
 	{
 		// 移動処理
-		if (pBallCount->GetOffenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::Left)	: IsKeyPress(InputPlayer2::Left))	m_tParam.pos.x += 1.0f;
-		if (pBallCount->GetOffenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::Right)	: IsKeyPress(InputPlayer2::Right))	m_tParam.pos.x -= 1.0f;
-		if (pBallCount->GetOffenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::Up)	: IsKeyPress(InputPlayer2::Up))		m_tParam.pos.y += 1.0f;
-		if (pBallCount->GetOffenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::Down)	: IsKeyPress(InputPlayer2::Down))	m_tParam.pos.y -= 1.0f;
-
-		// 移動補正
 		DirectX::XMFLOAT2 fStrikeZonePos = m_pStrikeZone->GetPos();
 		DirectX::XMFLOAT2 fStrikeZoneSize = m_pStrikeZone->GetSize();
+		DirectX::XMFLOAT2 fInput = pBallCount->GetOffenseTeam() == CBallCount::Team::Player1 ? CGetLStick((int)CBallCount::Team::Player1) : CGetLStick((int)CBallCount::Team::Player2);
+		DirectX::XMFLOAT2 fMaxPos = { fabsf(fStrikeZonePos.x) + fStrikeZoneSize.x / 1.5f , fabsf(fStrikeZonePos.y) + fStrikeZoneSize.y / 1.5f };
+		m_tParam.pos = { fStrikeZonePos.x + fInput.x * fMaxPos.x,fStrikeZonePos.y + fInput.y * fMaxPos.y };
+
+		// 移動補正
 		if (m_tParam.pos.x >= fStrikeZonePos.x + fStrikeZoneSize.x / 2.0f) m_tParam.pos.x = fStrikeZonePos.x + fStrikeZoneSize.x / 2.0f;
 		if (m_tParam.pos.x <= fStrikeZonePos.x - fStrikeZoneSize.x / 2.0f) m_tParam.pos.x = fStrikeZonePos.x - fStrikeZoneSize.x / 2.0f;
 		if (m_tParam.pos.y >= fStrikeZonePos.y + fStrikeZoneSize.y / 2.0f) m_tParam.pos.y = fStrikeZonePos.y + fStrikeZoneSize.y / 2.0f;
@@ -91,6 +91,7 @@ void CBattingCursor::Draw()
 #endif // _COLLISION_DEBUG
 
 	SetRender2D();
+	m_tParam.world = CCamera::Get2DWolrdMatrix(m_tParam.pos, m_tParam.rotate);
 	Sprite::SetParam(m_tParam);
 	Sprite::SetTexture(m_pTexture.get());
 	Sprite::Draw();

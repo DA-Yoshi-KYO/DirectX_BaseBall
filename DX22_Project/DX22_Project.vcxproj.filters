@@ -79,6 +79,12 @@
     <Filter Include="ヘッダー ファイル\BaseBall\System">
       <UniqueIdentifier>{902c156b-6707-475d-a5ec-aecf6f5b284d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\BaseBall\Team">
+      <UniqueIdentifier>{40a37f1a-fa1c-464a-aaeb-9e1529cf6ff1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\BaseBall\Team">
+      <UniqueIdentifier>{239e4a47-bffd-4720-8ee3-015a74fdbe75}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Shader.cpp">
@@ -252,6 +258,21 @@
     <ClCompile Include="Field.cpp">
       <Filter>ソース ファイル\BaseBall\System</Filter>
     </ClCompile>
+    <ClCompile Include="SceneMemberselect.cpp">
+      <Filter>ソース ファイル\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneTeamselect.cpp">
+      <Filter>ソース ファイル\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="TeamManager.cpp">
+      <Filter>ソース ファイル\BaseBall\Team</Filter>
+    </ClCompile>
+    <ClCompile Include="Easing.cpp">
+      <Filter>ソース ファイル\Work</Filter>
+    </ClCompile>
+    <ClCompile Include="Write.cpp">
+      <Filter>ソース ファイル\Work</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MeshBuffer.h">
@@ -409,6 +430,21 @@
     </ClInclude>
     <ClInclude Include="GameObject.h">
       <Filter>ヘッダー ファイル\Work</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneMemberselect.h">
+      <Filter>ヘッダー ファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneTeamselect.h">
+      <Filter>ヘッダー ファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Easing.h">
+      <Filter>ヘッダー ファイル\Work</Filter>
+    </ClInclude>
+    <ClInclude Include="Write.h">
+      <Filter>ヘッダー ファイル\Work</Filter>
+    </ClInclude>
+    <ClInclude Include="TeamManager.h">
+      <Filter>ヘッダー ファイル\BaseBall\Team</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

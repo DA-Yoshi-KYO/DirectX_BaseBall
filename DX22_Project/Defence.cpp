@@ -17,6 +17,7 @@ CDefence::CDefence()
 	// コンポジションのセット
 	CStrikeZone* pStrikeZone = CStrikeZone::GetInstance().get();
 	m_pPitchingCursor->SetStrikeZone(pStrikeZone);
+	m_pPitchingCursor->SetPitching(m_pPitching.get());
 	m_pPitching->SetStrikeZone(pStrikeZone);
 	m_pPitching->SetCursor(m_pPitchingCursor.get());
 	CBall* pBall = CBall::GetInstance().get();
@@ -38,10 +39,10 @@ void CDefence::Update()
 
 void CDefence::Draw()
 {
+	m_pFielding->Draw();
 	if (CBall::GetInstance()->GetPhase() == CBall::BallPhase::Batting)
 	{
 		m_pPitchingCursor->Draw();
 		m_pPitching->Draw();
 	}
-	m_pFielding->Draw();
 }

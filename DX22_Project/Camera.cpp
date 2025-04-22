@@ -49,12 +49,12 @@ DirectX::XMFLOAT4X4 CCamera::GetProjectionMatrix(bool transpose)
 	return mat;
 }
 
-const DirectX::XMFLOAT4X4 CCamera::Get2DWolrdMatrix(float rotate, bool transpose)
+const DirectX::XMFLOAT4X4 CCamera::Get2DWolrdMatrix(DirectX::XMFLOAT2 pos, float rotate, bool transpose)
 {
 	DirectX::XMMATRIX mWorld = 
 		DirectX::XMMatrixScaling(1.0f, -1.0f, 1.0f) *
 		DirectX::XMMatrixRotationZ(rotate) *
-		DirectX::XMMatrixTranslation(SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT / 2.0f, 0.0f);
+		DirectX::XMMatrixTranslation(SCREEN_WIDTH / 2.0f + pos.x, SCREEN_HEIGHT / 2.0f - pos.y, 0.0f);
 
 	if (transpose) mWorld = DirectX::XMMatrixTranspose(mWorld);
 

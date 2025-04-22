@@ -9,7 +9,7 @@
 #include "Pitching.h"
 #include "PitchingCursor.h"
 #include "Texture.h"
-
+ 
 // ==============================
 //    前方宣言
 // ==============================
@@ -18,7 +18,7 @@ class CBatting;
 // ==============================
 //    定数定義
 // ==============================
-constexpr DirectX::XMFLOAT3 ce_fBallPos = { 0.0f,-3.0f,30.0f };
+constexpr DirectX::XMFLOAT3 ce_fBallPos = { 0.0f,-3.0f,65.0f };
 constexpr DirectX::XMFLOAT3 ce_fBallEndPos = { 0.0f,-5.0f,148.0f };
 
 // ==============================
@@ -106,6 +106,8 @@ private:
 	ModelParam m_tParam;
 	DirectX::XMFLOAT3 m_fMove;	// 移動量
 	DirectX::XMFLOAT3 m_fShadowPos;	// 影の位置
+	DirectX::XMFLOAT2 m_fPitchPos;	// 投球場所
+	DirectX::XMFLOAT2 m_fPredValue;	// 変化量
 	
 	// メンバ変数
 	int m_nPhase;	// ボールの状態
