@@ -8,6 +8,7 @@
 #include "BallCount.h"
 #include "Input.h"
 #include "Running.h"
+#include "TeamManager.h"
 
 // ==============================
 //    定数定義
@@ -24,7 +25,7 @@ CFielding::ChatchPattern CFielding::m_eChatch = ChatchPattern::NotChatch;
 // ==============================
 //    メモ
 // ==============================
-// Difence0.4f...守備D
+// Difence0.4f...守備D 
 // Difence0.2f...守備G
 // 
 // Throwing2.0f...肩力D
@@ -67,6 +68,7 @@ void CFielding::Update()
 	CField* pField = CField::GetInstance().get();
 	CBall* pBall = CBall::GetInstance().get();
 	CBallCount* pBallCount = CBallCount::GetInstance().get();
+	CTeamManager* pTeamManager = CTeamManager::GetInstance((int)pBallCount->GetDefenseTeam()).get();
 
 	// 計算に使う変数の定義
 	DirectX::XMFLOAT3 fFieldPos = pField->GetPos();
@@ -107,12 +109,12 @@ void CFielding::Update()
 				pBall->SetPos(m_tParam[m_nOperationNo].pos);
 				m_fThrowDirection = {};
 			}
-
+			float fMovePow = pTeamManager->GetFielderState((CTeamManager::FieldingNo)(m_nOperationNo + 1)).m_eDefence * (0.45f / 7.0f) + 0.2f;
 			// 移動処理
-			if (pBallCount->GetDefenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::Up) : IsKeyPress(InputPlayer2::Up)) m_tParam[m_nOperationNo].pos.z -= ce_fDifence;
-			if (pBallCount->GetDefenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::Down) : IsKeyPress(InputPlayer2::Down)) m_tParam[m_nOperationNo].pos.z += ce_fDifence;
-			if (pBallCount->GetDefenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::Left) : IsKeyPress(InputPlayer2::Left)) m_tParam[m_nOperationNo].pos.x -= ce_fDifence;
-			if (pBallCount->GetDefenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::Right) : IsKeyPress(InputPlayer2::Right)) m_tParam[m_nOperationNo].pos.x += ce_fDifence;
+			if (pBallCount->GetDefenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::Up) : IsKeyPress(InputPlayer2::Up)) m_tParam[m_nOperationNo].pos.z -= fMovePow;
+			if (pBallCount->GetDefenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::Down) : IsKeyPress(InputPlayer2::Down)) m_tParam[m_nOperationNo].pos.z += fMovePow;
+			if (pBallCount->GetDefenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::Left) : IsKeyPress(InputPlayer2::Left)) m_tParam[m_nOperationNo].pos.x -= fMovePow;
+			if (pBallCount->GetDefenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::Right) : IsKeyPress(InputPlayer2::Right)) m_tParam[m_nOperationNo].pos.x += fMovePow;
 
 			// ベースに近い選手を初期化
 			for (int i = 0; i < (int)CField::BaseKind::Max; i++)
@@ -297,6 +299,7 @@ void CFielding::Throwing(CField::BaseKind kind)
 	if(!m_bBaseCovered[(int)kind]) return;
 
 	CBall* pBall = CBall::GetInstance().get();
+	CTeamManager* pTeamManager = CTeamManager::GetInstance((int)CBallCount::GetInstance()->GetDefenseTeam()).get();
 	
 	DirectX::XMFLOAT3 fBaseCoverPos = m_tParam[m_nBaseNearNo[(int)kind]].pos;
 	DirectX::XMFLOAT3 fBallPos = pBall->GetPos();
@@ -312,6 +315,7 @@ void CFielding::Throwing(CField::BaseKind kind)
 	DirectX::XMFLOAT3 fNewBallPos;
 	DirectX::XMStoreFloat3(&fNewBallPos, vecBallPos);
 	pBall->SetPos(fNewBallPos);
+	float fThrowPow = pTeamManager->GetFielderState((CTeamManager::FieldingNo)(m_nOperationNo + 1)).m_eThrowing * (3.5f / 7.0f) + 0.5f;
 	vecDirection = DirectX::XMVectorScale(vecDirection, ce_fThrowingPower);
 	DirectX::XMStoreFloat3(&m_fThrowDirection, vecDirection);
 

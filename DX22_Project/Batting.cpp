@@ -6,6 +6,7 @@
 #include "BallCount.h"
 #include "Collision.h"
 #include "PitchingCursor.h"
+#include "TeamManager.h"
 
 // ==============================
 //    定数定義
@@ -13,8 +14,6 @@
 constexpr float ce_fJustTyming = 139.0f;	// ジャストミートになるタイミング
 constexpr float ce_fHittingTyming = 4.0f;	// バットに当たれるタイミング(+-)
 constexpr float ce_fAngleMax = 60.0f;		// x方向打球角度の限界(+-)
-constexpr float ce_fHomeRunAngle = 30.0f;	// バッターの弾道
-constexpr float ce_fBatterPower = 2.5f;		// バッターのパワー
 
 // ==============================
 //    メモ
@@ -36,7 +35,7 @@ bool CBatting::m_bSwing = false;
 CBatting::CBatting()
 	: m_pBattingCursor(nullptr), m_pBall(nullptr)
 	, m_bBatting(false), m_fMoveDirection{}
-	, m_fPower(ce_fBatterPower)
+	, m_fPower(0.0f)
 {
 
 }
@@ -67,11 +66,36 @@ void CBatting::Update()
 		float fAngle = 30.0f;		// 打球角度
 		float fDirection = 0.0f;	// 打球方向
 		float fShotPower = 0.0f;	// ショットの強さ
+		float fAngleDef = 0.0;
 		
 		do
 		{ 
 			// 早すぎるスイングはスイングとして扱わない
 			if (fTyming > 50.0f) break;
+
+			switch (CTeamManager::GetInstance((int)pBallCount->GetOffenseTeam())->GetTakingBatterState().m_ePower)
+			{
+			case CTeamManager::Quality::S: m_fPower = 6.0f; break;
+			case CTeamManager::Quality::A: m_fPower = 5.5f; break;
+			case CTeamManager::Quality::B: m_fPower = 5.0f; break;
+			case CTeamManager::Quality::C: m_fPower = 4.5f; break;
+			case CTeamManager::Quality::D: m_fPower = 4.0f; break;
+			case CTeamManager::Quality::E: m_fPower = 3.5f; break;
+			case CTeamManager::Quality::F: m_fPower = 3.0f; break;
+			case CTeamManager::Quality::G: m_fPower = 2.5f; break;
+			default:
+				break;
+			}
+
+			switch (CTeamManager::GetInstance((int)pBallCount->GetOffenseTeam())->GetTakingBatterState().m_nTrajectory)
+			{
+			case 1: fAngleDef = 10.0f; break;
+			case 2: fAngleDef = 20.0f; break;
+			case 3: fAngleDef = 30.0f; break;
+			case 4: fAngleDef = 40.0f; break;
+			default:
+				break;
+			}
 			
 			// スイングした
      		m_bSwing = true;
@@ -118,7 +142,7 @@ void CBatting::Update()
 					// 打球角度決定
 					if (fDistanceRatio.y > 0)fDistanceRatio.y *= 3.0f;
 					else fDistanceRatio.y /= 2.0f;
-					fAngle = ce_fHomeRunAngle - ce_fAngleMax / 2.0f * fDistanceRatio.y / 100.0f;
+					fAngle = fAngleDef - ce_fAngleMax / 2.0f * fDistanceRatio.y / 100.0f;
 					fAngle = DirectX::XMConvertToRadians(fAngle);
 					
 					// 方向と角度から打球の進行方向を決める

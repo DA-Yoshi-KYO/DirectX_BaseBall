@@ -137,7 +137,6 @@ private:
 	int m_nPitchingPhase;	// 投球の流れ
 	float m_fSpeed;			// 球速
 	float m_fChatchTime;	// 捕球までの時間
-
 private:
 	// 内部処理
 	// リリースポイント、ピッチングサークルの描画

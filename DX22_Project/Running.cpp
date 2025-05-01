@@ -7,6 +7,7 @@
 #include "Main.h"
 #include "Input.h"
 #include "Fielding.h"
+#include "TeamManager.h"
 
 // ==============================
 //    定数定義
@@ -59,6 +60,7 @@ void CRunning::Update()
 	CBallCount* pBallCount = CBallCount::GetInstance().get();
 	CField* pField = CField::GetInstance().get();
 	CBall* pBall = CBall::GetInstance().get();
+	CTeamManager* pTeamManager = CTeamManager::GetInstance((int)pBallCount->GetOffenseTeam()).get();
 	
 	// バッティング時とインプレー時で処理を変える
 	switch (pBall->GetPhase())
@@ -71,7 +73,7 @@ void CRunning::Update()
 			m_tRunnerParam[i].m_bAlive = pBallCount->GetBaseState(i);
 			m_tRunnerParam[i].m_bStayPrevBase = false;
 			m_tRunnerParam[i].m_bRunning = false;
-			m_tRunnerParam[i].m_fSpeed = 0.2f;
+			
 			m_tRunnerParam[i].m_eArriveKind = (CField::BaseKind)i;
 			m_tRunnerParam[i].m_ePrevArriveKind = (CField::BaseKind)i; 
 			m_bOnBase[i] = true;
@@ -79,11 +81,13 @@ void CRunning::Update()
 			if (m_tRunnerParam[i].m_bAlive)
 			{
 				m_tRunnerParam[i].m_tModelParam.pos = pField->GetBasePos((CField::BaseKind)i);
+				m_tRunnerParam[i].m_fSpeed = (float)pTeamManager->GetRunnerState(i + 1).m_eSpeed * (0.3f / 7.0f) + 0.2f;
 			}
 		}
 		m_tRunnerParam[(int)RunnerKind::BatterRunner].m_tModelParam.pos = pField->GetBasePos(CField::BaseKind::Home);
 		m_tRunnerParam[(int)RunnerKind::BatterRunner].m_bAlive = true;
 		m_tRunnerParam[(int)RunnerKind::BatterRunner].m_eArriveKind = CField::BaseKind::Home;
+		m_tRunnerParam[(int)RunnerKind::BatterRunner].m_fSpeed = (float)pTeamManager->GetTakingBatterState().m_eSpeed * (0.3f / 7.0f) + 0.2f;;
 		m_bOnBase[(int)RunnerKind::BatterRunner] = false;
 		break;
 		// インプレー時

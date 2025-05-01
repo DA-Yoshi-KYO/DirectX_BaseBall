@@ -134,7 +134,7 @@ public:
 	std::vector<PitcherState> GetPitcherState();
 	std::vector<BatterState> GetBatterState();
 	PitcherState GetTakingPitcherState();
-	BatterState GetTakingBatterState(int LineupNo);
+	BatterState GetTakingBatterState();
 	BatterState GetRunnerState(int BaseNo);
 	BatterState GetFielderState(FieldingNo No);
 	Teams GetTeam();
@@ -148,10 +148,12 @@ public:
 	void SetPosition(int No, FieldingNo position, bool isPitcher);
 	void SetPitcherState(std::vector<PitcherState> state);
 	void SetBatterState(std::vector<BatterState> state);
+	void SetFourBall();
+	void NextBatter();
 private:
 	std::vector<PitcherState> m_tVecPitcherMember;
 	std::vector<BatterState> m_tVecBatterMember;
 	Teams m_eTeamKind;
-	static std::shared_ptr<CTeamManager> m_pTeam[2];
-
+	static std::shared_ptr<CTeamManager> m_pTeam[Player::MaxPlayer];
+	int m_nTakingNo;
 };

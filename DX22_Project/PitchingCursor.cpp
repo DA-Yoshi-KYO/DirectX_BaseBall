@@ -102,10 +102,15 @@ void CPitchingCursor::Update()
 		if (m_tParam.pos.y >= fStrikeZonePos.y + fStrikeZoneSize.y / 1.3f) m_tParam.pos.y = fStrikeZonePos.y + fStrikeZoneSize.y / 1.3f;
 		if (m_tParam.pos.y <= fStrikeZonePos.y - fStrikeZoneSize.y / 1.3f) m_tParam.pos.y = fStrikeZonePos.y - fStrikeZoneSize.y / 1.3f;
 	}
+	else if(m_pPitching->GetPitchingPhase() == CPitching::PitchingPhase::Release)
+	{
+		m_tParam.pos = m_tPredParam.pos;
+	}
 	else if(m_pPitching->GetPitchingPhase() == CPitching::PitchingPhase::Set)
 	{
 		m_tParam.pos = fStrikeZonePos;
 	}
+
 
 	// —\‘ª’n“_
 	// ‹…Ží‚Æ•Ï‰»—Ê‚É‰ž‚¶‚Ä“Š‹…—\‘ª’n“_‚ðŒˆ‚ß‚é
