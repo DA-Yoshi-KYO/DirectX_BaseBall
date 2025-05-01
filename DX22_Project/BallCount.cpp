@@ -6,6 +6,7 @@
 #include "Sprite.h"
 #include "ImGuiManager.h"
 #include "Main.h"
+#include "TeamManager.h"
 
 // ==============================
 //    定数定義
@@ -141,16 +142,10 @@ void CBallCount::Update()
 		// どこも空いていなかったら満塁なので点を入れる
 		else
 		{
-			switch (m_tGameState.offense)
-			{
-			case CBallCount::Team::Player1:
-				break;
-			case CBallCount::Team::Player2:
-				break;
-			default:
-				break;
-			}
+			m_tCount.m_nScore[(int)m_tGameState.offense]++;
 		}
+		// 走者情報の更新
+		CTeamManager::GetInstance((int)m_tGameState.offense)->SetFourBall();
 		// ストライク・ボールのカウントをリセットする
 		ResetCount();
 	}
@@ -230,6 +225,7 @@ void CBallCount::ResetCount()
 {
 	m_tCount.m_nStrikeCount = 0;
 	m_tCount.m_nBallCount = 0;
+	CTeamManager::GetInstance((int)m_tGameState.offense)->NextBatter();
 }
 
 void CBallCount::ChangeInning()

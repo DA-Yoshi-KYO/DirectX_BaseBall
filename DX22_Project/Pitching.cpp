@@ -9,17 +9,29 @@
 #include "Sprite.h"
 #include "Camera.h"
 #include "ImGuiManager.h"
+#include "TeamManager.h"
 
 // ==============================
 //    定数定義
 // ==============================
 constexpr float ce_fMax_Speed = 170.0f;		// 最高球速
-constexpr float ce_fSpeed_Ajust = 60.0f;	// 球速をこの数値で割ることで体感速度に補正
-constexpr DirectX::XMFLOAT2 ce_fReleasePointSize = { 40.0f,40.0f };				// リリースタイミングのサイズ
+constexpr float ce_fSpeed_Ajust = 40.0f;	// 球速をこの数値で割ることで体感速度に補正
+constexpr DirectX::XMFLOAT2 ce_fReleasePointSize = { 30.0f,30.0f };				// リリースタイミングのサイズ
 constexpr DirectX::XMFLOAT2 ce_fPitchingCircleFirstSize = { 300.0f,300.0f };	// ピッチングサークルの最初のサイズ
 constexpr DirectX::XMFLOAT2 ce_fPitchingCircleEndSize = { 20.0f,20.0f };		// ピッチングサークルの最後のサイズ
 constexpr float ce_fSetPositionTime = 4.0f;	// セットポジションから投球までの時間(秒)
 constexpr float ce_fCircleTime = 0.5f;		// ピッチングサークルが縮むまでの時間(秒)
+
+// コントロールメモ
+// 60.65 S
+// 40.60 A
+// 40.55 B
+// 40.50 C
+// 40.45 D
+// 40.40 E
+// 35.35 F
+// 30.30 G
+
 
 CPitching::CPitching()
 	: m_pStrikeZone(nullptr), m_pPitchingCursor(nullptr)
@@ -91,16 +103,19 @@ void CPitching::Update()
 			// ストレート
 			if (eDefenceTeam == CBallCount::Team::Player1 ? IsKeyTrigger(InputPlayer1::Up) : IsKeyTrigger(InputPlayer2::Up))
 			{
+				m_fSpeed = CTeamManager::GetInstance((int)pBallCount->GetDefenseTeam())->GetTakingPitcherState().m_fSpeed;
 				if (m_tPitcherState.m_nBenderQuality[(int)BenderKind::Fourseam] != 0) m_tPitcherState.m_eThrowKind = BenderKind::Fourseam;
 			}
 			// ツーシーム
 			if (eDefenceTeam == CBallCount::Team::Player1 ? IsKeyTrigger(InputPlayer1::R1) : IsKeyTrigger(InputPlayer2::R1))
 			{
+				m_fSpeed = CTeamManager::GetInstance((int)pBallCount->GetDefenseTeam())->GetTakingPitcherState().m_fSpeed - 2;
 				if (m_tPitcherState.m_nBenderQuality[(int)BenderKind::Twoseam] != 0 && m_tPitcherState.m_eThrowKind == BenderKind::Fourseam) m_tPitcherState.m_eThrowKind = BenderKind::Twoseam;
 			}
 			// スライダー
 			if (eDefenceTeam == CBallCount::Team::Player1 ? IsKeyTrigger(InputPlayer1::Right) : IsKeyTrigger(InputPlayer2::Right))
 			{
+				m_fSpeed = CTeamManager::GetInstance((int)pBallCount->GetDefenseTeam())->GetTakingPitcherState().m_fSpeed - 10;
 				if (m_tPitcherState.m_bLeftPitcher)
 				{
 					if (m_tPitcherState.m_nBenderQuality[(int)BenderKind::Shoot] != 0) m_tPitcherState.m_eThrowKind = BenderKind::Shoot;
@@ -113,11 +128,13 @@ void CPitching::Update()
 			// フォーク
 			if (eDefenceTeam == CBallCount::Team::Player1 ? IsKeyTrigger(InputPlayer1::Down) : IsKeyTrigger(InputPlayer2::Down))
 			{
+				m_fSpeed = CTeamManager::GetInstance((int)pBallCount->GetDefenseTeam())->GetTakingPitcherState().m_fSpeed - 12;
 				if (m_tPitcherState.m_nBenderQuality[(int)BenderKind::Split] != 0) m_tPitcherState.m_eThrowKind = BenderKind::Split;
 			}
 			// シュート
 			if (eDefenceTeam == CBallCount::Team::Player1 ? IsKeyTrigger(InputPlayer1::Left) : IsKeyTrigger(InputPlayer2::Left))
 			{
+				m_fSpeed = CTeamManager::GetInstance((int)pBallCount->GetDefenseTeam())->GetTakingPitcherState().m_fSpeed - 5;
 				if (m_tPitcherState.m_bLeftPitcher)
 				{
 					if (m_tPitcherState.m_nBenderQuality[(int)BenderKind::Slider] != 0) m_tPitcherState.m_eThrowKind = BenderKind::Slider;
@@ -131,6 +148,7 @@ void CPitching::Update()
 			if ((eDefenceTeam == CBallCount::Team::Player1 ? IsKeyTrigger(InputPlayer1::Right) : IsKeyTrigger(InputPlayer2::Right)) && 
 				(eDefenceTeam == CBallCount::Team::Player1 ? IsKeyTrigger(InputPlayer1::Down) : IsKeyTrigger(InputPlayer2::Down)))
 			{
+				m_fSpeed = CTeamManager::GetInstance((int)pBallCount->GetDefenseTeam())->GetTakingPitcherState().m_fSpeed - 15;
 				if (m_tPitcherState.m_bLeftPitcher)
 				{
 					if (m_tPitcherState.m_nBenderQuality[(int)BenderKind::Sinker] != 0) m_tPitcherState.m_eThrowKind = BenderKind::Sinker;
@@ -144,6 +162,7 @@ void CPitching::Update()
 			if ((eDefenceTeam == CBallCount::Team::Player1 ? IsKeyTrigger(InputPlayer1::Left) : IsKeyTrigger(InputPlayer2::Left)) &&
 				(eDefenceTeam == CBallCount::Team::Player1 ? IsKeyTrigger(InputPlayer1::Down) : IsKeyTrigger(InputPlayer2::Down)))
 			{
+				m_fSpeed = CTeamManager::GetInstance((int)pBallCount->GetDefenseTeam())->GetTakingPitcherState().m_fSpeed - 7;
 				if (m_tPitcherState.m_bLeftPitcher)
 				{
 					if (m_tPitcherState.m_nBenderQuality[(int)BenderKind::Curve] != 0) m_tPitcherState.m_eThrowKind = BenderKind::Curve;
@@ -159,6 +178,7 @@ void CPitching::Update()
 			{
 
 				fPitchTime = 0.0f;
+
 				// 球速は乱数で一定値下がる可能性がある
 				m_fSpeed = m_fSpeed - (float)(rand() % 3);
 				// 最初はピッチングサークルを表示しない
@@ -195,8 +215,11 @@ void CPitching::Update()
 				int randY = rand() % 10 - 10;
 				int randMiss = rand() % 10;
 
+				int nControl = CTeamManager::GetInstance((int)pBallCount->GetDefenseTeam())->GetTakingPitcherState().m_eControl;
+				m_tParam[(int)TexKind::ReleasePoint].size = { (35.0f / 7.0f) * nControl + 30.0f,(35.0f / 7.0f) * nControl + 30.0f };
+
 				// リリースが速い
-				if (m_tParam[(int)TexKind::PitchingCircle].size.x > ce_fReleasePointSize.x)
+				if (m_tParam[(int)TexKind::PitchingCircle].size.x > m_tParam[(int)TexKind::ReleasePoint].size.x)
 				{
 					switch (randMiss)
 					{
@@ -357,7 +380,8 @@ void CPitching::DrawCircle()
 	DirectX::XMFLOAT4 possize = GetPosSizeDebug("ReleasePoint");
 #endif // _IMGUI
 
-	m_tParam[(int)TexKind::ReleasePoint].size = ce_fReleasePointSize;
+	int nControl = CTeamManager::GetInstance((int)CBallCount::GetInstance()->GetDefenseTeam())->GetTakingPitcherState().m_eControl;
+	m_tParam[(int)TexKind::ReleasePoint].size = { (35.0f / 7.0f) * nControl + 30.0f,(35.0f / 7.0f) * nControl + 30.0f };
 	// ピッチング時に描画する
 	if (m_nPitchingPhase == (int)CPitching::PitchingPhase::Pitch)
 	{

@@ -8,6 +8,7 @@ void CTeamManager::Init()
 
     m_tVecBatterMember.clear();
     m_tVecPitcherMember.clear();
+    m_nTakingNo = 1;
 }
 
 void CTeamManager::Release(int teamNo)
@@ -18,6 +19,7 @@ void CTeamManager::Release(int teamNo)
 CTeamManager::CTeamManager()
     : m_eTeamKind(Teams::Monkeys)
     , m_tVecBatterMember{}, m_tVecPitcherMember{}
+    , m_nTakingNo(1)
 {
 
 }
@@ -309,6 +311,49 @@ void CTeamManager::SetBatterState(std::vector<BatterState> state)
     m_tVecBatterMember = state;
 }
 
+void CTeamManager::SetFourBall()
+{
+    int i = 0;
+    for (auto itr = m_tVecBatterMember.begin(); itr != m_tVecBatterMember.end(); itr++, i++)
+    {
+        if (itr->m_nLineupNo == m_nTakingNo)
+        {
+            for (auto itr1 = m_tVecBatterMember.begin(); itr1 != m_tVecBatterMember.end(); itr1++)
+            {
+                if (itr1->m_nBaseNo == 1)
+                {
+                    for (auto itr2 = m_tVecBatterMember.begin(); itr2 != m_tVecBatterMember.end(); itr2++)
+                    {
+                        if (itr2->m_nBaseNo == 2)
+                        {
+                            for (auto itr3 = m_tVecBatterMember.begin(); itr3 != m_tVecBatterMember.end(); itr3++)
+                            {
+                                if (itr3->m_nBaseNo == 3)
+                                {
+                                    itr3->m_nBaseNo = 0;
+                                    break;
+                                }
+                            }
+                            itr2->m_nBaseNo = 3;
+                            break;
+                        }
+                    }
+                    itr1->m_nBaseNo = 2;
+                    break;
+                }
+            }
+            itr->m_nBaseNo = 1;
+            break;
+        }
+    }
+}
+
+void CTeamManager::NextBatter()
+{
+    m_nTakingNo++;
+    if (m_nTakingNo > 9) m_nTakingNo = 1;
+}
+
 std::shared_ptr<CTeamManager>& CTeamManager::GetInstance(int teamNo)
 {
     if (!m_pTeam[teamNo])
@@ -342,12 +387,12 @@ CTeamManager::PitcherState CTeamManager::GetTakingPitcherState()
     }
 }
 
-CTeamManager::BatterState CTeamManager::GetTakingBatterState(int LineupNo)
+CTeamManager::BatterState CTeamManager::GetTakingBatterState()
 {
     int i = 0;
     for (auto itr = m_tVecBatterMember.begin(); itr != m_tVecBatterMember.end(); itr++, i++)
     {
-        if (itr->m_nLineupNo == LineupNo)
+        if (itr->m_nLineupNo == m_nTakingNo)
         {
             return m_tVecBatterMember[i];
         }
