@@ -6,32 +6,29 @@
 #include "Sprite.h"
 #include "Input.h"
 #include "ShaderList.h"
-#include "SceneTitle.h"
-#include "SceneGame.h"
 #include "FadeBlack.h"
-#include <dinput.h>
 #include "imgui.h"
 #include "imgui_impl_dx11.h"
 #include "imgui_impl_win32.h"
+#include "Controller.h"
+#include "SceneTitle.h"
+#include "SceneGame.h"
+#include "SceneTeamselect.h"
+#include "SceneMemberselect.h"
+#include <dwrite.h>
+#include "Sound.h"
 
 //--- グローバル変数
 CScene* g_pScene; // シーン 
 CFade* g_pFade; // フェード 
 
-IDirectInput8* g_pDirectInput = nullptr;
-IDirectInputDevice8* g_pKeyboardDevice = nullptr;
-
 HRESULT Init(HWND hWnd, UINT width, UINT height)
 {
+	//_CrtSetBreakAlloc(131);
+
 	HRESULT hr;
 	// DirectX初期化
 	hr = InitDirectX(hWnd, width, height, false);
-	// 初期化の例
-	hr = DirectInput8Create(GetModuleHandle(nullptr), DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&g_pDirectInput, nullptr);
-	hr = g_pDirectInput->CreateDevice(GUID_SysKeyboard, &g_pKeyboardDevice, nullptr);
-	hr = g_pKeyboardDevice->SetDataFormat(&c_dfDIKeyboard);
-	hr = g_pKeyboardDevice->SetCooperativeLevel(hWnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE);
-	g_pKeyboardDevice->Acquire();
 	if (FAILED(hr)) { return hr; }
 
 	IMGUI_CHECKVERSION();
@@ -49,8 +46,11 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 
 	Geometory::Init();
 	Sprite::Init();
-	InitInput();
+	hr = InitInput();
+	if (FAILED(hr)) { return hr; }
 	ShaderList::Init();
+	hr = InitSound();
+	if (FAILED(hr)) { return hr; }
 
 	// フェード作成 
 	g_pFade = new CFadeBlack();
@@ -60,6 +60,7 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 	g_pScene = new CSceneTitle();
 	g_pScene->SetFade(g_pFade); // シーンに使用するフェードを設定 
 
+
 	return hr;
 }
 
@@ -67,6 +68,8 @@ void Uninit()
 {
 	delete g_pScene;
 	delete g_pFade;
+
+	UninitSound();
 	ShaderList::Uninit();
 	UninitInput();
 	Sprite::Uninit();
@@ -75,6 +78,8 @@ void Uninit()
 	ImGui_ImplWin32_Shutdown();
 	ImGui::DestroyContext();
 	UninitDirectX();
+
+	_CrtDumpMemoryLeaks();
 }
 
 void Update()
@@ -83,18 +88,23 @@ void Update()
 	g_pScene->RootUpdate();
 	srand(timeGetTime());
 
+	Controller_Update();
+
 	// シーン切り替え判定 
 	if (g_pScene->ChangeScene()) {
 		// 次のシーンの情報を取得 
-		int scene = g_pScene->NextScene();
+		CScene::SceneKind scene = g_pScene->NextScene();
 
 		// 現在のシーンを削除 
 		delete g_pScene;
 
 		// シーンの切り替え 
-		switch (scene) {
-		case 0: g_pScene = new CSceneTitle(); break; // TITLE 
-		case 1: g_pScene = new CSceneGame(); break; // GAME 
+		switch (scene) 
+		{
+			case CScene::SceneKind::Title: g_pScene = new CSceneTitle(); break;
+			case CScene::SceneKind::TeamSelect: g_pScene = new CSceneTeamSelect(); break;
+			case CScene::SceneKind::MemberSelect: g_pScene = new CSceneMemberselect(CSceneTeamSelect::GetTeam(0), CSceneTeamSelect::GetTeam(1)); break;
+			case CScene::SceneKind::Game: g_pScene = new CSceneGame(); break; 
 		}
 
 		// 次シーンに向けて初期設定 

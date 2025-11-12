@@ -2,31 +2,70 @@
 
 #include "Scene.h"
 #include "Texture.h"
-#include "Camera.h"
-#include "DirectWriteSample.h"
+#include "Defines.h"
+#include <coroutine>
+
+constexpr int ce_nMaxAnime = 3;
 
 class CSceneTitle : public CScene 
 {
 public:
 	CSceneTitle();
 	~CSceneTitle();
-
-	// 更新処理 
 	void Update() final;
-
-	// 描画処理 
 	void Draw() final;
 
 private:
-	void DrawStar();
-	void DrawBlack();
+	enum class TitlePhase
+	{
+		Animation,
+		Select
+	}m_eTitlePhase;
 
-	float m_Angle;
-	Texture* m_pLogo; // タイトル画面に表示する画像
-	Texture* m_pTran[2]; // タイトル画面に表示する画像
-	DirectX::XMFLOAT2 m_StarPos;
-	DirectX::XMFLOAT2 m_StarSize;
-	DirectX::XMFLOAT2 m_BlackPos[4];
-	DirectX::XMFLOAT2 m_BlackSize[4];
-	DirectWriteSample* font;
+	enum class TextureKind
+	{
+		Back,
+		Ball,
+		Bat,
+		Bat2,
+		Logo,
+		Start,
+		End,
+		Cursor,
+
+		Max
+	};
+	std::unique_ptr<Texture> m_pTexture[(int)TextureKind::Max];
+	SpriteParam m_tParam[(int)TextureKind::Max];
+	bool m_bSelected;
+
+	enum class AnimePhase
+	{
+		Ball,
+		BatGrove,
+		Logo,
+		Buttons,
+
+		Max
+	};
+	bool m_bAnime[(int)AnimePhase::Max];
+
+	enum class SelectKind
+	{
+		Start,
+		End
+	};
+	int m_nSelectKind;
+	bool m_bCursorAnim;
+private:
+	void UpdateAnimation();
+	void UpdateSelect();
+
+	bool BallAnimation();
+	bool BatAnimation();
+	bool LogoAnimation();
+
+	bool ButtonAnimation();
+
+	void ResetSpriteParam();
 };

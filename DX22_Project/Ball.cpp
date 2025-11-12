@@ -1,36 +1,45 @@
-#include "Ball.h"
+ï»¿#include "Ball.h"
 #include "ImGuiManager.h"
 #include "SceneGame.h"
+#include "Sprite.h"
+#include "Main.h"
+#include "BallCount.h"
+#include "Running.h"
 
-constexpr DirectX::XMFLOAT2 ce_fBallEndCenter = { 0.0f,2.0f };
 constexpr DirectX::XMFLOAT2 ce_fBallLimitX = { 2.7f,-2.7f };
 constexpr DirectX::XMFLOAT2 ce_fBallLimitY = { -2.7f,2.3f };
-constexpr  DirectX::XMFLOAT3 ce_fBallSize = { 10.0f,10.0f,10.0f };
+constexpr  DirectX::XMFLOAT3 ce_fBallSize = { 0.5f,0.5f,0.5f };
+constexpr  DirectX::XMFLOAT3 ce_fInplayBallSize = { 2.0f,2.0f,2.0f };
 constexpr int ce_nBallRotateSec = 220 / 60;
 
-enum class BallPhase
-{
-	Batting,
-	InPlay,
-};
-
 CBall::CBall()
-	: m_pModel(nullptr), m_pCamera(nullptr), m_pPitching(nullptr)
-	, m_nPhase((int)BallPhase::Batting), m_fMove{}
+	: m_pModel(nullptr), m_pPitching(nullptr)
+	, m_nPhase((int)BallPhase::Batting)
+	, m_fMove{}, m_fShadowPos{}
+	, m_bFry(true), m_bBallFaulZone(false), m_fFaulZoneBallPos{}
+	, m_fPitchPos{}, m_fPredValue{}
 {
-	// ƒ{[ƒ‹‚Ìƒ‚ƒfƒ‹‚Ì“Ç‚İ‚İ
+	// ãƒœãƒ¼ãƒ«ã®ãƒ¢ãƒ‡ãƒ«ã®èª­ã¿è¾¼ã¿
 	m_pModel = std::make_unique<Model>();
-	if (!m_pModel->Load(MODELPASS("ball.fbx"))) ERROR_MESSAGE("ball.fbx");
+	if (!m_pModel->Load(PATH_MODEL("ball.obj"))) ERROR_MESSAGE("ball.fbx");
 
-	m_pos = { ce_fBallPos.x + WORLD_AJUST ,ce_fBallPos.y + WORLD_AJUST, ce_fBallPos.z + WORLD_AJUST };
-	m_size = ce_fBallSize;
-	m_Collision.type = Collision::eBox;
-	m_Collision.box = { m_pos,m_size };
+	m_pShadow = std::make_unique<Texture>();
+	if (FAILED(m_pShadow->Create(PATH_TEX("Shadow.png")))) ERROR_MESSAGE("Shadow.png");
+
+	m_tParam.pos = { ce_fBallPos.x + WORLD_AJUST ,ce_fBallPos.y + WORLD_AJUST, ce_fBallPos.z + WORLD_AJUST };
+	m_tParam.size = ce_fBallSize;
+	m_tParam.rotate = { 0.0f,0.0f,0.0f };
+	m_BallCollision.type = Collision::eBox;
+	m_BallCollision.box.center = m_tParam.pos;
+	m_BallCollision.box.size = { ce_fBallSize.x / 2.0f,ce_fBallSize.y / 2.0f,ce_fBallSize.z / 2.0f };
+
+	m_LucusCollision.type = Collision::eLine;
+	m_LucusCollision.line.start = m_tParam.pos;
+	m_LucusCollision.line.end = m_tParam.pos;
 }
 
 CBall::~CBall()
 {
-	m_pCamera.release();
 	m_pPitching.release();
 	m_pCursor.release();
 	m_pPitching.release();
@@ -39,6 +48,7 @@ CBall::~CBall()
 
 void CBall::Update()
 {
+	m_LucusCollision.line.start = m_tParam.pos;
 	switch (m_nPhase)
 	{
 	case (int)BallPhase::Batting: UpdateBatting(); break;
@@ -46,6 +56,10 @@ void CBall::Update()
 	default:
 		break;
 	}
+	m_BallCollision.type = Collision::eBox;
+	m_BallCollision.box.center = m_tParam.pos;
+	m_BallCollision.box.size = { ce_fBallSize.x / 2.0f,ce_fBallSize.y / 2.0f,ce_fBallSize.z / 2.0f };
+	m_LucusCollision.line.end = m_tParam.pos;
 }
 
 void CBall::Draw()
@@ -54,71 +68,123 @@ void CBall::Draw()
 	DirectX::XMFLOAT3X3 debug = GetPosSizeRotateDebug("Ball");
 #endif // _IMGUI
 
-	SetModel(m_pos, m_size, m_rotate);
+	Collision::DrawCollision(m_LucusCollision);
+	SetModel(m_tParam,m_pModel.get());
 	
 }
 
-void CBall::SetModel(DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 size, DirectX::XMFLOAT3 rotate, int ModelType)
+void CBall::SetModel(ModelParam param, Model* model, bool isAnime)
 {
-	// ƒ[ƒ‹ƒhs—ñ•ÏŠ·
-	DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);	// À•W
-	DirectX::XMMATRIX S = DirectX::XMMatrixScaling(size.z, size.z, size.z);		// Šgk
-	DirectX::XMMATRIX Rx = DirectX::XMMatrixRotationX(rotate.z);				// ‰ñ“]X
-	DirectX::XMMATRIX Ry = DirectX::XMMatrixRotationY(rotate.y);				// ‰ñ“]Y
-	DirectX::XMMATRIX Rz = DirectX::XMMatrixRotationZ(rotate.z);				// ‰ñ“]Z
-	DirectX::XMMATRIX world = S * Rx * Ry * Rz * T;	// ŠgkE‰ñ“]EÀ•W‚Ì‡”Ô‚Å‚©‚¯‡‚í‚¹‚é
+	SetRender3D();
 
-	DirectX::XMFLOAT4X4 wvp[3] = {};	// Šes—ñ•ÏŠ·‚Ìó‚¯“ü‚êæ
+	CCamera* pCamera = CCamera::GetInstance(CCamera::GetCameraKind()).get();
 
-	// ŒvZ—p‚Ìƒf[ƒ^‚©‚ç“Ç‚İæ‚è—p‚Ìƒf[ƒ^‚É•ÏŠ·(“]’u)
-	DirectX::XMStoreFloat4x4(&wvp[0], DirectX::XMMatrixTranspose(world));	// ƒ[ƒ‹ƒhs—ñ‚ğ“]’u‚µ‚Äİ’è
-	// views—ñ‚Æprojections—ñ‚ÍƒJƒƒ‰‚Ì•¨‚ğ‚Á‚Ä‚­‚é
-	wvp[1] = m_pCamera->GetViewMatrix();		// views—ñ
-	wvp[2] = m_pCamera->GetProjectionMatrix();	// projections—ñ
-	// ƒJƒƒ‰s—ñ‚ğİ’è
-	Geometory::SetView(wvp[1]);
-	Geometory::SetProjection(wvp[2]);
+	param.mWorld =
+		DirectX::XMMatrixScaling(param.size.x, param.size.y, param.size.z) *
+		DirectX::XMMatrixRotationX(param.rotate.x) *
+		DirectX::XMMatrixRotationY(param.rotate.y) *
+		DirectX::XMMatrixRotationZ(param.rotate.z) *
+		DirectX::XMMatrixTranslation(param.pos.x, param.pos.y, param.pos.z);
 
-	// ƒVƒF[ƒ_[‚Ö•ÏŠ·s—ñ‚ğİ’è
-	ShaderList::SetWVP(wvp); // ˆø”‚É‚ÍXMFloat4X4Œ^‚ÌA—v‘f”3‚ÌƒAƒhƒŒƒX‚ğ“n‚·‚±‚Æ
+	DirectX::XMStoreFloat4x4(&param.wvp[0], DirectX::XMMatrixTranspose(param.mWorld));
+	param.wvp[1] = pCamera->GetViewMatrix();		// viewè¡Œåˆ—
+	param.wvp[2] = pCamera->GetProjectionMatrix();	// projectionè¡Œåˆ—
+	// ã‚«ãƒ¡ãƒ©è¡Œåˆ—ã‚’è¨­å®š
+	Geometory::SetView(param.wvp[1]);
+	Geometory::SetProjection(param.wvp[2]);
 
-	//ƒ‚ƒfƒ‹‚Ég—p‚·‚é’¸“_ƒVƒF[ƒ_[‚ğİ’è
-	m_pModel->SetVertexShader(ShaderList::GetVS(ShaderList::VS_WORLD));
-	// ƒ‚ƒfƒ‹‚Ég—p‚·‚é’¸“_ƒsƒNƒZƒ‹ƒVƒF[ƒ_[‚ğİ’è
-	m_pModel->SetPixelShader(ShaderList::GetPS(ShaderList::PS_LAMBERT));
 
-	for (int i = 0; i < m_pModel->GetMeshNum(); i++)
+	// ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼ã¸å¤‰æ›è¡Œåˆ—ã‚’è¨­å®š
+	ShaderList::SetWVP(param.wvp); // å¼•æ•°ã«ã¯XMFloat4X4å‹ã®ã€è¦ç´ æ•°3ã®ã‚¢ãƒ‰ãƒ¬ã‚¹ã‚’æ¸¡ã™ã“ã¨
+
+	//ãƒ¢ãƒ‡ãƒ«ã«ä½¿ç”¨ã™ã‚‹é ‚ç‚¹ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼ã‚’è¨­å®š
+	model->SetVertexShader(ShaderList::GetVS(ShaderList::VS_WORLD));
+	// ãƒ¢ãƒ‡ãƒ«ã«ä½¿ç”¨ã™ã‚‹é ‚ç‚¹ãƒ”ã‚¯ã‚»ãƒ«ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼ã‚’è¨­å®š
+	model->SetPixelShader(ShaderList::GetPS(ShaderList::PS_LAMBERT));
+
+	for (UINT i = 0; i < model->GetMeshNum(); i++)
 	{
-		// ƒ‚ƒfƒ‹‚ÌƒƒbƒVƒ…‚Ìæ“¾
-		Model::Mesh mesh = *m_pModel->GetMesh(i);
+		// ãƒ¢ãƒ‡ãƒ«ã®ãƒ¡ãƒƒã‚·ãƒ¥ã®å–å¾—
+		Model::Mesh mesh = *model->GetMesh(i);
 
-		// ƒƒbƒVƒ…‚ÉŠ„‚è“–‚Ä‚ç‚ê‚Ä‚¢‚éƒ}ƒeƒŠƒAƒ‹‚ğæ“¾
-		Model::Material material = *m_pModel->GetMaterial(mesh.materialID);
+		// ãƒ¡ãƒƒã‚·ãƒ¥ã«å‰²ã‚Šå½“ã¦ã‚‰ã‚Œã¦ã„ã‚‹ãƒãƒ†ãƒªã‚¢ãƒ«ã‚’å–å¾—
+		Model::Material material = *model->GetMaterial(mesh.materialID);
 
-		material.ambient.x = 0.75f;
-		material.ambient.y = 0.75f;
-		material.ambient.z = 0.75f;
-
-		// ƒVƒF[ƒ_[‚Öƒ}ƒeƒŠƒAƒ‹‚ğİ’è
+		// ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼ã¸ãƒãƒ†ãƒªã‚¢ãƒ«ã‚’è¨­å®š
 		ShaderList::SetMaterial(material);
 
-		// ƒ‚ƒfƒ‹‚Ì•`‰æ
-		m_pModel->Draw(i);
+		// ãƒ¢ãƒ‡ãƒ«ã®æç”»
+		model->Draw(i);
 	}
 }
 
 void CBall::OnCollision(Collision::Result collision)
 {
+	// ãƒ•ã‚§ãƒ³ã‚¹ã‚’è¶Šãˆã¦ã„ãŸã‚‰ãƒ›ãƒ¼ãƒ ãƒ©ãƒ³
+	if (m_tParam.pos.y >= ce_fFenceHeight + WORLD_AJUST)
+	{
+		CRunning::HomeRun();
+		return;
+	}
+
+	// è¶Šãˆã¦ã„ãªã‹ã£ãŸã‚‰ãƒ•ã‚§ãƒ³ã‚¹åå°„ã®è¨ˆç®—ã‚’ã™ã‚‹
+	// è¨ˆç®—ã«ä½¿ç”¨ã™ã‚‹å¤‰æ•°ã‚’å®šç¾©
+	DirectX::XMVECTOR vecStart = DirectX::XMLoadFloat3(&m_LucusCollision.line.start);
+	DirectX::XMVECTOR vecEnd = DirectX::XMLoadFloat3(&m_LucusCollision.line.end);
+	DirectX::XMVECTOR vecDir = DirectX::XMVectorSubtract(vecEnd, vecStart);
+	DirectX::XMVECTOR vecPoint[3];
+	vecPoint[0] = DirectX::XMLoadFloat3(&collision.other.triangle.point[0]);
+	vecPoint[1] = DirectX::XMLoadFloat3(&collision.other.triangle.point[1]);
+	vecPoint[2] = DirectX::XMLoadFloat3(&collision.other.triangle.point[2]);
+
+	// è¡çªä½ç½®ã®æ¤œå‡º
+	DirectX::XMVECTOR vecHitPoint = DirectX::XMVectorAdd(vecStart, DirectX::XMVectorScale(vecDir, collision.t));
+
+	// è¡çªã—ãŸä¸‰è§’å½¢ã®æ³•ç·šã‚’æ±‚ã‚ã‚‹
+	DirectX::XMVECTOR vecEdge1 = DirectX::XMVectorSubtract(vecPoint[1], vecPoint[0]);
+	DirectX::XMVECTOR vecEdge2 = DirectX::XMVectorSubtract(vecPoint[2], vecPoint[0]);
+	DirectX::XMVECTOR vecNormal = DirectX::XMVector3Normalize(DirectX::XMVector3Cross(vecEdge1, vecEdge2));
+
+	// åå°„ãƒ™ã‚¯ãƒˆãƒ«ã®è¨ˆç®— (ä¿®æ­£æ¸ˆã¿)
+	float dotProduct = DirectX::XMVectorGetX(DirectX::XMVector3Dot(vecDir, vecNormal));
+	DirectX::XMVECTOR vecReflectDir = DirectX::XMVectorSubtract(
+		vecDir,
+		DirectX::XMVectorScale(vecNormal, 2.0f * dotProduct)
+	);
+	vecReflectDir = DirectX::XMVector3Normalize(vecReflectDir);
+
+	// åå°„å¾Œã®ä½ç½®ã‚’è£œæ­£ï¼ˆã‚¹ã‚¿ãƒƒã‚¯é˜²æ­¢ï¼‰
+	vecHitPoint = DirectX::XMVectorAdd(vecHitPoint, DirectX::XMVectorScale(vecNormal, 5.0f));
+
+	// é€Ÿåº¦ã®æ¸›è¡°
+	float fRestitution = 0.8f;
+	float ballVelocity = DirectX::XMVectorGetX(DirectX::XMVector3Length(vecDir));
+
+	DirectX::XMVECTOR vecNewVelocity = DirectX::XMVectorScale(vecReflectDir, fRestitution * ballVelocity);
+
+	// ç§»å‹•å…ˆã®æ›´æ–°
+	DirectX::XMFLOAT3 curDir;
+	DirectX::XMStoreFloat3(&curDir, vecDir);
+	DirectX::XMStoreFloat3(&m_LucusCollision.line.start,vecHitPoint);
+	DirectX::XMStoreFloat3(&m_tParam.pos,vecHitPoint);
+	DirectX::XMStoreFloat3(&m_LucusCollision.line.end, DirectX::XMVectorAdd(vecHitPoint, vecNewVelocity));
+	DirectX::XMStoreFloat3(&m_fMove, vecNewVelocity);
+}
+
+void CBall::OnFoulZone(Collision::Result collision)
+{
+	m_bBallFaulZone = true;
+	m_fFaulZoneBallPos = m_tParam.pos;
 }
 
 Collision::Info CBall::GetCollision()
 {
-	return m_Collision;
+	return m_BallCollision;
 }
 
-void CBall::SetCamera(CCamera* camera)
+Collision::Info CBall::GetLineCollision()
 {
-	m_pCamera.reset(camera);
+	return m_LucusCollision;
 }
 
 void CBall::SetPitching(CPitching* pitching)
@@ -138,49 +204,128 @@ void CBall::SetBatting(CBatting* batting)
 
 DirectX::XMFLOAT3 CBall::GetPos()
 {
-	return m_pos;
+	return m_tParam.pos;
+}
+
+void CBall::SetPos(DirectX::XMFLOAT3 pos)
+{
+	m_tParam.pos = pos;
+}
+
+void CBall::SetMove(DirectX::XMFLOAT3 direction)
+{
+	m_fMove = direction;
 }
 
 std::unique_ptr<CBall>& CBall::GetInstance()
 {
-	// ƒCƒ“ƒXƒ^ƒ“ƒX‚Íˆê‚Â‚µ‚©‘¶İ‚µ‚È‚¢
+	// ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã¯ä¸€ã¤ã—ã‹å­˜åœ¨ã—ãªã„
 	static std::unique_ptr<CBall> instance(new CBall());
 	return instance;
 }
 
+CBall::BallPhase CBall::GetPhase()
+{
+	return (BallPhase)m_nPhase;
+}
+
+bool CBall::GetIsFry()
+{
+	return m_bFry;
+}
+
 void CBall::UpdateBatting()
 {
-	if (m_pPitching->GetPitchingPhase() == (int)CPitching::PitchingPhase::Release)
-	{
-		float fChatch = m_pPitching->GetChatchTime();
-		DirectX::XMFLOAT2 fCursorPos = m_pCursor->GetPos();
-		DirectX::XMFLOAT2 fCenterToCursor = { ce_fPitchingCursorPos.x - fCursorPos.x,ce_fPitchingCursorPos.y - fCursorPos.y };
-		DirectX::XMFLOAT2 fZoneSizeHarf = { ce_fStrikeZoneSize.x / 2.0f,ce_fStrikeZoneSize.y / 2.0f };
-		DirectX::XMFLOAT2 fCenterToCursorPow = { fCenterToCursor.x / fZoneSizeHarf.x,fCenterToCursor.y / fZoneSizeHarf.y };
-		DirectX::XMFLOAT2 fCenterToBall = { ce_fBallLimitX.x * fCenterToCursorPow.x,  ce_fBallLimitX.y * fCenterToCursorPow.y + ce_fBallEndPos.y };
+#ifndef _CAM_DEBUG
+	CCamera::SetCameraKind(CAM_BATTER);
+#endif // !_CAM_DEBUG
+	DirectX::XMFLOAT2 fCursorPos;
+	DirectX::XMFLOAT2 fCenterToCursor;  
+	DirectX::XMFLOAT2 fZoneSizeHarf;
+	DirectX::XMFLOAT2 fCenterToCursorPow;
+	DirectX::XMFLOAT2 fPredPos;
+	DirectX::XMFLOAT2 fCenterToPred;
+	DirectX::XMFLOAT2 fCenterToPredPow;
+	static DirectX::XMFLOAT2 fBendValue;
+	static float fTime = 0.0f;
+	static bool bRelease;
 
-		m_pos.x += (fCenterToBall.x - ce_fBallPos.x) / fChatch;
-		m_pos.y += (fCenterToBall.y - ce_fBallPos.y) / fChatch;
-		m_pos.z += (ce_fBallEndPos.z - ce_fBallPos.z) / fChatch;
-		m_rotate.y += DirectX::XMConvertToRadians(ce_nBallRotateSec * 360.0f) / fChatch;
+	m_tParam.size = ce_fBallSize;
+	if (m_pPitching->GetPitchingPhase() == CPitching::PitchingPhase::Release)
+	{
+		if (!bRelease)
+		{
+			// æŠ•çƒåœ°ç‚¹ã®å–å¾—
+			fCursorPos = m_pCursor->GetPos();
+			fCenterToCursor = { fCursorPos.x - ce_fPitchingCursorPos.x,fCursorPos.y - ce_fPitchingCursorPos.y };
+			fZoneSizeHarf = { ce_fStrikeZoneSize.x / 2.0f,ce_fStrikeZoneSize.y / 2.0f };
+			fCenterToCursorPow = { fCenterToCursor.x / fZoneSizeHarf.x,fCenterToCursor.y / fZoneSizeHarf.y };
+			m_fPitchPos = { ce_fBallLimitX.x * fCenterToCursorPow.x,  ce_fBallLimitX.y * fCenterToCursorPow.y };
+			m_fPitchPos.x *= -1.0f;
+			m_fPitchPos.y *= -1.0f;
+
+			// äºˆæ¸¬åœ°ç‚¹ã®å–å¾—
+			fPredPos = m_pCursor->GetPredPos();
+			fCenterToPred = { fPredPos.x - fCursorPos.x,fPredPos.y - fCursorPos.y };
+			fCenterToPredPow = { fCenterToPred.x / fZoneSizeHarf.x,fCenterToPred.y / fZoneSizeHarf.y };
+			m_fPredValue = { ce_fBallLimitX.x * fCenterToPredPow.x,  ce_fBallLimitX.y * fCenterToPredPow.y };
+			m_fPredValue.x *= -1.0f;
+			m_fPredValue.y *= -1.0f;
+
+			// äºˆæ¸¬åœ°ç‚¹ã®å–å¾—
+			m_fPredValue.x *= (ce_fBallEndPos.z - ce_fBallPos.z) / (134.0f - ce_fBallPos.z);
+			m_fPredValue.y *= (ce_fBallEndPos.z - ce_fBallPos.z) / (134.0f - ce_fBallPos.z);
+
+			bRelease = true;
+		}
+
+		float fChatch = m_pPitching->GetChatchTime() * fFPS;
+		fBendValue.x += m_fPredValue.x / fChatch;
+		fBendValue.y += m_fPredValue.y / fChatch;
+
+		fTime += 1.0f / 60.0f;
+
+		m_tParam.pos.x = m_fPitchPos.x + fBendValue.x + ce_fBallEndPos.x + WORLD_AJUST;
+		m_tParam.pos.y = m_fPitchPos.y + fBendValue.y + ce_fBallEndPos.y + WORLD_AJUST;
+
+		m_tParam.pos.z += (ce_fBallEndPos.z - ce_fBallPos.z) / fChatch;
+		m_tParam.rotate.x += DirectX::XMConvertToRadians(ce_nBallRotateSec * 360.0f) / fChatch;
 
 		if (m_pBatting->GetBatting())
 		{
 			m_nPhase = (int)BallPhase::InPlay;
 			m_fMove = m_pBatting->GetDirection();
+			m_bFry = true;
+			m_bBallFaulZone = false;
 		}
 	}
 	else
 	{
-		m_pos = { ce_fBallPos.x + WORLD_AJUST ,ce_fBallPos.y + WORLD_AJUST, ce_fBallPos.z + WORLD_AJUST };
+		fTime = 0.0f;
+		m_tParam.pos = { ce_fBallPos.x + WORLD_AJUST ,ce_fBallPos.y + WORLD_AJUST, ce_fBallPos.z + WORLD_AJUST };
+
+		bRelease = false;
+		fBendValue = {};
 	}
 }
 
 void CBall::UpdateInPlay()
 {
-	m_pos.x += m_fMove.x;
-	m_pos.y += m_fMove.y;
-	m_pos.z += m_fMove.z;
+	CBallCount* pBallCount = CBallCount::GetInstance().get();
+
+
+
+
+	m_tParam.size = ce_fInplayBallSize;
+#ifndef _CAM_DEBUG
+	CCamera::SetCameraKind(CAM_INPLAY);
+#endif
+	m_tParam.pos.x += m_fMove.x;
+	m_tParam.pos.y += m_fMove.y;
+	m_tParam.pos.z += m_fMove.z;
+
+	OutputDebugStringA(std::to_string(m_tParam.pos.y).c_str());
+	OutputDebugStringA("\n");
 
 	m_fMove.x *= 0.99f;
 	m_fMove.y *= 0.99f;
@@ -188,8 +333,9 @@ void CBall::UpdateInPlay()
 
 	m_fMove.y -= MSEC(GRAVITY);
  
-	if (m_pos.y < 0.0f + WORLD_AJUST) 
+	if (m_tParam.pos.y < 0.0f + WORLD_AJUST + ce_fGroundY)
 	{
+		if(CFielding::GetChatchPattern() == CFielding::ChatchPattern::NotChatch)m_bFry = false;
 		m_fMove.x *= 0.95f;
 		m_fMove.y *= 0.5f;
 		m_fMove.z *= 0.95f;
@@ -198,13 +344,13 @@ void CBall::UpdateInPlay()
 		if (m_fMove.y < CMETER(5.0f))
 		{
 			m_fMove.y = 0.0f;
-			m_pos.y = 0.0f;
+			m_tParam.pos.y = WORLD_AJUST + ce_fGroundY;
 		}
 		else 
 		{
-			m_pos.y -= WORLD_AJUST;
-			m_pos.y = -m_pos.y;
-			m_pos.y += WORLD_AJUST;
+			m_tParam.pos.y -= WORLD_AJUST + ce_fGroundY;
+			m_tParam.pos.y = -m_tParam.pos.y;
+			m_tParam.pos.y += WORLD_AJUST + ce_fGroundY;
 		}
 	}
 
@@ -212,13 +358,51 @@ void CBall::UpdateInPlay()
 	DirectX::XMVECTOR vMove = DirectX::XMLoadFloat3(&m_fMove);
 	DirectX::XMVECTOR vLen = DirectX::XMVector3Length(vMove);
 	DirectX::XMStoreFloat(&speed, vLen);
-	if (speed < CMSEC(0.01f)) 
-	{ 
-		m_nPhase = (int)BallPhase::Batting;
-		m_pBatting->SetBatting(false);
-		std::string debug;
-		debug = std::to_string(ce_fBallEndPos.z - (m_pos.z - WORLD_AJUST));
-		debug += "M”ò‚Ñ‚Ü‚µ‚½";
-		//INFO_MESSAGE(debug.c_str());
+	if (m_bBallFaulZone)
+	{
+		// ãƒœãƒ¼ãƒ«ãŒè½ã¡ã¦ã‹ã‚‰ãƒ•ã‚¡ãƒ¼ãƒ«åˆ¤å®šã‚’ã™ã‚‹
+		if (!m_bFry)
+		{
+			// ãƒ•ã‚¡ãƒ¼ãƒ«ã‚¾ãƒ¼ãƒ³ã«å…¥ã£ãŸæ™‚å¤–é‡ã«ãƒœãƒ¼ãƒ«ãŒã‚ã‚‹æ™‚ã¯å³æ™‚ãƒ•ã‚¡ãƒ¼ãƒ«ã«ã™ã‚‹
+			if (m_fFaulZoneBallPos.z <= ce_fInOutBorderZ)
+			{
+				for (int i = 0; i < (int)CBallCount::InplayElement::Max; i++)
+				{
+					pBallCount->SetEndInplay((CBallCount::InplayElement)i, true);
+				}
+			}
+			// ãƒ•ã‚¡ãƒ¼ãƒ«ã‚¾ãƒ¼ãƒ³ã«å…¥ã£ãŸæ™‚å†…é‡ã«ãƒœãƒ¼ãƒ«ãŒã‚ã‚‹æ™‚ã¯ãƒœãƒ¼ãƒ«ã‚’å–ã£ãŸæ™‚ã‹æ­¢ã¾ã£ãŸæ™‚ã«åˆ¤å®šã™ã‚‹
+			else
+			{
+				if (CFielding::GetChatchPattern() == CFielding::ChatchPattern::Grounder ||
+					(speed < CMSEC(3.0f) && CFielding::GetChatchPattern() == CFielding::ChatchPattern::Grounder))
+				{
+					for (int i = 0; i < (int)CBallCount::InplayElement::Max; i++)
+					{
+						pBallCount->SetEndInplay((CBallCount::InplayElement)i, true);
+					}
+				}
+			}
+		}
 	}
+
+	// ã‚¤ãƒ³ãƒ—ãƒ¬ãƒ¼ã®çµ‚äº†
+	if (pBallCount->GetEndInplay())
+	{
+		for (int i = 0; i < (int)CBallCount::InplayElement::Max; i++)
+		{
+			pBallCount->SetEndInplay((CBallCount::InplayElement)i, false);
+		}
+		// ãƒ•ã‚¡ãƒ¼ãƒ«ã®æ™‚ã¯ã‚«ã‚¦ãƒ³ãƒˆã‚’ãƒªã‚»ãƒƒãƒˆã—ãªã„
+		if (m_bBallFaulZone && CFielding::GetChatchPattern() != CFielding::ChatchPattern::Fry) pBallCount->AddStrikeCount(true);
+		else pBallCount->ResetCount();
+		m_bBallFaulZone = false;
+		m_nPhase = (int)BallPhase::Batting;
+		return;
+	}
+}
+
+void CBall::DrawShadow()
+{
+
 }

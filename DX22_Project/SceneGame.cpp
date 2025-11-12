@@ -6,29 +6,34 @@
 #include "CameraDebug.h"
 #include "CameraEvent.h"
 #include "CameraMinimap.h"
-#include "CameraPlayer.h"
 #include "CameraBatter.h"
 #include "BallCount.h"
 #include "StrikeZone.h"
-
-int CSceneGame::m_nPlaying = 0;
-CameraKind CSceneGame::m_eCameraKind = CAM_BATTER;
 
 /*───────四大処理───────*/
 // コンストラクタ
 CSceneGame::CSceneGame()
 	: m_pAttack(nullptr), m_pDefence(nullptr)
 {
-	// 静的変数の初期化
-	m_nPlaying = (int)Playing::Attack;
-	CBallCount::GetInstance()->Init();
 
 	// 各種初期化処理
-	m_pField = std::make_unique<CField>();
+	CBallCount::GetInstance()->Init(CBallCount::InningHalf::Top);
 	m_pAttack = std::make_unique<CAttack>();
 	m_pDefence = std::make_unique<CDefence>();
 
 	// カメラ
+#ifdef _CAM_DEBUG
+	CCamera::SetCameraKind(CameraKind::CAM_DEBUG);
+#else
+	if (1)
+	{
+		CCamera::SetCameraKind(CameraKind::CAM_BATTER);
+	}
+	else
+	{
+
+	}
+#endif // DEBUG
 
 
 	// エフェクト
@@ -42,8 +47,6 @@ CSceneGame::CSceneGame()
 	//m_pPlayer->SetCamera(m_pCamera[m_eCameraKind]);
 	//m_pField->SetCamera(m_pCamera[m_eCameraKind]);
 
-	 // インスタンスのセット
-	m_pField->SetCamera(CCamera::GetInstance(m_eCameraKind).get());
 }
 
 // デストラクタ
@@ -58,21 +61,12 @@ void CSceneGame::Update()
 	// カメラの切り替え処理
 	CameraUpdate();
 
-	m_pField->Update();		// フィールド
+	CField::GetInstance()->Update();		// フィールド
 	CStrikeZone::GetInstance()->Update();
-	switch (m_nPlaying)
-	{
-	case (int)Playing::Attack:
-		m_pDefence->Update();
+	m_pDefence->Update();
+	m_pAttack->Update();
 
-		m_pAttack->Update();
-		break;
-	case (int)Playing::Defence:
-		m_pDefence->Update();
-		break;
-	default:
-		break;
-	}
+	CBall::GetInstance()->Update();
 	CBallCount::GetInstance()->Update();
 
 }
@@ -80,7 +74,8 @@ void CSceneGame::Update()
 // 描画
 void CSceneGame::Draw()
 {
-	CCamera* pCamera = CCamera::GetInstance(m_eCameraKind).get();
+	CCamera* pCamera = CCamera::GetInstance(CCamera::GetCameraKind()).get();
+	CBall* pBall = CBall::GetInstance().get();
 	//DrawMinimap();
 
 	// GeometoryへのView,Projection設定
@@ -94,24 +89,19 @@ void CSceneGame::Draw()
 	// レンダーターゲットを3D用の設定に変更
 	SetRender3D();
 
-	m_pField->Draw();	// フィールドの描画
-	CStrikeZone::GetInstance()->Draw();
-	switch (m_nPlaying)
+	CField::GetInstance()->Draw();	// フィールドの描画
+	if (pBall->GetPhase() == CBall::BallPhase::Batting)
 	{
-	case (int)Playing::Attack:
-		m_pDefence->Draw();
-		m_pAttack->Draw();
-		break;
-	case (int)Playing::Defence:
-		m_pDefence->Draw();
-		break;
-	default:
-		break;
+		CStrikeZone::GetInstance()->Draw();
 	}
-	CBall::GetInstance()->Update();
-	CBall::GetInstance()->Draw();
-	CBallCount::GetInstance()->Draw();
+	m_pDefence->Draw();
+	m_pAttack->Draw();
 
+	pBall->Draw();
+	if (pBall->GetPhase() == CBall::BallPhase::Batting)
+	{
+		CBallCount::GetInstance()->Draw();
+	}
 	//m_pPlayer->Draw();	// プレイヤーの描画
 
 	// 2D描画
@@ -121,28 +111,22 @@ void CSceneGame::Draw()
 	//if (m_pEffect)m_pEffect->Draw();	// エフェクトの描画
 }
 
-CameraKind CSceneGame::GetCameraKind()
-{
-	return m_eCameraKind;
-}
-
 /*───────内部処理───────*/
 void CSceneGame::CameraUpdate()
 {
 	// カメラの更新
-	CCamera::GetInstance(m_eCameraKind)->Update();
+	CCamera::GetInstance(CCamera::GetCameraKind())->Update();
 
 	// イベント用のカメラ情報を取得
 }
 
 void CSceneGame::DrawMinimap()
 {
-	CCamera* pCamera = CCamera::GetInstance(m_eCameraKind).get();
+	CCamera* pCamera = CCamera::GetInstance(CCamera::GetCameraKind()).get();
 
 	// ミニマップ用カメラの更新
 	pCamera->Update(); // 更新処理だが描画で実行  
 	// 各種カメラをミニマップ用に設定
-	m_pField->SetCamera(pCamera);
 	//((CEffectGoal*)m_pEffect)->SetCamera(m_pCamera[CAM_MINIMAP]);
 
 	// ミニマップ表示用の変換行列を取得
@@ -159,23 +143,12 @@ void CSceneGame::DrawMinimap()
 	//m_pMinimap->BeginRender();
 
 	// ミニマップに表示するものを描画
-	m_pField->Draw();
+	CField::GetInstance()->Draw();
 	//m_pEffect->Draw();
 
 	// ミニマップの作成終了
 	//m_pMinimap->EndRender();
 
 	// 各種カメラを元に戻す
-	m_pField->SetCamera(pCamera);
 	//((CEffectGoal*)m_pEffect)->SetCamera(m_pCamera[m_eCameraKind]);
-}
-
-void CSceneGame::SetPlaying(Playing playing)
-{
-	m_nPlaying = (int)playing;
-}
-
-CSceneGame::Playing CSceneGame::GetPlaying()
-{
-	return (Playing)m_nPlaying;
 }

@@ -1,32 +1,43 @@
+// ==============================
+//    インクルード部
+// ==============================
 #include "Batting.h"
 #include "Sprite.h"
 #include "Main.h"
 #include "Camera.h"
 #include "Input.h"
-#include "SceneGame.h"
 #include "ImGuiManager.h"
 #include "BattingCursor.h"
+#include "BallCount.h"
+#include "Controller.h"
 
+// ==============================
+//    静的変数の初期化
+// ==============================
 Collision::Info2D CBattingCursor::m_Collision = {};
 
 CBattingCursor::CBattingCursor()
 	: m_pTexture{ nullptr }, m_pStrikeZone(nullptr)
 	, m_bMove(true)
 {
+	// テクスチャの読み込み
 	m_pTexture = std::make_unique<Texture>();
+	if (FAILED(m_pTexture->Create(PATH_TEX("Cursor.png")))) MessageBox(NULL, "Cursor.png", "Error", MB_OK);
+
+	// テクスチャパラメータの初期化
 	m_tParam.pos = ce_fBattingCursorPos;
+	m_tParam.offsetPos = { 0.0f,0.0f };
 	m_tParam.size = DirectX::XMFLOAT2(50.0f, 50.0f);
 	m_tParam.rotate = 0.0f;
 	m_tParam.color = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	m_tParam.uvPos = DirectX::XMFLOAT2(0.0f, 0.0f);
 	m_tParam.uvSize = DirectX::XMFLOAT2(1.0f, 1.0f);
-	m_tParam.world = CCamera::Get2DWolrdMatrix();
+	m_tParam.world = CCamera::Get2DWolrdMatrix(m_tParam.pos, m_tParam.rotate);
 	m_tParam.view = CCamera::Get2DViewMatrix();
 	m_tParam.proj = CCamera::Get2DProjectionMatrix();
 
-	if (FAILED(m_pTexture->Create(TEXPASS("Cursor.png")))) MessageBox(NULL, "Cursor.png", "Error", MB_OK);
-
-
+	// コリジョン情報の初期化
+	m_Collision = {};
 	m_Collision.type = Collision::Type2D::eCircle;
 	m_Collision.square.pos = m_tParam.pos;
 	m_Collision.square.size = m_tParam.size;
@@ -36,23 +47,32 @@ CBattingCursor::CBattingCursor()
 
 CBattingCursor::~CBattingCursor()
 {
+	// コンポジションインスタンスの放棄
 	m_pStrikeZone.release();
 }
 
 void CBattingCursor::Update()
 {
+	CBallCount* pBallCount = CBallCount::GetInstance().get();
+
+	// カーソル移動可能なときに移動処理をする
 	if (m_bMove)
 	{
-		if (IsKeyPress('D'))	m_tParam.pos.x += 1.0f;
-		if (IsKeyPress('A'))	m_tParam.pos.x -= 1.0f;
-		if (IsKeyPress('W'))	m_tParam.pos.y += 1.0f;
-		if (IsKeyPress('S'))	m_tParam.pos.y -= 1.0f;
+		// 移動処理
+		DirectX::XMFLOAT2 fStrikeZonePos = m_pStrikeZone->GetPos();
+		DirectX::XMFLOAT2 fStrikeZoneSize = m_pStrikeZone->GetSize();
+		DirectX::XMFLOAT2 fInput = pBallCount->GetOffenseTeam() == CBallCount::Team::Player1 ? CGetLStick((int)CBallCount::Team::Player1) : CGetLStick((int)CBallCount::Team::Player2);
+		DirectX::XMFLOAT2 fMaxPos = { fabsf(fStrikeZonePos.x) + fStrikeZoneSize.x / 1.5f , fabsf(fStrikeZonePos.y) + fStrikeZoneSize.y / 1.5f };
+		m_tParam.pos = { fStrikeZonePos.x + fInput.x * fMaxPos.x,fStrikeZonePos.y + fInput.y * fMaxPos.y };
 
-		if (m_tParam.pos.x >= m_pStrikeZone->GetPos().x + m_pStrikeZone->GetSize().x / 2.0f) m_tParam.pos.x = m_pStrikeZone->GetPos().x + m_pStrikeZone->GetSize().x / 2.0f;
-		if (m_tParam.pos.x <= m_pStrikeZone->GetPos().x - m_pStrikeZone->GetSize().x / 2.0f) m_tParam.pos.x = m_pStrikeZone->GetPos().x - m_pStrikeZone->GetSize().x / 2.0f;
-		if (m_tParam.pos.y >= m_pStrikeZone->GetPos().y + m_pStrikeZone->GetSize().y / 2.0f) m_tParam.pos.y = m_pStrikeZone->GetPos().y + m_pStrikeZone->GetSize().y / 2.0f;
-		if (m_tParam.pos.y <= m_pStrikeZone->GetPos().y - m_pStrikeZone->GetSize().y / 2.0f) m_tParam.pos.y = m_pStrikeZone->GetPos().y - m_pStrikeZone->GetSize().y / 2.0f;
+		// 移動補正
+		if (m_tParam.pos.x >= fStrikeZonePos.x + fStrikeZoneSize.x / 2.0f) m_tParam.pos.x = fStrikeZonePos.x + fStrikeZoneSize.x / 2.0f;
+		if (m_tParam.pos.x <= fStrikeZonePos.x - fStrikeZoneSize.x / 2.0f) m_tParam.pos.x = fStrikeZonePos.x - fStrikeZoneSize.x / 2.0f;
+		if (m_tParam.pos.y >= fStrikeZonePos.y + fStrikeZoneSize.y / 2.0f) m_tParam.pos.y = fStrikeZonePos.y + fStrikeZoneSize.y / 2.0f;
+		if (m_tParam.pos.y <= fStrikeZonePos.y - fStrikeZoneSize.y / 2.0f) m_tParam.pos.y = fStrikeZonePos.y - fStrikeZoneSize.y / 2.0f;
 	}
+
+	// コリジョン情報更新
 	m_Collision.square.pos = m_tParam.pos;
 	m_Collision.square.size = m_tParam.size;
 	m_Collision.circle.pos = m_tParam.pos;
@@ -71,6 +91,7 @@ void CBattingCursor::Draw()
 #endif // _COLLISION_DEBUG
 
 	SetRender2D();
+	m_tParam.world = CCamera::Get2DWolrdMatrix(m_tParam.pos, m_tParam.rotate);
 	Sprite::SetParam(m_tParam);
 	Sprite::SetTexture(m_pTexture.get());
 	Sprite::Draw();
@@ -89,11 +110,6 @@ DirectX::XMFLOAT2 CBattingCursor::GetPos()
 DirectX::XMFLOAT2 CBattingCursor::GetSize()
 {
 	return m_tParam.size;
-}
-
-void CBattingCursor::SetPos(DirectX::XMFLOAT2 pos)
-{
-	m_tParam.pos = pos;
 }
 
 void CBattingCursor::SetMove(bool isMove)

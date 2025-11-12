@@ -163,8 +163,8 @@ void Sprite::SetParam(SpriteParam param)
 {
 	// パラメーター設定
 	// 座標
-	m_data.param[0].x = param.pos.x;
-	m_data.param[0].y = param.pos.y;
+	m_data.param[0].x = param.offsetPos.x;
+	m_data.param[0].y = param.offsetPos.y;
 	// サイズ
 	m_data.param[0].z = param.size.x;
 	m_data.param[0].w = param.size.y;

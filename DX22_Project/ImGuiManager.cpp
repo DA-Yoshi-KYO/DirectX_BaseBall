@@ -35,6 +35,48 @@ void SpriteParamDebug(DirectX::XMFLOAT2* pos, DirectX::XMFLOAT2* size, std::stri
 	ImGui::End();
 }
 
+void ModelParamDebug(DirectX::XMFLOAT3* pos, DirectX::XMFLOAT3* size, DirectX::XMFLOAT3* rotate, std::string name, DirectX::XMFLOAT2 guipos)
+{
+	// 描画前の設定
+	// ウィンドウを出す位置
+	ImGui::SetNextWindowPos(ImVec2(guipos.x, guipos.y));
+	// ウィンドウのサイズ
+	ImGui::SetNextWindowSize(ImVec2(200, 150));
+	// ウィンドウの名前
+	ImGui::Begin(name.c_str());
+
+	// コンポーネント
+	// スライダー呼び出し(名前,調整したい値,min,max)
+	ImGui::SliderFloat("XPos", &pos->x, -SCREEN_WIDTH  / 2.0f + WORLD_AJUST, SCREEN_WIDTH / 2.0f + WORLD_AJUST);
+	ImGui::SliderFloat("YPos", &pos->y, -SCREEN_HEIGHT / 2.0f + WORLD_AJUST, SCREEN_HEIGHT / 2.0f + WORLD_AJUST);
+	ImGui::SliderFloat("ZPos", &pos->y, -SCREEN_HEIGHT / 2.0f + WORLD_AJUST, SCREEN_HEIGHT / 2.0f + WORLD_AJUST);
+	ImGui::SliderFloat("XSize", &size->x, 0.0f, 400.0f);
+	ImGui::SliderFloat("YSize", &size->y, 0.0f, 400.0f);
+	ImGui::SliderFloat("ZSize", &size->z, 0.0f, 400.0f);
+	ImGui::SliderFloat("XRotate", &rotate->x, 0.0f, 360.0f);
+	ImGui::SliderFloat("YRotate", &rotate->y, 0.0f, 360.0f);
+	ImGui::SliderFloat("ZRotate", &rotate->z, 0.0f, 360.0f);
+	rotate->x = DirectX::XMConvertToRadians(rotate->x);
+	rotate->y = DirectX::XMConvertToRadians(rotate->y);
+	rotate->z = DirectX::XMConvertToRadians(rotate->z);
+
+	if (ImGui::Button("Reset"))
+	{
+		pos->x = 0.0f;
+		pos->y = 0.0f;
+		pos->z = 0.0f;
+		size->x = 0.0f;
+		size->y = 0.0f;
+		size->z = 0.0f;
+		rotate->x = 0.0f;
+		rotate->y = 0.0f;
+		rotate->z = 0.0f;
+	}
+
+	// 描画後の処理
+	ImGui::End();
+}
+
 DirectX::XMFLOAT4 GetPosSizeDebug(std::string name, DirectX::XMFLOAT2 guipos)
 {
 	static DirectX::XMFLOAT4 PosSize = { 0.0f,0.0f,100.0f,100.0f };

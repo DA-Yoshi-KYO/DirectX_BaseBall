@@ -31,6 +31,13 @@
 /// <param name="guipos:"> ウィンドウの座標 </param>
 void SpriteParamDebug(DirectX::XMFLOAT2* pos, DirectX::XMFLOAT2* size, std::string name, DirectX::XMFLOAT2 guipos = { 20.0f,20.0f });
 
+/// <summary> SpriteParamDebug:スプライトの座標、サイズをスライダーで調整する </summary>
+/// <param name="pos:"> スプライトの座標 </param>
+/// <param name="size:"> スプライトのサイズ </param>
+/// <param name="name:"> ウィンドウの名前 </param>
+/// <param name="guipos:"> ウィンドウの座標 </param>
+void ModelParamDebug(DirectX::XMFLOAT3* pos, DirectX::XMFLOAT3* size,DirectX::XMFLOAT3* rotate, std::string name, DirectX::XMFLOAT2 guipos = { 20.0f,20.0f });
+
 /// <summary> SpriteParamDebug:スプライトの座標、サイズをスライダーで調整し、戻り値として受け取る </summary>
 /// <param name="name:"> ウィンドウの名前 </param>
 /// <param name="guipos:"> ウィンドウの座標 </param>

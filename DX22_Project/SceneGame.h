@@ -24,25 +24,14 @@ public:
 
 	/*------------コンポジション------------*/
 private:
-	std::unique_ptr<CField> m_pField;
 	std::unique_ptr<CAttack> m_pAttack;
 	std::unique_ptr<CDefence> m_pDefence;
-	static CameraKind m_eCameraKind;
-	static int m_nPlaying;
 
 	/*---------------内部処理---------------*/
 	void CameraUpdate();
 	void DrawMinimap();
 
 public:
-	enum class Playing
-	{
-		Attack,
-		Defence
-	};
-	static void SetPlaying(Playing playing);
-	static Playing GetPlaying();
-	static CameraKind GetCameraKind();
 };
 
 #endif // __SCENE_GAME_H__

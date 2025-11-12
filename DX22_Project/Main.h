@@ -12,4 +12,5 @@ void Draw();
 std::string GetStringForKey();
 void SetRender2D();
 void SetRender3D();
+void SetEnd(bool isEnd);
 #endif // __MAIN_H__
