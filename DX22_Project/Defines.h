@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <DirectXMath.h>
 #include <memory>
+#include <vector>
 
 // defines
 
@@ -16,6 +17,8 @@ static const float fFPS = static_cast<float>(FPS);
 // リソースパス
 #define PATH_MODEL(fbx) ("Assets/Model/" fbx)
 #define PATH_TEX(png) ("Assets/Texture/" png)
+#define PATH_BGM(mp3) ("Assets/Sound/BGM" mp3)
+#define PATH_SE(mp3) ("Assets/Sound/SE" mp3)
 #define PATH_FONT(ttf) (L"Assets\\Font\\" ttf)
 #define PATH_DATA(data) (std::wstring(L"Assets/Data/") + (data))
 #define ERROR_MESSAGE(asset) do{ MessageBox(NULL,asset,"LoadError",MB_OK); } while (0)

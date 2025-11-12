@@ -85,6 +85,12 @@
     <Filter Include="ヘッダー ファイル\BaseBall\Team">
       <UniqueIdentifier>{239e4a47-bffd-4720-8ee3-015a74fdbe75}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\Work\plus">
+      <UniqueIdentifier>{6d989d82-2df8-49dc-8d38-7a85536994df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Work\plus">
+      <UniqueIdentifier>{f7825b9b-d3b8-469a-9c01-c89476453cfc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Shader.cpp">
@@ -273,6 +279,12 @@
     <ClCompile Include="Write.cpp">
       <Filter>ソース ファイル\Work</Filter>
     </ClCompile>
+    <ClCompile Include="Sound.cpp">
+      <Filter>ソース ファイル\Work</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundList.cpp">
+      <Filter>ソース ファイル\Work\plus</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MeshBuffer.h">
@@ -445,6 +457,12 @@
     </ClInclude>
     <ClInclude Include="TeamManager.h">
       <Filter>ヘッダー ファイル\BaseBall\Team</Filter>
+    </ClInclude>
+    <ClInclude Include="Sound.h">
+      <Filter>ヘッダー ファイル\Work</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundList.h">
+      <Filter>ヘッダー ファイル\Work\plus</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

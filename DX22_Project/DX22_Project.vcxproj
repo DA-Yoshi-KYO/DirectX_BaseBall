@@ -191,6 +191,8 @@
     <ClCompile Include="PitchingCursor.cpp" />
     <ClCompile Include="SceneMemberselect.cpp" />
     <ClCompile Include="SceneTeamselect.cpp" />
+    <ClCompile Include="Sound.cpp" />
+    <ClCompile Include="SoundList.cpp" />
     <ClCompile Include="TeamManager.cpp" />
     <ClCompile Include="PolylineEffect.cpp" />
     <ClCompile Include="Running.cpp" />
@@ -253,6 +255,8 @@
     <ClInclude Include="PitchingCursor.h" />
     <ClInclude Include="SceneMemberselect.h" />
     <ClInclude Include="SceneTeamselect.h" />
+    <ClInclude Include="Sound.h" />
+    <ClInclude Include="SoundList.h" />
     <ClInclude Include="TeamManager.h" />
     <ClInclude Include="PolylineEffect.h" />
     <ClInclude Include="Running.h" />

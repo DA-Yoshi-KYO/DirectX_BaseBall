@@ -16,6 +16,7 @@
 #include "SceneTeamselect.h"
 #include "SceneMemberselect.h"
 #include <dwrite.h>
+#include "Sound.h"
 
 //--- グローバル変数
 CScene* g_pScene; // シーン 
@@ -28,7 +29,6 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 	HRESULT hr;
 	// DirectX初期化
 	hr = InitDirectX(hWnd, width, height, false);
-	// 初期化の例
 	if (FAILED(hr)) { return hr; }
 
 	IMGUI_CHECKVERSION();
@@ -46,15 +46,18 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 
 	Geometory::Init();
 	Sprite::Init();
-	InitInput();
+	hr = InitInput();
+	if (FAILED(hr)) { return hr; }
 	ShaderList::Init();
+	hr = InitSound();
+	if (FAILED(hr)) { return hr; }
 
 	// フェード作成 
 	g_pFade = new CFadeBlack();
 	g_pFade->SetFade(1.0f, true);
 
 	// シーン作成 
-	g_pScene = new CSceneTeamSelect();
+	g_pScene = new CSceneTitle();
 	g_pScene->SetFade(g_pFade); // シーンに使用するフェードを設定 
 
 
@@ -65,6 +68,8 @@ void Uninit()
 {
 	delete g_pScene;
 	delete g_pFade;
+
+	UninitSound();
 	ShaderList::Uninit();
 	UninitInput();
 	Sprite::Uninit();

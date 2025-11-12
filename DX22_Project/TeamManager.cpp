@@ -414,11 +414,22 @@ CTeamManager::BatterState CTeamManager::GetRunnerState(int BaseNo)
 CTeamManager::BatterState CTeamManager::GetFielderState(FieldingNo No)
 {
     int i = 0;
-    for (auto itr = m_tVecBatterMember.begin(); itr != m_tVecBatterMember.end(); itr++, i++)
+    if (No != FieldingNo::Pitcher)
     {
-        if (itr->m_eFieldingNo == No)
+        for (auto itr = m_tVecBatterMember.begin(); itr != m_tVecBatterMember.end(); itr++, i++)
         {
-            return m_tVecBatterMember[i];
+            if (itr->m_eFieldingNo == No)
+            {
+                return m_tVecBatterMember[i];
+            }
         }
+    }
+    else
+    {
+        BatterState state;
+        state.m_eDefence = Quality::D;
+        state.m_eThrowing = Quality::D;
+        state.m_eChatch = Quality::D;
+        return state;
     }
 }
