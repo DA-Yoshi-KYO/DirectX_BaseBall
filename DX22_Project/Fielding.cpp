@@ -67,7 +67,7 @@ void CFielding::Update()
 {
 	CField* pField = CField::GetInstance().get();
 	CBall* pBall = CBall::GetInstance().get();
-	CBallCount* pBallCount = CBallCount::GetInstance().get();
+	CGameManager* pBallCount = CGameManager::GetInstance();
 	CTeamManager* pTeamManager = CTeamManager::GetInstance((int)pBallCount->GetDefenseTeam()).get();
 
 	// 計算に使う変数の定義
@@ -111,10 +111,10 @@ void CFielding::Update()
 			}
 			float fMovePow = pTeamManager->GetFielderState((CTeamManager::FieldingNo)(m_nOperationNo + 1)).m_eDefence * (0.45f / 7.0f) + 0.2f;
 			// 移動処理
-			if (pBallCount->GetDefenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::Up) : IsKeyPress(InputPlayer2::Up)) m_tParam[m_nOperationNo].pos.z -= fMovePow;
-			if (pBallCount->GetDefenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::Down) : IsKeyPress(InputPlayer2::Down)) m_tParam[m_nOperationNo].pos.z += fMovePow;
-			if (pBallCount->GetDefenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::Left) : IsKeyPress(InputPlayer2::Left)) m_tParam[m_nOperationNo].pos.x -= fMovePow;
-			if (pBallCount->GetDefenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::Right) : IsKeyPress(InputPlayer2::Right)) m_tParam[m_nOperationNo].pos.x += fMovePow;
+			if (pBallCount->GetDefenseTeam() == CGameManager::Team::Player1 ? IsKeyPress(InputPlayer1::Up) : IsKeyPress(InputPlayer2::Up)) m_tParam[m_nOperationNo].pos.z -= fMovePow;
+			if (pBallCount->GetDefenseTeam() == CGameManager::Team::Player1 ? IsKeyPress(InputPlayer1::Down) : IsKeyPress(InputPlayer2::Down)) m_tParam[m_nOperationNo].pos.z += fMovePow;
+			if (pBallCount->GetDefenseTeam() == CGameManager::Team::Player1 ? IsKeyPress(InputPlayer1::Left) : IsKeyPress(InputPlayer2::Left)) m_tParam[m_nOperationNo].pos.x -= fMovePow;
+			if (pBallCount->GetDefenseTeam() == CGameManager::Team::Player1 ? IsKeyPress(InputPlayer1::Right) : IsKeyPress(InputPlayer2::Right)) m_tParam[m_nOperationNo].pos.x += fMovePow;
 
 			// ベースに近い選手を初期化
 			for (int i = 0; i < (int)CField::BaseKind::Max; i++)
@@ -152,7 +152,7 @@ void CFielding::Update()
 						m_bHold = true;
 
 						// ボールが転がっている状態ではなくなるので、インプレー終了要素を満たす
-						pBallCount->SetEndInplay(CBallCount::InplayElement::HoldBall, true);
+						pBallCount->SetEndInplay(CGameManager::InplayElement::HoldBall, true);
 
 						// フライを捕球したらアウトにする
 						if (pBall->GetIsFry())
@@ -169,10 +169,10 @@ void CFielding::Update()
 			else
 			{
 				// 送球処理
-				if (pBallCount->GetDefenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::B) : IsKeyPress(InputPlayer2::B))Throwing(CField::BaseKind::First);
-				if (pBallCount->GetDefenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::Y) : IsKeyPress(InputPlayer2::Y))Throwing(CField::BaseKind::Second);
-				if (pBallCount->GetDefenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::X) : IsKeyPress(InputPlayer2::X))Throwing(CField::BaseKind::Third);
-				if (pBallCount->GetDefenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::A) : IsKeyPress(InputPlayer2::A))Throwing(CField::BaseKind::Home);
+				if (pBallCount->GetDefenseTeam() == CGameManager::Team::Player1 ? IsKeyPress(InputPlayer1::B) : IsKeyPress(InputPlayer2::B))Throwing(CField::BaseKind::First);
+				if (pBallCount->GetDefenseTeam() == CGameManager::Team::Player1 ? IsKeyPress(InputPlayer1::Y) : IsKeyPress(InputPlayer2::Y))Throwing(CField::BaseKind::Second);
+				if (pBallCount->GetDefenseTeam() == CGameManager::Team::Player1 ? IsKeyPress(InputPlayer1::X) : IsKeyPress(InputPlayer2::X))Throwing(CField::BaseKind::Third);
+				if (pBallCount->GetDefenseTeam() == CGameManager::Team::Player1 ? IsKeyPress(InputPlayer1::A) : IsKeyPress(InputPlayer2::A))Throwing(CField::BaseKind::Home);
 
 				CRunning::RunnerParam tParam[(int)CRunning::RunnerKind::Max];
 				// 各ランナーの状態を取得
@@ -299,7 +299,7 @@ void CFielding::Throwing(CField::BaseKind kind)
 	if(!m_bBaseCovered[(int)kind]) return;
 
 	CBall* pBall = CBall::GetInstance().get();
-	CTeamManager* pTeamManager = CTeamManager::GetInstance((int)CBallCount::GetInstance()->GetDefenseTeam()).get();
+	CTeamManager* pTeamManager = CTeamManager::GetInstance((int)CGameManager::GetInstance()->GetDefenseTeam()).get();
 	
 	DirectX::XMFLOAT3 fBaseCoverPos = m_tParam[m_nBaseNearNo[(int)kind]].pos;
 	DirectX::XMFLOAT3 fBallPos = pBall->GetPos();

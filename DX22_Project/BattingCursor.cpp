@@ -53,7 +53,7 @@ CBattingCursor::~CBattingCursor()
 
 void CBattingCursor::Update()
 {
-	CBallCount* pBallCount = CBallCount::GetInstance().get();
+	CGameManager* pBallCount = CGameManager::GetInstance().get();
 
 	// カーソル移動可能なときに移動処理をする
 	if (m_bMove)
@@ -61,7 +61,7 @@ void CBattingCursor::Update()
 		// 移動処理
 		DirectX::XMFLOAT2 fStrikeZonePos = m_pStrikeZone->GetPos();
 		DirectX::XMFLOAT2 fStrikeZoneSize = m_pStrikeZone->GetSize();
-		DirectX::XMFLOAT2 fInput = pBallCount->GetOffenseTeam() == CBallCount::Team::Player1 ? CGetLStick((int)CBallCount::Team::Player1) : CGetLStick((int)CBallCount::Team::Player2);
+		DirectX::XMFLOAT2 fInput = pBallCount->GetOffenseTeam() == CGameManager::Team::Player1 ? CGetLStick((int)CGameManager::Team::Player1) : CGetLStick((int)CGameManager::Team::Player2);
 		DirectX::XMFLOAT2 fMaxPos = { fabsf(fStrikeZonePos.x) + fStrikeZoneSize.x / 1.5f , fabsf(fStrikeZonePos.y) + fStrikeZoneSize.y / 1.5f };
 		m_tParam.pos = { fStrikeZonePos.x + fInput.x * fMaxPos.x,fStrikeZonePos.y + fInput.y * fMaxPos.y };
 

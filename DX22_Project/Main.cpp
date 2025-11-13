@@ -1,253 +1,100 @@
+// App
 #include "Main.h"
-#include <memory>
 #include "DirectX.h"
-#include "Defines.h"
+
+// Works
 #include "Geometory.h"
 #include "Sprite.h"
 #include "Input.h"
-#include "ShaderList.h"
-#include "FadeBlack.h"
-#include "imgui.h"
-#include "imgui_impl_dx11.h"
-#include "imgui_impl_win32.h"
-#include "Controller.h"
-#include "SceneTitle.h"
-#include "SceneGame.h"
-#include "SceneTeamselect.h"
-#include "SceneMemberselect.h"
-#include <dwrite.h>
-#include "Sound.h"
 
-//--- グローバル変数
-CScene* g_pScene; // シーン 
-CFade* g_pFade; // フェード 
+// PreLoadAssets
+#include "RendererComponent.h"
+#include "ModelRenderer.h"
+#include "SpriteRendererBase.h"
+
+// SingletonInstances
+#include "DebugSystem.h"
+
+// Scenes
+#include "SceneTitle.h"
+
+CScene* g_pScene = nullptr;
+bool g_bIsDebugMode = false;
 
 HRESULT Init(HWND hWnd, UINT width, UINT height)
 {
-	//_CrtSetBreakAlloc(131);
-
 	HRESULT hr;
-	// DirectX初期化
+
+	// DirectX
 	hr = InitDirectX(hWnd, width, height, false);
 	if (FAILED(hr)) { return hr; }
 
-	IMGUI_CHECKVERSION();
-	ImGui::CreateContext();
-	ImGuiIO& io = ImGui::GetIO(); (void)io;
-	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
-	io.DisplaySize = ImVec2((float)width, (float)height);
-	// Setup Dear ImGui style
-	ImGui::StyleColorsDark();
-	//ImGui::StyleColorsLight();
-
-	ImGui_ImplWin32_Init(hWnd);
-	ImGui_ImplDX11_Init(GetDevice(), GetContext());
-
+    // Works
+    hr = InitInput();
+    if (FAILED(hr)) { return hr; }
 	Geometory::Init();
 	Sprite::Init();
-	hr = InitInput();
-	if (FAILED(hr)) { return hr; }
-	ShaderList::Init();
-	hr = InitSound();
-	if (FAILED(hr)) { return hr; }
 
-	// フェード作成 
-	g_pFade = new CFadeBlack();
-	g_pFade->SetFade(1.0f, true);
+    // SingletonInstances
+    CDebugSystem::GetInstance();
 
-	// シーン作成 
-	g_pScene = new CSceneTitle();
-	g_pScene->SetFade(g_pFade); // シーンに使用するフェードを設定 
-
+    // Scenes
+    g_pScene = new CSceneTitle();
+    g_pScene->Init();
 
 	return hr;
 }
 
 void Uninit()
 {
-	delete g_pScene;
-	delete g_pFade;
+    // Scenes
+    g_pScene->Uninit();
+    SAFE_DELETE(g_pScene);
 
-	UninitSound();
-	ShaderList::Uninit();
-	UninitInput();
+    // SingletonInstances
+    CDebugSystem::GetInstance()->Release();
+
+    // PreLoadAssets
+    CRendererComponent::UnloadShader();
+    CModelRenderer::UnloadAll();
+    CSpriteRendererBase::UnloadAll();
+
+    // Works
 	Sprite::Uninit();
 	Geometory::Uninit();
-	ImGui_ImplDX11_Shutdown();
-	ImGui_ImplWin32_Shutdown();
-	ImGui::DestroyContext();
-	UninitDirectX();
+    UninitInput();
 
-	_CrtDumpMemoryLeaks();
+    // DirectX
+	UninitDirectX();
 }
 
 void Update()
 {
-	UpdateInput();
-	g_pScene->RootUpdate();
-	srand(timeGetTime());
+    UpdateInput();
+    g_pScene->Update();
 
-	Controller_Update();
+    if (IsKeyPress(VK_SHIFT))
+    {
+        if (IsKeyTrigger(VK_RETURN))
+        {
+            g_bIsDebugMode ^= true;
+        }
+    }
 
-	// シーン切り替え判定 
-	if (g_pScene->ChangeScene()) {
-		// 次のシーンの情報を取得 
-		CScene::SceneKind scene = g_pScene->NextScene();
-
-		// 現在のシーンを削除 
-		delete g_pScene;
-
-		// シーンの切り替え 
-		switch (scene) 
-		{
-			case CScene::SceneKind::Title: g_pScene = new CSceneTitle(); break;
-			case CScene::SceneKind::TeamSelect: g_pScene = new CSceneTeamSelect(); break;
-			case CScene::SceneKind::MemberSelect: g_pScene = new CSceneMemberselect(CSceneTeamSelect::GetTeam(0), CSceneTeamSelect::GetTeam(1)); break;
-			case CScene::SceneKind::Game: g_pScene = new CSceneGame(); break; 
-		}
-
-		// 次シーンに向けて初期設定 
-		g_pFade->Start(true);   // フェード開始 
-		g_pScene->SetFade(g_pFade); // フェードクラスをシーンに設定 
-	}
+    if(g_bIsDebugMode) CDebugSystem::GetInstance()->Update();
 }
 
 void Draw()
 {
 	BeginDrawDirectX();
-	ImGui_ImplDX11_NewFrame();
-	ImGui_ImplWin32_NewFrame();
-	ImGui::NewFrame();
-	// 軸線の表示
-#if 1
-	// グリッド
-	DirectX::XMFLOAT4 lineColor(0.5f, 0.5f, 0.5f, 1.0f);
-	float size = DEBUG_GRID_NUM * DEBUG_GRID_MARGIN;
-	for (int i = 1; i <= DEBUG_GRID_NUM; ++i)
-	{
-		float grid = i * DEBUG_GRID_MARGIN + WORLD_AJUST;
-		DirectX::XMFLOAT3 pos[2] = {
-			DirectX::XMFLOAT3(grid, 0.0f, size),
-			DirectX::XMFLOAT3(grid, 0.0f,-size),
-		};
-		Geometory::AddLine(pos[0], pos[1], lineColor);
-		pos[0].x = pos[1].x = -grid;
-		Geometory::AddLine(pos[0], pos[1], lineColor);
-		pos[0].x = size;
-		pos[1].x = -size;
-		pos[0].z = pos[1].z = grid;
-		Geometory::AddLine(pos[0], pos[1], lineColor);
-		pos[0].z = pos[1].z = -grid;
-		Geometory::AddLine(pos[0], pos[1], lineColor);
-	}
-	// 軸
-	Geometory::AddLine(DirectX::XMFLOAT3(0,0,0), DirectX::XMFLOAT3(size,0,0), DirectX::XMFLOAT4(1,0,0,1));
-	Geometory::AddLine(DirectX::XMFLOAT3(0,0,0), DirectX::XMFLOAT3(0,size,0), DirectX::XMFLOAT4(0,1,0,1));
-	Geometory::AddLine(DirectX::XMFLOAT3(0,0,0), DirectX::XMFLOAT3(0,0,size), DirectX::XMFLOAT4(0,0,1,1));
-	Geometory::AddLine(DirectX::XMFLOAT3(0,0,0), DirectX::XMFLOAT3(-size,0,0),  DirectX::XMFLOAT4(0,0,0,1));
-	Geometory::AddLine(DirectX::XMFLOAT3(0,0,0), DirectX::XMFLOAT3(0,0,-size),  DirectX::XMFLOAT4(0,0,0,1));
 
-	Geometory::DrawLines();
+    g_pScene->Draw();
+    if (g_bIsDebugMode) CDebugSystem::GetInstance()->Draw();
 
-	// カメラの値
-	static bool camPosSwitch = false;
-	if (IsKeyTrigger(VK_RETURN)) {
-		camPosSwitch ^= true;
-	}
-
-	DirectX::XMVECTOR camPos;
-	if (camPosSwitch) {
-		camPos = DirectX::XMVectorSet(2.5f, 30.5f, -40.0f, 0.0f);
-	}
-	else {
-		camPos = DirectX::XMVectorSet(2.5f, 3.5f, -4.0f, 0.0f);
-	}
-
-	// ジオメトリ用カメラ初期化
-	DirectX::XMFLOAT4X4 mat[2];
-	DirectX::XMStoreFloat4x4(&mat[0], DirectX::XMMatrixTranspose(
-		DirectX::XMMatrixLookAtLH(
-			camPos,
-			DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f),
-			DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)
-		)));
-	DirectX::XMStoreFloat4x4(&mat[1], DirectX::XMMatrixTranspose(
-		DirectX::XMMatrixPerspectiveFovLH(
-			DirectX::XMConvertToRadians(60.0f), (float)SCREEN_WIDTH / SCREEN_HEIGHT, 0.1f, 100.0f)
-	));
-	Geometory::SetView(mat[0]);
-	Geometory::SetProjection(mat[1]);
-#endif
-	g_pScene->RootDraw();
-	ImGui::Render();
-	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 	EndDrawDirectX();
 }
 
-std::string GetStringForKey()
+CScene* GetScene()
 {
-	char value;
-	std::string ReturnString;
-	ReturnString.clear();
-	// 数字チェック
-	for (int i = 48; i < 58; i++)
-	{
-		value = i;
-		if (IsKeyTrigger(value))
-		{
-			if (IsKeyPress(VK_SHIFT))
-			{
-				value = i - 16;
-				ReturnString += value;
-				if (i == 48) return "Error";
-				return ReturnString;
-			}
-			else
-			{
-				ReturnString += value;
-				return ReturnString;
-			}
-		}
-	}
-
-	// 文字チェック
-	for (int i = 65; i < 90; i++)
-	{
-		value = i;
-		if (IsKeyTrigger(value))
-		{
-			if (IsKeyPress(VK_SHIFT))
-			{
-				value = i;
-				ReturnString += value;
-				return ReturnString;
-			}
-			else
-			{
-				value = i + 32;
-				ReturnString += value;
-				return ReturnString;
-			}
-		}
-	}
-
-	if (IsKeyTrigger(VK_BACK)) return "Back";
-
-	return "Error";
+    return g_pScene;
 }
-
-void SetRender2D()
-{
-	RenderTarget* pRTV = GetDefaultRTV();	// デフォルトのRenderTargetViewを取得
-	SetRenderTargets(1, &pRTV, nullptr);		// 第三引数がNULLの場合、2D表示となる
-}
-
-void SetRender3D()
-{
-	RenderTarget* pRTV = GetDefaultRTV();	// デフォルトのRenderTargetViewを取得 
-	DepthStencil* pDSV = GetDefaultDSV();	// デフォルトのDepthStencilViewを取得
-	SetRenderTargets(1, &pRTV, pDSV);		// 第三引数がNULLの場合、2D表示となる
-}
-
-// EOF

@@ -126,6 +126,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>dinput8.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <FxCompile>
+      <ObjectFileOutput>$(ProjectDir)Assets\Shader\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -149,8 +152,13 @@
     <ClCompile Include="Attack.cpp" />
     <ClCompile Include="Ball.cpp" />
     <ClCompile Include="BallCount.cpp" />
+    <ClCompile Include="BaseCount.cpp" />
+    <ClCompile Include="CountManager.cpp" />
+    <ClCompile Include="CountObject.cpp" />
+    <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="Batting.cpp" />
     <ClCompile Include="BattingCursor.cpp" />
+    <ClCompile Include="BillboardRenderer.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CameraBatter.cpp" />
     <ClCompile Include="CameraDebug.cpp" />
@@ -158,10 +166,10 @@
     <ClCompile Include="CameraInplay.cpp" />
     <ClCompile Include="CameraMinimap.cpp" />
     <ClCompile Include="Collision.cpp" />
+    <ClCompile Include="Component.cpp" />
     <ClCompile Include="Controller.cpp" />
     <ClCompile Include="Defence.cpp" />
     <ClCompile Include="DirectX.cpp" />
-    <ClCompile Include="Easing.cpp" />
     <ClCompile Include="Effect.cpp" />
     <ClCompile Include="EffectGoal.cpp" />
     <ClCompile Include="Fade.cpp" />
@@ -178,21 +186,30 @@
     <ClCompile Include="imgui_impl_win32.cpp" />
     <ClCompile Include="imgui_tables.cpp" />
     <ClCompile Include="imgui_widgets.cpp" />
+    <ClCompile Include="Inning.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MeshBuffer.cpp" />
     <ClCompile Include="Minimap.cpp" />
     <ClCompile Include="Model.cpp" />
+    <ClCompile Include="ModelRenderer.cpp" />
     <ClCompile Include="Model_anime.cpp" />
     <ClCompile Include="Model_check.cpp" />
     <ClCompile Include="Model_get.cpp" />
     <ClCompile Include="Model_morph.cpp" />
+    <ClCompile Include="OutCount.cpp" />
     <ClCompile Include="Pitching.cpp" />
     <ClCompile Include="PitchingCursor.cpp" />
+    <ClCompile Include="RendererComponent.cpp" />
     <ClCompile Include="SceneMemberselect.cpp" />
     <ClCompile Include="SceneTeamselect.cpp" />
+    <ClCompile Include="Score.cpp" />
+    <ClCompile Include="ScoreBoard.cpp" />
     <ClCompile Include="Sound.cpp" />
-    <ClCompile Include="SoundList.cpp" />
+    <ClCompile Include="Sprite3DRenderer.cpp" />
+    <ClCompile Include="SpriteRenderer.cpp" />
+    <ClCompile Include="SpriteRendererBase.cpp" />
+    <ClCompile Include="StrikeCount.cpp" />
     <ClCompile Include="TeamManager.cpp" />
     <ClCompile Include="PolylineEffect.cpp" />
     <ClCompile Include="Running.cpp" />
@@ -215,8 +232,13 @@
     <ClInclude Include="Attack.h" />
     <ClInclude Include="Ball.h" />
     <ClInclude Include="BallCount.h" />
+    <ClInclude Include="BaseCount.h" />
+    <ClInclude Include="CountManager.h" />
+    <ClInclude Include="CountObject.h" />
+    <ClInclude Include="GameManager.h" />
     <ClInclude Include="Batting.h" />
     <ClInclude Include="BattingCursor.h" />
+    <ClInclude Include="BillboardRenderer.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CameraBatter.h" />
     <ClInclude Include="CameraDebug.h" />
@@ -224,11 +246,11 @@
     <ClInclude Include="CameraInplay.h" />
     <ClInclude Include="CameraMinimap.h" />
     <ClInclude Include="Collision.h" />
+    <ClInclude Include="Component.h" />
     <ClInclude Include="Controller.h" />
     <ClInclude Include="Defence.h" />
     <ClInclude Include="Defines.h" />
     <ClInclude Include="DirectX.h" />
-    <ClInclude Include="Easing.h" />
     <ClInclude Include="Effect.h" />
     <ClInclude Include="EffectGoal.h" />
     <ClInclude Include="Fade.h" />
@@ -246,17 +268,26 @@
     <ClInclude Include="imstb_rectpack.h" />
     <ClInclude Include="imstb_textedit.h" />
     <ClInclude Include="imstb_truetype.h" />
+    <ClInclude Include="Inning.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="Main.h" />
     <ClInclude Include="MeshBuffer.h" />
     <ClInclude Include="Minimap.h" />
     <ClInclude Include="Model.h" />
+    <ClInclude Include="ModelRenderer.h" />
+    <ClInclude Include="OutCount.h" />
     <ClInclude Include="Pitching.h" />
     <ClInclude Include="PitchingCursor.h" />
+    <ClInclude Include="RendererComponent.h" />
     <ClInclude Include="SceneMemberselect.h" />
     <ClInclude Include="SceneTeamselect.h" />
+    <ClInclude Include="Score.h" />
+    <ClInclude Include="ScoreBoard.h" />
     <ClInclude Include="Sound.h" />
-    <ClInclude Include="SoundList.h" />
+    <ClInclude Include="Sprite3DRenderer.h" />
+    <ClInclude Include="SpriteRenderer.h" />
+    <ClInclude Include="SpriteRendererBase.h" />
+    <ClInclude Include="StrikeCount.h" />
     <ClInclude Include="TeamManager.h" />
     <ClInclude Include="PolylineEffect.h" />
     <ClInclude Include="Running.h" />
@@ -276,6 +307,20 @@
     <Text Include="History.txt" />
     <Text Include="Schedule.txt" />
     <Text Include="Task.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="PS_Sprite.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="PS_TexColor.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="VS_Object.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+    </FxCompile>
+    <FxCompile Include="VS_Sprite.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+    </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

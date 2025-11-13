@@ -1,50 +1,103 @@
 #pragma once
 
-#include "Fade.h"
+#include "Defines.h"
+#include "GameObject.h"
+#include <array>
+#include <list>
 
-class CScene 
+class CScene
 {
 public:
-	CScene();
+    CScene();
 	virtual ~CScene();
+	virtual void Init();
+	virtual void Uninit();
+	virtual void Update();
+	virtual void Draw();
 
-public:
-	enum class SceneKind
+    // ã‚²ãƒ¼ãƒ ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’è¿½åŠ ã™ã‚‹
+	template<typename T = CGameObject>
+	T* AddGameObject(std::string inName, Tag inTag)
 	{
-		Title,
-		TeamSelect,
-		MemberSelect,
-		Game,
-		Result,
+		T* gameObject;
+		gameObject = new T();
+		m_pGameObject_List[(int)inTag].push_back(gameObject);
 
-		Max
-	};
+        ObjectID id{};
+        for (auto itr : m_tIDVec)
+        {
+            if (itr.m_sName == inName)
+            {
+                id.m_nSameCount++;
+            }
+        }
+        id.m_sName = inName;
+        m_tIDVec.push_back(id);
+        gameObject->SetID(id);
 
-public:
+		gameObject->Init();
+        gameObject->SetTag(inTag);
 
-	// ƒV[ƒ““à‚ÅŒp³æ‚ÌXVˆ—‚ÆƒtƒF[ƒh‚Ìˆ—‚ğŒÄ‚Ño‚·‚½‚ß‚ÌXVŠÖ” 
-	void RootUpdate();
+		return gameObject;
+	}
 
-	// ƒV[ƒ““à‚ÅŒp³æ‚ÌXVˆ—‚ÆƒtƒF[ƒh‚Ìˆ—‚ğŒÄ‚Ño‚·‚½‚ß‚Ì•`‰æŠÖ” 
-	void RootDraw();
+    // ã‚²ãƒ¼ãƒ ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’å–å¾—ã™ã‚‹
+	template<typename T = CGameObject>
+	T* GetGameObject()
+	{
+        for (auto list : m_pGameObject_List)
+        {
+            for (auto obj : list)
+            {
+                T* ret = dynamic_cast<T*>(obj);
+                if (ret != nullptr) return ret;
+            }
+        }
+		return nullptr;
+	}
 
-	// Œp³æ‚ÌƒNƒ‰ƒX‚ÅÀ‘•‚·‚éXVˆ—‚Æ•`‰æˆ— 
-	virtual void Update() = 0;
-	virtual void Draw() = 0;
+	CGameObject* GetGameObject(ObjectID inID)
+	{
+        for (auto list : m_pGameObject_List)
+        {
+            for (auto obj : list)
+            {
+                ObjectID id = obj->GetID();
+                if (id.m_sName == inID.m_sName &&
+                    id.m_nSameCount == inID.m_nSameCount)
+                {
+                    return obj;
+                }
+            }
+        }
+		return nullptr;
+	}
 
-	// ƒV[ƒ“‚ÅÀs‚·‚éƒtƒF[ƒhƒNƒ‰ƒX‚ğİ’è 
-	void SetFade(CFade* fade);
+    CGameObject* GetGameObject(std::string inName)
+	{
+        for (auto list : m_pGameObject_List)
+        {
+            for (auto obj : list)
+            {
+                ObjectID id = obj->GetID();
+                if (id.m_sName == inName)
+                {
+                    return obj;
+                }
+            }
+        }
+		return nullptr;
+	}
 
-	// Šî–{ƒNƒ‰ƒX‚Å‚ÍAƒtƒF[ƒhƒAƒEƒg‚ÌI—¹‚ğŒŸ’m‚µ‚ÄƒV[ƒ“‚ÌØ‚è‘Ö‚¦‚ğ—LŒø‚É‚·‚é 
-	virtual bool ChangeScene();
+    std::vector<ObjectID> GetIDVec();
+    std::array<std::list<CGameObject*>, (int)Tag::Max> GetGameObjectList();
 
-	// Ÿ‚ÌØ‚è‘Ö‚¦æƒV[ƒ“‚ğæ“¾ 
-	SceneKind NextScene();
-
-	// Ø‚è‘Ö‚¦æ‚ÌƒV[ƒ“‚ğİ’è 
-	void SetNext(SceneKind next);
+    void DrawGrid();
 
 protected:
-	CFade* m_pFade; // ƒtƒF[ƒhˆ—ƒNƒ‰ƒX 
-	SceneKind  m_next;  // Ø‚è‘Ö‚¦æ‚ÌƒV[ƒ“ 
+    std::array<std::list<CGameObject*>,(int)Tag::Max> m_pGameObject_List; // ã‚·ãƒ¼ãƒ³å†…ã®ã‚²ãƒ¼ãƒ ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆãƒªã‚¹ãƒˆ
+
+private:
+    std::vector<ObjectID> m_tIDVec;
+
 };

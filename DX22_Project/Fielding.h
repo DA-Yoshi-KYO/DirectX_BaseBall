@@ -61,7 +61,7 @@ private:
 	std::unique_ptr<Model> m_pFieldMember[(int)FieldMember::Max];
 
 	// モデルパラメータ
-	ModelParam m_tParam[(int)FieldMember::Max];
+	ObjectParam m_tParam[(int)FieldMember::Max];
 
 	// メンバ変数
 	int m_nOperationNo;	// 操作しているキャラの番号

@@ -36,16 +36,13 @@ public:
 	/// <summary> GetSize:ストライクゾーンのサイズを取得する </summary>
 	/// <returns> ストライクゾーンのサイズ</returns>
 	DirectX::XMFLOAT2 GetSize();
-	/// <summary> GetInstance:CStrikeZoneクラスのシングルトンインスタンスを取得する </summary>
-	/// <returns> CStrikeZoneクラスのインスタンス </returns>
-	static std::unique_ptr<CStrikeZone>& GetInstance();
-
+	
 private:
 	// コンポジション
 	std::unique_ptr<Texture> m_pTexture;
 
 	// パラメータ
-	SpriteParam m_tParam;
+	ObjectParam m_tParam;
 
 	// 当たり判定情報
 	Collision::Info2D m_Collision;

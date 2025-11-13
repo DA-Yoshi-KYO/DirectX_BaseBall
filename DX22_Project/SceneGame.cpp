@@ -17,7 +17,7 @@ CSceneGame::CSceneGame()
 {
 
 	// 各種初期化処理
-	CBallCount::GetInstance()->Init(CBallCount::InningHalf::Top);
+	CGameManager::GetInstance()->Init(CGameManager::InningHalf::Top);
 	m_pAttack = std::make_unique<CAttack>();
 	m_pDefence = std::make_unique<CDefence>();
 
@@ -67,7 +67,7 @@ void CSceneGame::Update()
 	m_pAttack->Update();
 
 	CBall::GetInstance()->Update();
-	CBallCount::GetInstance()->Update();
+	CGameManager::GetInstance()->Update();
 
 }
 
@@ -100,7 +100,7 @@ void CSceneGame::Draw()
 	pBall->Draw();
 	if (pBall->GetPhase() == CBall::BallPhase::Batting)
 	{
-		CBallCount::GetInstance()->Draw();
+		CGameManager::GetInstance()->Draw();
 	}
 	//m_pPlayer->Draw();	// プレイヤーの描画
 

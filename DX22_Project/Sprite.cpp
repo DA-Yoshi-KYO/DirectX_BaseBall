@@ -6,54 +6,6 @@ std::shared_ptr<PixelShader> Sprite::m_defPS;
 
 void Sprite::Init()
 {
-	const char* VS = R"EOT(
-struct VS_IN {
-	float3 pos : POSITION0;
-	float2 uv : TEXCOORD0;
-};
-struct VS_OUT {
-	float4 pos : SV_POSITION;
-	float2 uv : TEXCOORD0;
-	float4 color : COLOR0;
-};
-cbuffer Matrix : register(b0) {
-	float4x4 world;
-	float4x4 view;
-	float4x4 proj;
-};
-cbuffer Param : register(b1) {
-	float2 offset;
-	float2 size;
-	float2 uvPos;
-	float2 uvScale;
-	float4 color;
-};
-VS_OUT main(VS_IN vin) {
-	VS_OUT vout;
-	vout.pos = float4(vin.pos, 1.0f);
-	vout.pos.xy *= size;
-	vout.pos.xy += offset;
-	vout.pos = mul(vout.pos, world);
-	vout.pos = mul(vout.pos, view);
-	vout.pos = mul(vout.pos, proj);
-	vout.uv = vin.uv;
-	vout.uv *= uvScale;
-	vout.uv += uvPos;
-	vout.color = color;
-	return vout;
-})EOT";
-	const char* PS = R"EOT(
-struct PS_IN {
-	float4 pos : SV_POSITION;
-	float2 uv : TEXCOORD0;
-	float4 color : COLOR0;
-};
-Texture2D tex : register(t0);
-SamplerState samp : register(s0);
-float4 main(PS_IN pin) : SV_TARGET {
-	return tex.Sample(samp, pin.uv) * pin.color;
-})EOT";
-
 	struct Vertex
 	{
 		float pos[3];
@@ -65,7 +17,7 @@ float4 main(PS_IN pin) : SV_TARGET {
 		{{ 0.5f,-0.5f, 0.0f}, {1.0f, 1.0f}},
 	};
 
-	// メッシュ
+	// 繝｡繝�繧ｷ繝･
 	MeshBuffer::Description desc = {};
 	desc.pVtx = vtx;
 	desc.vtxSize = sizeof(Vertex);
@@ -74,7 +26,7 @@ float4 main(PS_IN pin) : SV_TARGET {
 	m_data.mesh = std::make_shared<MeshBuffer>();
 	m_data.mesh->Create(desc);
 
-	// パラメーター
+	// 繝代Λ繝｡繝ｼ繧ｿ繝ｼ
 	m_data.param[0] = DirectX::XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f);
 	m_data.param[1] = DirectX::XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f);
 	m_data.param[2] = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -82,17 +34,22 @@ float4 main(PS_IN pin) : SV_TARGET {
 	DirectX::XMStoreFloat4x4(&m_data.matrix[1], DirectX::XMMatrixIdentity());
 	DirectX::XMStoreFloat4x4(&m_data.matrix[2], DirectX::XMMatrixIdentity());
 
-	// シェーダー
+	// 繧ｷ繧ｧ繝ｼ繝繝ｼ
 	m_defVS = std::make_shared<VertexShader>();
-	m_defVS->Compile(VS);
+    HRESULT hr = m_defVS->Load("Assets/Shader/VS_Sprite.cso");
+    if (FAILED(hr)) MessageBox(NULL, "LoadFailed:VS_Sprite", "Error:Sprite.cpp", MB_OK);
 	m_data.vs = m_defVS.get();
 	m_defPS = std::make_shared <PixelShader>();
-	m_defPS->Compile(PS);
+	hr = m_defPS->Load("Assets/Shader/PS_Sprite.cso");
+    if (FAILED(hr)) MessageBox(NULL, "LoadFailed:PS_Sprite", "Error:Sprite.cpp", MB_OK);
 	m_data.ps = m_defPS.get();
 }
+
 void Sprite::Uninit()
 {
+
 }
+
 void Sprite::Draw()
 {
 	m_data.vs->WriteBuffer(0, m_data.matrix);
@@ -108,6 +65,7 @@ void Sprite::SetOffset(DirectX::XMFLOAT2 offset)
 	m_data.param[0].x = offset.x;
 	m_data.param[0].y = offset.y;
 }
+
 void Sprite::SetSize(DirectX::XMFLOAT2 size)
 {
 	m_data.param[0].z = size.x;
@@ -119,31 +77,38 @@ void Sprite::SetUVPos(DirectX::XMFLOAT2 pos)
 	m_data.param[1].x = pos.x;
 	m_data.param[1].y = pos.y;
 }
+
 void Sprite::SetUVScale(DirectX::XMFLOAT2 scale)
 {
 	m_data.param[1].z = scale.x;
 	m_data.param[1].w = scale.y;
 }
+
 void Sprite::SetColor(DirectX::XMFLOAT4 color)
 {
 	m_data.param[2] = color;
 }
+
 void Sprite::SetTexture(Texture* tex)
 {
 	m_data.texture = tex;
 }
+
 void Sprite::SetWorld(DirectX::XMFLOAT4X4 world)
 {
 	m_data.matrix[0] = world;
 }
+
 void Sprite::SetView(DirectX::XMFLOAT4X4 view)
 {
 	m_data.matrix[1] = view;
 }
+
 void Sprite::SetProjection(DirectX::XMFLOAT4X4 proj)
 {
 	m_data.matrix[2] = proj;
 }
+
 void Sprite::SetVertexShader(Shader* vs)
 {
 	if (vs && typeid(VertexShader) == typeid(*vs))
@@ -151,35 +116,11 @@ void Sprite::SetVertexShader(Shader* vs)
 	else
 		m_data.vs = m_defVS.get();
 }
+
 void Sprite::SetPixelShader(Shader* ps)
 {
 	if (ps && typeid(PixelShader) == typeid(*ps))
 		m_data.ps = ps;
 	else
 		m_data.ps = m_defPS.get();
-}
-
-void Sprite::SetParam(SpriteParam param)
-{
-	// パラメーター設定
-	// 座標
-	m_data.param[0].x = param.offsetPos.x;
-	m_data.param[0].y = param.offsetPos.y;
-	// サイズ
-	m_data.param[0].z = param.size.x;
-	m_data.param[0].w = param.size.y;
-	// uv座標
-	m_data.param[1].x = param.uvPos.x;
-	m_data.param[1].y = param.uvPos.y;
-	// uvサイズ
-	m_data.param[1].z = param.uvSize.x;
-	m_data.param[1].w = param.uvSize.y;
-	// 色
-	m_data.param[2] = param.color;
-	// ワールド座標
-	m_data.matrix[0] = param.world;
-	// ビュー座標
-	m_data.matrix[1] = param.view;
-	// プロジェクション座標
-	m_data.matrix[2] = param.proj;
 }

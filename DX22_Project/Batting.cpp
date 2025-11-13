@@ -50,7 +50,7 @@ CBatting::~CBatting()
 void CBatting::Update()
 {
 	DirectX::XMFLOAT3 fBallPos = m_pBall->GetPos();
-	CBallCount* pBallCount = CBallCount::GetInstance().get();
+	CGameManager* pBallCount = CGameManager::GetInstance();
 
 	// ピッチャーがボールを受け取ったらスイング可能にする
 	if (fBallPos.z == ce_fBallPos.z + WORLD_AJUST && m_pBall->GetPhase() == CBall::BallPhase::Batting)
@@ -60,7 +60,7 @@ void CBatting::Update()
 	}
 
 	// 投球中にスイングを掛けていない時にスイングが出来る
-	if ((pBallCount->GetOffenseTeam() == CBallCount::Team::Player1 ? IsKeyTrigger(InputPlayer1::A) : IsKeyTrigger(InputPlayer2::A)) && !m_bSwing)
+	if ((pBallCount->GetOffenseTeam() == CGameManager::Team::Player1 ? IsKeyTrigger(InputPlayer1::A) : IsKeyTrigger(InputPlayer2::A)) && !m_bSwing)
 	{
 		float fTyming = ce_fJustTyming + WORLD_AJUST - fBallPos.z;	// どのタイミングで振ったか(0がジャスト、マイナスが遅れている、プラスが早い)
 		float fAngle = 30.0f;		// 打球角度

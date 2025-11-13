@@ -3,14 +3,17 @@
 
 #include <Windows.h>
 #include <string>
+#include "Scene.h"
 
 HRESULT Init(HWND hWnd, UINT width, UINT height);
 void Uninit();
 void Update();
 void Draw();
 
-std::string GetStringForKey();
-void SetRender2D();
-void SetRender3D();
-void SetEnd(bool isEnd);
+void AppEnd();
+
+HWND GetMyWindow();
+int GetFPS();
+CScene* GetScene();
+
 #endif // __MAIN_H__

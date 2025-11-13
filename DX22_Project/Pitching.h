@@ -131,7 +131,7 @@ private:
 	std::unique_ptr<CPitchingCursor> m_pPitchingCursor;
 
 	// パラメータ
-	SpriteParam m_tParam[(int)TexKind::Max];
+	ObjectParam m_tParam[(int)TexKind::Max];
 
 	// メンバ変数
 	int m_nPitchingPhase;	// 投球の流れ

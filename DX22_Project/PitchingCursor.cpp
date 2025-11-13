@@ -48,9 +48,6 @@ CPitchingCursor::CPitchingCursor()
 	m_tParam.color = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	m_tParam.uvPos = DirectX::XMFLOAT2(0.0f, 0.0f);
 	m_tParam.uvSize = DirectX::XMFLOAT2(1.0f, 1.0f);
-	m_tParam.world = CCamera::Get2DWolrdMatrix(m_tParam.pos, m_tParam.rotate);
-	m_tParam.view = CCamera::Get2DViewMatrix();
-	m_tParam.proj = CCamera::Get2DProjectionMatrix();
 	
 	m_tPredParam.pos = ce_fPitchingCursorPos;
 	m_tPredParam.offsetPos = { 0.0f,0.0f };
@@ -59,9 +56,7 @@ CPitchingCursor::CPitchingCursor()
 	m_tPredParam.color = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 0.5f);
 	m_tPredParam.uvPos = DirectX::XMFLOAT2(0.0f, 0.0f);
 	m_tPredParam.uvSize = DirectX::XMFLOAT2(1.0f, 1.0f);
-	m_tPredParam.world = CCamera::Get2DWolrdMatrix(m_tPredParam.pos, m_tPredParam.rotate);
-	m_tPredParam.view = CCamera::Get2DViewMatrix();
-	m_tPredParam.proj = CCamera::Get2DProjectionMatrix();
+	
 
 	
 	// コリジョン情報の初期化
@@ -88,10 +83,10 @@ void CPitchingCursor::Update()
 	// カーソル移動可能なときに移動処理をする
 	if (m_bMove && m_pPitching->GetPitchingPhase() == CPitching::PitchingPhase::Pitch)
 	{
-		CBallCount* pBallCount = CBallCount::GetInstance().get();
+		CGameManager* pBallCount = CGameManager::GetInstance().get();
 
 		// 移動処理
-		DirectX::XMFLOAT2 fInput = pBallCount->GetDefenseTeam() == CBallCount::Team::Player1 ? CGetLStick((int)CBallCount::Team::Player1) : CGetLStick((int)CBallCount::Team::Player2);
+		DirectX::XMFLOAT2 fInput = pBallCount->GetDefenseTeam() == CGameManager::Team::Player1 ? CGetLStick((int)CGameManager::Team::Player1) : CGetLStick((int)CGameManager::Team::Player2);
 		DirectX::XMFLOAT2 fMaxPos = { fabsf(fStrikeZonePos.x) + fStrikeZoneSize.x / 1.5f , fabsf(fStrikeZonePos.y) + fStrikeZoneSize.y / 1.5f };
 		m_tParam.pos = { fStrikeZonePos.x + fInput.x * fMaxPos.x,fStrikeZonePos.y + fInput.y * fMaxPos.y };
 

@@ -57,7 +57,7 @@ CRunning::~CRunning()
 void CRunning::Update()
 {
 	// インスタンスの取得
-	CBallCount* pBallCount = CBallCount::GetInstance().get();
+	CGameManager* pBallCount = CGameManager::GetInstance();
 	CField* pField = CField::GetInstance().get();
 	CBall* pBall = CBall::GetInstance().get();
 	CTeamManager* pTeamManager = CTeamManager::GetInstance((int)pBallCount->GetOffenseTeam()).get();
@@ -122,7 +122,7 @@ void CRunning::Update()
 void CRunning::Draw()
 {
 	// インスタンスの取得
-	CBallCount* pBallCount = CBallCount::GetInstance().get();
+	CGameManager* pBallCount = CGameManager::GetInstance().get();
 	CField* pField = CField::GetInstance().get();
 	CBall* pBall = CBall::GetInstance().get();
 
@@ -196,7 +196,7 @@ void CRunning::RunnerMove(RunnerKind kind)
 {
 	// インスタンスの取得
 	CField* pField = CField::GetInstance().get();
-	CBallCount* pBallCount = CBallCount::GetInstance().get();
+	CGameManager* pBallCount = CGameManager::GetInstance().get();
 	CBall* pBall = CBall::GetInstance().get();
 
 	// 汎用的に使う変数の定義
@@ -224,19 +224,19 @@ void CRunning::RunnerMove(RunnerKind kind)
 	}
 
 	// キー入力による移動処理
-	if (pBallCount->GetOffenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::Y) : IsKeyPress(InputPlayer2::Y) &&
-		pBallCount->GetOffenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::B) : IsKeyPress(InputPlayer2::B) && 
+	if (pBallCount->GetOffenseTeam() == CGameManager::Team::Player1 ? IsKeyPress(InputPlayer1::Y) : IsKeyPress(InputPlayer2::Y) &&
+		pBallCount->GetOffenseTeam() == CGameManager::Team::Player1 ? IsKeyPress(InputPlayer1::B) : IsKeyPress(InputPlayer2::B) && 
 		m_tRunnerParam[(int)kind].m_eDirection != Direction::Stop)
 	{
 		// ランナーを止める
 		m_tRunnerParam[(int)kind].m_eDirection = Direction::BaseBetween;
 	}
-	else if (pBallCount->GetOffenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::Y) : IsKeyPress(InputPlayer2::Y))
+	else if (pBallCount->GetOffenseTeam() == CGameManager::Team::Player1 ? IsKeyPress(InputPlayer1::Y) : IsKeyPress(InputPlayer2::Y))
 	{
 		// ランナーを進める
 		m_tRunnerParam[(int)kind].m_eDirection = Direction::Forward;
 	}
-	else if (pBallCount->GetOffenseTeam() == CBallCount::Team::Player1 ? IsKeyPress(InputPlayer1::B) : IsKeyPress(InputPlayer2::B))
+	else if (pBallCount->GetOffenseTeam() == CGameManager::Team::Player1 ? IsKeyPress(InputPlayer1::B) : IsKeyPress(InputPlayer2::B))
 	{
 		// ランナーを戻す
 		m_tRunnerParam[(int)kind].m_eDirection = Direction::Backward;
@@ -522,7 +522,7 @@ void CRunning::RunnerMove(RunnerKind kind)
 void CRunning::RunnerCheck()
 {
 	// インスタンスの取得
-	CBallCount* pBallCount = CBallCount::GetInstance().get();
+	CGameManager* pBallCount = CGameManager::GetInstance().get();
 
 	// まずどのランナーも動いていないものとする
 	bool bCheck = true;
@@ -537,13 +537,13 @@ void CRunning::RunnerCheck()
 	}
 
 	// ランナーが動いていないかをセットする
-	pBallCount->SetEndInplay(CBallCount::InplayElement::Running, bCheck);
+	pBallCount->SetEndInplay(CGameManager::InplayElement::Running, bCheck);
 }
 
 void CRunning::BaseStateCheck()
 {
 	// インスタンスの取得
-	CBallCount* pBallCount = CBallCount::GetInstance().get();
+	CGameManager* pBallCount = CGameManager::GetInstance().get();
 
 	// インプレーが終わった時にベースの確認をする
 	if (pBallCount->GetEndInplay())
@@ -564,7 +564,7 @@ void CRunning::BaseStateCheck()
 void CRunning::SetOut(RunnerKind kind)
 {
 	// インスタンスの取得
-	CBallCount* pBallCount = CBallCount::GetInstance().get();
+	CGameManager* pBallCount = CGameManager::GetInstance().get();
 
 	// ランナーがいる事の確認
 	if (m_tRunnerParam[(int)kind].m_bAlive)
@@ -579,7 +579,7 @@ void CRunning::SetOut(RunnerKind kind)
 void CRunning::HomeRun()
 {
 	// インスタンスの取得
-	CBallCount* pBallCount = CBallCount::GetInstance().get();
+	CGameManager* pBallCount = CGameManager::GetInstance().get();
 
 	for (int i = 0; i < (int)RunnerKind::Max; i++)
 	{
@@ -595,9 +595,9 @@ void CRunning::HomeRun()
 	}
 
 	// ホームラン時は即座にインプレーを終了する
-	for (int i = 0; i < (int)CBallCount::InplayElement::Max; i++)
+	for (int i = 0; i < (int)CGameManager::InplayElement::Max; i++)
 	{
-		pBallCount->SetEndInplay((CBallCount::InplayElement)i, true);
+		pBallCount->SetEndInplay((CGameManager::InplayElement)i, true);
 	}
 }
 

@@ -5,6 +5,7 @@
 #include "Main.h"
 #include "BallCount.h"
 #include "Running.h"
+#include "ModelRenderer.h"
 
 constexpr DirectX::XMFLOAT2 ce_fBallLimitX = { 2.7f,-2.7f };
 constexpr DirectX::XMFLOAT2 ce_fBallLimitY = { -2.7f,2.3f };
@@ -13,42 +14,38 @@ constexpr  DirectX::XMFLOAT3 ce_fInplayBallSize = { 2.0f,2.0f,2.0f };
 constexpr int ce_nBallRotateSec = 220 / 60;
 
 CBall::CBall()
-	: m_pModel(nullptr), m_pPitching(nullptr)
-	, m_nPhase((int)BallPhase::Batting)
-	, m_fMove{}, m_fShadowPos{}
+	: m_nPhase((int)BallPhase::Batting)
+	, m_fMove{}
 	, m_bFry(true), m_bBallFaulZone(false), m_fFaulZoneBallPos{}
 	, m_fPitchPos{}, m_fPredValue{}
 {
 	// ボールのモデルの読み込み
-	m_pModel = std::make_unique<Model>();
-	if (!m_pModel->Load(PATH_MODEL("ball.obj"))) ERROR_MESSAGE("ball.fbx");
+	CModelRenderer* pModel = AddComponent<CModelRenderer>();
+	pModel->Load(PATH_MODEL("ball.obj"));
+	pModel->LoadVertexShader(PATH_SHADER("VS_Object.cso"));
+	pModel->LoadPixelShader(PATH_SHADER("PS_TexColor.cso"));
 
-	m_pShadow = std::make_unique<Texture>();
-	if (FAILED(m_pShadow->Create(PATH_TEX("Shadow.png")))) ERROR_MESSAGE("Shadow.png");
-
-	m_tParam.pos = { ce_fBallPos.x + WORLD_AJUST ,ce_fBallPos.y + WORLD_AJUST, ce_fBallPos.z + WORLD_AJUST };
-	m_tParam.size = ce_fBallSize;
-	m_tParam.rotate = { 0.0f,0.0f,0.0f };
+	
+	m_tParam.m_f3Pos = { ce_fBallPos.x + WORLD_AJUST ,ce_fBallPos.y + WORLD_AJUST, ce_fBallPos.z + WORLD_AJUST };
+	m_tParam.m_f3Size = ce_fBallSize;
+	m_tParam.m_f3Rotate = { 0.0f,0.0f,0.0f };
 	m_BallCollision.type = Collision::eBox;
-	m_BallCollision.box.center = m_tParam.pos;
+	m_BallCollision.box.center = m_tParam.m_f3Pos;
 	m_BallCollision.box.size = { ce_fBallSize.x / 2.0f,ce_fBallSize.y / 2.0f,ce_fBallSize.z / 2.0f };
 
 	m_LucusCollision.type = Collision::eLine;
-	m_LucusCollision.line.start = m_tParam.pos;
-	m_LucusCollision.line.end = m_tParam.pos;
+	m_LucusCollision.line.start = m_tParam.m_f3Pos;
+	m_LucusCollision.line.end = m_tParam.m_f3Pos;
 }
 
 CBall::~CBall()
 {
-	m_pPitching.release();
-	m_pCursor.release();
-	m_pPitching.release();
-	m_pBatting.release();
+
 }
 
 void CBall::Update()
 {
-	m_LucusCollision.line.start = m_tParam.pos;
+	m_LucusCollision.line.start = m_tParam.m_f3Pos;
 	switch (m_nPhase)
 	{
 	case (int)BallPhase::Batting: UpdateBatting(); break;
@@ -57,71 +54,17 @@ void CBall::Update()
 		break;
 	}
 	m_BallCollision.type = Collision::eBox;
-	m_BallCollision.box.center = m_tParam.pos;
+	m_BallCollision.box.center = m_tParam.m_f3Pos;
 	m_BallCollision.box.size = { ce_fBallSize.x / 2.0f,ce_fBallSize.y / 2.0f,ce_fBallSize.z / 2.0f };
-	m_LucusCollision.line.end = m_tParam.pos;
-}
+	m_LucusCollision.line.end = m_tParam.m_f3Pos;
 
-void CBall::Draw()
-{
-#ifdef _IMGUI
-	DirectX::XMFLOAT3X3 debug = GetPosSizeRotateDebug("Ball");
-#endif // _IMGUI
-
-	Collision::DrawCollision(m_LucusCollision);
-	SetModel(m_tParam,m_pModel.get());
-	
-}
-
-void CBall::SetModel(ModelParam param, Model* model, bool isAnime)
-{
-	SetRender3D();
-
-	CCamera* pCamera = CCamera::GetInstance(CCamera::GetCameraKind()).get();
-
-	param.mWorld =
-		DirectX::XMMatrixScaling(param.size.x, param.size.y, param.size.z) *
-		DirectX::XMMatrixRotationX(param.rotate.x) *
-		DirectX::XMMatrixRotationY(param.rotate.y) *
-		DirectX::XMMatrixRotationZ(param.rotate.z) *
-		DirectX::XMMatrixTranslation(param.pos.x, param.pos.y, param.pos.z);
-
-	DirectX::XMStoreFloat4x4(&param.wvp[0], DirectX::XMMatrixTranspose(param.mWorld));
-	param.wvp[1] = pCamera->GetViewMatrix();		// view行列
-	param.wvp[2] = pCamera->GetProjectionMatrix();	// projection行列
-	// カメラ行列を設定
-	Geometory::SetView(param.wvp[1]);
-	Geometory::SetProjection(param.wvp[2]);
-
-
-	// シェーダーへ変換行列を設定
-	ShaderList::SetWVP(param.wvp); // 引数にはXMFloat4X4型の、要素数3のアドレスを渡すこと
-
-	//モデルに使用する頂点シェーダーを設定
-	model->SetVertexShader(ShaderList::GetVS(ShaderList::VS_WORLD));
-	// モデルに使用する頂点ピクセルシェーダーを設定
-	model->SetPixelShader(ShaderList::GetPS(ShaderList::PS_LAMBERT));
-
-	for (UINT i = 0; i < model->GetMeshNum(); i++)
-	{
-		// モデルのメッシュの取得
-		Model::Mesh mesh = *model->GetMesh(i);
-
-		// メッシュに割り当てられているマテリアルを取得
-		Model::Material material = *model->GetMaterial(mesh.materialID);
-
-		// シェーダーへマテリアルを設定
-		ShaderList::SetMaterial(material);
-
-		// モデルの描画
-		model->Draw(i);
-	}
+	CGameObject::Update();
 }
 
 void CBall::OnCollision(Collision::Result collision)
 {
 	// フェンスを越えていたらホームラン
-	if (m_tParam.pos.y >= ce_fFenceHeight + WORLD_AJUST)
+	if (m_tParam.m_f3Pos.y >= ce_fFenceHeight + WORLD_AJUST)
 	{
 		CRunning::HomeRun();
 		return;
@@ -166,7 +109,7 @@ void CBall::OnCollision(Collision::Result collision)
 	DirectX::XMFLOAT3 curDir;
 	DirectX::XMStoreFloat3(&curDir, vecDir);
 	DirectX::XMStoreFloat3(&m_LucusCollision.line.start,vecHitPoint);
-	DirectX::XMStoreFloat3(&m_tParam.pos,vecHitPoint);
+	DirectX::XMStoreFloat3(&m_tParam.m_f3Pos,vecHitPoint);
 	DirectX::XMStoreFloat3(&m_LucusCollision.line.end, DirectX::XMVectorAdd(vecHitPoint, vecNewVelocity));
 	DirectX::XMStoreFloat3(&m_fMove, vecNewVelocity);
 }
@@ -174,7 +117,7 @@ void CBall::OnCollision(Collision::Result collision)
 void CBall::OnFoulZone(Collision::Result collision)
 {
 	m_bBallFaulZone = true;
-	m_fFaulZoneBallPos = m_tParam.pos;
+	m_fFaulZoneBallPos = m_tParam.m_f3Pos;
 }
 
 Collision::Info CBall::GetCollision()
@@ -187,41 +130,9 @@ Collision::Info CBall::GetLineCollision()
 	return m_LucusCollision;
 }
 
-void CBall::SetPitching(CPitching* pitching)
-{
-	m_pPitching.reset(pitching);
-}
-
-void CBall::SetPitchingCursor(CPitchingCursor* cursor)
-{
-	m_pCursor.reset(cursor);
-}
-
-void CBall::SetBatting(CBatting* batting)
-{
-	m_pBatting.reset(batting);
-}
-
-DirectX::XMFLOAT3 CBall::GetPos()
-{
-	return m_tParam.pos;
-}
-
-void CBall::SetPos(DirectX::XMFLOAT3 pos)
-{
-	m_tParam.pos = pos;
-}
-
 void CBall::SetMove(DirectX::XMFLOAT3 direction)
 {
 	m_fMove = direction;
-}
-
-std::unique_ptr<CBall>& CBall::GetInstance()
-{
-	// インスタンスは一つしか存在しない
-	static std::unique_ptr<CBall> instance(new CBall());
-	return instance;
 }
 
 CBall::BallPhase CBall::GetPhase()
@@ -236,9 +147,7 @@ bool CBall::GetIsFry()
 
 void CBall::UpdateBatting()
 {
-#ifndef _CAM_DEBUG
-	CCamera::SetCameraKind(CAM_BATTER);
-#endif // !_CAM_DEBUG
+	CCamera::GetInstance()->SetCameraKind(CAM_BATTER);
 	DirectX::XMFLOAT2 fCursorPos;
 	DirectX::XMFLOAT2 fCenterToCursor;  
 	DirectX::XMFLOAT2 fZoneSizeHarf;
@@ -250,7 +159,7 @@ void CBall::UpdateBatting()
 	static float fTime = 0.0f;
 	static bool bRelease;
 
-	m_tParam.size = ce_fBallSize;
+	m_tParam.m_f3Size = ce_fBallSize;
 	if (m_pPitching->GetPitchingPhase() == CPitching::PitchingPhase::Release)
 	{
 		if (!bRelease)
@@ -285,11 +194,11 @@ void CBall::UpdateBatting()
 
 		fTime += 1.0f / 60.0f;
 
-		m_tParam.pos.x = m_fPitchPos.x + fBendValue.x + ce_fBallEndPos.x + WORLD_AJUST;
-		m_tParam.pos.y = m_fPitchPos.y + fBendValue.y + ce_fBallEndPos.y + WORLD_AJUST;
+		m_tParam.m_f3Pos.x = m_fPitchPos.x + fBendValue.x + ce_fBallEndPos.x + WORLD_AJUST;
+		m_tParam.m_f3Pos.y = m_fPitchPos.y + fBendValue.y + ce_fBallEndPos.y + WORLD_AJUST;
 
-		m_tParam.pos.z += (ce_fBallEndPos.z - ce_fBallPos.z) / fChatch;
-		m_tParam.rotate.x += DirectX::XMConvertToRadians(ce_nBallRotateSec * 360.0f) / fChatch;
+		m_tParam.m_f3Pos.z += (ce_fBallEndPos.z - ce_fBallPos.z) / fChatch;
+		m_tParam.m_f3Rotate.x += DirectX::XMConvertToRadians(ce_nBallRotateSec * 360.0f) / fChatch;
 
 		if (m_pBatting->GetBatting())
 		{
@@ -302,7 +211,7 @@ void CBall::UpdateBatting()
 	else
 	{
 		fTime = 0.0f;
-		m_tParam.pos = { ce_fBallPos.x + WORLD_AJUST ,ce_fBallPos.y + WORLD_AJUST, ce_fBallPos.z + WORLD_AJUST };
+		m_tParam.m_f3Pos = { ce_fBallPos.x + WORLD_AJUST ,ce_fBallPos.y + WORLD_AJUST, ce_fBallPos.z + WORLD_AJUST };
 
 		bRelease = false;
 		fBendValue = {};
@@ -311,21 +220,17 @@ void CBall::UpdateBatting()
 
 void CBall::UpdateInPlay()
 {
-	CBallCount* pBallCount = CBallCount::GetInstance().get();
+	CGameManager* pBallCount = CGameManager::GetInstance().get();
 
 
 
 
-	m_tParam.size = ce_fInplayBallSize;
-#ifndef _CAM_DEBUG
-	CCamera::SetCameraKind(CAM_INPLAY);
-#endif
-	m_tParam.pos.x += m_fMove.x;
-	m_tParam.pos.y += m_fMove.y;
-	m_tParam.pos.z += m_fMove.z;
+	m_tParam.m_f3Size= ce_fInplayBallSize;
+	CCamera::GetInstance()->SetCameraKind(CAM_INPLAY);
+	m_tParam.m_f3Pos.x += m_fMove.x;
+	m_tParam.m_f3Pos.y += m_fMove.y;
+	m_tParam.m_f3Pos.z += m_fMove.z;
 
-	OutputDebugStringA(std::to_string(m_tParam.pos.y).c_str());
-	OutputDebugStringA("\n");
 
 	m_fMove.x *= 0.99f;
 	m_fMove.y *= 0.99f;
@@ -333,7 +238,7 @@ void CBall::UpdateInPlay()
 
 	m_fMove.y -= MSEC(GRAVITY);
  
-	if (m_tParam.pos.y < 0.0f + WORLD_AJUST + ce_fGroundY)
+	if (m_tParam.m_f3Pos.y < 0.0f + WORLD_AJUST + ce_fGroundY)
 	{
 		if(CFielding::GetChatchPattern() == CFielding::ChatchPattern::NotChatch)m_bFry = false;
 		m_fMove.x *= 0.95f;
@@ -344,13 +249,13 @@ void CBall::UpdateInPlay()
 		if (m_fMove.y < CMETER(5.0f))
 		{
 			m_fMove.y = 0.0f;
-			m_tParam.pos.y = WORLD_AJUST + ce_fGroundY;
+			m_tParam.m_f3Pos.y = WORLD_AJUST + ce_fGroundY;
 		}
 		else 
 		{
-			m_tParam.pos.y -= WORLD_AJUST + ce_fGroundY;
-			m_tParam.pos.y = -m_tParam.pos.y;
-			m_tParam.pos.y += WORLD_AJUST + ce_fGroundY;
+			m_tParam.m_f3Pos.y -= WORLD_AJUST + ce_fGroundY;
+			m_tParam.m_f3Pos.y = -m_tParam.m_f3Pos.y;
+			m_tParam.m_f3Pos.y += WORLD_AJUST + ce_fGroundY;
 		}
 	}
 
@@ -366,9 +271,9 @@ void CBall::UpdateInPlay()
 			// ファールゾーンに入った時外野にボールがある時は即時ファールにする
 			if (m_fFaulZoneBallPos.z <= ce_fInOutBorderZ)
 			{
-				for (int i = 0; i < (int)CBallCount::InplayElement::Max; i++)
+				for (int i = 0; i < (int)CGameManager::InplayElement::Max; i++)
 				{
-					pBallCount->SetEndInplay((CBallCount::InplayElement)i, true);
+					pBallCount->SetEndInplay((CGameManager::InplayElement)i, true);
 				}
 			}
 			// ファールゾーンに入った時内野にボールがある時はボールを取った時か止まった時に判定する
@@ -377,9 +282,9 @@ void CBall::UpdateInPlay()
 				if (CFielding::GetChatchPattern() == CFielding::ChatchPattern::Grounder ||
 					(speed < CMSEC(3.0f) && CFielding::GetChatchPattern() == CFielding::ChatchPattern::Grounder))
 				{
-					for (int i = 0; i < (int)CBallCount::InplayElement::Max; i++)
+					for (int i = 0; i < (int)CGameManager::InplayElement::Max; i++)
 					{
-						pBallCount->SetEndInplay((CBallCount::InplayElement)i, true);
+						pBallCount->SetEndInplay((CGameManager::InplayElement)i, true);
 					}
 				}
 			}
@@ -389,9 +294,9 @@ void CBall::UpdateInPlay()
 	// インプレーの終了
 	if (pBallCount->GetEndInplay())
 	{
-		for (int i = 0; i < (int)CBallCount::InplayElement::Max; i++)
+		for (int i = 0; i < (int)CGameManager::InplayElement::Max; i++)
 		{
-			pBallCount->SetEndInplay((CBallCount::InplayElement)i, false);
+			pBallCount->SetEndInplay((CGameManager::InplayElement)i, false);
 		}
 		// ファールの時はカウントをリセットしない
 		if (m_bBallFaulZone && CFielding::GetChatchPattern() != CFielding::ChatchPattern::Fry) pBallCount->AddStrikeCount(true);
