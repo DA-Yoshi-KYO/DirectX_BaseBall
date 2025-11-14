@@ -11,20 +11,21 @@
 #include "BallCount.h"
 #include "Pitching.h"
 #include "Controller.h"
+#include "SpriteRenderer.h"
 
 // ==============================
 //    定数定義
 // ==============================
 // 基礎変化量
-constexpr DirectX::XMFLOAT2 ce_fBenderValue[(int)CPitching::BenderKind::Max] =
+constexpr DirectX::XMFLOAT3 ce_fBenderValue[(int)CPitching::BenderKind::Max] =
 {
-	{ 0.0f,0.0f },		// ストレートの基礎変化量
-	{ 5.0f,5.0f },		// ツーシームの基礎変化量
-	{ 10.0f,0.0f },		// スライダーの基礎変化量
-	{ 10.0f,10.0f },	// カーブの基礎変化量
-	{ 0.0f,10.0f },		// フォークの基礎変化量
-	{ -10.0f,10.0f },	// シンカーの基礎変化量
-	{ -10.0f,0.0f },	// シュートの基礎変化量
+	{ 0.0f,0.0f,0.0f },		// ストレートの基礎変化量
+	{ 5.0f,5.0f,0.0f },		// ツーシームの基礎変化量
+	{ 10.0f,0.0f,0.0f },		// スライダーの基礎変化量
+	{ 10.0f,10.0f,0.0f },	// カーブの基礎変化量
+	{ 0.0f,10.0f,0.0f },		// フォークの基礎変化量
+	{ -10.0f,10.0f,0.0f },	// シンカーの基礎変化量
+	{ -10.0f,0.0f,0.0f },	// シュートの基礎変化量
 };
 
 // ==============================
@@ -33,77 +34,70 @@ constexpr DirectX::XMFLOAT2 ce_fBenderValue[(int)CPitching::BenderKind::Max] =
 Collision::Info2D CPitchingCursor::m_Collision = {};
 
 CPitchingCursor::CPitchingCursor()
-	: m_pTexture{ nullptr }, m_pStrikeZone(nullptr)
-	, m_bMove{ true }
+	: m_bMove{ true }
 {
-	// テクスチャの読み込み
-	m_pTexture = std::make_unique<Texture>();
-	if (FAILED(m_pTexture->Create(PATH_TEX("Ball.png")))) MessageBox(NULL, "Ball.png", "Error", MB_OK);
-
+	CSpriteRenderer* pRenderer = AddComponent<CSpriteRenderer>();
+	pRenderer->Load(PATH_TEX("Ball.png"));
+	pRenderer->LoadVertexShader(PATH_SHADER("VS_Sprite"));
+	pRenderer->LoadPixelShader(PATH_SHADER("PS_Sprite"));
 	// テクスチャパラメータの初期化
-	m_tParam.pos = ce_fPitchingCursorPos;
-	m_tParam.offsetPos = {0.0f,0.0f};
-	m_tParam.size = DirectX::XMFLOAT2(20.0f, 20.0f);
-	m_tParam.rotate = 0.0f;
-	m_tParam.color = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	m_tParam.uvPos = DirectX::XMFLOAT2(0.0f, 0.0f);
-	m_tParam.uvSize = DirectX::XMFLOAT2(1.0f, 1.0f);
-	
-	m_tPredParam.pos = ce_fPitchingCursorPos;
-	m_tPredParam.offsetPos = { 0.0f,0.0f };
-	m_tPredParam.size = DirectX::XMFLOAT2(20.0f, 20.0f);
-	m_tPredParam.rotate = 0.0f;
-	m_tPredParam.color = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 0.5f);
-	m_tPredParam.uvPos = DirectX::XMFLOAT2(0.0f, 0.0f);
-	m_tPredParam.uvSize = DirectX::XMFLOAT2(1.0f, 1.0f);
-	
+	m_tBallParam.m_f3Pos = ce_fPitchingCursorPos;
+	m_tBallParam.m_f3Size = DirectX::XMFLOAT3(20.0f, 20.0f,0.0f);
+	m_tBallParam.m_f3Rotate = DirectX::XMFLOAT3();
+	m_tBallParam.m_f4Color = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	m_tBallParam.m_f2UVPos = DirectX::XMFLOAT2(0.0f, 0.0f);
+	m_tBallParam.m_f2UVSize = DirectX::XMFLOAT2(1.0f, 1.0f);
 
-	
+	m_tPredParam.m_f3Pos = ce_fPitchingCursorPos;
+	m_tPredParam.m_f3Size = DirectX::XMFLOAT3(20.0f, 20.0f,0.0f);
+	m_tPredParam.m_f3Rotate = DirectX::XMFLOAT3();;
+	m_tPredParam.m_f4Color = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 0.5f);
+	m_tPredParam.m_f2UVPos = DirectX::XMFLOAT2(0.0f, 0.0f);
+	m_tPredParam.m_f2UVSize = DirectX::XMFLOAT2(1.0f, 1.0f);
+
+
+
 	// コリジョン情報の初期化
 	m_Collision.type = Collision::Type2D::eCircle;
-	m_Collision.square.pos = m_tParam.pos;
-	m_Collision.square.size = m_tParam.size;
-	m_Collision.circle.pos = m_tParam.pos;
-	m_Collision.circle.radius = m_tParam.size.x;
+	m_Collision.square.pos = { m_tBallParam.m_f3Pos.x, m_tBallParam.m_f3Pos.y };
+	m_Collision.square.size = { m_tBallParam.m_f3Size.x,m_tBallParam.m_f3Size.y };
+	m_Collision.circle.pos = {m_tBallParam.m_f3Pos.x, m_tBallParam.m_f3Pos.y
+};
+	m_Collision.circle.radius = m_tBallParam.m_f3Size.x;
 }
 
 CPitchingCursor::~CPitchingCursor()
 {
-	// コンポジションインスタンスの放棄
-	m_pStrikeZone.release();
-	m_pPitching.release();
+
 }
 
 void CPitchingCursor::Update()
 {
-	CPitching::PitchState tState = m_pPitching->GetPitchState();
-	m_tPredParam.pos = m_tParam.pos;
-	DirectX::XMFLOAT2 fStrikeZonePos = m_pStrikeZone->GetPos();
-	DirectX::XMFLOAT2 fStrikeZoneSize = m_pStrikeZone->GetSize();
+	//CPitching::PitchState tState = m_pPitching->GetPitchState();
+	m_tPredParam.m_f3Pos = m_tBallParam.m_f3Pos;
+	DirectX::XMFLOAT3 fStrikeZonePos = { 0.0f,0.0f,0.0f };//m_pStrikeZone->GetPos();
+	DirectX::XMFLOAT3 fStrikeZoneSize = { 0.0f,0.0f,0.0f };//m_pStrikeZone->GetSize();
 	// カーソル移動可能なときに移動処理をする
 	if (m_bMove && m_pPitching->GetPitchingPhase() == CPitching::PitchingPhase::Pitch)
 	{
-		CGameManager* pBallCount = CGameManager::GetInstance().get();
-
 		// 移動処理
-		DirectX::XMFLOAT2 fInput = pBallCount->GetDefenseTeam() == CGameManager::Team::Player1 ? CGetLStick((int)CGameManager::Team::Player1) : CGetLStick((int)CGameManager::Team::Player2);
-		DirectX::XMFLOAT2 fMaxPos = { fabsf(fStrikeZonePos.x) + fStrikeZoneSize.x / 1.5f , fabsf(fStrikeZonePos.y) + fStrikeZoneSize.y / 1.5f };
-		m_tParam.pos = { fStrikeZonePos.x + fInput.x * fMaxPos.x,fStrikeZonePos.y + fInput.y * fMaxPos.y };
-
+		DirectX::XMFLOAT2 fInput = {};
+		DirectX::XMFLOAT3 fMaxPos = { fabsf(fStrikeZonePos.x) + fStrikeZoneSize.x / 1.5f , fabsf(fStrikeZonePos.y) + fStrikeZoneSize.y / 1.5f,0.0f };
+		m_tBallParam.m_f3Pos = { fStrikeZonePos.x + fInput.x * fMaxPos.x,fStrikeZonePos.y + fInput.y * fMaxPos.y,0.0f };
 
 		// 移動補正
-		if (m_tParam.pos.x >= fStrikeZonePos.x + fStrikeZoneSize.x / 1.3f) m_tParam.pos.x = fStrikeZonePos.x + fStrikeZoneSize.x / 1.3f;
-		if (m_tParam.pos.x <= fStrikeZonePos.x - fStrikeZoneSize.x / 1.3f) m_tParam.pos.x = fStrikeZonePos.x - fStrikeZoneSize.x / 1.3f;
-		if (m_tParam.pos.y >= fStrikeZonePos.y + fStrikeZoneSize.y / 1.3f) m_tParam.pos.y = fStrikeZonePos.y + fStrikeZoneSize.y / 1.3f;
-		if (m_tParam.pos.y <= fStrikeZonePos.y - fStrikeZoneSize.y / 1.3f) m_tParam.pos.y = fStrikeZonePos.y - fStrikeZoneSize.y / 1.3f;
+		if (m_tBallParam.m_f3Pos.x >= fStrikeZonePos.x + fStrikeZoneSize.x / 1.3f) m_tBallParam.m_f3Pos.x = fStrikeZonePos.x + fStrikeZoneSize.x / 1.3f;
+		if (m_tBallParam.m_f3Pos.x <= fStrikeZonePos.x - fStrikeZoneSize.x / 1.3f) m_tBallParam.m_f3Pos.x = fStrikeZonePos.x - fStrikeZoneSize.x / 1.3f;
+		if (m_tBallParam.m_f3Pos.y >= fStrikeZonePos.y + fStrikeZoneSize.y / 1.3f) m_tBallParam.m_f3Pos.y = fStrikeZonePos.y + fStrikeZoneSize.y / 1.3f;
+		if (m_tBallParam.m_f3Pos.y <= fStrikeZonePos.y - fStrikeZoneSize.y / 1.3f) m_tBallParam.m_f3Pos.y = fStrikeZonePos.y - fStrikeZoneSize.y / 1.3f;
 	}
 	else if(m_pPitching->GetPitchingPhase() == CPitching::PitchingPhase::Release)
 	{
-		m_tParam.pos = m_tPredParam.pos;
+		m_tBallParam.m_f3Pos = m_tPredParam.m_f3Pos;
 	}
 	else if(m_pPitching->GetPitchingPhase() == CPitching::PitchingPhase::Set)
 	{
-		m_tParam.pos = fStrikeZonePos;
+		m_tBallParam.m_f3Pos = fStrikeZonePos;
 	}
 
 
@@ -112,13 +106,13 @@ void CPitchingCursor::Update()
 	switch (tState.m_eThrowKind)
 	{
 	case CPitching::BenderKind::Fourseam:
-		m_tPredParam.pos = m_tParam.pos;
+		m_tPredParam.m_f3Pos = m_tBallParam.m_f3Pos;
 		break;
 	case CPitching::BenderKind::Twoseam:
 		if (tState.m_nBenderQuality[(int)CPitching::BenderKind::Twoseam] != 0)
 		{
-			if(tState.m_bLeftPitcher) m_tPredParam.pos = { m_tParam.pos.x + ce_fBenderValue[(int)CPitching::BenderKind::Twoseam].x ,m_tParam.pos.y - ce_fBenderValue[(int)CPitching::BenderKind::Twoseam].y};
-			else m_tPredParam.pos = { m_tParam.pos.x - ce_fBenderValue[(int)CPitching::BenderKind::Twoseam].x ,m_tParam.pos.y - ce_fBenderValue[(int)CPitching::BenderKind::Twoseam].y };
+			if(tState.m_bLeftPitcher) m_tPredParam.m_f3Pos = { m_tBallParam.m_f3Pos.x + ce_fBenderValue[(int)CPitching::BenderKind::Twoseam].x ,m_tBallParam.m_f3Pos.y - ce_fBenderValue[(int)CPitching::BenderKind::Twoseam].y, 0.0f };
+			else m_tPredParam.m_f3Pos = { m_tBallParam.m_f3Pos.x - ce_fBenderValue[(int)CPitching::BenderKind::Twoseam].x ,m_tBallParam.m_f3Pos.y - ce_fBenderValue[(int)CPitching::BenderKind::Twoseam].y, 0.0f };
 		}
 		break;
 	case CPitching::BenderKind::Slider:
@@ -126,13 +120,15 @@ void CPitchingCursor::Update()
 		{
 			if (tState.m_bLeftPitcher)
 			{
-				m_tPredParam.pos = { m_tParam.pos.x - ce_fBenderValue[(int)CPitching::BenderKind::Slider].x * tState.m_nBenderQuality[(int)CPitching::BenderKind::Slider],
-				   m_tParam.pos.y - ce_fBenderValue[(int)CPitching::BenderKind::Slider].y };
+				m_tPredParam.m_f3Pos = { m_tBallParam.m_f3Pos.x - ce_fBenderValue[(int)CPitching::BenderKind::Slider].x * tState.m_nBenderQuality[(int)CPitching::BenderKind::Slider],
+				   m_tBallParam.m_f3Pos.y - ce_fBenderValue[(int)CPitching::BenderKind::Slider].y
+				, 0.0f};
 			}
 			else
 			{
-				m_tPredParam.pos = { m_tParam.pos.x + ce_fBenderValue[(int)CPitching::BenderKind::Slider].x * tState.m_nBenderQuality[(int)CPitching::BenderKind::Slider] ,
-					m_tParam.pos.y - ce_fBenderValue[(int)CPitching::BenderKind::Slider].y * tState.m_nBenderQuality[(int)CPitching::BenderKind::Slider] };
+				m_tPredParam.m_f3Pos = { m_tBallParam.m_f3Pos.x + ce_fBenderValue[(int)CPitching::BenderKind::Slider].x * tState.m_nBenderQuality[(int)CPitching::BenderKind::Slider] ,
+					m_tBallParam.m_f3Pos.y - ce_fBenderValue[(int)CPitching::BenderKind::Slider].y * tState.m_nBenderQuality[(int)CPitching::BenderKind::Slider] 
+				, 0.0f };
 			}
 		}
 		break;
@@ -141,19 +137,19 @@ void CPitchingCursor::Update()
 		{
 			if (tState.m_bLeftPitcher) 
 			{
-				m_tPredParam.pos = { m_tParam.pos.x - ce_fBenderValue[(int)CPitching::BenderKind::Curve].x * tState.m_nBenderQuality[(int)CPitching::BenderKind::Curve],
-					m_tParam.pos.y - ce_fBenderValue[(int)CPitching::BenderKind::Curve].y * tState.m_nBenderQuality[(int)CPitching::BenderKind::Curve] };
+				m_tPredParam.m_f3Pos = { m_tBallParam.m_f3Pos.x - ce_fBenderValue[(int)CPitching::BenderKind::Curve].x * tState.m_nBenderQuality[(int)CPitching::BenderKind::Curve],
+					m_tBallParam.m_f3Pos.y - ce_fBenderValue[(int)CPitching::BenderKind::Curve].y * tState.m_nBenderQuality[(int)CPitching::BenderKind::Curve], 0.0f };
 			}
 			else
 			{
-				m_tPredParam.pos = { m_tParam.pos.x + ce_fBenderValue[(int)CPitching::BenderKind::Curve].x * tState.m_nBenderQuality[(int)CPitching::BenderKind::Curve]
-					,m_tParam.pos.y - ce_fBenderValue[(int)CPitching::BenderKind::Curve].y * tState.m_nBenderQuality[(int)CPitching::BenderKind::Curve]};
+				m_tPredParam.m_f3Pos = { m_tBallParam.m_f3Pos.x + ce_fBenderValue[(int)CPitching::BenderKind::Curve].x * tState.m_nBenderQuality[(int)CPitching::BenderKind::Curve]
+					,m_tBallParam.m_f3Pos.y - ce_fBenderValue[(int)CPitching::BenderKind::Curve].y * tState.m_nBenderQuality[(int)CPitching::BenderKind::Curve], 0.0f };
 			}
 		}
 		break;
 	case CPitching::BenderKind::Split:
-		m_tPredParam.pos = { m_tParam.pos.x + ce_fBenderValue[(int)CPitching::BenderKind::Split].x * tState.m_nBenderQuality[(int)CPitching::BenderKind::Split],
-			m_tParam.pos.y - ce_fBenderValue[(int)CPitching::BenderKind::Split].y * tState.m_nBenderQuality[(int)CPitching::BenderKind::Split] };
+		m_tPredParam.m_f3Pos = { m_tBallParam.m_f3Pos.x + ce_fBenderValue[(int)CPitching::BenderKind::Split].x * tState.m_nBenderQuality[(int)CPitching::BenderKind::Split],
+			m_tBallParam.m_f3Pos.y - ce_fBenderValue[(int)CPitching::BenderKind::Split].y * tState.m_nBenderQuality[(int)CPitching::BenderKind::Split], 0.0f };
 		
 		break;
 	case CPitching::BenderKind::Sinker:
@@ -161,13 +157,13 @@ void CPitchingCursor::Update()
 		{
 			if (tState.m_bLeftPitcher)
 			{
-				m_tPredParam.pos = { m_tParam.pos.x - ce_fBenderValue[(int)CPitching::BenderKind::Sinker].x * tState.m_nBenderQuality[(int)CPitching::BenderKind::Sinker] ,
-					m_tParam.pos.y - ce_fBenderValue[(int)CPitching::BenderKind::Sinker].y * tState.m_nBenderQuality[(int)CPitching::BenderKind::Sinker] };
+				m_tPredParam.m_f3Pos = { m_tBallParam.m_f3Pos.x - ce_fBenderValue[(int)CPitching::BenderKind::Sinker].x * tState.m_nBenderQuality[(int)CPitching::BenderKind::Sinker] ,
+					m_tBallParam.m_f3Pos.y - ce_fBenderValue[(int)CPitching::BenderKind::Sinker].y * tState.m_nBenderQuality[(int)CPitching::BenderKind::Sinker], 0.0f };
 			}
 			else
 			{
-				m_tPredParam.pos = { m_tParam.pos.x + ce_fBenderValue[(int)CPitching::BenderKind::Sinker].x * tState.m_nBenderQuality[(int)CPitching::BenderKind::Sinker],
-					m_tParam.pos.y - ce_fBenderValue[(int)CPitching::BenderKind::Sinker].y * tState.m_nBenderQuality[(int)CPitching::BenderKind::Sinker] };
+				m_tPredParam.m_f3Pos = { m_tBallParam.m_f3Pos.x + ce_fBenderValue[(int)CPitching::BenderKind::Sinker].x * tState.m_nBenderQuality[(int)CPitching::BenderKind::Sinker],
+					m_tBallParam.m_f3Pos.y - ce_fBenderValue[(int)CPitching::BenderKind::Sinker].y * tState.m_nBenderQuality[(int)CPitching::BenderKind::Sinker] , 0.0f };
 			}
 		}
 		break;
@@ -176,13 +172,13 @@ void CPitchingCursor::Update()
 		{
 			if (tState.m_bLeftPitcher)
 			{
-				m_tPredParam.pos = { m_tParam.pos.x - ce_fBenderValue[(int)CPitching::BenderKind::Shoot].x * tState.m_nBenderQuality[(int)CPitching::BenderKind::Shoot] ,
-					m_tParam.pos.y - ce_fBenderValue[(int)CPitching::BenderKind::Shoot].y * tState.m_nBenderQuality[(int)CPitching::BenderKind::Shoot] };
+				m_tPredParam.m_f3Pos = { m_tBallParam.m_f3Pos.x - ce_fBenderValue[(int)CPitching::BenderKind::Shoot].x * tState.m_nBenderQuality[(int)CPitching::BenderKind::Shoot] ,
+					m_tBallParam.m_f3Pos.y - ce_fBenderValue[(int)CPitching::BenderKind::Shoot].y * tState.m_nBenderQuality[(int)CPitching::BenderKind::Shoot], 0.0f };
 			}
 			else
 			{
-				m_tPredParam.pos = { m_tParam.pos.x + ce_fBenderValue[(int)CPitching::BenderKind::Shoot].x * tState.m_nBenderQuality[(int)CPitching::BenderKind::Shoot] ,
-					m_tParam.pos.y - ce_fBenderValue[(int)CPitching::BenderKind::Shoot].y * tState.m_nBenderQuality[(int)CPitching::BenderKind::Shoot] };
+				m_tPredParam.m_f3Pos = { m_tBallParam.m_f3Pos.x + ce_fBenderValue[(int)CPitching::BenderKind::Shoot].x * tState.m_nBenderQuality[(int)CPitching::BenderKind::Shoot] ,
+					m_tBallParam.m_f3Pos.y - ce_fBenderValue[(int)CPitching::BenderKind::Shoot].y * tState.m_nBenderQuality[(int)CPitching::BenderKind::Shoot], 0.0f };
 			}
 		}
 		break;
@@ -191,73 +187,19 @@ void CPitchingCursor::Update()
 	}
 
 	// コリジョン情報更新
-	m_Collision.square.pos =	m_tPredParam.pos;
-	m_Collision.square.size =	m_tPredParam.size;
-	m_Collision.circle.pos =	m_tPredParam.pos;
-	m_Collision.circle.radius = m_tPredParam.size.x / 2.0f;
+	m_Collision.square.pos = { m_tPredParam.m_f3Pos.x,m_tPredParam.m_f3Pos.y };
+	m_Collision.square.size = { m_tPredParam.m_f3Size.x,m_tPredParam.m_f3Size.y };
+	m_Collision.circle.pos = { m_tPredParam.m_f3Pos.x, m_tPredParam.m_f3Pos.y };
+	m_Collision.circle.radius = m_tPredParam.m_f3Size.x / 2.0f;
 }
 
 void CPitchingCursor::Draw()
 {
-#ifdef _COLLISION_DEBUG
+	m_tParam = m_tBallParam;
+	CGameObject::Draw();
 
-	static bool bDebug[2] = { false };
-
-	ApperCollisionSquare(m_Collision.square.pos, m_Collision.square.size, "PitchingSquare", &bDebug[0], { 420.0f,20.0f }, {0.0f,0.0f,255.0f,50.0f});
-	ApperCollisionCircle(m_Collision.circle.pos, m_Collision.circle.radius, "PitchingCircle", &bDebug[1], { 620.0f,20.0f }, { 0.0f,0.0f,255.0f,50.0f });
-
-#endif // _COLLISION_DEBUG
-
-	SetRender2D();
-	m_tParam.world = CCamera::Get2DWolrdMatrix(m_tParam.pos, m_tParam.rotate);
-	Sprite::SetParam(m_tParam);
-	Sprite::SetTexture(m_pTexture.get());
-	Sprite::Draw();
-
-	m_tPredParam.world = CCamera::Get2DWolrdMatrix(m_tPredParam.pos, m_tPredParam.rotate);
-	Sprite::SetParam(m_tPredParam);
-	Sprite::SetTexture(m_pTexture.get());
-	Sprite::Draw();
-}
-
-void CPitchingCursor::SetStrikeZone(CStrikeZone* zone)
-{
-	m_pStrikeZone.reset(zone);
-}
-
-void CPitchingCursor::SetPitching(CPitching* pitching)
-{
-	m_pPitching.reset(pitching);
-}
-
-DirectX::XMFLOAT2 CPitchingCursor::GetPos()
-{
-	return m_tParam.pos;
-}
-
-DirectX::XMFLOAT2 CPitchingCursor::GetPredPos()
-{
-	return m_tPredParam.pos;
-}
-
-DirectX::XMFLOAT2 CPitchingCursor::GetSize()
-{
-	return m_tParam.size;
-}
-
-void CPitchingCursor::SetPos(DirectX::XMFLOAT2 pos)
-{
-	m_tParam.pos = pos;
-}
-
-void CPitchingCursor::SetPredPos(DirectX::XMFLOAT2 pos)
-{
-	m_tPredParam.pos = pos;
-}
-
-void CPitchingCursor::SetMove(bool isMove)
-{
-	m_bMove = isMove;
+	m_tParam = m_tPredParam;
+	CGameObject::Draw();
 }
 
 Collision::Info2D CPitchingCursor::GetCollision(bool isCursorOnry, Collision::Type2D type)
@@ -267,7 +209,7 @@ Collision::Info2D CPitchingCursor::GetCollision(bool isCursorOnry, Collision::Ty
 
 	if (isCursorOnry)
 	{
-		out.square.size = { 0.0f,0.0f };
+		out.square.size = { 0.0f,0.0f};
 		out.circle.radius = 0.0f;
 	}
 

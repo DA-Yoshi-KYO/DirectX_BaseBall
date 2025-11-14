@@ -3,7 +3,7 @@
 #include "Sprite.h"
 #include "DirectX.h"
 #include "Defines.h"
-#include "CameraManager.h"
+#include "Camera.h"
 #include "PostProcessChain.h"
 
 CSprite3DRenderer::~CSprite3DRenderer()
@@ -40,7 +40,7 @@ void CSprite3DRenderer::Draw()
     DirectX::XMStoreFloat4x4(&world, mWorld);
     Sprite::SetWorld(world);
 
-    CCameraBase* pCamera = CCameraManager::GetInstance()->GetMainCamera();
+    CCamera* pCamera = CCamera::GetInstance();
 
     Sprite::SetView(pCamera->GetViewMatrix());
 

@@ -94,6 +94,12 @@
     <Filter Include="Code\GameObject\ScoreBoard\CountObject\BaseCount">
       <UniqueIdentifier>{bbe01b9d-f9dd-4057-adfc-c2c8dd0ae4f6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Code\GameObject\Attack">
+      <UniqueIdentifier>{e20b24a4-c12a-4bc5-9ab7-a58c6ee0c3aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\GameObject\Attack\Manager">
+      <UniqueIdentifier>{7cfe1d07-5adc-462c-8bed-d676f12667bb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -171,9 +177,6 @@
     <ClCompile Include="imgui_impl_win32.cpp">
       <Filter>imgui</Filter>
     </ClCompile>
-    <ClCompile Include="Batting.cpp">
-      <Filter>Code\GameObject\BaseBall\Attack</Filter>
-    </ClCompile>
     <ClCompile Include="Pitching.cpp">
       <Filter>Code\GameObject\BaseBall\Difence</Filter>
     </ClCompile>
@@ -186,14 +189,8 @@
     <ClCompile Include="GameManager.cpp">
       <Filter>Code\GameObject\BaseBall\System</Filter>
     </ClCompile>
-    <ClCompile Include="Attack.cpp">
-      <Filter>Code\GameObject\BaseBall\Attack</Filter>
-    </ClCompile>
     <ClCompile Include="Defence.cpp">
       <Filter>Code\GameObject\BaseBall\Difence</Filter>
-    </ClCompile>
-    <ClCompile Include="BattingCursor.cpp">
-      <Filter>Code\GameObject\BaseBall\Attack</Filter>
     </ClCompile>
     <ClCompile Include="PitchingCursor.cpp">
       <Filter>Code\GameObject\BaseBall\Difence</Filter>
@@ -203,9 +200,6 @@
     </ClCompile>
     <ClCompile Include="Fielding.cpp">
       <Filter>Code\GameObject\BaseBall\Difence</Filter>
-    </ClCompile>
-    <ClCompile Include="Running.cpp">
-      <Filter>Code\GameObject\BaseBall\Attack</Filter>
     </ClCompile>
     <ClCompile Include="Shadow.cpp">
       <Filter>Code\GameObject\BaseBall\System</Filter>
@@ -330,6 +324,27 @@
     <ClCompile Include="GameObject.cpp">
       <Filter>Code\GameObject</Filter>
     </ClCompile>
+    <ClCompile Include="PostProcess.cpp">
+      <Filter>Code\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="PostProcessChain.cpp">
+      <Filter>Code\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Attack.cpp">
+      <Filter>Code\GameObject\Attack</Filter>
+    </ClCompile>
+    <ClCompile Include="Batting.cpp">
+      <Filter>Code\GameObject\Attack</Filter>
+    </ClCompile>
+    <ClCompile Include="BattingCursor.cpp">
+      <Filter>Code\GameObject\Attack</Filter>
+    </ClCompile>
+    <ClCompile Include="Running.cpp">
+      <Filter>Code\GameObject\Attack</Filter>
+    </ClCompile>
+    <ClCompile Include="AttackManager.cpp">
+      <Filter>Code\GameObject\Attack\Manager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imconfig.h">
@@ -364,18 +379,6 @@
     </ClInclude>
     <ClInclude Include="Main.h">
       <Filter>Code\Application</Filter>
-    </ClInclude>
-    <ClInclude Include="Running.h">
-      <Filter>Code\GameObject\BaseBall\Attack</Filter>
-    </ClInclude>
-    <ClInclude Include="BattingCursor.h">
-      <Filter>Code\GameObject\BaseBall\Attack</Filter>
-    </ClInclude>
-    <ClInclude Include="Attack.h">
-      <Filter>Code\GameObject\BaseBall\Attack</Filter>
-    </ClInclude>
-    <ClInclude Include="Batting.h">
-      <Filter>Code\GameObject\BaseBall\Attack</Filter>
     </ClInclude>
     <ClInclude Include="PitchingCursor.h">
       <Filter>Code\GameObject\BaseBall\Difence</Filter>
@@ -550,6 +553,27 @@
     </ClInclude>
     <ClInclude Include="GameObject.h">
       <Filter>Code\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="PostProcess.h">
+      <Filter>Code\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="PostProcessChain.h">
+      <Filter>Code\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Attack.h">
+      <Filter>Code\GameObject\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="Batting.h">
+      <Filter>Code\GameObject\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="BattingCursor.h">
+      <Filter>Code\GameObject\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="Running.h">
+      <Filter>Code\GameObject\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="AttackManager.h">
+      <Filter>Code\GameObject\Attack\Manager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

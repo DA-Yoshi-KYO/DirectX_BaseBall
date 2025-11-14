@@ -9,6 +9,7 @@
 #include "CameraBatter.h"
 #include "BallCount.h"
 #include "StrikeZone.h"
+#include "GameManager.h"
 
 /*───────四大処理───────*/
 // コンストラクタ
@@ -17,7 +18,7 @@ CSceneGame::CSceneGame()
 {
 
 	// 各種初期化処理
-	CGameManager::GetInstance()->Init(CGameManager::InningHalf::Top);
+	CGameManager::GetInstance()->Init();
 	m_pAttack = std::make_unique<CAttack>();
 	m_pDefence = std::make_unique<CDefence>();
 
@@ -27,7 +28,7 @@ CSceneGame::CSceneGame()
 #else
 	if (1)
 	{
-		CCamera::SetCameraKind(CameraKind::CAM_BATTER);
+		CCamera::GetInstance()->SetCameraKind(CameraKind::CAM_BATTER);
 	}
 	else
 	{
@@ -65,8 +66,6 @@ void CSceneGame::Update()
 	CStrikeZone::GetInstance()->Update();
 	m_pDefence->Update();
 	m_pAttack->Update();
-
-	CBall::GetInstance()->Update();
 	CGameManager::GetInstance()->Update();
 
 }

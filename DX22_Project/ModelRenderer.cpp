@@ -1,7 +1,7 @@
 // インクルード部
 #include "ModelRenderer.h"
 #include "SpriteRendererBase.h"
-#include "CameraManager.h"
+#include "Camera.h"
 #include "PostProcessChain.h"
 
 std::map<std::string, Model*> CModelRenderer::m_pModelList = {};
@@ -33,7 +33,7 @@ void CModelRenderer::Draw()
     world = DirectX::XMMatrixTranspose(world);
     DirectX::XMStoreFloat4x4(&wvp[0], world);
 
-    CCameraBase* pCamera = CCameraManager::GetInstance()->GetMainCamera();
+    CCamera* pCamera = CCamera::GetInstance();
     wvp[1] = pCamera->GetViewMatrix();
 
     wvp[2] = pCamera->GetProjectionMatrix();

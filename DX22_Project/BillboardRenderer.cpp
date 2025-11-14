@@ -2,7 +2,7 @@
 #include "BillboardRenderer.h"
 #include "Sprite.h"
 #include "DirectX.h"
-#include "CameraManager.h"
+#include "Camera.h"
 #include "PostProcessChain.h"
 
 CBillboardRenderer::~CBillboardRenderer()
@@ -31,7 +31,7 @@ void CBillboardRenderer::Draw()
     Sprite::SetUVScale(m_tParam.m_f2UVSize);
     Sprite::SetColor(m_tParam.m_f4Color);
 
-    CCameraBase* pCamera = CCameraManager::GetInstance()->GetMainCamera();
+    CCamera* pCamera = CCamera::GetInstance();
 
     DirectX::XMMATRIX mCamInv = DirectX::XMMatrixIdentity();
     DirectX::XMFLOAT4X4 view = pCamera->GetViewMatrix(false);

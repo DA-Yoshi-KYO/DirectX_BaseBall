@@ -7,6 +7,7 @@ public:
 	CCountObject();
 	virtual ~CCountObject();
 	void Init() override;
+	void Update () override;
 	void SetActive(bool isActive) { m_bActive = isActive; }
 	bool GetActive() { return m_bActive; }
 

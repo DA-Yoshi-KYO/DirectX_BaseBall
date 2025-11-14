@@ -8,6 +8,7 @@ public:
 	CInning();
 	~CInning();
 	void Init() override;
+	void Draw() override;
 	void InningProgress();
 
 private:

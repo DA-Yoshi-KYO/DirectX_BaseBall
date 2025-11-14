@@ -4,9 +4,7 @@
 CStrikeCount::CStrikeCount()
 	: CCountObject()
 {
-	CSpriteRenderer* pRenderer = AddComponent<CSpriteRenderer>();
-	pRenderer->Load("BallCountSheet");
-	pRenderer->LoadPixelShader("");
+	m_tParam.m_f4Color = DirectX::XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f);
 }
 
 CStrikeCount::~CStrikeCount()

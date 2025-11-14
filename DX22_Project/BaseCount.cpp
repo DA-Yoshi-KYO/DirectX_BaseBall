@@ -17,3 +17,11 @@ CBaseCount::~CBaseCount()
 {
 
 }
+
+void CBaseCount::Update()
+{
+	if (m_bActive) m_tParam.m_f4Color = DirectX::XMFLOAT4(1.0f,1.0f,0.0f,1.0f);
+	else m_tParam.m_f4Color = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);;
+
+	CGameObject::Update();
+}

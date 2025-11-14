@@ -150,6 +150,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Attack.cpp" />
+    <ClCompile Include="AttackManager.cpp" />
     <ClCompile Include="Ball.cpp" />
     <ClCompile Include="BallCount.cpp" />
     <ClCompile Include="BaseCount.cpp" />
@@ -200,6 +201,8 @@
     <ClCompile Include="OutCount.cpp" />
     <ClCompile Include="Pitching.cpp" />
     <ClCompile Include="PitchingCursor.cpp" />
+    <ClCompile Include="PostProcess.cpp" />
+    <ClCompile Include="PostProcessChain.cpp" />
     <ClCompile Include="RendererComponent.cpp" />
     <ClCompile Include="SceneMemberselect.cpp" />
     <ClCompile Include="SceneTeamselect.cpp" />
@@ -230,6 +233,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Attack.h" />
+    <ClInclude Include="AttackManager.h" />
     <ClInclude Include="Ball.h" />
     <ClInclude Include="BallCount.h" />
     <ClInclude Include="BaseCount.h" />
@@ -278,6 +282,8 @@
     <ClInclude Include="OutCount.h" />
     <ClInclude Include="Pitching.h" />
     <ClInclude Include="PitchingCursor.h" />
+    <ClInclude Include="PostProcess.h" />
+    <ClInclude Include="PostProcessChain.h" />
     <ClInclude Include="RendererComponent.h" />
     <ClInclude Include="SceneMemberselect.h" />
     <ClInclude Include="SceneTeamselect.h" />
