@@ -15,10 +15,10 @@ constexpr float ce_fInOutBorderZ = WORLD_AJUST;	// 内外野の境目
 
 class CField : public CGameObject
 {
+public:
 	CField();
 	~CField();
 	void Update() override;
-public:
 	// ベースの種類
 	enum class BaseKind
 	{

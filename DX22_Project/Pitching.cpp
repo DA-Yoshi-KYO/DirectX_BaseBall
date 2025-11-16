@@ -177,7 +177,7 @@ void CPitching::Update(int DefenceTeam)
 		case (int)CPitching::PitchingPhase::Pitch:
 			fPitchTime += 1.0f / 60.0f;
 			pPitchingCursor->SetMove(true);
-			m_tParam[(int)TexKind::ReleasePoint].pos = m_tParam[(int)TexKind::PitchingCircle].pos = m_pPitchingCursor->GetPos();
+			m_tParam[(int)TexKind::ReleasePoint].pos = m_tParam[(int)TexKind::PitchingCircle].pos = pPitchingCursor->GetPos();
 
 			// セットポジションから少し経ってからピッチングサークルを表示する
 			if (fPitchTime > ce_fSetPositionTime && !bSetCircle)
@@ -195,8 +195,8 @@ void CPitching::Update(int DefenceTeam)
 			// リリースポイントのタイミングで投球の質を判断する
 			if (IsKeyTrigger(DefenceTeam, Input::A))
 			{
-				DirectX::XMFLOAT2 fDefCursorPos = m_pPitchingCursor->GetPos();
-				DirectX::XMFLOAT2 fDefPredPos = m_pPitchingCursor->GetPredPos();
+				DirectX::XMFLOAT3 fDefCursorPos = pPitchingCursor->GetPos();
+				DirectX::XMFLOAT3 fDefPredPos = pPitchingCursor->GetPredPos();
 				int randX = rand() % 20 - 10;
 				int randY = rand() % 10 - 10;
 				int randMiss = rand() % 10;
@@ -210,34 +210,34 @@ void CPitching::Update(int DefenceTeam)
 					switch (randMiss)
 					{
 					case 0:
-						m_pPitchingCursor->SetPos(ce_fPitchingCursorPos);
-						m_pPitchingCursor->SetPredPos(ce_fPitchingCursorPos);
+						pPitchingCursor->SetPos(ce_fPitchingCursorPos);
+						pPitchingCursor->SetPredPos(ce_fPitchingCursorPos);
 						break;
 					default:
 						DirectX::XMFLOAT3 f3StrikeZonePos = pStrikeZone->GetPos();
 						DirectX::XMFLOAT3 f3StrikeZoneSize = pStrikeZone->GetSize();
-						m_pPitchingCursor->SetPos({ f3StrikeZonePos.x - f3StrikeZoneSize.x / 1.3f,f3StrikeZonePos.y + f3StrikeZoneSize.y / 1.3f });
-						m_pPitchingCursor->SetPredPos({ f3StrikeZonePos.x - f3StrikeZoneSize.x / 1.3f,f3StrikeZonePos.y + f3StrikeZoneSize.y / 1.3f });
+						pPitchingCursor->SetPos({ f3StrikeZonePos.x - f3StrikeZoneSize.x / 1.3f,f3StrikeZonePos.y + f3StrikeZoneSize.y / 1.3f,0.0f });
+						pPitchingCursor->SetPredPos({ f3StrikeZonePos.x - f3StrikeZoneSize.x / 1.3f,f3StrikeZonePos.y + f3StrikeZoneSize.y / 1.3f,0.0f });
 						break;
 					}
 				}
 				// リリースがやや速い
 				else if (m_tParam[(int)TexKind::PitchingCircle].size.x > ce_fPitchingCircleEndSize.x + 1.0f)
 				{
-					m_pPitchingCursor->SetPos({ fDefCursorPos.x + randX, fDefCursorPos.y + randY });
-					m_pPitchingCursor->SetPredPos({ fDefPredPos.x + randX, fDefPredPos.y + randY });
+					pPitchingCursor->SetPos({ fDefCursorPos.x + randX, fDefCursorPos.y + randY,0.0f });
+					pPitchingCursor->SetPredPos({ fDefPredPos.x + randX, fDefPredPos.y + randY,0.0f });
 				}
 				// ベストピッチ
 				else if (m_tParam[(int)TexKind::PitchingCircle].size.x > ce_fPitchingCircleEndSize.x - 1.0f)
 				{
-					m_pPitchingCursor->SetPos({ fDefCursorPos.x,fDefCursorPos.y });
-					m_pPitchingCursor->SetPredPos({ fDefPredPos.x, fDefPredPos.y });
+					pPitchingCursor->SetPos({ fDefCursorPos.x,fDefCursorPos.y,0.0f });
+					pPitchingCursor->SetPredPos({ fDefPredPos.x, fDefPredPos.y,0.0f });
 				}
 				// リリースがやや遅い
 				else if (m_tParam[(int)TexKind::PitchingCircle].size.x > ce_fPitchingCircleEndSize.x / 2.0f)
 				{
-					m_pPitchingCursor->SetPos({ fDefCursorPos.x + randX, fDefCursorPos.y + randY });
-					m_pPitchingCursor->SetPredPos({ fDefPredPos.x + randX, fDefPredPos.y + randY });
+					pPitchingCursor->SetPos({ fDefCursorPos.x + randX, fDefCursorPos.y + randY,0.0f });
+					pPitchingCursor->SetPredPos({ fDefPredPos.x + randX, fDefPredPos.y + randY,0.0f });
 				}
 				// リリースが遅い
 				else
@@ -245,14 +245,14 @@ void CPitching::Update(int DefenceTeam)
 					switch (randMiss)
 					{
 					case 0:
-						m_pPitchingCursor->SetPos(ce_fPitchingCursorPos);
-						m_pPitchingCursor->SetPredPos(ce_fPitchingCursorPos);
+						pPitchingCursor->SetPos(ce_fPitchingCursorPos);
+						pPitchingCursor->SetPredPos(ce_fPitchingCursorPos);
 						break;
 					default:
 						DirectX::XMFLOAT3 f3StrikeZonePos = pStrikeZone->GetPos();
 						DirectX::XMFLOAT3 f3StrikeZoneSize = pStrikeZone->GetSize();
-						m_pPitchingCursor->SetPos({ f3StrikeZonePos.x - f3StrikeZoneSize.x / 1.3f,f3StrikeZonePos.y + f3StrikeZoneSize.y / 1.3f });
-						m_pPitchingCursor->SetPredPos({ f3StrikeZonePos.x - f3StrikeZoneSize.x / 1.3f,f3StrikeZonePos.y + f3StrikeZoneSize.y / 1.3f });
+						pPitchingCursor->SetPos({ f3StrikeZonePos.x - f3StrikeZoneSize.x / 1.3f,f3StrikeZonePos.y + f3StrikeZoneSize.y / 1.3f,0.0f });
+						pPitchingCursor->SetPredPos({ f3StrikeZonePos.x - f3StrikeZoneSize.x / 1.3f,f3StrikeZonePos.y + f3StrikeZoneSize.y / 1.3f,0.0f });
 						break;
 					}
 				}
@@ -268,15 +268,15 @@ void CPitching::Update(int DefenceTeam)
 				switch (randMiss)
 				{
 				case 0:
-					m_pPitchingCursor->SetPos(ce_fPitchingCursorPos);
-					m_pPitchingCursor->SetPredPos(ce_fPitchingCursorPos);
+					pPitchingCursor->SetPos(ce_fPitchingCursorPos);
+					pPitchingCursor->SetPredPos(ce_fPitchingCursorPos);
 					break;
 				default:
 
 					DirectX::XMFLOAT3 f3StrikeZonePos = pStrikeZone->GetPos();
 					DirectX::XMFLOAT3 f3StrikeZoneSize = pStrikeZone->GetSize();
-					m_pPitchingCursor->SetPos({ f3StrikeZonePos.x - f3StrikeZoneSize.x / 1.3f,f3StrikeZonePos.y + f3StrikeZoneSize.y / 1.3f });
-					m_pPitchingCursor->SetPredPos({ f3StrikeZonePos.x - f3StrikeZoneSize.x / 1.3f, f3StrikeZonePos.y + f3StrikeZoneSize.y / 1.3f });
+					pPitchingCursor->SetPos({ f3StrikeZonePos.x - f3StrikeZoneSize.x / 1.3f,f3StrikeZonePos.y + f3StrikeZoneSize.y / 1.3f,0.0f });
+					pPitchingCursor->SetPredPos({ f3StrikeZonePos.x - f3StrikeZoneSize.x / 1.3f, f3StrikeZonePos.y + f3StrikeZoneSize.y / 1.3f,0.0f });
 					break;
 				}
 				// 投球したらボールをリリースする処理に移る
@@ -292,7 +292,7 @@ void CPitching::Update(int DefenceTeam)
 			bSetCircle = false;
 			// リリースしたらリリースサークルの表示を消す
 			m_tParam[(int)TexKind::PitchingCircle].size = m_tParam[(int)TexKind::ReleasePoint].size = { 0.0f,0.0f };
-			m_pPitchingCursor->SetMove(false);
+			pPitchingCursor->SetMove(false);
 
 			// タイマーが捕球までの時間になったら
 			if (fPitchTime >= m_fChatchTime)
@@ -302,7 +302,7 @@ void CPitching::Update(int DefenceTeam)
 				{
 					// ストライクゾーンにカーソルのポジションが入っていればストライクのカウント
 					// 入っていなければボールのカウントを増やす
-					if (Collision::Hit2D(m_pPitchingCursor->GetCollision(true, Collision::eSquare), pStrikeZone->GetCollision()).isHit)
+					if (Collision::Hit2D(pPitchingCursor->GetCollision(true, Collision::eSquare), pStrikeZone->GetCollision()).isHit)
 					{
 						pGameManager->GetCountManager()->AddStrikeCount();
 					}
@@ -316,7 +316,7 @@ void CPitching::Update(int DefenceTeam)
 				// セットポジションに戻る
 				m_nPitchingPhase = (int)CPitching::PitchingPhase::Set;
 				// カーソルの位置をリセットする
-				m_pPitchingCursor->SetPos(ce_fPitchingCursorPos);
+				pPitchingCursor->SetPos(ce_fPitchingCursorPos);
 			}
 			break;
 		default:
@@ -325,7 +325,7 @@ void CPitching::Update(int DefenceTeam)
 		break;
 	case GamePhase::InPlay:
 		m_nPitchingPhase = (int)CPitching::PitchingPhase::Set;
-		m_pPitchingCursor->SetPos(ce_fPitchingCursorPos);
+		pPitchingCursor->SetPos(ce_fPitchingCursorPos);
 		break;
 	default:
 		break;
@@ -359,21 +359,17 @@ CPitching::PitchState CPitching::GetPitchState()
 
 void CPitching::DrawCircle()
 {
-#ifdef _IMGUI
-	DirectX::XMFLOAT4 possize = GetPosSizeDebug("ReleasePoint");
-#endif // _IMGUI
-
-	int nControl = CTeamManager::GetInstance((int)CGameManager::GetInstance()->GetDefenseTeam())->GetTakingPitcherState().m_eControl;
-	m_tParam[(int)TexKind::ReleasePoint].size = { (35.0f / 7.0f) * nControl + 30.0f,(35.0f / 7.0f) * nControl + 30.0f };
-	// ピッチング時に描画する
-	if (m_nPitchingPhase == (int)CPitching::PitchingPhase::Pitch)
-	{
-		for (int i = 0; i < (int)TexKind::Max; i++)
-		{
-			m_tParam[i].world = CCamera::Get2DWolrdMatrix(m_tParam[i].pos, m_tParam[i].rotate);
-			Sprite::SetParam(m_tParam[i]);
-			Sprite::SetTexture(m_pTexture[i].get());
-			Sprite::Draw();
-		}
-	}
+//	int nControl = CTeamManager::GetInstance((int)CGameManager::GetInstance()->GetDefenseTeam())->GetTakingPitcherState().m_eControl;
+//	m_tParam[(int)TexKind::ReleasePoint].size = { (35.0f / 7.0f) * nControl + 30.0f,(35.0f / 7.0f) * nControl + 30.0f };
+//	// ピッチング時に描画する
+//	if (m_nPitchingPhase == (int)CPitching::PitchingPhase::Pitch)
+//	{
+//		for (int i = 0; i < (int)TexKind::Max; i++)
+//		{
+//			m_tParam[i].world = CCamera::Get2DWolrdMatrix(m_tParam[i].pos, m_tParam[i].rotate);
+//			Sprite::SetParam(m_tParam[i]);
+//			Sprite::SetTexture(m_pTexture[i].get());
+//			Sprite::Draw();
+//		}
+//	}
 }

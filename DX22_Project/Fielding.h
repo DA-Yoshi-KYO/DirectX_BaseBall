@@ -8,13 +8,13 @@
 #include "Field.h"
 #include "Running.h"
 
-class CFielding : public CGameObject
+class CFielding
 {
 public:
 	CFielding();
-	virtual ~CFielding()override;
-	virtual void Update()override;
-	virtual void Draw()override;
+	~CFielding();
+	void Update(int DefencePlayer);
+	void Draw();
 	
 public:
 	// キャッチの仕方

@@ -24,5 +24,5 @@ void CAttackManager::Init()
 
 void CAttackManager::Update()
 {
-	m_pBatting->Update(m_nPlayerNo)
+	m_pBatting->Update(m_nPlayerNo);
 }

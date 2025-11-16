@@ -4,7 +4,7 @@
 #include "Collision.h"
 #include "GameObject.h"
 
-constexpr DirectX::XMFLOAT2 ce_fStrikeZoneSize{ 100.0f,100.0f };
+constexpr DirectX::XMFLOAT3 ce_fStrikeZoneSize{ 100.0f,100.0f,0.0f };
 
 class CStrikeZone : public CGameObject
 {

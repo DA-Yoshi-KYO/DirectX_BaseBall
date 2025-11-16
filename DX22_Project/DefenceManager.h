@@ -16,4 +16,4 @@ private:
 	int m_nPlayerNo;
 	std::unique_ptr<CPitching> m_pPitching;
 
-}
+};

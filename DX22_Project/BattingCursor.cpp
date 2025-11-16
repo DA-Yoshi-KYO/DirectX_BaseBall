@@ -66,17 +66,3 @@ void CBattingCursor::Update()
 	//m_Collision.circle.pos = m_tParam.m_f3Pos;
 	//m_Collision.circle.radius = m_tParam.size.x / 4.0f;
 }
-
-Collision::Info2D CBattingCursor::GetCollision(bool isCursorOnry, Collision::Type2D type)
-{
-	m_Collision.type = type;
-	Collision::Info2D out = m_Collision;
-
-	if (isCursorOnry)
-	{
-		out.square.size = { 0.0f,0.0f };
-		out.circle.radius = 0.0f;
-	}
-
-	return out;
-}

@@ -5,24 +5,23 @@
 #include "Camera.h"
 #include "Sprite.h"
 #include "Main.h"
+#include "SpriteRenderer.h"
 
 CStrikeZone::CStrikeZone()
+	: m_Collision{}
 {
-	if (FAILED(m_pTexture->Create(PATH_TEX("StrikeZone.png")))) MessageBox(NULL, "StrikeZone.png", "Error", MB_OK);
-
 	// パラメータの初期化
-	m_tParam.pos = { 0.0f,-100.0f };
-	m_tParam.offsetPos = { 0.0f,0.0f };
-	m_tParam.size = ce_fStrikeZoneSize;
-	m_tParam.rotate = 0.0f;
-	m_tParam.color = { 1.0f,1.0f,1.0f,1.0f };
-	m_tParam.uvPos = { 0.0f,0.0f };
-	m_tParam.uvSize = { 1.0f,1.0f };
+	m_tParam.m_f3Pos = { 0.0f,-100.0f,0.0f };
+	m_tParam.m_f3Size = ce_fStrikeZoneSize;
+	m_tParam.m_f3Rotate = { 0.0f,0.0f,0.0f };
+	m_tParam.m_f4Color = { 1.0f,1.0f,1.0f,1.0f };
+	m_tParam.m_f2UVPos = { 0.0f,0.0f };
+	m_tParam.m_f2UVSize = { 1.0f,1.0f };
 
 	// 当たり判定情報の初期化
-	m_Collision.type = Collision::Type2D::eSquare;
-	m_Collision.square.pos = m_tParam.pos;
-	m_Collision.square.size = m_tParam.size;
+	//m_Collision.type = Collision::Type2D::eSquare;
+	//m_Collision.square.pos = m_tParam.pos;
+	//m_Collision.square.size = m_tParam.size;
 }
 
 CStrikeZone::~CStrikeZone()
@@ -31,14 +30,17 @@ CStrikeZone::~CStrikeZone()
 
 void CStrikeZone::Init()
 {
-
+	CSpriteRenderer* pRenderer = AddComponent<CSpriteRenderer>();
+	pRenderer->Load(PATH_TEX("StrikeZone.png"));
+	pRenderer->LoadVertexShader(PATH_SHADER("VS_Sprite"));
+	pRenderer->LoadPixelShader(PATH_SHADER("PS_Sprite"));
 }
 
 void CStrikeZone::Update()
 {
-	// 当たり判定情報の更新
-	m_Collision.square.pos = m_tParam.pos;
-	m_Collision.square.size = m_tParam.size;
+//	// 当たり判定情報の更新
+//	m_Collision.square.pos = m_tParam.pos;
+//	m_Collision.square.size = m_tParam.size;
 }
 
 Collision::Info2D CStrikeZone::GetCollision()

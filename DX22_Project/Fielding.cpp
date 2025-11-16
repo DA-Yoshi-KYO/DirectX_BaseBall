@@ -9,6 +9,7 @@
 #include "Input.h"
 #include "Running.h"
 #include "TeamManager.h"
+#include "GameManager.h"
 
 // ==============================
 //    定数定義
@@ -63,12 +64,13 @@ CFielding::~CFielding()
 {
 }
 
-void CFielding::Update()
+void CFielding::Update(int DefencePlayer)
 {
-	CField* pField = CField::GetInstance().get();
-	CBall* pBall = CBall::GetInstance().get();
-	CGameManager* pBallCount = CGameManager::GetInstance();
-	CTeamManager* pTeamManager = CTeamManager::GetInstance((int)pBallCount->GetDefenseTeam()).get();
+	CScene* pScene = GetScene();
+	CField* pField = pScene->GetGameObject<CField>();
+	CBall* pBall = pScene->GetGameObject<CBall>();
+	CGameManager* pGameManager = CGameManager::GetInstance();
+	CTeamManager* pTeamManager = pGameManager->GetTeamManager(DefencePlayer);
 
 	// 計算に使う変数の定義
 	DirectX::XMFLOAT3 fFieldPos = pField->GetPos();
@@ -77,9 +79,9 @@ void CFielding::Update()
 	DirectX::XMFLOAT3 fFieldSize = { fFieldSizeMin.x * 8.0f , fFieldSizeMin.y , fFieldSizeMin.z * 8.0f };
 	DirectX::XMFLOAT3 fFieldPosLine = {fFieldSize.x / 10.0f,fFieldSize.y ,fFieldSize.z / 10.0f };
 
-	switch (CBall::GetInstance()->GetPhase())
+	switch (pGameManager->GetPhase())
 	{
-	case CBall::BallPhase::Batting:
+	case GamePhase::Batting:
 		// 守備位置の初期化
 		m_tParam[(int)FieldMember::Pitcher].pos = { fFieldPos.x,fFieldPos.y, fFieldPos.z + fFieldPosLine.z * 2.5f };
 		m_tParam[(int)FieldMember::Chatcher].pos = { fFieldPos.x,fFieldPos.y, fFieldPos.z + fFieldPosLine.z * 7.3f };
@@ -94,9 +96,9 @@ void CFielding::Update()
 		m_bHold = false;
 		m_eChatch = ChatchPattern::NotChatch;
 		break;
-	case CBall::BallPhase::InPlay:
+	case GamePhase::InPlay:
 		// インプレー終了時に抜け出さない用
-		if (!pBallCount->GetEndInplay())
+		if (!pGameManager->GetEndInplay())
 		{
 			// ボールを持っていない時は操作選手の探索を行う
 			if (!m_bHold)
@@ -111,10 +113,10 @@ void CFielding::Update()
 			}
 			float fMovePow = pTeamManager->GetFielderState((CTeamManager::FieldingNo)(m_nOperationNo + 1)).m_eDefence * (0.45f / 7.0f) + 0.2f;
 			// 移動処理
-			if (pBallCount->GetDefenseTeam() == CGameManager::Team::Player1 ? IsKeyPress(InputPlayer1::Up) : IsKeyPress(InputPlayer2::Up)) m_tParam[m_nOperationNo].pos.z -= fMovePow;
-			if (pBallCount->GetDefenseTeam() == CGameManager::Team::Player1 ? IsKeyPress(InputPlayer1::Down) : IsKeyPress(InputPlayer2::Down)) m_tParam[m_nOperationNo].pos.z += fMovePow;
-			if (pBallCount->GetDefenseTeam() == CGameManager::Team::Player1 ? IsKeyPress(InputPlayer1::Left) : IsKeyPress(InputPlayer2::Left)) m_tParam[m_nOperationNo].pos.x -= fMovePow;
-			if (pBallCount->GetDefenseTeam() == CGameManager::Team::Player1 ? IsKeyPress(InputPlayer1::Right) : IsKeyPress(InputPlayer2::Right)) m_tParam[m_nOperationNo].pos.x += fMovePow;
+			if (IsKeyPress(DefencePlayer, Input::Up))	m_tParam[m_nOperationNo].pos.z -= fMovePow;
+			if (IsKeyPress(DefencePlayer, Input::Down)) m_tParam[m_nOperationNo].pos.z += fMovePow;
+			if (IsKeyPress(DefencePlayer, Input::Left)) m_tParam[m_nOperationNo].pos.x -= fMovePow;
+			if (IsKeyPress(DefencePlayer, Input::Right))m_tParam[m_nOperationNo].pos.x += fMovePow;
 
 			// ベースに近い選手を初期化
 			for (int i = 0; i < (int)CField::BaseKind::Max; i++)
@@ -152,7 +154,7 @@ void CFielding::Update()
 						m_bHold = true;
 
 						// ボールが転がっている状態ではなくなるので、インプレー終了要素を満たす
-						pBallCount->SetEndInplay(CGameManager::InplayElement::HoldBall, true);
+						pGameManager->SetEndInplay(CGameManager::InplayElement::HoldBall, true);
 
 						// フライを捕球したらアウトにする
 						if (pBall->GetIsFry())
@@ -169,10 +171,10 @@ void CFielding::Update()
 			else
 			{
 				// 送球処理
-				if (pBallCount->GetDefenseTeam() == CGameManager::Team::Player1 ? IsKeyPress(InputPlayer1::B) : IsKeyPress(InputPlayer2::B))Throwing(CField::BaseKind::First);
-				if (pBallCount->GetDefenseTeam() == CGameManager::Team::Player1 ? IsKeyPress(InputPlayer1::Y) : IsKeyPress(InputPlayer2::Y))Throwing(CField::BaseKind::Second);
-				if (pBallCount->GetDefenseTeam() == CGameManager::Team::Player1 ? IsKeyPress(InputPlayer1::X) : IsKeyPress(InputPlayer2::X))Throwing(CField::BaseKind::Third);
-				if (pBallCount->GetDefenseTeam() == CGameManager::Team::Player1 ? IsKeyPress(InputPlayer1::A) : IsKeyPress(InputPlayer2::A))Throwing(CField::BaseKind::Home);
+				if (IsKeyPress(DefencePlayer, Input::B))	Throwing(CField::BaseKind::First);
+				if (IsKeyPress(DefencePlayer, Input::Y)) Throwing(CField::BaseKind::Second);
+				if (IsKeyPress(DefencePlayer, Input::X)) Throwing(CField::BaseKind::Third);
+				if (IsKeyPress(DefencePlayer, Input::A))Throwing(CField::BaseKind::Home);
 
 				CRunning::RunnerParam tParam[(int)CRunning::RunnerKind::Max];
 				// 各ランナーの状態を取得
@@ -206,59 +208,7 @@ void CFielding::Update()
 
 void CFielding::Draw()
 {
-	for (int i = 0; i < (int)FieldMember::Max; i++)
-	{
 
-		if (CBall::GetInstance()->GetPhase() == CBall::BallPhase::Batting && i == (int)FieldMember::Chatcher)continue;
-
-		SetModel(m_tParam[i],m_pFieldMember[i].get());
-		Collision::DrawCollision(m_Collision[i]);
-	}
-}
-
-void CFielding::SetModel(ModelParam param, Model* model, bool isAnime)
-{
-	SetRender3D();
-
-	CCamera* pCamera = CCamera::GetInstance(CCamera::GetCameraKind()).get();
-
-	param.mWorld =
-		DirectX::XMMatrixScaling(param.size.x, param.size.y, param.size.z) *
-		DirectX::XMMatrixRotationX(param.rotate.x) *
-		DirectX::XMMatrixRotationY(param.rotate.y) *
-		DirectX::XMMatrixRotationZ(param.rotate.z) *
-		DirectX::XMMatrixTranslation(param.pos.x, param.pos.y, param.pos.z);
-
-	DirectX::XMStoreFloat4x4(&param.wvp[0], DirectX::XMMatrixTranspose(param.mWorld));
-	param.wvp[1] = pCamera->GetViewMatrix();		// view行列
-	param.wvp[2] = pCamera->GetProjectionMatrix();	// projection行列
-	// カメラ行列を設定
-	Geometory::SetView(param.wvp[1]);
-	Geometory::SetProjection(param.wvp[2]);
-
-
-	// シェーダーへ変換行列を設定
-	ShaderList::SetWVP(param.wvp); // 引数にはXMFloat4X4型の、要素数3のアドレスを渡すこと
-
-	//モデルに使用する頂点シェーダーを設定
-	model->SetVertexShader(ShaderList::GetVS(ShaderList::VS_WORLD));
-	// モデルに使用する頂点ピクセルシェーダーを設定
-	model->SetPixelShader(ShaderList::GetPS(ShaderList::PS_LAMBERT));
-
-	for (UINT i = 0; i < model->GetMeshNum(); i++)
-	{
-		// モデルのメッシュの取得
-		Model::Mesh mesh = *model->GetMesh(i);
-
-		// メッシュに割り当てられているマテリアルを取得
-		Model::Material material = *model->GetMaterial(mesh.materialID);
-
-		// シェーダーへマテリアルを設定
-		ShaderList::SetMaterial(material);
-
-		// モデルの描画
-		model->Draw(i);
-	}
 }
 
 void CFielding::BaseCover()

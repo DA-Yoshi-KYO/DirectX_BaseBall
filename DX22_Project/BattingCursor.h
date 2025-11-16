@@ -10,9 +10,6 @@ public:
 	~CBattingCursor();
 	void Init() override;
 	void Update() override;
-public:
-	static Collision::Info2D GetCollision(bool isCursorOnry, Collision::Type2D type = Collision::Type2D::eCircle);
 private:
 	bool m_bMove;	//  カーソルを動かせるか
-	static Collision::Info2D m_Collision;	// カーソルの当たり判定
 };

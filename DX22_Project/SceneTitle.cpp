@@ -3,7 +3,6 @@
 #include "Main.h"
 #include "Sprite.h"
 #include "Camera.h"
-#include "Easing.h"
 
 constexpr DirectX::XMFLOAT4 ce_fStartEndBallPos = { -700.0f,700.0f, 0.0f,150.0f};
 constexpr DirectX::XMFLOAT4 ce_fStartEndBatPos = { 0.0f,-800.0f, 0.0f, 20.0f};
@@ -25,9 +24,6 @@ CSceneTitle::CSceneTitle()
 		m_tParam[i].color = { 1.0f,1.0f,1.0f,1.0f };
 		m_tParam[i].uvPos = { 0.0f,0.0f };
 		m_tParam[i].uvSize = { 1.0f,1.0f };
-		m_tParam[i].world = CCamera::Get2DWolrdMatrix(m_tParam[i].pos, m_tParam[i].rotate);
-		m_tParam[i].view = CCamera::Get2DViewMatrix();
-		m_tParam[i].proj = CCamera::Get2DProjectionMatrix();
 	}
 	if (FAILED(m_pTexture[(int)TextureKind::Back]->Create(PATH_TEX("TitleBack.jpg")))) ERROR_MESSAGE("TitleBack.jpg");
 	m_tParam[(int)TextureKind::Back].size = { SCREEN_WIDTH,SCREEN_HEIGHT };

@@ -19,12 +19,6 @@ public:
 	void Update() override;
 
 public:
-	// ボールの状態
-	enum class BallPhase
-	{
-		Batting,	// バッティング中
-		InPlay,		// インプレー中
-	};
 
 public:
 	/// <summary> SetMove:ボールの進む方向と進行速度をセットする </summary>
@@ -41,10 +35,6 @@ public:
 	/// <summary> GetIsFry:フライが上がっている状態か取得する</summary>
 	/// <returns> true:フライ false:ゴロ </returns>
 	bool GetIsFry();
-	/// <summary> GetPhase:ボールの状態を取得する</summary>
-	/// <returns> Batting:バッティング中 </returns>
-	/// <returns> Inplay:インプレー中 </returns>
-	BallPhase GetPhase();
 
 public:
 	/// <summary> OnCollision:ボールに当たった時の処理 </summary>

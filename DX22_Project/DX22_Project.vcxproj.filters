@@ -52,21 +52,6 @@
     <Filter Include="Code\Component">
       <UniqueIdentifier>{df11a5f5-5822-43a0-af83-672fde2ace0d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Code\GameObject\BaseBall">
-      <UniqueIdentifier>{eb454ab2-2f6d-4a8f-8c52-d95227756fa9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Code\GameObject\BaseBall\Attack">
-      <UniqueIdentifier>{31243132-0deb-4dac-8e13-c7e8891986b4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Code\GameObject\BaseBall\Difence">
-      <UniqueIdentifier>{ad45c694-7e41-4e8f-ba94-7ba2025816dc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Code\GameObject\BaseBall\System">
-      <UniqueIdentifier>{b353eae5-3c11-4e2f-b9a9-b92d4ded31b4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Code\GameObject\BaseBall\Team">
-      <UniqueIdentifier>{40a37f1a-fa1c-464a-aaeb-9e1529cf6ff1}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Code\Shader">
       <UniqueIdentifier>{bdc4dbc6-69e1-4983-a0df-dc985a2cbb04}</UniqueIdentifier>
     </Filter>
@@ -99,6 +84,24 @@
     </Filter>
     <Filter Include="Code\GameObject\Attack\Manager">
       <UniqueIdentifier>{7cfe1d07-5adc-462c-8bed-d676f12667bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\GameObject\Difence">
+      <UniqueIdentifier>{ad45c694-7e41-4e8f-ba94-7ba2025816dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\GameObject\System">
+      <UniqueIdentifier>{b353eae5-3c11-4e2f-b9a9-b92d4ded31b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\GameObject\Team">
+      <UniqueIdentifier>{40a37f1a-fa1c-464a-aaeb-9e1529cf6ff1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\GameObject\Difence\Manager">
+      <UniqueIdentifier>{d98206c4-6eec-44dd-b337-c7b564958894}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\GameObject\Field">
+      <UniqueIdentifier>{e1519487-01c3-4b45-8d43-d6f15c59f028}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\GameObject\Field\Manager">
+      <UniqueIdentifier>{6d89bb0a-39a1-476a-a14a-d2cd4a2e52f0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -178,37 +181,19 @@
       <Filter>imgui</Filter>
     </ClCompile>
     <ClCompile Include="Pitching.cpp">
-      <Filter>Code\GameObject\BaseBall\Difence</Filter>
-    </ClCompile>
-    <ClCompile Include="Ball.cpp">
-      <Filter>Code\GameObject\BaseBall\System</Filter>
-    </ClCompile>
-    <ClCompile Include="StrikeZone.cpp">
-      <Filter>Code\GameObject\BaseBall\System</Filter>
+      <Filter>Code\GameObject\Difence</Filter>
     </ClCompile>
     <ClCompile Include="GameManager.cpp">
-      <Filter>Code\GameObject\BaseBall\System</Filter>
-    </ClCompile>
-    <ClCompile Include="Defence.cpp">
-      <Filter>Code\GameObject\BaseBall\Difence</Filter>
+      <Filter>Code\GameObject\System</Filter>
     </ClCompile>
     <ClCompile Include="PitchingCursor.cpp">
-      <Filter>Code\GameObject\BaseBall\Difence</Filter>
+      <Filter>Code\GameObject\Difence</Filter>
     </ClCompile>
     <ClCompile Include="CameraInplay.cpp">
       <Filter>Code\Camera</Filter>
     </ClCompile>
     <ClCompile Include="Fielding.cpp">
-      <Filter>Code\GameObject\BaseBall\Difence</Filter>
-    </ClCompile>
-    <ClCompile Include="Shadow.cpp">
-      <Filter>Code\GameObject\BaseBall\System</Filter>
-    </ClCompile>
-    <ClCompile Include="Minimap.cpp">
-      <Filter>Code\GameObject\BaseBall\System</Filter>
-    </ClCompile>
-    <ClCompile Include="Field.cpp">
-      <Filter>Code\GameObject\BaseBall\System</Filter>
+      <Filter>Code\GameObject\Difence</Filter>
     </ClCompile>
     <ClCompile Include="SceneMemberselect.cpp">
       <Filter>Code\Scene</Filter>
@@ -217,7 +202,7 @@
       <Filter>Code\Scene</Filter>
     </ClCompile>
     <ClCompile Include="TeamManager.cpp">
-      <Filter>Code\GameObject\BaseBall\Team</Filter>
+      <Filter>Code\GameObject\Team</Filter>
     </ClCompile>
     <ClCompile Include="_geometory.cpp">
       <Filter>Code\Work\Model</Filter>
@@ -330,9 +315,6 @@
     <ClCompile Include="PostProcessChain.cpp">
       <Filter>Code\Shader</Filter>
     </ClCompile>
-    <ClCompile Include="Attack.cpp">
-      <Filter>Code\GameObject\Attack</Filter>
-    </ClCompile>
     <ClCompile Include="Batting.cpp">
       <Filter>Code\GameObject\Attack</Filter>
     </ClCompile>
@@ -344,6 +326,24 @@
     </ClCompile>
     <ClCompile Include="AttackManager.cpp">
       <Filter>Code\GameObject\Attack\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="DefenceManager.cpp">
+      <Filter>Code\GameObject\Difence\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Ball.cpp">
+      <Filter>Code\GameObject\Field</Filter>
+    </ClCompile>
+    <ClCompile Include="Field.cpp">
+      <Filter>Code\GameObject\Field</Filter>
+    </ClCompile>
+    <ClCompile Include="StrikeZone.cpp">
+      <Filter>Code\GameObject\Field</Filter>
+    </ClCompile>
+    <ClCompile Include="Base.cpp">
+      <Filter>Code\GameObject\Field</Filter>
+    </ClCompile>
+    <ClCompile Include="FieldManager.cpp">
+      <Filter>Code\GameObject\Field\Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -381,37 +381,19 @@
       <Filter>Code\Application</Filter>
     </ClInclude>
     <ClInclude Include="PitchingCursor.h">
-      <Filter>Code\GameObject\BaseBall\Difence</Filter>
-    </ClInclude>
-    <ClInclude Include="Defence.h">
-      <Filter>Code\GameObject\BaseBall\Difence</Filter>
+      <Filter>Code\GameObject\Difence</Filter>
     </ClInclude>
     <ClInclude Include="Fielding.h">
-      <Filter>Code\GameObject\BaseBall\Difence</Filter>
+      <Filter>Code\GameObject\Difence</Filter>
     </ClInclude>
     <ClInclude Include="Pitching.h">
-      <Filter>Code\GameObject\BaseBall\Difence</Filter>
-    </ClInclude>
-    <ClInclude Include="Ball.h">
-      <Filter>Code\GameObject\BaseBall\System</Filter>
+      <Filter>Code\GameObject\Difence</Filter>
     </ClInclude>
     <ClInclude Include="GameManager.h">
-      <Filter>Code\GameObject\BaseBall\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Field.h">
-      <Filter>Code\GameObject\BaseBall\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Minimap.h">
-      <Filter>Code\GameObject\BaseBall\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Shadow.h">
-      <Filter>Code\GameObject\BaseBall\System</Filter>
-    </ClInclude>
-    <ClInclude Include="StrikeZone.h">
-      <Filter>Code\GameObject\BaseBall\System</Filter>
+      <Filter>Code\GameObject\System</Filter>
     </ClInclude>
     <ClInclude Include="TeamManager.h">
-      <Filter>Code\GameObject\BaseBall\Team</Filter>
+      <Filter>Code\GameObject\Team</Filter>
     </ClInclude>
     <ClInclude Include="Camera.h">
       <Filter>Code\Camera</Filter>
@@ -560,9 +542,6 @@
     <ClInclude Include="PostProcessChain.h">
       <Filter>Code\Shader</Filter>
     </ClInclude>
-    <ClInclude Include="Attack.h">
-      <Filter>Code\GameObject\Attack</Filter>
-    </ClInclude>
     <ClInclude Include="Batting.h">
       <Filter>Code\GameObject\Attack</Filter>
     </ClInclude>
@@ -574,6 +553,24 @@
     </ClInclude>
     <ClInclude Include="AttackManager.h">
       <Filter>Code\GameObject\Attack\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="DefenceManager.h">
+      <Filter>Code\GameObject\Difence\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Ball.h">
+      <Filter>Code\GameObject\Field</Filter>
+    </ClInclude>
+    <ClInclude Include="Field.h">
+      <Filter>Code\GameObject\Field</Filter>
+    </ClInclude>
+    <ClInclude Include="StrikeZone.h">
+      <Filter>Code\GameObject\Field</Filter>
+    </ClInclude>
+    <ClInclude Include="Base.h">
+      <Filter>Code\GameObject\Field</Filter>
+    </ClInclude>
+    <ClInclude Include="FieldManager.h">
+      <Filter>Code\GameObject\Field\Manager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

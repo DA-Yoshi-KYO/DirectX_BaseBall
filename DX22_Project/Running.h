@@ -6,13 +6,13 @@
 #include "Defines.h"
 #include "Field.h"
 
-class CRunning : public CGameObject
+class CRunning
 {
 public:
 	CRunning();
-	virtual ~CRunning()override;
-	virtual void Update()override;
-	virtual void Draw()override;
+	~CRunning();
+	void Update(int AttackPlayer);
+	void Draw();
 	
 public:
 	// インプレー前のランナーの種類
@@ -87,7 +87,7 @@ private:
 private:
 	// 内部処理
 	// ランナーの移動処理
-	void RunnerMove(RunnerKind kind);
+	void RunnerMove(RunnerKind kind, int AttackPlayer);
 	// ランナーが移動しているかチェック
 	void RunnerCheck();
 	// ベース上に誰かいるかチェック

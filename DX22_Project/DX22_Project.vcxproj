@@ -192,7 +192,6 @@
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MeshBuffer.cpp" />
-    <ClCompile Include="Minimap.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="ModelRenderer.cpp" />
     <ClCompile Include="Model_anime.cpp" />
@@ -222,7 +221,6 @@
     <ClCompile Include="SceneTitle.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="ShaderList.cpp" />
-    <ClCompile Include="Shadow.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="Startup.cpp" />
     <ClCompile Include="StrikeZone.cpp" />
@@ -278,7 +276,6 @@
     <ClInclude Include="Input.h" />
     <ClInclude Include="Main.h" />
     <ClInclude Include="MeshBuffer.h" />
-    <ClInclude Include="Minimap.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="ModelRenderer.h" />
     <ClInclude Include="OutCount.h" />
@@ -304,7 +301,6 @@
     <ClInclude Include="SceneTitle.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="ShaderList.h" />
-    <ClInclude Include="Shadow.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="StrikeZone.h" />
     <ClInclude Include="Texture.h" />

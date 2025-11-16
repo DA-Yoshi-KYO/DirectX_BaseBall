@@ -46,7 +46,6 @@ bool CTeamManager::Load(Teams team)
     if (!fFile)
     {
         ERROR_MESSAGE(sPath[(int)team].c_str());
-        Init();
         return false;
     }
 
@@ -343,17 +342,6 @@ void CTeamManager::NextBatter()
 {
     m_nTakingNo++;
     if (m_nTakingNo > 9) m_nTakingNo = 1;
-}
-
-std::shared_ptr<CTeamManager>& CTeamManager::GetInstance(int teamNo)
-{
-    if (!m_pTeam[teamNo])
-    {
-        m_pTeam[teamNo].reset(new CTeamManager());
-        return m_pTeam[teamNo];
-    }
-
-    return m_pTeam[teamNo];
 }
 
 std::vector<CTeamManager::PitcherState> CTeamManager::GetPitcherState()

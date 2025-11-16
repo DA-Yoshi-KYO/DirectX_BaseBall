@@ -1,12 +1,9 @@
 #include "GameObject.h"
 #include "Scene.h"
-#include "CameraManager.h"
+#include "Camera.h"
 #include "Geometory.h"
 #include "PostProcessChain.h"
 #include "DebugSystem.h"
-
-const static int DEBUG_GRID_NUM = 20;			// グリッドの数
-const static float DEBUG_GRID_MARGIN = 1.0f;	// グリッドの間隔
 
 CScene::CScene()
 {
@@ -117,8 +114,7 @@ std::array<std::list<CGameObject*>, (int)Tag::Max> CScene::GetGameObjectList()
 
 void CScene::DrawGrid()
 {
-    CCameraManager* pCameraManager = CCameraManager::GetInstance();
-    CCameraBase* pMainCamera = pCameraManager->GetMainCamera();
+    CCamera* pMainCamera = CCamera::GetInstance();
     Geometory::SetView(pMainCamera->GetViewMatrix());
     Geometory::SetProjection(pMainCamera->GetProjectionMatrix());
 

@@ -9,20 +9,20 @@ HRESULT InitInput();
 void UninitInput();
 void UpdateInput();
 
-enum Input
+enum class Input
 {
-	Right,
-	Left,
-	Up,
-	Down,
-	A,
-	B,
-	X,
-	Y,
-	R1,
-	R2,
-	L1,
-	L2
+    Right,
+    Left,
+    Up,
+    Down,
+    A,
+    B,
+    X,
+    Y,
+    R1,
+    R2,
+    L1,
+    L2
 };
 
 bool IsKeyPress(BYTE key);
