@@ -15,8 +15,7 @@ public:
 	virtual ~CFielding()override;
 	virtual void Update()override;
 	virtual void Draw()override;
-	virtual void SetModel(ModelParam param, Model* model, bool isAnime = false) override;
-
+	
 public:
 	// キャッチの仕方
 	enum class ChatchPattern

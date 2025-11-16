@@ -30,194 +30,166 @@ bool IsKeyPress(BYTE key)
 	return g_keyTable[key] & 0x80;
 }
 
-bool IsKeyPress(InputPlayer1 key)
-{
-	CSetIndex(PAD_USER1_NUMBER);
-
-	switch (key)
-	{
-	case InputPlayer1::Right:
-		return CGetButtons(XINPUT_GAMEPAD_DPAD_LEFT);
-		break;
-	case InputPlayer1::Left:
-		return CGetButtons(XINPUT_GAMEPAD_DPAD_RIGHT);
-		break;
-	case InputPlayer1::Up:
-		return CGetButtons(XINPUT_GAMEPAD_DPAD_UP);
-		break;
-	case InputPlayer1::Down:
-		return CGetButtons(XINPUT_GAMEPAD_DPAD_DOWN);
-		break;
-	case InputPlayer1::A:
-		return CGetButtons(XINPUT_GAMEPAD_A);
-		break;
-	case InputPlayer1::B:
-		return CGetButtons(XINPUT_GAMEPAD_B);
-		break;
-	case InputPlayer1::X:
-		return CGetButtons(XINPUT_GAMEPAD_X);
-		break;
-	case InputPlayer1::Y:
-		return CGetButtons(XINPUT_GAMEPAD_Y);
-		break;
-	case InputPlayer1::R1:
-		return CGetButtons(XINPUT_GAMEPAD_RIGHT_SHOULDER);
-		break;
-	case InputPlayer1::R2:
-		break;
-	case InputPlayer1::L1:
-		return CGetButtons(XINPUT_GAMEPAD_LEFT_SHOULDER);
-		break;
-	case InputPlayer1::L2:
-		break;
-	default:
-		return false;
-		break;
-	}
-}
-
-bool IsKeyPress(InputPlayer2 key)
-{
-	CSetIndex(PAD_USER2_NUMBER);
-
-	switch (key)
-	{
-	case InputPlayer2::Right:
-		return CGetButtons(XINPUT_GAMEPAD_DPAD_LEFT);
-		break;
-	case InputPlayer2::Left:
-		return CGetButtons(XINPUT_GAMEPAD_DPAD_RIGHT);
-		break;
-	case InputPlayer2::Up:
-		return CGetButtons(XINPUT_GAMEPAD_DPAD_UP);
-		break;
-	case InputPlayer2::Down:
-		return CGetButtons(XINPUT_GAMEPAD_DPAD_DOWN);
-		break;
-	case InputPlayer2::A:
-		return CGetButtons(XINPUT_GAMEPAD_A);
-		break;
-	case InputPlayer2::B:
-		return CGetButtons(XINPUT_GAMEPAD_B);
-		break;
-	case InputPlayer2::X:
-		return CGetButtons(XINPUT_GAMEPAD_X);
-		break;
-	case InputPlayer2::Y:
-		return CGetButtons(XINPUT_GAMEPAD_Y);
-		break;
-	case InputPlayer2::R1:
-		return CGetButtons(XINPUT_GAMEPAD_RIGHT_SHOULDER);
-		break;
-	case InputPlayer2::R2:
-		break;
-	case InputPlayer2::L1:
-		return CGetButtons(XINPUT_GAMEPAD_LEFT_SHOULDER);
-		break;
-	case InputPlayer2::L2:
-		break;
-	default:
-		return false;
-		break;
-	}
-}
 
 bool IsKeyTrigger(BYTE key)
 {
 	return (g_keyTable[key] ^ g_oldTable[key]) & g_keyTable[key] & 0x80;
 }
 
-bool IsKeyTrigger(InputPlayer1 key)
+bool IsKeyTrigger(int PlayerNo, Input key)
 {
-	CSetIndex(PAD_USER1_NUMBER);
+	bool bActive = CGetActive(PlayerNo);
+	bool out = false;
+	if (bActive)
+	{
+		switch (PlayerNo)
+		{
+		case 1:
+			CSetIndex(PAD_USER1_NUMBER);
+			break;
+		case 2:
+			CSetIndex(PAD_USER2_NUMBER);
+			break;
+		default:
+			return out;
+			break;
+		}
+	}
 
 	switch (key)
 	{
-	case InputPlayer1::Right:
-		return CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT);
+	case Right:
+		if (bActive) out = CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT);
+		else out = PlayerNo == 1 ? IsKeyTrigger('D') : IsKeyTrigger('L');
 		break;
-	case InputPlayer1::Left:
-		return CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT);
+	case Left:
+		if (bActive) out = CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT);
+		else out = PlayerNo == 1 ? IsKeyTrigger('A') : IsKeyTrigger('J');
 		break;
-	case InputPlayer1::Up:
-		return CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_UP);
+	case Up:
+		if (bActive) out = CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_UP);
+		else out = PlayerNo == 1 ? IsKeyTrigger('W') : IsKeyTrigger('I');
 		break;
-	case InputPlayer1::Down:
-		return CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_DOWN);
+	case Down:
+		if (bActive) out = CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_DOWN);
+		else out = PlayerNo == 1 ? IsKeyTrigger('S') : IsKeyTrigger('K');
 		break;
-	case InputPlayer1::A:
-		return CGetButtonsTriger(XINPUT_GAMEPAD_A);
+	case A:
+		if (bActive) out = CGetButtonsTriger(XINPUT_GAMEPAD_A);
+		else out = PlayerNo == 1 ? IsKeyTrigger(VK_SPACE) : IsKeyTrigger(VK_RETURN);
 		break;
-	case InputPlayer1::B:
-		return CGetButtonsTriger(XINPUT_GAMEPAD_B);
+	case B:
+		if (bActive) out = CGetButtonsTriger(XINPUT_GAMEPAD_B);
+		else out = PlayerNo == 1 ? IsKeyTrigger(VK_ESCAPE) : IsKeyTrigger(VK_BACK);
 		break;
-	case InputPlayer1::X:
-		return CGetButtonsTriger(XINPUT_GAMEPAD_X);
+	case X:
+		if (bActive) out = CGetButtonsTriger(XINPUT_GAMEPAD_X);
+		else out = PlayerNo == 1 ? IsKeyTrigger('Q') : IsKeyTrigger('U');
 		break;
-	case InputPlayer1::Y:
-		return CGetButtonsTriger(XINPUT_GAMEPAD_Y);
+	case Y:
+		if (bActive) out = CGetButtonsTriger(XINPUT_GAMEPAD_Y);
+		else out = PlayerNo == 1 ? IsKeyTrigger('E') : IsKeyTrigger('O');
 		break;
-	case InputPlayer1::R1:
-		return CGetButtonsTriger(XINPUT_GAMEPAD_RIGHT_SHOULDER);
+	case R1:
+		if (bActive) out = CGetButtonsTriger(XINPUT_GAMEPAD_RIGHT_SHOULDER);
+		else out = PlayerNo == 1 ? IsKeyTrigger('1') : IsKeyTrigger('7');
 		break;
-	case InputPlayer1::R2:
+	case R2:
+		if (bActive) out = CGetButtonsTriger(XINPUT_GAMEPAD_RIGHT_SHOULDER);
+		else out = PlayerNo == 1 ? IsKeyTrigger('2') : IsKeyTrigger('8');
 		break;
-	case InputPlayer1::L1:
-		return CGetButtonsTriger(XINPUT_GAMEPAD_LEFT_SHOULDER);
+	case L1:
+		if (bActive) out = CGetButtonsTriger(XINPUT_GAMEPAD_LEFT_SHOULDER);
+		else out = PlayerNo == 1 ? IsKeyTrigger('3') : IsKeyTrigger('9');
 		break;
-	case InputPlayer1::L2:
+	case L2:
+		if (bActive) out = CGetButtonsTriger(XINPUT_GAMEPAD_LEFT_SHOULDER);
+		else out = PlayerNo == 1 ? IsKeyTrigger('4') : IsKeyTrigger('0');
 		break;
 	default:
-		return false;
 		break;
 	}
+
+	return out;
 }
 
-bool IsKeyTrigger(InputPlayer2 key)
+bool IsKeyPress(int PlayerNo, Input key)
 {
-	CSetIndex(PAD_USER2_NUMBER);
-
+	bool bActive = CGetActive(PlayerNo);
+	bool out = false;
+	if (bActive)
+	{
+		switch (PlayerNo)
+		{
+		case 1:
+			CSetIndex(PAD_USER1_NUMBER);
+			break;
+		case 2:
+			CSetIndex(PAD_USER2_NUMBER);
+			break;
+		default:
+			return out;
+			break;
+		}
+	}
+	
 	switch (key)
 	{
-	case InputPlayer2::Right:
-		return CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_RIGHT);
+	case Right:
+		if (bActive) out = CGetButtons(XINPUT_GAMEPAD_DPAD_RIGHT);
+		else out = PlayerNo == 1 ? IsKeyPress('D') : IsKeyPress('L');
 		break;
-	case InputPlayer2::Left:
-		return CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_LEFT);
+	case Left:
+		if (bActive) out = CGetButtons(XINPUT_GAMEPAD_DPAD_LEFT);
+		else out = PlayerNo == 1 ? IsKeyPress('A') : IsKeyPress('J');
 		break;
-	case InputPlayer2::Up:
-		return CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_UP);
+	case Up:
+		if (bActive) out = CGetButtons(XINPUT_GAMEPAD_DPAD_UP);
+		else out = PlayerNo == 1 ? IsKeyPress('W') : IsKeyPress('I');
 		break;
-	case InputPlayer2::Down:
-		return CGetButtonsTriger(XINPUT_GAMEPAD_DPAD_DOWN);
+	case Down:
+		if (bActive) out = CGetButtons(XINPUT_GAMEPAD_DPAD_DOWN);
+		else out = PlayerNo == 1 ? IsKeyPress('S') : IsKeyPress('K');
 		break;
-	case InputPlayer2::A:
-		return CGetButtonsTriger(XINPUT_GAMEPAD_A);
+	case A:
+		if (bActive) out = CGetButtons(XINPUT_GAMEPAD_A);
+		else out = PlayerNo == 1 ? IsKeyPress(VK_SPACE) : IsKeyPress(VK_RETURN);
 		break;
-	case InputPlayer2::B:
-		return CGetButtonsTriger(XINPUT_GAMEPAD_B);
+	case B:
+		if (bActive) out = CGetButtons(XINPUT_GAMEPAD_B);
+		else out = PlayerNo == 1 ? IsKeyPress(VK_ESCAPE) : IsKeyPress(VK_BACK);
 		break;
-	case InputPlayer2::X:
-		return CGetButtonsTriger(XINPUT_GAMEPAD_X);
+	case X:
+		if (bActive) out = CGetButtons(XINPUT_GAMEPAD_X);
+		else out = PlayerNo == 1 ? IsKeyPress('Q') : IsKeyPress('U');
 		break;
-	case InputPlayer2::Y:
-		return CGetButtonsTriger(XINPUT_GAMEPAD_Y);
+	case Y:
+		if (bActive) out = CGetButtons(XINPUT_GAMEPAD_Y);
+		else out = PlayerNo == 1 ? IsKeyPress('E') : IsKeyPress('O');
 		break;
-	case InputPlayer2::R1:
-		return CGetButtonsTriger(XINPUT_GAMEPAD_RIGHT_SHOULDER);
+	case R1:
+		if (bActive) out = CGetButtons(XINPUT_GAMEPAD_RIGHT_SHOULDER);
+		else out = PlayerNo == 1 ? IsKeyPress('1') : IsKeyPress('7');
 		break;
-	case InputPlayer2::R2:
+	case R2:
+		if (bActive) out = CGetButtons(XINPUT_GAMEPAD_RIGHT_SHOULDER);
+		else out = PlayerNo == 1 ? IsKeyPress('2') : IsKeyPress('8');
 		break;
-	case InputPlayer2::L1:
-		return CGetButtonsTriger(XINPUT_GAMEPAD_LEFT_SHOULDER);
+	case L1:
+		if (bActive) out = CGetButtons(XINPUT_GAMEPAD_LEFT_SHOULDER);
+		else out = PlayerNo == 1 ? IsKeyPress('3') : IsKeyPress('9');
 		break;
-	case InputPlayer2::L2:
+	case L2:
+		if (bActive) out = CGetButtons(XINPUT_GAMEPAD_LEFT_SHOULDER);
+		else out = PlayerNo == 1 ? IsKeyPress('4') : IsKeyPress('0');
 		break;
 	default:
-		return false;
 		break;
 	}
+
+	return out;
 }
+
 bool IsKeyRelease(BYTE key)
 {
 	return (g_keyTable[key] ^ g_oldTable[key]) & g_oldTable[key] & 0x80;

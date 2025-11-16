@@ -20,3 +20,4 @@ void CSetRigthVibration(int Frame, int Strength);
 void CSetStopVibration();
 bool CGetButtonsTriger(WORD InButton);
 void CSetIndex(int index);
+bool CGetActive(int index);

@@ -1,58 +1,18 @@
-// ==============================
-//    インクルード部
-// ==============================
 #pragma once
-#include "Defines.h"
-#include "Texture.h"
-#include "StrikeZone.h"
-#include "Collision.h"
+#include "GameObject.h"
 
-// ==============================
-//    定数定義
-// ==============================
-constexpr DirectX::XMFLOAT2 ce_fBattingCursorPos = { 0.0f,-150.0f };	// 打撃カーソルの初期位置
+constexpr DirectX::XMFLOAT3 ce_fBattingCursorPos = { 0.0f,-150.0f,0.0f };	// 打撃カーソルの初期位置
 
-class CBattingCursor
+class CBattingCursor : CGameObject
 {
 public:
 	CBattingCursor();
 	~CBattingCursor();
-	void Update();
-	void Draw();
-	
+	void Init() override;
+	void Update() override;
 public:
-	// ==============================
-	//    アクセサ
-	// ==============================
-	// 
-	// ------------Setter------------
-	/// <summary name="SetStrikeZone"> SetStrikeZone:CStrikeZoneクラスのインスタンスをセットする </summary>
-	/// <param name="zone"> CStrikeZoneクラスのインスタンス </param>
-	void SetStrikeZone(CStrikeZone* zone);
-	/// <summary name="SetMove"> SetMove:カーソルが動けるかをセットする </summary>
-	/// <param name="isMove"> true:動ける false:動けない </param>
-	void SetMove(bool isMove);
-
-	// ------------Getter------------
-	/// <summary> GetPos:打撃カーソルの座標を取得する </summary>
-	/// <returns> 打撃カーソルの座標 </returns>
-	DirectX::XMFLOAT2 GetPos();
-	/// <summary> GetSize:打撃カーソルのサイズを取得する </summary>
-	/// <returns> 打撃カーソルのサイズ </returns>
-	DirectX::XMFLOAT2 GetSize();
-	/// <summary> GetCollision:カーソルの当たり判定を取得する </summary>
-	/// <param name="isCursorOnry"> true:当たり判定の座標だけ取得する false:当たり判定をそのまま取得する </param>
-	/// <param name="type"> 当たり判定の形(def = 円形) </param>
-	/// <returns> 打撃カーソルの当たり判定 </returns>
 	static Collision::Info2D GetCollision(bool isCursorOnry, Collision::Type2D type = Collision::Type2D::eCircle);
 private:
-	// コンポジション
-	std::unique_ptr<CStrikeZone> m_pStrikeZone;
-	std::unique_ptr<Texture> m_pTexture;
-	// スプライトのパラメータ
-	SpriteParam m_tParam;
-	// メンバ変数
 	bool m_bMove;	//  カーソルを動かせるか
-	// 静的メンバ変数
 	static Collision::Info2D m_Collision;	// カーソルの当たり判定
 };

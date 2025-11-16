@@ -57,9 +57,6 @@ CRunning::~CRunning()
 void CRunning::Update()
 {
 	// インスタンスの取得
-	CGameManager* pBallCount = CGameManager::GetInstance();
-	CField* pField = CField::GetInstance().get();
-	CBall* pBall = CBall::GetInstance().get();
 	CTeamManager* pTeamManager = CTeamManager::GetInstance((int)pBallCount->GetOffenseTeam()).get();
 	
 	// バッティング時とインプレー時で処理を変える
@@ -121,10 +118,6 @@ void CRunning::Update()
 
 void CRunning::Draw()
 {
-	// インスタンスの取得
-	CGameManager* pBallCount = CGameManager::GetInstance().get();
-	CField* pField = CField::GetInstance().get();
-	CBall* pBall = CBall::GetInstance().get();
 
 	// ランナーの描画処理
 	for (int i = 0; i < (int)RunnerKind::Max; i++)
@@ -133,8 +126,6 @@ void CRunning::Draw()
 		if (pBall->GetPhase() == CBall::BallPhase::Batting && i == (int)RunnerKind::BatterRunner)continue;
 		// ランナーがいない時は描画しない
 		if (!m_tRunnerParam[i].m_bAlive)continue;
-		// 描画
-		SetModel(m_tRunnerParam[i].m_tModelParam, m_pModel.get());
 
 	}
 }

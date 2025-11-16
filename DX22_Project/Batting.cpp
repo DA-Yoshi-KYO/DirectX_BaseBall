@@ -7,7 +7,8 @@
 #include "Collision.h"
 #include "PitchingCursor.h"
 #include "TeamManager.h"
-
+#include "Main.h"
+#include "GameManager.h"
 // ==============================
 //    定数定義
 // ==============================
@@ -27,14 +28,8 @@ constexpr float ce_fAngleMax = 60.0f;		// x方向打球角度の限界(+-)
 // Angle10.0f...弾道1
 
 
-// ==============================
-//    静的変数の初期化
-// ==============================
-bool CBatting::m_bSwing = false;
-
 CBatting::CBatting()
-	: m_pBattingCursor(nullptr), m_pBall(nullptr)
-	, m_bBatting(false), m_fMoveDirection{}
+	: m_bBatting(false), m_fMoveDirection{}
 	, m_fPower(0.0f)
 {
 
@@ -42,25 +37,22 @@ CBatting::CBatting()
 
 CBatting::~CBatting()
 {
-	// コンポジションインスタンスの放棄
-	m_pBattingCursor.release();
-	m_pBall.release();
+
 }
 
-void CBatting::Update()
+void CBatting::Update(int AttackPlayer)
 {
-	DirectX::XMFLOAT3 fBallPos = m_pBall->GetPos();
-	CGameManager* pBallCount = CGameManager::GetInstance();
+	DirectX::XMFLOAT3 fBallPos = GetScene()->GetGameObject<CBall>()->GetPos();
 
 	// ピッチャーがボールを受け取ったらスイング可能にする
-	if (fBallPos.z == ce_fBallPos.z + WORLD_AJUST && m_pBall->GetPhase() == CBall::BallPhase::Batting)
+	if (fBallPos.z == ce_fBallPos.z + WORLD_AJUST && CGameManager::GetInstance()->GetPhase() == GamePhase::Batting)
 	{
 		m_bSwing = false;
 		m_bBatting = false;
 	}
 
 	// 投球中にスイングを掛けていない時にスイングが出来る
-	if ((pBallCount->GetOffenseTeam() == CGameManager::Team::Player1 ? IsKeyTrigger(InputPlayer1::A) : IsKeyTrigger(InputPlayer2::A)) && !m_bSwing)
+	if (IsKeyTrigger(AttackPlayer,Input::A) && !m_bSwing)
 	{
 		float fTyming = ce_fJustTyming + WORLD_AJUST - fBallPos.z;	// どのタイミングで振ったか(0がジャスト、マイナスが遅れている、プラスが早い)
 		float fAngle = 30.0f;		// 打球角度
@@ -176,24 +168,9 @@ void CBatting::Draw()
 
 }
 
-void CBatting::SetCursor(CBattingCursor* cursor)
-{
-	m_pBattingCursor.reset(cursor);
-}
-
-void CBatting::SetBall(CBall* ball)
-{
-	m_pBall.reset(ball);
-}
-
 DirectX::XMFLOAT3 CBatting::GetDirection()
 {
 	return m_fMoveDirection;
-}
-
-bool CBatting::GetSwing()
-{
-	return m_bSwing;
 }
 
 bool CBatting::GetBatting()

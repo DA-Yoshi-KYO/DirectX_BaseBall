@@ -122,15 +122,11 @@ public:
 		int m_nBaseNo;		// Ç«ÇÃÉxÅ[ÉXè„Ç…Ç¢ÇÈÇ©
 	};
 
-private:
-	CTeamManager();
-
 public:
-	void Init();
-	void Release(int teamNo);
+	CTeamManager();
 	~CTeamManager();
+	void Init(int teamNo);
 	bool Load(Teams team);
-	static std::shared_ptr<CTeamManager>& GetInstance(int teamNo);
 	std::vector<PitcherState> GetPitcherState();
 	std::vector<BatterState> GetBatterState();
 	PitcherState GetTakingPitcherState();
@@ -154,6 +150,7 @@ private:
 	std::vector<PitcherState> m_tVecPitcherMember;
 	std::vector<BatterState> m_tVecBatterMember;
 	Teams m_eTeamKind;
-	static std::shared_ptr<CTeamManager> m_pTeam[Player::MaxPlayer];
 	int m_nTakingNo;
+	int m_nPlayerNo;
+
 };

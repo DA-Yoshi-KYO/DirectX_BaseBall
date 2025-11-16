@@ -1,5 +1,6 @@
 #include "CameraInplay.h"
 #include "Ball.h"
+#include "Main.h"
 
 CCameraInplay::CCameraInplay()
 {
@@ -11,7 +12,7 @@ CCameraInplay::~CCameraInplay()
 
 void CCameraInplay::Update()
 {
-	CBall* pBall = CBall::GetInstance().get();
+	CBall* pBall = GetScene()->GetGameObject<CBall>();
 	DirectX::XMFLOAT3 ballPos = pBall->GetPos();
 	m_look.x = ballPos.x;
 	m_look.y = WORLD_AJUST;

@@ -12,6 +12,8 @@
 #include "Pitching.h"
 #include "Controller.h"
 #include "SpriteRenderer.h"
+#include "GameManager.h"
+#include "StrikeZone.h"
 
 // ==============================
 //    定数定義
@@ -27,11 +29,6 @@ constexpr DirectX::XMFLOAT3 ce_fBenderValue[(int)CPitching::BenderKind::Max] =
 	{ -10.0f,10.0f,0.0f },	// シンカーの基礎変化量
 	{ -10.0f,0.0f,0.0f },	// シュートの基礎変化量
 };
-
-// ==============================
-//    静的変数の初期化
-// ==============================
-Collision::Info2D CPitchingCursor::m_Collision = {};
 
 CPitchingCursor::CPitchingCursor()
 	: m_bMove{ true }
@@ -73,12 +70,14 @@ CPitchingCursor::~CPitchingCursor()
 
 void CPitchingCursor::Update()
 {
-	//CPitching::PitchState tState = m_pPitching->GetPitchState();
+	CPitching* pPitching = CGameManager::GetInstance()->GetDefenceManager()->GetPitching();
+	CPitching::PitchState tState = pPitching->GetPitchState();
 	m_tPredParam.m_f3Pos = m_tBallParam.m_f3Pos;
-	DirectX::XMFLOAT3 fStrikeZonePos = { 0.0f,0.0f,0.0f };//m_pStrikeZone->GetPos();
-	DirectX::XMFLOAT3 fStrikeZoneSize = { 0.0f,0.0f,0.0f };//m_pStrikeZone->GetSize();
+	CStrikeZone* pStrikeZone = GetScene()->GetGameObject<CStrikeZone>();
+	DirectX::XMFLOAT3 fStrikeZonePos = pStrikeZone->GetPos();
+	DirectX::XMFLOAT3 fStrikeZoneSize = pStrikeZone->GetSize();
 	// カーソル移動可能なときに移動処理をする
-	if (m_bMove && m_pPitching->GetPitchingPhase() == CPitching::PitchingPhase::Pitch)
+	if (m_bMove && pPitching->GetPitchingPhase() == CPitching::PitchingPhase::Pitch)
 	{
 		// 移動処理
 		DirectX::XMFLOAT2 fInput = {};
@@ -91,11 +90,11 @@ void CPitchingCursor::Update()
 		if (m_tBallParam.m_f3Pos.y >= fStrikeZonePos.y + fStrikeZoneSize.y / 1.3f) m_tBallParam.m_f3Pos.y = fStrikeZonePos.y + fStrikeZoneSize.y / 1.3f;
 		if (m_tBallParam.m_f3Pos.y <= fStrikeZonePos.y - fStrikeZoneSize.y / 1.3f) m_tBallParam.m_f3Pos.y = fStrikeZonePos.y - fStrikeZoneSize.y / 1.3f;
 	}
-	else if(m_pPitching->GetPitchingPhase() == CPitching::PitchingPhase::Release)
+	else if(pPitching->GetPitchingPhase() == CPitching::PitchingPhase::Release)
 	{
 		m_tBallParam.m_f3Pos = m_tPredParam.m_f3Pos;
 	}
-	else if(m_pPitching->GetPitchingPhase() == CPitching::PitchingPhase::Set)
+	else if(pPitching->GetPitchingPhase() == CPitching::PitchingPhase::Set)
 	{
 		m_tBallParam.m_f3Pos = fStrikeZonePos;
 	}
@@ -200,18 +199,4 @@ void CPitchingCursor::Draw()
 
 	m_tParam = m_tPredParam;
 	CGameObject::Draw();
-}
-
-Collision::Info2D CPitchingCursor::GetCollision(bool isCursorOnry, Collision::Type2D type)
-{
-	m_Collision.type = type;
-	Collision::Info2D out = m_Collision;
-
-	if (isCursorOnry)
-	{
-		out.square.size = { 0.0f,0.0f};
-		out.circle.radius = 0.0f;
-	}
-
-	return out;
 }

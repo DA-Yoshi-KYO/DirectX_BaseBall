@@ -149,13 +149,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Attack.cpp" />
     <ClCompile Include="AttackManager.cpp" />
     <ClCompile Include="Ball.cpp" />
     <ClCompile Include="BallCount.cpp" />
+    <ClCompile Include="Base.cpp" />
     <ClCompile Include="BaseCount.cpp" />
     <ClCompile Include="CountManager.cpp" />
     <ClCompile Include="CountObject.cpp" />
+    <ClCompile Include="DefenceManager.cpp" />
+    <ClCompile Include="FieldManager.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="Batting.cpp" />
     <ClCompile Include="BattingCursor.cpp" />
@@ -169,7 +171,6 @@
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="Controller.cpp" />
-    <ClCompile Include="Defence.cpp" />
     <ClCompile Include="DirectX.cpp" />
     <ClCompile Include="Effect.cpp" />
     <ClCompile Include="EffectGoal.cpp" />
@@ -232,13 +233,15 @@
     <ClCompile Include="_model.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Attack.h" />
     <ClInclude Include="AttackManager.h" />
     <ClInclude Include="Ball.h" />
     <ClInclude Include="BallCount.h" />
+    <ClInclude Include="Base.h" />
     <ClInclude Include="BaseCount.h" />
     <ClInclude Include="CountManager.h" />
     <ClInclude Include="CountObject.h" />
+    <ClInclude Include="DefenceManager.h" />
+    <ClInclude Include="FieldManager.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="Batting.h" />
     <ClInclude Include="BattingCursor.h" />
@@ -252,7 +255,6 @@
     <ClInclude Include="Collision.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="Controller.h" />
-    <ClInclude Include="Defence.h" />
     <ClInclude Include="Defines.h" />
     <ClInclude Include="DirectX.h" />
     <ClInclude Include="Effect.h" />

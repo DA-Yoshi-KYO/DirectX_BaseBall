@@ -6,6 +6,8 @@
 #include "Input.h"
 #include "Main.h"
 #include "Fielding.h"
+#include "CameraInplay.h"
+#include "ModelRenderer.h"
 
 // ==============================
 //    定数定義
@@ -21,7 +23,6 @@ constexpr float ce_fHomeToBatterBoxX = 0.0f;	// バッターボックスまでの距離
 constexpr float ce_fHomeToBatterBoxZ = 5.0f;	// バッターボックスまでの距離
 
 CField::CField()
-	: m_pField(nullptr),m_pBase(nullptr), m_pHomeBase(nullptr)
 {
 	// モデルの初期化
 	InitModel();
@@ -37,11 +38,12 @@ CField::~CField()
 
 void CField::Update()
 {
-	CBall* pBall = CBall::GetInstance().get();
+	CBall* pBall = GetScene()->GetGameObject<CBall>();
 	Collision::Info ballCollision = pBall->GetLineCollision();
+	CCamera* pCamera = CCamera::GetInstance();
 
 	// フィールドの処理はインプレー時に行う
-	if (CCamera::GetCameraKind() == CameraKind::CAM_INPLAY)
+	if (dynamic_cast<CCameraInplay*>(pCamera))
 	{
 		// ホームランゾーンと外野フェンスの処理
 		for (int i = 0; i < m_HomeRunZone.size(); i++)
@@ -66,147 +68,21 @@ void CField::Update()
 	}
 }
 
-void CField::Draw()
-{
-	// スカイドームの描画
-
-	// グラウンドの描画
-	SetModel(m_tFieldParam, m_pField.get());
-
-	//// ベースの描画
-	//SetModel(m_tBaseParam[(int)BaseKind::Home], m_pHomeBase.get());
-	//for (int i = (int)BaseKind::First; i <= (int)BaseKind::Third; i++)
-	//{
-	//	SetModel(m_tBaseParam[i], m_pBase.get());
-	//}
-
-	//Collision::DrawCollision(m_Ground);
-	for (auto itr = m_HomeRunZone.begin(); itr != m_HomeRunZone.end(); itr++)
-	{
-		Collision::DrawCollision((*itr));
-	}
-	for (auto itr = m_FirstBaseLine.begin(); itr != m_FirstBaseLine.end(); itr++)
-	{
-		Collision::DrawCollision((*itr));
-	}
-	for (auto itr = m_ThirdBaseLine.begin(); itr != m_ThirdBaseLine.end(); itr++)
-	{
-		Collision::DrawCollision((*itr));
-	}
-
-//	SetModel(m_tSkydomeParam, m_pSkydome.get());
-}
-
-void CField::SetModel(ModelParam param, Model* model, bool isAnime)
-{
-	SetRender3D();
-
-	CCamera* pCamera = CCamera::GetInstance(CCamera::GetCameraKind()).get();
-
-	param.mWorld =
-		DirectX::XMMatrixScaling(param.size.x, param.size.y, param.size.z) *
-		DirectX::XMMatrixRotationX(param.rotate.x) *
-		DirectX::XMMatrixRotationY(param.rotate.y) *
-		DirectX::XMMatrixRotationZ(param.rotate.z) *
-		DirectX::XMMatrixTranslation(param.pos.x, param.pos.y, param.pos.z);
-
-	DirectX::XMStoreFloat4x4(&param.wvp[0], DirectX::XMMatrixTranspose(param.mWorld));
-	param.wvp[1] = pCamera->GetViewMatrix();		// view行列
-	param.wvp[2] = pCamera->GetProjectionMatrix();	// projection行列
-	// カメラ行列を設定
-	Geometory::SetView(param.wvp[1]);
-	Geometory::SetProjection(param.wvp[2]);
-
-
-	// シェーダーへ変換行列を設定
-	ShaderList::SetWVP(param.wvp); // 引数にはXMFloat4X4型の、要素数3のアドレスを渡すこと
-
-	//モデルに使用する頂点シェーダーを設定
-	model->SetVertexShader(ShaderList::GetVS(ShaderList::VS_WORLD));
-	// モデルに使用する頂点ピクセルシェーダーを設定
-	model->SetPixelShader(ShaderList::GetPS(ShaderList::PS_LAMBERT));
-
-	for (UINT i = 0; i < model->GetMeshNum(); i++)
-	{
-		// モデルのメッシュの取得
-		Model::Mesh mesh = *model->GetMesh(i);
-
-		// メッシュに割り当てられているマテリアルを取得
-		Model::Material material = *model->GetMaterial(mesh.materialID);
-
-		// シェーダーへマテリアルを設定
-		ShaderList::SetMaterial(material);
-
-		// モデルの描画
-		model->Draw(i);
-	}
-}
-
 void CField::OnCollision(Collision::Result collision)
 {
 
 }
 
-std::unique_ptr<CField>& CField::GetInstance()
-{
-	static std::unique_ptr<CField> instance(new CField());
-	return instance;
-}
-
-DirectX::XMFLOAT3 CField::GetPos()
-{
-	return m_tFieldParam.pos;
-}
-
-DirectX::XMFLOAT3 CField::GetBasePos(BaseKind No)
-{
-	return m_tBaseParam[(int)No].pos;
-}
-
-DirectX::XMFLOAT3 CField::GetBaseSize(BaseKind No)
-{
-	return m_tBaseParam[(int)No].size;
-}
-
-DirectX::XMFLOAT3 CField::GetSize()
-{
-	return m_tFieldParam.size;
-}
-
 void CField::InitModel()
 {
 	// モデルの読み込み
-	m_pField = std::make_unique<Model>();
-	if (!m_pField->Load(PATH_MODEL("Baseball_Ground.fbx"),0.1f)) ERROR_MESSAGE("Baseball_Ground.fbx");
-	m_pSkydome = std::make_unique<Model>();
-	if (!m_pSkydome->Load(PATH_MODEL("SkyBox.fbx"))) ERROR_MESSAGE("SkyBox.fbx");
-	m_pBase = std::make_unique<Model>();
-	if(!m_pBase->Load(PATH_MODEL("base.obj"))) ERROR_MESSAGE("base.obj");
-	m_pHomeBase = std::make_unique<Model>();
-	if(!m_pHomeBase->Load(PATH_MODEL("HomeBase.obj")))ERROR_MESSAGE("HomeBase.obj");
+	AddComponent<CModelRenderer>()->Load(PATH_MODEL("Baseball_Ground.fbx"), 0.1f);
 
-	// パラメータの初期化
-	// グラウンド
-	m_tFieldParam.pos = { 0.0f + WORLD_AJUST,-10.0f + WORLD_AJUST,0.0f + WORLD_AJUST - 40.0f };
-	m_tFieldParam.size = { 50.0f,50.0f,50.0f };
-	m_tFieldParam.rotate = { 0.0f,0.0f,0.0f };
+	m_tParam.m_f3Pos = { 0.0f + WORLD_AJUST,-10.0f + WORLD_AJUST,0.0f + WORLD_AJUST - 40.0f };
+	m_tParam.m_f3Size = { 50.0f,50.0f,50.0f };
+	m_tParam.m_f3Rotate = { 0.0f,0.0f,0.0f };
 
-	m_tSkydomeParam.pos = { 0.0f + WORLD_AJUST,-10.0f + WORLD_AJUST,0.0f + WORLD_AJUST  - 150.0f };
-	m_tSkydomeParam.size = { 2.0f,2.0f,2.0f };
-	m_tSkydomeParam.rotate = { 0.0f,0.0f,0.0f };
 
-	// 各種ベース
-	m_tBaseParam[(int)BaseKind::Home].pos = { ce_fPitcherPos.x, m_tFieldParam.pos.y,ce_fPitcherPos.z + 75.0f };
-	m_tBaseParam[(int)BaseKind::Home].size = { 1.5f,0.5f,1.5f };
-	m_tBaseParam[(int)BaseKind::Home].rotate = { 0.0f,0.0f,0.0f };
-	for (int i = (int)BaseKind::First; i < (int)BaseKind::Third; i++)
-	{
-		m_tBaseParam[i].size = { 3.0f,3.0f,3.0f };
-		m_tBaseParam[i].rotate = { 0.0f,DirectX::XMConvertToRadians(45.0f),0.0f};
-	}
-	m_tBaseParam[(int)BaseKind::First].pos = { ce_fPitcherPos.x - 70.0f,m_tFieldParam.pos.y,ce_fPitcherPos.z };
-	m_tBaseParam[(int)BaseKind::Second].pos = { ce_fPitcherPos.x ,m_tFieldParam.pos.y,ce_fPitcherPos.z - 75.0f };
-	m_tBaseParam[(int)BaseKind::Third].pos = { ce_fPitcherPos.x + 70.0f,m_tFieldParam.pos.y,ce_fPitcherPos.z };
 }
 
 void CField::InitCollision()
@@ -214,8 +90,8 @@ void CField::InitCollision()
 	// 当たり判定初期化
 	// グラウンド
 	m_Ground.type = Collision::Type::eBox;
-	m_Ground.box.center = m_tFieldParam.pos;
-	m_Ground.box.size = { m_tFieldParam.size.x * 8.0f,m_tFieldParam.size.y,m_tFieldParam.size.z * 8.0f };
+	m_Ground.box.center = m_tParam.m_f3Pos;
+	m_Ground.box.size = { m_tParam.m_f3Size.x * 8.0f,m_tParam.m_f3Size.y,m_tParam.m_f3Size.z * 8.0f };
 
 	// ホームランフェンス・ホームランゾーン
 	int i = 0;	// ループ用(毎回)
@@ -305,21 +181,21 @@ void CField::InitCollision()
 
 	m_FirstBaseLine.resize(ce_nPlanePolyLine);
 	m_FirstBaseLine[0].type = Collision::eTriangle;
-	m_FirstBaseLine[0].triangle.point[0] = { m_tBaseParam[(int)BaseKind::Home].pos.x + ce_fHomeToBatterBoxX  ,ce_fJudgeZoneY + WORLD_AJUST , m_tBaseParam[(int)BaseKind::Home].pos.z + ce_fHomeToBatterBoxZ };
-	m_FirstBaseLine[0].triangle.point[1] = { m_tBaseParam[(int)BaseKind::Home].pos.x + ce_fHomeToBatterBoxX  ,ce_fGroundY + WORLD_AJUST , m_tBaseParam[(int)BaseKind::Home].pos.z + ce_fHomeToBatterBoxZ };
+//	m_FirstBaseLine[0].triangle.point[0] = { m_tBaseParam[(int)BaseKind::Home].pos.x + ce_fHomeToBatterBoxX  ,ce_fJudgeZoneY + WORLD_AJUST , m_tBaseParam[(int)BaseKind::Home].pos.z + ce_fHomeToBatterBoxZ };
+//	m_FirstBaseLine[0].triangle.point[1] = { m_tBaseParam[(int)BaseKind::Home].pos.x + ce_fHomeToBatterBoxX  ,ce_fGroundY + WORLD_AJUST , m_tBaseParam[(int)BaseKind::Home].pos.z + ce_fHomeToBatterBoxZ };
 	m_FirstBaseLine[0].triangle.point[2] = { fBaseX , ce_fJudgeZoneY + WORLD_AJUST , ce_fStartEndZ + WORLD_AJUST };
 	m_FirstBaseLine[1].type = Collision::eTriangle;
-	m_FirstBaseLine[1].triangle.point[0] = { m_tBaseParam[(int)BaseKind::Home].pos.x + ce_fHomeToBatterBoxX  ,ce_fGroundY + WORLD_AJUST, m_tBaseParam[(int)BaseKind::Home].pos.z + ce_fHomeToBatterBoxZ };
+//	m_FirstBaseLine[1].triangle.point[0] = { m_tBaseParam[(int)BaseKind::Home].pos.x + ce_fHomeToBatterBoxX  ,ce_fGroundY + WORLD_AJUST, m_tBaseParam[(int)BaseKind::Home].pos.z + ce_fHomeToBatterBoxZ };
 	m_FirstBaseLine[1].triangle.point[1] = { fBaseX , ce_fJudgeZoneY + WORLD_AJUST , ce_fStartEndZ + WORLD_AJUST };
 	m_FirstBaseLine[1].triangle.point[2] = { fBaseX , ce_fGroundY + WORLD_AJUST, ce_fStartEndZ + WORLD_AJUST };
 
 	m_ThirdBaseLine.resize(ce_nPlanePolyLine);
 	m_ThirdBaseLine[0].type = Collision::eTriangle;
-	m_ThirdBaseLine[0].triangle.point[0] = { m_tBaseParam[(int)BaseKind::Home].pos.x - ce_fHomeToBatterBoxX ,ce_fJudgeZoneY + WORLD_AJUST , m_tBaseParam[(int)BaseKind::Home].pos.z + ce_fHomeToBatterBoxZ };
-	m_ThirdBaseLine[0].triangle.point[1] = { m_tBaseParam[(int)BaseKind::Home].pos.x - ce_fHomeToBatterBoxX ,ce_fGroundY + WORLD_AJUST , m_tBaseParam[(int)BaseKind::Home].pos.z + ce_fHomeToBatterBoxZ };
+//	m_ThirdBaseLine[0].triangle.point[0] = { m_tBaseParam[(int)BaseKind::Home].pos.x - ce_fHomeToBatterBoxX ,ce_fJudgeZoneY + WORLD_AJUST , m_tBaseParam[(int)BaseKind::Home].pos.z + ce_fHomeToBatterBoxZ };
+//	m_ThirdBaseLine[0].triangle.point[1] = { m_tBaseParam[(int)BaseKind::Home].pos.x - ce_fHomeToBatterBoxX ,ce_fGroundY + WORLD_AJUST , m_tBaseParam[(int)BaseKind::Home].pos.z + ce_fHomeToBatterBoxZ };
 	m_ThirdBaseLine[0].triangle.point[2] = { fBaseX - ce_fFenceX, ce_fJudgeZoneY + WORLD_AJUST , ce_fStartEndZ + WORLD_AJUST };
 	m_ThirdBaseLine[1].type = Collision::eTriangle;
-	m_ThirdBaseLine[1].triangle.point[0] = { m_tBaseParam[(int)BaseKind::Home].pos.x - ce_fHomeToBatterBoxX ,ce_fGroundY + WORLD_AJUST , m_tBaseParam[(int)BaseKind::Home].pos.z + ce_fHomeToBatterBoxZ };
+//	m_ThirdBaseLine[1].triangle.point[0] = { m_tBaseParam[(int)BaseKind::Home].pos.x - ce_fHomeToBatterBoxX ,ce_fGroundY + WORLD_AJUST , m_tBaseParam[(int)BaseKind::Home].pos.z + ce_fHomeToBatterBoxZ };
 	m_ThirdBaseLine[1].triangle.point[1] = { fBaseX - ce_fFenceX, ce_fJudgeZoneY + WORLD_AJUST , ce_fStartEndZ + WORLD_AJUST };
 	m_ThirdBaseLine[1].triangle.point[2] = { fBaseX - ce_fFenceX, ce_fGroundY + WORLD_AJUST , ce_fStartEndZ + WORLD_AJUST };
 }

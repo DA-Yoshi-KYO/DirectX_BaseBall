@@ -168,6 +168,11 @@ void CSetIndex(int index)
 	g_nControllerIndex = index;
 }
 
+bool CGetActive(int index)
+{
+	return XInputGetState(g_, &state[index]) == ERROR_SUCCESS;
+}
+
 
 /* バイブレーションの設定を行います */
 /* Freame 実行するFrame数 Strength バイブの強度*/

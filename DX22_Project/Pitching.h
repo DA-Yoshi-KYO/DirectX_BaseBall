@@ -12,7 +12,7 @@ class CPitching
 public:
 	CPitching();
 	~CPitching();
-	void Update();
+	void Update(int DefenceTeam);
 	void Draw();
 
 private:
@@ -89,17 +89,6 @@ public:
 	}m_tPitcherState;
 
 public:
-	// ==============================
-	//    アクセサ
-	// ==============================
-	// 
-	// ------------Setter------------
-	/// <summary> SetCursor:CPitchingCursorクラスのインスタンスをセットする </summary>
-	/// <param name="cursor:"> CPitchingCursorクラスのインスタンス </param>
-	void SetCursor(CPitchingCursor* cursor);
-	/// <summary> SetStrikeZone:CStrikeZoneクラスのインスタンスをセットする </summary>
-	/// <param name="zone:"> CStrikeZoneクラスのインスタンス </param>
-	void SetStrikeZone(CStrikeZone* zone);
 
 	// ------------Getter------------
 	/// <summary> GetPitchingPhase:現在の投球フェーズを取得する </summary>
@@ -124,14 +113,6 @@ private:
 
 		Max
 	};
-
-	// コンポジション
-	std::unique_ptr<Texture> m_pTexture[(int)TexKind::Max];
-	std::unique_ptr<CStrikeZone> m_pStrikeZone;
-	std::unique_ptr<CPitchingCursor> m_pPitchingCursor;
-
-	// パラメータ
-	ObjectParam m_tParam[(int)TexKind::Max];
 
 	// メンバ変数
 	int m_nPitchingPhase;	// 投球の流れ

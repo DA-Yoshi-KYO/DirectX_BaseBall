@@ -1,19 +1,13 @@
 #include "TeamManager.h"
 
-std::shared_ptr<CTeamManager> CTeamManager::m_pTeam[2] = { nullptr,nullptr };
-
-void CTeamManager::Init()
+void CTeamManager::Init(int teamNo)
 {
+    m_nPlayerNo = teamNo;
     m_eTeamKind = Teams::Monkeys;
 
     m_tVecBatterMember.clear();
     m_tVecPitcherMember.clear();
     m_nTakingNo = 1;
-}
-
-void CTeamManager::Release(int teamNo)
-{
-    m_pTeam[teamNo].reset();
 }
 
 CTeamManager::CTeamManager()
@@ -26,10 +20,7 @@ CTeamManager::CTeamManager()
 
 CTeamManager::~CTeamManager()
 {
-    for (int i = 0; i < Player::MaxPlayer; i++)
-    {
-        m_pTeam[i].reset();
-    }
+
 }
 
 bool CTeamManager::Load(Teams team)

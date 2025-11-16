@@ -11,22 +11,10 @@ class CBatting
 public:
 	CBatting();
 	~CBatting();
-	void Update();
+	void Update(int AttackPlayer);
 	void Draw();
 
 public:
-	// ==============================
-	//    アクセサ
-	// ==============================
-	// 
-	// ------------Setter------------
-	/// <summary> SetCursor:CBattingCursorクラスのインスタンスをセットする </summary>
-	/// <param name="cursor:"> CBattingCursorクラスのインスタンス </param>
-	void SetCursor(CBattingCursor* cursor);
-	/// <summary> SetBall:CBallクラスのインスタンスをセットする </summary>
-	/// <param name="ball:"> CBallクラスのインスタンス </param>
-	void SetBall(CBall* ball);
-
 	// ------------Getter------------
 	/// <summary> GetDirection:打球の進行方向を取得する </summary>
 	/// <returns> 打球の進行方向 </returns>
@@ -36,18 +24,14 @@ public:
 	bool GetBatting();
 	/// <summary> GetSwing:スイングを行ったか </summary>
 	/// <returns> true:スイングした,false:スイングしていない </returns>
-	static bool GetSwing();
+	bool GetSwing();
 
 private:
-	// コンポジション
-	std::unique_ptr<CBattingCursor> m_pBattingCursor;
-	std::unique_ptr<CBall> m_pBall;
-
 	// メンバ変数
 	DirectX::XMFLOAT3 m_fMoveDirection;	// 打球の進行方向
 	bool m_bBatting;	// バットに当たったか
 	float m_fPower;		// 打者のパワー
 
 	// 静的メンバ変数
-	static bool m_bSwing;	// スイングしたか
+	bool m_bSwing;	// スイングしたか
 };

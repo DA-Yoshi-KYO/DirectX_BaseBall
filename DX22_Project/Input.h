@@ -9,7 +9,7 @@ HRESULT InitInput();
 void UninitInput();
 void UpdateInput();
 
-enum class InputPlayer1
+enum Input
 {
 	Right,
 	Left,
@@ -22,31 +22,13 @@ enum class InputPlayer1
 	R1,
 	R2,
 	L1,
-	L2,
-};
-
-enum class InputPlayer2
-{
-	Right,
-	Left,
-	Up,
-	Down,
-	A,
-	B,
-	X,
-	Y,
-	R1,
-	R2,
-	L1,
-	L2,
+	L2
 };
 
 bool IsKeyPress(BYTE key);
-bool IsKeyPress(InputPlayer1 key);
-bool IsKeyPress(InputPlayer2 key);
+bool IsKeyPress(int PlayerNo, Input key);
 bool IsKeyTrigger(BYTE key);
-bool IsKeyTrigger(InputPlayer1 key);
-bool IsKeyTrigger(InputPlayer2 key);
+bool IsKeyTrigger(int PlayerNo, Input key);
 bool IsKeyRelease(BYTE key);
 bool IsKeyRepeat(BYTE key);
 
