@@ -100,6 +100,9 @@
     <Filter Include="Code\Component\Renderer">
       <UniqueIdentifier>{f49e49ab-688f-4355-a53d-7a66d2aab37d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Code\GameObject\Title">
+      <UniqueIdentifier>{49b8491a-c068-403c-aaba-14567035f1ab}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -339,6 +342,30 @@
     <ClCompile Include="SpriteRendererBase.cpp">
       <Filter>Code\Component\Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="TitleDirector.cpp">
+      <Filter>Code\Scene\Director</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleBackGround.cpp">
+      <Filter>Code\GameObject\Title</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleBall.cpp">
+      <Filter>Code\GameObject\Title</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleBat.cpp">
+      <Filter>Code\GameObject\Title</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleLogo.cpp">
+      <Filter>Code\GameObject\Title</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleSelectCursor.cpp">
+      <Filter>Code\GameObject\Title</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleEndButton.cpp">
+      <Filter>Code\GameObject\Title</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleStartButton.cpp">
+      <Filter>Code\GameObject\Title</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imconfig.h">
@@ -565,6 +592,30 @@
     </ClInclude>
     <ClInclude Include="SpriteRendererBase.h">
       <Filter>Code\Component\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="TitleDirector.h">
+      <Filter>Code\Scene\Director</Filter>
+    </ClInclude>
+    <ClInclude Include="TitleBackGround.h">
+      <Filter>Code\GameObject\Title</Filter>
+    </ClInclude>
+    <ClInclude Include="TitleBall.h">
+      <Filter>Code\GameObject\Title</Filter>
+    </ClInclude>
+    <ClInclude Include="TitleBat.h">
+      <Filter>Code\GameObject\Title</Filter>
+    </ClInclude>
+    <ClInclude Include="TitleLogo.h">
+      <Filter>Code\GameObject\Title</Filter>
+    </ClInclude>
+    <ClInclude Include="TitleSelectCursor.h">
+      <Filter>Code\GameObject\Title</Filter>
+    </ClInclude>
+    <ClInclude Include="TitleEndButton.h">
+      <Filter>Code\GameObject\Title</Filter>
+    </ClInclude>
+    <ClInclude Include="TitleStartButton.h">
+      <Filter>Code\GameObject\Title</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

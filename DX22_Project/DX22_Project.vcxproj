@@ -224,6 +224,14 @@
     <ClCompile Include="TeamSelectBackGround.cpp" />
     <ClCompile Include="TeamSelectDirector.cpp" />
     <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="TitleBackGround.cpp" />
+    <ClCompile Include="TitleBall.cpp" />
+    <ClCompile Include="TitleBat.cpp" />
+    <ClCompile Include="TitleDirector.cpp" />
+    <ClCompile Include="TitleEndButton.cpp" />
+    <ClCompile Include="TitleLogo.cpp" />
+    <ClCompile Include="TitleSelectCursor.cpp" />
+    <ClCompile Include="TitleStartButton.cpp" />
     <ClCompile Include="Transition.cpp" />
     <ClCompile Include="Write.cpp" />
     <ClCompile Include="_geometory.cpp" />
@@ -303,6 +311,14 @@
     <ClInclude Include="TeamSelectBackGround.h" />
     <ClInclude Include="TeamSelectDirector.h" />
     <ClInclude Include="Texture.h" />
+    <ClInclude Include="TitleBackGround.h" />
+    <ClInclude Include="TitleBall.h" />
+    <ClInclude Include="TitleBat.h" />
+    <ClInclude Include="TitleDirector.h" />
+    <ClInclude Include="TitleEndButton.h" />
+    <ClInclude Include="TitleLogo.h" />
+    <ClInclude Include="TitleSelectCursor.h" />
+    <ClInclude Include="TitleStartButton.h" />
     <ClInclude Include="Transition.h" />
     <ClInclude Include="Write.h" />
   </ItemGroup>

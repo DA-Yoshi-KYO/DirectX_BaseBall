@@ -35,8 +35,6 @@ private:
 
 		Max
 	};
-	std::unique_ptr<Texture> m_pTexture[(int)TextureKind::Max];
-	ObjectParam m_tParam[(int)TextureKind::Max];
 	bool m_bSelected;
 
 	enum class AnimePhase

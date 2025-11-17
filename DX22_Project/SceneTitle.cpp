@@ -25,12 +25,8 @@ CSceneTitle::CSceneTitle()
 		m_tParam[i].uvPos = { 0.0f,0.0f };
 		m_tParam[i].uvSize = { 1.0f,1.0f };
 	}
-	if (FAILED(m_pTexture[(int)TextureKind::Back]->Create(PATH_TEX("TitleBack.jpg")))) ERROR_MESSAGE("TitleBack.jpg");
-	m_tParam[(int)TextureKind::Back].size = { SCREEN_WIDTH,SCREEN_HEIGHT };
 
-	if (FAILED(m_pTexture[(int)TextureKind::Ball]->Create(PATH_TEX("Ball.png")))) ERROR_MESSAGE("Ball.png");
 	m_tParam[(int)TextureKind::Ball].pos = { ce_fStartEndBallPos.x,ce_fStartEndBallPos.y };
-	m_tParam[(int)TextureKind::Ball].size = { 300.0f,300.0f };
 
 	if (FAILED(m_pTexture[(int)TextureKind::Bat]->Create(PATH_TEX("Bat.png")))) ERROR_MESSAGE("Bat.png");
 	m_tParam[(int)TextureKind::Bat].pos = { ce_fStartEndBatPos.x,ce_fStartEndBatPos.y };

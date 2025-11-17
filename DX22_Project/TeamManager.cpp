@@ -13,7 +13,7 @@ void CTeamManager::Init(int teamNo)
 CTeamManager::CTeamManager()
     : m_eTeamKind(Teams::Monkeys)
     , m_tVecBatterMember{}, m_tVecPitcherMember{}
-    , m_nTakingNo(1)
+    , m_nTakingNo(1), m_nPlayerNo(0)
 {
 
 }
