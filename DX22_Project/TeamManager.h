@@ -33,7 +33,6 @@ public:
 		A,
 		S
 	};
-
 	
 	enum FieldingNo
 	{

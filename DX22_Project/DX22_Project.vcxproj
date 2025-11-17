@@ -167,13 +167,10 @@
     <ClCompile Include="CameraDebug.cpp" />
     <ClCompile Include="CameraEvent.cpp" />
     <ClCompile Include="CameraInplay.cpp" />
-    <ClCompile Include="CameraMinimap.cpp" />
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="Controller.cpp" />
     <ClCompile Include="DirectX.cpp" />
-    <ClCompile Include="Effect.cpp" />
-    <ClCompile Include="EffectGoal.cpp" />
     <ClCompile Include="Fade.cpp" />
     <ClCompile Include="FadeBlack.cpp" />
     <ClCompile Include="Field.cpp" />
@@ -208,13 +205,13 @@
     <ClCompile Include="SceneTeamselect.cpp" />
     <ClCompile Include="Score.cpp" />
     <ClCompile Include="ScoreBoard.cpp" />
+    <ClCompile Include="SelectTeam.cpp" />
     <ClCompile Include="Sound.cpp" />
     <ClCompile Include="Sprite3DRenderer.cpp" />
     <ClCompile Include="SpriteRenderer.cpp" />
     <ClCompile Include="SpriteRendererBase.cpp" />
     <ClCompile Include="StrikeCount.cpp" />
     <ClCompile Include="TeamManager.cpp" />
-    <ClCompile Include="PolylineEffect.cpp" />
     <ClCompile Include="Running.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneGame.cpp" />
@@ -224,8 +221,10 @@
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="Startup.cpp" />
     <ClCompile Include="StrikeZone.cpp" />
+    <ClCompile Include="TeamSelectBackGround.cpp" />
+    <ClCompile Include="TeamSelectDirector.cpp" />
     <ClCompile Include="Texture.cpp" />
-    <ClCompile Include="TrailEffect.cpp" />
+    <ClCompile Include="Transition.cpp" />
     <ClCompile Include="Write.cpp" />
     <ClCompile Include="_geometory.cpp" />
     <ClCompile Include="_model.cpp" />
@@ -249,14 +248,11 @@
     <ClInclude Include="CameraDebug.h" />
     <ClInclude Include="CameraEvent.h" />
     <ClInclude Include="CameraInplay.h" />
-    <ClInclude Include="CameraMinimap.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="Controller.h" />
     <ClInclude Include="Defines.h" />
     <ClInclude Include="DirectX.h" />
-    <ClInclude Include="Effect.h" />
-    <ClInclude Include="EffectGoal.h" />
     <ClInclude Include="Fade.h" />
     <ClInclude Include="FadeBlack.h" />
     <ClInclude Include="Field.h" />
@@ -278,6 +274,7 @@
     <ClInclude Include="MeshBuffer.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="ModelRenderer.h" />
+    <ClInclude Include="Oparation.h" />
     <ClInclude Include="OutCount.h" />
     <ClInclude Include="Pitching.h" />
     <ClInclude Include="PitchingCursor.h" />
@@ -288,13 +285,13 @@
     <ClInclude Include="SceneTeamselect.h" />
     <ClInclude Include="Score.h" />
     <ClInclude Include="ScoreBoard.h" />
+    <ClInclude Include="SelectTeam.h" />
     <ClInclude Include="Sound.h" />
     <ClInclude Include="Sprite3DRenderer.h" />
     <ClInclude Include="SpriteRenderer.h" />
     <ClInclude Include="SpriteRendererBase.h" />
     <ClInclude Include="StrikeCount.h" />
     <ClInclude Include="TeamManager.h" />
-    <ClInclude Include="PolylineEffect.h" />
     <ClInclude Include="Running.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneGame.h" />
@@ -303,12 +300,15 @@
     <ClInclude Include="ShaderList.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="StrikeZone.h" />
+    <ClInclude Include="TeamSelectBackGround.h" />
+    <ClInclude Include="TeamSelectDirector.h" />
     <ClInclude Include="Texture.h" />
-    <ClInclude Include="TrailEffect.h" />
+    <ClInclude Include="Transition.h" />
     <ClInclude Include="Write.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="History.txt" />
+    <Text Include="refactor.txt" />
     <Text Include="Schedule.txt" />
     <Text Include="Task.txt" />
   </ItemGroup>

@@ -17,9 +17,13 @@
 
 // Scenes
 #include "SceneTitle.h"
+#include "Transition.h"
 
-CScene* g_pScene = nullptr;
-bool g_bIsDebugMode = false;
+CScene* g_pScene;
+CScene* g_pNextScene;
+CTransition* g_pTransition;
+bool g_bSceneChanging = false;
+bool g_bDebugMode = false;
 
 HRESULT Init(HWND hWnd, UINT width, UINT height)
 {
@@ -41,6 +45,9 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
     // Scenes
     g_pScene = new CSceneTitle();
     g_pScene->Init();
+    g_pTransition = new CTransition();
+    g_pTransition->Init();
+    FadeIn(nullptr);
 
 	return hr;
 }
@@ -50,6 +57,8 @@ void Uninit()
     // Scenes
     g_pScene->Uninit();
     SAFE_DELETE(g_pScene);
+    g_pTransition->Uninit();
+    SAFE_DELETE(g_pTransition);
 
     // SingletonInstances
     CDebugSystem::GetInstance()->Release();
@@ -71,17 +80,32 @@ void Uninit()
 void Update()
 {
     UpdateInput();
-    g_pScene->Update();
+    if (CDebugSystem::GetInstance()->IsUpdate())
+    {
+        if (g_bSceneChanging)
+        {
+            CDebugSystem::GetInstance()->ReleaseGameObject();
+
+            g_pScene->Uninit();
+            delete g_pScene;
+            g_pScene = g_pNextScene;
+            g_pScene->Init();
+            g_bSceneChanging = false;
+        }
+
+        g_pScene->Update();
+        g_pTransition->Update();
+    }
 
     if (IsKeyPress(VK_SHIFT))
     {
         if (IsKeyTrigger(VK_RETURN))
         {
-            g_bIsDebugMode ^= true;
+            g_bDebugMode ^= true;
         }
     }
 
-    if(g_bIsDebugMode) CDebugSystem::GetInstance()->Update();
+    if(g_bDebugMode) CDebugSystem::GetInstance()->Update();
 }
 
 void Draw()
@@ -89,7 +113,7 @@ void Draw()
 	BeginDrawDirectX();
 
     g_pScene->Draw();
-    if (g_bIsDebugMode) CDebugSystem::GetInstance()->Draw();
+    if (g_bDebugMode) CDebugSystem::GetInstance()->Draw();
 
 	EndDrawDirectX();
 }
@@ -97,4 +121,16 @@ void Draw()
 CScene* GetScene()
 {
     return g_pScene;
+}
+
+void ChangeScene(CScene* inScene)
+{
+}
+
+void FadeIn(std::function<void()> onFadeComplete)
+{
+}
+
+void FadeOut(std::function<void()> onFadeComplete)
+{
 }
