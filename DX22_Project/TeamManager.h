@@ -153,3 +153,23 @@ private:
 	int m_nPlayerNo;
 
 };
+
+class CTeam
+{
+public:
+	CTeam();
+	~CTeam();
+
+private:
+
+};
+
+class TeamManager
+{
+public:
+	TeamManager();
+	~TeamManager();
+
+private:
+
+};

@@ -153,16 +153,6 @@ CSceneMemberselect::CSceneMemberselect(CTeamManager::Teams player1, CTeamManager
 
 	pPlayer1->InitStarter();
 	pPlayer2->InitStarter();
-	
-	m_tBackParam.pos = { 0.0f,0.0f };
-	m_tBackParam.size = { SCREEN_WIDTH,SCREEN_HEIGHT };
-	m_tBackParam.rotate = 0.0f;
-	m_tBackParam.color = { 1.0f,1.0f,1.0f,1.0f };
-	m_tBackParam.offsetPos = { 0.0f,0.0f };
-	m_tBackParam.uvPos = { 0.0f,0.0f };
-	m_tBackParam.uvSize = { 1.0f,1.0f };
-	m_tBackParam.view = vp[0];
-	m_tBackParam.proj = vp[1];	
 
 	m_tCursorParam[Player::One].pos = { -80.0f,230.0f };
 	m_tCursorParam[Player::One].size = { 40.0f,40.0f };

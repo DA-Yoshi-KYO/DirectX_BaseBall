@@ -2,7 +2,6 @@
 #include "Defines.h"
 #include "CameraDebug.h"
 #include "CameraEvent.h"
-#include "CameraMinimap.h"
 #include "CameraBatter.h"
 #include "CameraInplay.h"
 

@@ -170,7 +170,7 @@ void CSetIndex(int index)
 
 bool CGetActive(int index)
 {
-	return XInputGetState(g_, &state[index]) == ERROR_SUCCESS;
+	return XInputGetState(index, &state[index]) == ERROR_SUCCESS;
 }
 
 

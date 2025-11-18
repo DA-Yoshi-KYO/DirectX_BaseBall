@@ -20,6 +20,7 @@ private:
 	class CTitleLogo* m_pLogo;
 
 	int m_nSelect;
+	bool m_bEnd;
 
 	enum TitlePhase
 	{

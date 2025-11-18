@@ -8,5 +8,7 @@ public:
 	CTitleEndButton();
 	~CTitleEndButton();
 	void Init() override;
+	void ExecAnimation() override;
+	void EndAnimation() override;
 
 };

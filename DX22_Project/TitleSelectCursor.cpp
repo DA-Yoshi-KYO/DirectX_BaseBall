@@ -3,6 +3,7 @@
 
 CTitleSelectCursor::CTitleSelectCursor()
 	: CGameObject()
+	, m_nIndex(0)
 {
 
 }
@@ -18,4 +19,22 @@ void CTitleSelectCursor::Init()
 	pRenderer->Load(PATH_TEX("PositionSeeat.png"));
 	pRenderer->LoadVertexShader(PATH_SHADER("VS_Sprite"));
 	pRenderer->LoadPixelShader(PATH_SHADER("PS_Sprite"));
+
+	m_bActive = false;
+}
+
+void CTitleSelectCursor::Update()
+{
+	if (!m_bActive) return;
+
+	m_tParam.m_f3Pos.y = -180.0f + -120.0f * m_nIndex;
+
+	CGameObject::Update();
+}
+
+void CTitleSelectCursor::Draw()
+{
+	if (!m_bActive) return;
+
+	CGameObject::Draw();
 }

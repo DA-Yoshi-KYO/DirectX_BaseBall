@@ -1,8 +1,10 @@
 #include "TitleBat.h"
 #include "SpriteRenderer.h"
+#include "Oparation.h"
 
-constexpr DirectX::XMFLOAT2 ce_fStartBatPos = { 0.0f,-800.0f };
-constexpr DirectX::XMFLOAT2 ce_fEndBatPos = { 0.0f, 20.0f };
+constexpr DirectX::XMFLOAT3 ce_fStartBatPos = DirectX::XMFLOAT3(0.0f,-800.0f,0.0f);
+constexpr DirectX::XMFLOAT3 ce_fEndBatPos = DirectX::XMFLOAT3(0.0f, 20.0f,0.0f);
+constexpr float ce_fEndRotate = DirectX::XMConvertToRadians(1870.0f);
 
 CTitleBat::CTitleBat()
 	: CAnimationObject()
@@ -35,26 +37,17 @@ void CTitleBat::ExecAnimation()
 	fRad = DirectX::XMConvertToRadians(fRad);
 	float fCos = sinf(fRad);
 
-	if (m_bIsRight)
-	{
-		m_tParam.m_f3Pos.x =
-			(ce_fEndBatPos.x - ce_fStartBatPos.x) * (m_fTime / ce_fGroveMoveTime) +
-			(fCos * ce_fGroveMoveX) +
-			ce_fStartBatPos.x;
-		m_tParam.m_f3Pos.y =
-			(ce_fEndBatPos.y - ce_fStartBatPos.y) * (m_fTime / ce_fGroveMoveTime) +
-			ce_fStartBatPos.y;
-		m_tParam.m_f3Rotate.z = (0.0f - DirectX::XMConvertToRadians(1870.0f)) * (m_fTime / ce_fGroveMoveTime);
-	}
-	else
-	{
-		m_tParam.m_f3Pos.x =
-			(ce_fEndBatPos.x - ce_fStartBatPos.x) * (m_fTime / ce_fGroveMoveTime) +
-			(fCos * -ce_fGroveMoveX) +
-			ce_fStartBatPos.x;
-		m_tParam.m_f3Pos.y =
-			(ce_fEndBatPos.y - ce_fStartBatPos.y) * (m_fTime / ce_fGroveMoveTime) +
-			ce_fStartBatPos.y;
-		m_tParam.m_f3Rotate.z = (0.0f - DirectX::XMConvertToRadians(-1870.0f)) * (m_fTime / ce_fGroveMoveTime);
-	}
+	m_tParam.m_f3Pos = ce_fStartBatPos + (ce_fEndBatPos - ce_fStartBatPos) * (m_fTime / ce_fGroveMoveTime);
+
+	if (m_bIsRight) m_tParam.m_f3Rotate.z = 0.0f + (0.0f - ce_fEndRotate) * (m_fTime / ce_fGroveMoveTime);
+	else m_tParam.m_f3Rotate.z = 0.0f + (0.0f - -ce_fEndRotate) * (m_fTime / ce_fGroveMoveTime);
+}
+
+void CTitleBat::EndAnimation()
+{
+	m_bIsAnimation = false;
+
+	m_tParam.m_f3Pos = ce_fEndBatPos;
+	if (m_bIsRight) m_tParam.m_f3Rotate.z = ce_fEndRotate;
+	else m_tParam.m_f3Rotate.z = -ce_fEndRotate;
 }

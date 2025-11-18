@@ -1,69 +1,18 @@
 #pragma once
 
 #include "Scene.h"
-#include "Texture.h"
-#include "Defines.h"
-#include <coroutine>
-
-constexpr int ce_nMaxAnime = 3;
+#include "TitleDirector.h"
+#include <memory>
 
 class CSceneTitle : public CScene 
 {
 public:
 	CSceneTitle();
 	~CSceneTitle();
+	void Init() final;
 	void Update() final;
-	void Draw() final;
-
+	
 private:
-	enum class TitlePhase
-	{
-		Animation,
-		Select
-	}m_eTitlePhase;
+	std::unique_ptr<CTitleDirector> m_pDirector;
 
-	enum class TextureKind
-	{
-		Back,
-		Ball,
-		Bat,
-		Bat2,
-		Logo,
-		Start,
-		End,
-		Cursor,
-
-		Max
-	};
-	bool m_bSelected;
-
-	enum class AnimePhase
-	{
-		Ball,
-		BatGrove,
-		Logo,
-		Buttons,
-
-		Max
-	};
-	bool m_bAnime[(int)AnimePhase::Max];
-
-	enum class SelectKind
-	{
-		Start,
-		End
-	};
-	int m_nSelectKind;
-	bool m_bCursorAnim;
-private:
-	void UpdateAnimation();
-	void UpdateSelect();
-
-	bool BallAnimation();
-	bool BatAnimation();
-	bool LogoAnimation();
-
-	bool ButtonAnimation();
-
-	void ResetSpriteParam();
 };

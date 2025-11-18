@@ -190,6 +190,8 @@
     <ClCompile Include="Inning.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="MemberSelectBackGround.cpp" />
+    <ClCompile Include="MemberSelectDirector.cpp" />
     <ClCompile Include="MeshBuffer.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="ModelRenderer.cpp" />
@@ -200,6 +202,7 @@
     <ClCompile Include="OutCount.cpp" />
     <ClCompile Include="Pitching.cpp" />
     <ClCompile Include="PitchingCursor.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="PostProcess.cpp" />
     <ClCompile Include="PostProcessChain.cpp" />
     <ClCompile Include="RendererComponent.cpp" />
@@ -283,6 +286,8 @@
     <ClInclude Include="Inning.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="Main.h" />
+    <ClInclude Include="MemberSelectBackGround.h" />
+    <ClInclude Include="MemberSelectDirector.h" />
     <ClInclude Include="MeshBuffer.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="ModelRenderer.h" />
@@ -290,6 +295,7 @@
     <ClInclude Include="OutCount.h" />
     <ClInclude Include="Pitching.h" />
     <ClInclude Include="PitchingCursor.h" />
+    <ClInclude Include="PlayerData.h" />
     <ClInclude Include="PostProcess.h" />
     <ClInclude Include="PostProcessChain.h" />
     <ClInclude Include="RendererComponent.h" />

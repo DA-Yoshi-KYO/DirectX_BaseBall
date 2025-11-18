@@ -9,5 +9,6 @@ public:
 	~CTitleLogo();
 	void Init() override;
 	void ExecAnimation() override;
+	void EndAnimation() override;
 
 };
