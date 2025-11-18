@@ -270,6 +270,9 @@ public:
     /// </returns>
     ObjectID GetID() { return m_tID; }
 
+    void SetActive(bool isActive) { m_bActive = isActive; }
+    bool GetActive() { return m_bActive; }
+
     /// <summary>
     /// オブジェクトのワールド行列を取得
     /// </summary>
@@ -285,6 +288,7 @@ protected:
     RendererParam m_tParam;         // 描画パラメータ
     DirectX::XMFLOAT3 m_f3OldPos;   // 前フレームの位置
     bool m_bDestroy;                // オブジェクトが破棄されているかのフラグ
+    bool m_bActive;                 // 破棄はしないが、更新や描画等の対象外としたいときに使用
     Tag m_eTag;                     // オブジェクトのタグ
     ObjectID m_tID;                 // オブジェクト識別用ID
     std::vector<PixelShader*> m_pDebugPSList;

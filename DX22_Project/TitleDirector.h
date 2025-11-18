@@ -19,6 +19,8 @@ private:
 	class CTitleSelectCursor* m_pSelectCursor;
 	class CTitleLogo* m_pLogo;
 
+	int m_nSelect;
+
 	enum TitlePhase
 	{
 		Animation,

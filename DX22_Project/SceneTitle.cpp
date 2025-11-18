@@ -4,9 +4,6 @@
 #include "Sprite.h"
 #include "Camera.h"
 
-constexpr DirectX::XMFLOAT4 ce_fStartEndBallPos = { -700.0f,700.0f, 0.0f,150.0f};
-constexpr DirectX::XMFLOAT4 ce_fStartEndBatPos = { 0.0f,-800.0f, 0.0f, 20.0f};
-constexpr DirectX::XMFLOAT4 ce_fStartEndLogoSize = { 0.0f, 0.0f, 1000.0f,600.0f };
 constexpr DirectX::XMFLOAT4 ce_fStartEndStartButtonPos = { 1000.0f,-180.0f, 0.0f, -180.0f };
 constexpr DirectX::XMFLOAT4 ce_fStartEndEndButtonPos = { 1000.0f,-300.0f, 0.0f, -300.0f };
 
@@ -183,77 +180,6 @@ void CSceneTitle::UpdateSelect()
 	default:
 		break;
 	}
-}
-
-bool CSceneTitle::BallAnimation()
-{
-	constexpr float easePosXTime = 3.5f;
-	constexpr float easeRotateTime = 3.3f;
-	constexpr float easePosYTime = 2.0f;
-	static float fTime = 0.0f;
-
-	if (m_bAnime[(int)AnimePhase::Ball])
-	{
-		return true;
-	}
-
-	
-	m_tParam[(int)TextureKind::Ball].pos.x = easeOutBack(fTime, easePosXTime, ce_fStartEndBallPos.x, ce_fStartEndBallPos.z, 3.0f);
-	m_tParam[(int)TextureKind::Ball].pos.y = easeOutBounce(fTime, easePosYTime, ce_fStartEndBallPos.y, ce_fStartEndBallPos.w);
-	m_tParam[(int)TextureKind::Ball].rotate = easeOutBack(fTime, easeRotateTime, 0.0f, DirectX::XMConvertToRadians(1800.0f));
-
-	if (fTime > easePosXTime)
-	{
-		fTime = 0.0f;
-		m_bAnime[(int)AnimePhase::Ball] = true;
-		return true;
-	}
-	fTime += 1.0f / fFPS;
-	return false;
-}
-
-bool CSceneTitle::BatAnimation()
-{
-	constexpr float ce_fGroveMoveTime = 0.5f;
-	constexpr float ce_fGroveMoveX = 200.0f;
-	static float fTime = 0.0f;
-
-
-	if (m_bAnime[(int)AnimePhase::BatGrove])
-	{
-		return true;
-	}
-
-	float fRad = fTime / ce_fGroveMoveTime * 180.0f;
-	fRad = DirectX::XMConvertToRadians(fRad);
-	float fCos = sinf(fRad);
-	m_tParam[(int)TextureKind::Bat].pos.x = 
-		(ce_fStartEndBatPos.z - ce_fStartEndBatPos.x) * (fTime / ce_fGroveMoveTime) +
-		(fCos * ce_fGroveMoveX) + 
-		ce_fStartEndBatPos.x;
-	m_tParam[(int)TextureKind::Bat].pos.y =
-		(ce_fStartEndBatPos.w - ce_fStartEndBatPos.y) *  (fTime / ce_fGroveMoveTime) +
-		ce_fStartEndBatPos.y;
-	m_tParam[(int)TextureKind::Bat].rotate = (0.0f - DirectX::XMConvertToRadians(1870.0f)) * (fTime / ce_fGroveMoveTime);
-
-	m_tParam[(int)TextureKind::Bat2].pos.x = 
-		(ce_fStartEndBatPos.z - ce_fStartEndBatPos.x) * (fTime / ce_fGroveMoveTime) +
-		(fCos * -ce_fGroveMoveX) + 
-		ce_fStartEndBatPos.x;
-	m_tParam[(int)TextureKind::Bat2].pos.y = 
-		(ce_fStartEndBatPos.w - ce_fStartEndBatPos.y) *  (fTime / ce_fGroveMoveTime) +
-		ce_fStartEndBatPos.y;
-	m_tParam[(int)TextureKind::Bat2].rotate = (0.0f - DirectX::XMConvertToRadians(-1870.0f)) * (fTime / ce_fGroveMoveTime);
-	if (fTime > ce_fGroveMoveTime)
-	{
-		fTime = 0.0f;
-		m_bAnime[(int)AnimePhase::BatGrove] = true;
-		return true;
-	}
-
-
-	fTime += 1.0f / fFPS;
-	return false;
 }
 
 bool CSceneTitle::LogoAnimation()

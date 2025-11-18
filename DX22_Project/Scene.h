@@ -56,6 +56,21 @@ public:
 		return nullptr;
 	}
 
+    template<typename T = CGameObject>
+	std::list<T*> GetSameGameObject()
+	{
+        std::list<T*> list;
+        for (auto list : m_pGameObject_List)
+        {
+            for (auto obj : list)
+            {
+                T* ret = dynamic_cast<T*>(obj);
+                if (ret != nullptr) list.push_back(ret);
+            }
+        }
+		return list;
+	}
+
 	CGameObject* GetGameObject(ObjectID inID)
 	{
         for (auto list : m_pGameObject_List)

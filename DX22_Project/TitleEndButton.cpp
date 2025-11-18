@@ -1,17 +1,18 @@
 #include "TitleEndButton.h"
 #include "SpriteRenderer.h"
 
-TitleEndButton::TitleEndButton()
+CTitleEndButton::CTitleEndButton()
+	: CAnimationObject()
 {
 
 }
 
-TitleEndButton::~TitleEndButton()
+CTitleEndButton::~CTitleEndButton()
 {
 
 }
 
-void TitleEndButton::Init()
+void CTitleEndButton::Init()
 {
 	CSpriteRenderer* pRenderer = AddComponent<CSpriteRenderer>();
 	pRenderer->Load(PATH_TEX("EndButton.png"));

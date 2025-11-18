@@ -1,12 +1,12 @@
 #pragma once
 
-#include "GameObject.h"
+#include "AnimationObject.h"
 
-class TitleEndButton : public CGameObject
+class CTitleEndButton : public CAnimationObject
 {
 public:
-	TitleEndButton();
-	~TitleEndButton();
+	CTitleEndButton();
+	~CTitleEndButton();
 	void Init() override;
 
 };

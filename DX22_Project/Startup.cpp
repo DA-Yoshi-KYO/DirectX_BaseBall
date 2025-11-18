@@ -147,7 +147,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	return DefWindowProc(hWnd, message, wParam, lParam);
 }
 
-void SetEnd(bool isEnd)
+void AppEnd()
 {
-	g_bEnd = isEnd;
+	g_bEnd = true;
 }

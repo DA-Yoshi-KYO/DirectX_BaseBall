@@ -8,15 +8,21 @@
 #include "TitleEndButton.h"
 #include "TitleSelectCursor.h"
 #include "TitleLogo.h"
+#include "SceneTeamselect.h"
 
 CTitleDirector::CTitleDirector()
-	: m_ePhase(TitlePhase::Animation)
+	: m_ePhase(TitlePhase::Animation), m_nSelect(0)
+	, m_pBackGround(nullptr), m_pBall(nullptr)
+	, m_pBat{nullptr}, m_pLogo(nullptr)
+	, m_pStartButton(nullptr), m_pEndButton(nullptr)
+	, m_pSelectCursor(nullptr)
 {
 
 }
 
 CTitleDirector::~CTitleDirector()
 {
+
 }
 
 void CTitleDirector::Init()
@@ -50,10 +56,59 @@ void CTitleDirector::UpdateAnimation()
 	if (IsKeyTrigger(1, Input::A) || IsKeyTrigger(2, Input::A))
 	{
 		m_ePhase = TitlePhase::Select;
+
+		auto AnimationObjects = GetScene()->GetSameGameObject<CAnimationObject>();
+		for (auto itr : AnimationObjects)
+		{
+			itr->EndAnimation();
+		}
+	}
+
+	// ‹^Ž—ƒRƒ‹[ƒ`ƒ“ˆ—...
+	// ‰˜‚¢‚Ì‚Å•Ï‚¦‚½‚¢
+	m_pBall->StartAnimation();
+	if (m_pBall->IsCompliteAnimation())
+	{
+		m_pBat[0]->StartAnimation();
+		m_pBat[1]->StartAnimation();
+		if (m_pBat[0]->IsCompliteAnimation() && m_pBat[1]->IsCompliteAnimation())
+		{
+			m_pLogo->StartAnimation();
+			if (m_pLogo->IsCompliteAnimation())
+			{
+				m_pStartButton->StartAnimation();
+				m_pEndButton->StartAnimation();
+
+				if (m_pStartButton->IsCompliteAnimation() && m_pEndButton->IsCompliteAnimation())
+				{
+					m_ePhase = TitlePhase::Select;
+					auto AnimationObjects = GetScene()->GetSameGameObject<CAnimationObject>();
+					for (auto itr : AnimationObjects)
+					{
+						itr->EndAnimation();
+					}
+				}
+			}
+		}
 	}
 }
 
 void CTitleDirector::UpdateSelect()
 {
-
+	if (IsKeyTrigger(1, Input::A) || IsKeyTrigger(2, Input::A))
+	{
+		switch (m_nSelect)
+		{
+		case 0:
+			FadeOut([]()
+				{
+					ChangeScene(new CSceneTeamSelect());
+					FadeIn(nullptr);
+				});
+			break;
+		case 1:
+			AppEnd();
+			break;
+		}
+	}
 }

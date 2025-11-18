@@ -120,6 +120,7 @@
       <ConformanceMode>true</ConformanceMode>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -149,6 +150,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AnimationObject.cpp" />
     <ClCompile Include="AttackManager.cpp" />
     <ClCompile Include="Ball.cpp" />
     <ClCompile Include="BallCount.cpp" />
@@ -238,6 +240,7 @@
     <ClCompile Include="_model.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AnimationObject.h" />
     <ClInclude Include="AttackManager.h" />
     <ClInclude Include="Ball.h" />
     <ClInclude Include="BallCount.h" />
@@ -246,6 +249,7 @@
     <ClInclude Include="CountManager.h" />
     <ClInclude Include="CountObject.h" />
     <ClInclude Include="DefenceManager.h" />
+    <ClInclude Include="Easing.h" />
     <ClInclude Include="FieldManager.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="Batting.h" />

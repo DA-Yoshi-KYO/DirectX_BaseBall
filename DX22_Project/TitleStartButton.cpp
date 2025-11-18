@@ -1,17 +1,18 @@
 #include "TitleStartButton.h"
 #include "SpriteRenderer.h"
 
-TitleStartButton::TitleStartButton()
+CTitleStartButton::CTitleStartButton()
+	: CAnimationObject()
 {
 
 }
 
-TitleStartButton::~TitleStartButton()
+CTitleStartButton::~CTitleStartButton()
 {
 
 }
 
-void TitleStartButton::Init()
+void CTitleStartButton::Init()
 {
 	CSpriteRenderer* pRenderer = AddComponent<CSpriteRenderer>();
 	pRenderer->Load(PATH_TEX("StartButton.png"));

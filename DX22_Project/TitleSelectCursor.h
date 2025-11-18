@@ -8,5 +8,6 @@ public:
 	CTitleSelectCursor();
 	~CTitleSelectCursor();
 	void Init() override;
+	void Update() override;
 
 };

@@ -1,12 +1,13 @@
 #pragma once
 
-#include "GameObject.h"
+#include "AnimationObject.h"
 
-class CTitleBall : public CGameObject
+class CTitleBall : public CAnimationObject
 {
 public:
 	CTitleBall();
 	~CTitleBall();
 	void Init() override;
+	void ExecAnimation() override;
 
 };
