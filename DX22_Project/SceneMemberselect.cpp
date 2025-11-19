@@ -1062,31 +1062,25 @@ void CSceneMemberselect::DrawMain()
 	auto& spPlayer2 = CTeamManager::GetInstance(Player::Two);
 	CTeamManager* pPlayer2 = spPlayer2.get();
 
-	// 背景の描画
-	m_tBackParam.world = CCamera::Get2DWolrdMatrix(m_tBackParam.pos, m_tBackParam.rotate);
-	Sprite::SetParam(m_tBackParam);
-	Sprite::SetTexture(m_pTexture[(int)TextureKind::Back].get());
-	Sprite::Draw();
-
-	// 選択肢文字の描画
-	DirectX::XMFLOAT2 fStringPos[(int)CursorPhase::Max] = {
-		{0.0f,-270.0f + ce_fCursorMove * (int)CursorPhase::Start},
-		{0.0f,-270.0f + ce_fCursorMove * (int)CursorPhase::PitcherChange},
-		{0.0f,-270.0f + ce_fCursorMove * (int)CursorPhase::BatterChange},
-		{0.0f,-270.0f + ce_fCursorMove * (int)CursorPhase::UserOption},
-		{0.0f,-270.0f + ce_fCursorMove * (int)CursorPhase::GameOption},
-	};
-	m_tFont.m_fFontSize = 30.0f;
-	m_pWrite->SetFont(m_tFont);
-	m_pWrite->DrawString("試合開始", fStringPos[(int)CursorPhase::Start], D2D1_DRAW_TEXT_OPTIONS::D2D1_DRAW_TEXT_OPTIONS_NO_SNAP);
-	m_pWrite->DrawString("投手変更", fStringPos[(int)CursorPhase::PitcherChange], D2D1_DRAW_TEXT_OPTIONS::D2D1_DRAW_TEXT_OPTIONS_NO_SNAP);
-	m_pWrite->DrawString("野手変更", fStringPos[(int)CursorPhase::BatterChange], D2D1_DRAW_TEXT_OPTIONS::D2D1_DRAW_TEXT_OPTIONS_NO_SNAP);
-	m_pWrite->DrawString("操作設定", fStringPos[(int)CursorPhase::UserOption], D2D1_DRAW_TEXT_OPTIONS::D2D1_DRAW_TEXT_OPTIONS_NO_SNAP);
-	m_pWrite->DrawString("試合設定", fStringPos[(int)CursorPhase::GameOption], D2D1_DRAW_TEXT_OPTIONS::D2D1_DRAW_TEXT_OPTIONS_NO_SNAP);
+	//// 選択肢文字の描画
+	//DirectX::XMFLOAT2 fStringPos[(int)CursorPhase::Max] = {
+	//	{0.0f,-270.0f + ce_fCursorMove * (int)CursorPhase::Start},
+	//	{0.0f,-270.0f + ce_fCursorMove * (int)CursorPhase::PitcherChange},
+	//	{0.0f,-270.0f + ce_fCursorMove * (int)CursorPhase::BatterChange},
+	//	{0.0f,-270.0f + ce_fCursorMove * (int)CursorPhase::UserOption},
+	//	{0.0f,-270.0f + ce_fCursorMove * (int)CursorPhase::GameOption},
+	//};
+	//m_tFont.m_fFontSize = 30.0f;
+	//m_pWrite->SetFont(m_tFont);
+	//m_pWrite->DrawString("試合開始", fStringPos[(int)CursorPhase::Start], D2D1_DRAW_TEXT_OPTIONS::D2D1_DRAW_TEXT_OPTIONS_NO_SNAP);
+	//m_pWrite->DrawString("投手変更", fStringPos[(int)CursorPhase::PitcherChange], D2D1_DRAW_TEXT_OPTIONS::D2D1_DRAW_TEXT_OPTIONS_NO_SNAP);
+	//m_pWrite->DrawString("野手変更", fStringPos[(int)CursorPhase::BatterChange], D2D1_DRAW_TEXT_OPTIONS::D2D1_DRAW_TEXT_OPTIONS_NO_SNAP);
+	//m_pWrite->DrawString("操作設定", fStringPos[(int)CursorPhase::UserOption], D2D1_DRAW_TEXT_OPTIONS::D2D1_DRAW_TEXT_OPTIONS_NO_SNAP);
+	//m_pWrite->DrawString("試合設定", fStringPos[(int)CursorPhase::GameOption], D2D1_DRAW_TEXT_OPTIONS::D2D1_DRAW_TEXT_OPTIONS_NO_SNAP);
 
 
-	m_tFont.m_fFontSize = ce_fLineupNameSize;
-	m_pWrite->SetFont(m_tFont);
+	//m_tFont.m_fFontSize = ce_fLineupNameSize;
+	//m_pWrite->SetFont(m_tFont);
 	std::vector<CTeamManager::BatterState> tVecPlayer1Batter = pPlayer1->GetBatterState();
 
 	// スタメン選手のポジションの描画

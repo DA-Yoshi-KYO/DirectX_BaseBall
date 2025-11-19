@@ -23,6 +23,7 @@ static const float fFPS = static_cast<float>(FPS);
 #define PATH_FONT(ttf) (L"Assets\\Font\\" ttf)
 #define PATH_DATA(data) (std::wstring(L"Assets/Data/") + (data))
 #define ERROR_MESSAGE(asset) do{ MessageBox(NULL,asset,"LoadError",MB_OK); } while (0)
+#define ERROR_MESSAGE_WS(asset) do{ MessageBoxW(NULL,asset,L"LoadError",MB_OK); } while (0)
 #define INFO_MESSAGE(information) do{ MessageBox(NULL,information,"Information",MB_OK); } while (0)
 #define RANGEERROR_MESSAGE(value) do{ MessageBox(NULL,value,"Out of range",MB_OK); } while (0)
 
