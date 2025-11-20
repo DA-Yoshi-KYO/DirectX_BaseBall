@@ -115,6 +115,9 @@
     <Filter Include="Code\GameObject\MemberSelect\Parent\Parent">
       <UniqueIdentifier>{1d27e6d5-28f6-42c6-9148-bd355ccbdb04}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Code\Component\Collision">
+      <UniqueIdentifier>{99552244-06fc-4c4a-86b9-980dae416949}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -444,6 +447,21 @@
     <ClCompile Include="MemberSelectCursor.cpp">
       <Filter>Code\GameObject\MemberSelect</Filter>
     </ClCompile>
+    <ClCompile Include="CollisionBase.cpp">
+      <Filter>Code\Component\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionBox.cpp">
+      <Filter>Code\Component\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionLine.cpp">
+      <Filter>Code\Component\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionTriangle.cpp">
+      <Filter>Code\Component\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="ColllisionPlane.cpp">
+      <Filter>Code\Component\Collision</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imconfig.h">
@@ -763,6 +781,21 @@
     </ClInclude>
     <ClInclude Include="MemberSelectCursor.h">
       <Filter>Code\GameObject\MemberSelect</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionBase.h">
+      <Filter>Code\Component\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionBox.h">
+      <Filter>Code\Component\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionLine.h">
+      <Filter>Code\Component\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionTriangle.h">
+      <Filter>Code\Component\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="ColllisionPlane.h">
+      <Filter>Code\Component\Collision</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

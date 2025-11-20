@@ -40,8 +40,13 @@ public:
 	void SetStartingLineup(std::list<class CFielder*> lineup) { m_pStartingLineup = lineup; }
 	std::list<class CFielder*> GetStartingLineup() { return m_pStartingLineup; }
 
+	CFielder* GetTakingBatter(int TakingNo);
+	CPitcher* GetTakingPitcher() { return m_pTakingPitcher; }
+	void SetTakingPitcher(CPitcher* pitcher) { m_pTakingPitcher = pitcher; }
+
 private:
 	CPitcher* m_pStarterPitcher;
 	std::list<class CFielder*> m_pStartingLineup;
+	CPitcher* m_pTakingPitcher;
 
 };

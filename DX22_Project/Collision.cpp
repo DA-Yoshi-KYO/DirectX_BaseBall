@@ -13,6 +13,39 @@ Collision::Result Collision::Hit(Info a, Info b)
 		case eSphere: out = Hit(a.sphere, b.sphere); break;
 		}
 	}
+    else
+    {
+        switch (a.type)
+        {
+        case eNone:
+            break;
+        case eBox:
+            break;
+        case eSphere:
+            break;
+        case ePlane:
+            if (b.type == eLine) out = Hit(a.plane, b.line);
+            if (b.type == eRay) out = Hit(a.plane, b.ray, FLT_MAX);
+            break;
+        case eRay:
+            if (b.type == ePlane) out = Hit(b.plane, a.ray, FLT_MAX);
+            if (b.type == eTriangle) out = Hit(a.ray, b.triangle);
+            break;
+        case eLine:
+            if (b.type == ePlane) out = Hit(b.plane, a.line);
+            if (b.type == eTriangle) out = Hit(a.line, b.triangle);
+            break;
+        case ePoint:
+            if (b.type == eTriangle) out = Hit(a.point, b.triangle);
+            break;
+        case eTriangle:
+            if (b.type == ePoint) out = Hit(b.point, a.triangle);
+            if (b.type == eRay) out = Hit(b.ray, a.triangle);
+            if (b.type == eLine) out = Hit(b.line, a.triangle);
+            break;
+        }
+    }
+
 	return out;
 }
 
@@ -451,6 +484,8 @@ void Collision::DrawCollision(Collision::Info collision)
         DirectX::XMVECTOR v1 = DirectX::XMVectorAdd(DirectX::XMVectorSubtract(vCenter, DirectX::XMVectorScale(vTangent1, size)), DirectX::XMVectorScale(vTangent2, size));
         DirectX::XMVECTOR v2 = DirectX::XMVectorSubtract(DirectX::XMVectorSubtract(vCenter, DirectX::XMVectorScale(vTangent1, size)), DirectX::XMVectorScale(vTangent2, size));
         DirectX::XMVECTOR v3 = DirectX::XMVectorSubtract(DirectX::XMVectorAdd(vCenter, DirectX::XMVectorScale(vTangent1, size)), DirectX::XMVectorScale(vTangent2, size));
+        break;
+
     case eTriangle:
         Geometory::AddLine(collision.triangle.point[0], collision.triangle.point[1], DirectX::XMFLOAT4(1, 0, 0, 1));
         Geometory::AddLine(collision.triangle.point[1], collision.triangle.point[2], DirectX::XMFLOAT4(1, 0, 0, 1));

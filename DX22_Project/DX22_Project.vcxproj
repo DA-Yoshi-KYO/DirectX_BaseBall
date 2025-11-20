@@ -157,6 +157,11 @@
     <ClCompile Include="Base.cpp" />
     <ClCompile Include="BaseCount.cpp" />
     <ClCompile Include="Chatcher.cpp" />
+    <ClCompile Include="CollisionBase.cpp" />
+    <ClCompile Include="CollisionBox.cpp" />
+    <ClCompile Include="CollisionLine.cpp" />
+    <ClCompile Include="CollisionTriangle.cpp" />
+    <ClCompile Include="ColllisionPlane.cpp" />
     <ClCompile Include="CountManager.cpp" />
     <ClCompile Include="CountObject.cpp" />
     <ClCompile Include="DefenceManager.cpp" />
@@ -268,6 +273,11 @@
     <ClInclude Include="Base.h" />
     <ClInclude Include="BaseCount.h" />
     <ClInclude Include="Chatcher.h" />
+    <ClInclude Include="CollisionBase.h" />
+    <ClInclude Include="CollisionBox.h" />
+    <ClInclude Include="CollisionLine.h" />
+    <ClInclude Include="CollisionTriangle.h" />
+    <ClInclude Include="ColllisionPlane.h" />
     <ClInclude Include="CountManager.h" />
     <ClInclude Include="CountObject.h" />
     <ClInclude Include="DefenceManager.h" />

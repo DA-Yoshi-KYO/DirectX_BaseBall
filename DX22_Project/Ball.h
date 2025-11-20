@@ -16,57 +16,7 @@ class CBall : public CGameObject
 public:
 	CBall();
 	~CBall();
+	void Init() override;
 	void Update() override;
-
-public:
-
-public:
-	/// <summary> SetMove:ボールの進む方向と進行速度をセットする </summary>
-	/// <param name="direction"> 進む方向 </param>
-	void SetMove(DirectX::XMFLOAT3 direction);
-
-	// ------------Getter------------
-	/// <summary> GetCollision:ボールの球体当たり判定を取得する </summary>
-	/// <returns> ボールの当たり判定情報(球体) </returns>
-	Collision::Info GetCollision();
-	/// <summary> GetLineCollision:ボールの軌跡当たり判定を取得する </summary>
-	/// <returns> ボールの当たり判定情報(線) </returns>
-	Collision::Info GetLineCollision();
-	/// <summary> GetIsFry:フライが上がっている状態か取得する</summary>
-	/// <returns> true:フライ false:ゴロ </returns>
-	bool GetIsFry();
-
-public:
-	/// <summary> OnCollision:ボールに当たった時の処理 </summary>
-	/// <param name="collision"> 当たった結果 </param>
-	void OnCollision(Collision::Result collision);
-	/// <summary> OnCollision:ボールに当たった時の処理 </summary>
-	/// <param name="collision"> 当たった結果 </param>
-	void OnFoulZone(Collision::Result collision);
-
 private:
-
-	// モデルのパラメータ
-	DirectX::XMFLOAT3 m_fMove;	// 移動量
-	DirectX::XMFLOAT2 m_fPitchPos;	// 投球場所
-	DirectX::XMFLOAT2 m_fPredValue;	// 変化量
-	
-	// メンバ変数
-	int m_nPhase;	// ボールの状態
-	DirectX::XMFLOAT3 m_fFaulZoneBallPos;	// ファールゾーンに入った時のボールの座標
-	bool m_bFry;	// フライ上がっている状態か
-	bool m_bBallFaulZone;	// ファール判定
-
-	// 当たり判定情報
-	Collision::Info m_BallCollision;	// 球体当たり判定
-	Collision::Info m_LucusCollision;	// 軌跡当たり判定
-
-private:
-	// 内部処理
-	// バッティング時の処理
-	void UpdateBatting();
-	// インプレー時の処理
-	void UpdateInPlay();
-	// 影の描画処理
-	void DrawShadow();
 };

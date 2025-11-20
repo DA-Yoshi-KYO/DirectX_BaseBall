@@ -14,28 +14,20 @@ constexpr  DirectX::XMFLOAT3 ce_fInplayBallSize = { 2.0f,2.0f,2.0f };
 constexpr int ce_nBallRotateSec = 220 / 60;
 
 CBall::CBall()
-	: m_nPhase((int)BallPhase::Batting)
-	, m_fMove{}
-	, m_bFry(true), m_bBallFaulZone(false), m_fFaulZoneBallPos{}
-	, m_fPitchPos{}, m_fPredValue{}
 {
-	// ボールのモデルの読み込み
-	CModelRenderer* pModel = AddComponent<CModelRenderer>();
-	pModel->Load(PATH_MODEL("ball.obj"));
-	pModel->LoadVertexShader(PATH_SHADER("VS_Object.cso"));
-	pModel->LoadPixelShader(PATH_SHADER("PS_TexColor.cso"));
+
 
 	
 	m_tParam.m_f3Pos = { ce_fBallPos.x + WORLD_AJUST ,ce_fBallPos.y + WORLD_AJUST, ce_fBallPos.z + WORLD_AJUST };
 	m_tParam.m_f3Size = ce_fBallSize;
 	m_tParam.m_f3Rotate = { 0.0f,0.0f,0.0f };
-	m_BallCollision.type = Collision::eBox;
-	m_BallCollision.box.center = m_tParam.m_f3Pos;
-	m_BallCollision.box.size = { ce_fBallSize.x / 2.0f,ce_fBallSize.y / 2.0f,ce_fBallSize.z / 2.0f };
+	//m_BallCollision.type = Collision::eBox;
+	//m_BallCollision.box.center = m_tParam.m_f3Pos;
+	//m_BallCollision.box.size = { ce_fBallSize.x / 2.0f,ce_fBallSize.y / 2.0f,ce_fBallSize.z / 2.0f };
 
-	m_LucusCollision.type = Collision::eLine;
-	m_LucusCollision.line.start = m_tParam.m_f3Pos;
-	m_LucusCollision.line.end = m_tParam.m_f3Pos;
+	//m_LucusCollision.type = Collision::eLine;
+	//m_LucusCollision.line.start = m_tParam.m_f3Pos;
+	//m_LucusCollision.line.end = m_tParam.m_f3Pos;
 }
 
 CBall::~CBall()
@@ -43,20 +35,30 @@ CBall::~CBall()
 
 }
 
+void CBall::Init()
+{
+	CModelRenderer* pModel = AddComponent<CModelRenderer>();
+	pModel->Load(PATH_MODEL("ball.obj"));
+	pModel->LoadVertexShader(PATH_SHADER("VS_Object.cso"));
+	pModel->LoadPixelShader(PATH_SHADER("PS_TexColor.cso"));
+
+	
+}
+
 void CBall::Update()
 {
-	m_LucusCollision.line.start = m_tParam.m_f3Pos;
-	switch (m_nPhase)
-	{
-	case (int)BallPhase::Batting: UpdateBatting(); break;
-	case (int)BallPhase::InPlay: UpdateInPlay(); break;
-	default:
-		break;
-	}
-	m_BallCollision.type = Collision::eBox;
-	m_BallCollision.box.center = m_tParam.m_f3Pos;
-	m_BallCollision.box.size = { ce_fBallSize.x / 2.0f,ce_fBallSize.y / 2.0f,ce_fBallSize.z / 2.0f };
-	m_LucusCollision.line.end = m_tParam.m_f3Pos;
+	//m_LucusCollision.line.start = m_tParam.m_f3Pos;
+	//switch (m_nPhase)
+	//{
+	//case (int)BallPhase::Batting: UpdateBatting(); break;
+	//case (int)BallPhase::InPlay: UpdateInPlay(); break;
+	//default:
+	//	break;
+	//}
+	//m_BallCollision.type = Collision::eBox;
+	//m_BallCollision.box.center = m_tParam.m_f3Pos;
+	//m_BallCollision.box.size = { ce_fBallSize.x / 2.0f,ce_fBallSize.y / 2.0f,ce_fBallSize.z / 2.0f };
+	//m_LucusCollision.line.end = m_tParam.m_f3Pos;
 
 	CGameObject::Update();
 }
@@ -133,11 +135,6 @@ Collision::Info CBall::GetLineCollision()
 void CBall::SetMove(DirectX::XMFLOAT3 direction)
 {
 	m_fMove = direction;
-}
-
-CBall::BallPhase CBall::GetPhase()
-{
-	return (BallPhase)m_nPhase;
 }
 
 bool CBall::GetIsFry()

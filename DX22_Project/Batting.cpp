@@ -1,17 +1,11 @@
-// ==============================
-//    インクルード部
-// ==============================
 #include "Batting.h"
 #include "Input.h"
 #include "BallCount.h"
-#include "Collision.h"
 #include "PitchingCursor.h"
-#include "TeamManager.h"
 #include "Main.h"
 #include "GameManager.h"
-// ==============================
-//    定数定義
-// ==============================
+#include "Fielder.h"
+
 constexpr float ce_fJustTyming = 139.0f;	// ジャストミートになるタイミング
 constexpr float ce_fHittingTyming = 4.0f;	// バットに当たれるタイミング(+-)
 constexpr float ce_fAngleMax = 60.0f;		// x方向打球角度の限界(+-)
@@ -30,7 +24,7 @@ constexpr float ce_fAngleMax = 60.0f;		// x方向打球角度の限界(+-)
 
 CBatting::CBatting()
 	: m_bBatting(false), m_fMoveDirection{}
-	, m_fPower(0.0f)
+	, m_fPower(0.0f), m_nTakingBatterNo{1,1}
 {
 
 }
@@ -43,6 +37,9 @@ CBatting::~CBatting()
 void CBatting::Update(int AttackPlayer)
 {
 	DirectX::XMFLOAT3 fBallPos = GetScene()->GetGameObject<CBall>()->GetPos();
+	CGameManager* pGameManager = CGameManager::GetInstance();
+	CTeamDirector* pTeamDirector = pGameManager->GetTeamManager(AttackPlayer);
+	CScene* pScene = GetScene();
 
 	// ピッチャーがボールを受け取ったらスイング可能にする
 	if (fBallPos.z == ce_fBallPos.z + WORLD_AJUST && CGameManager::GetInstance()->GetPhase() == GamePhase::Batting)
@@ -65,21 +62,22 @@ void CBatting::Update(int AttackPlayer)
 			// 早すぎるスイングはスイングとして扱わない
 			if (fTyming > 50.0f) break;
 
-			switch (CTeamManager::GetInstance((int)pBallCount->GetOffenseTeam())->GetTakingBatterState().m_ePower)
+			FielderData tTakingBatterData = pTeamDirector->GetTeam()->GetTakingBatter(m_nTakingBatterNo[AttackPlayer - 1])->SetFielderData();
+			switch (tTakingBatterData.m_ePower)
 			{
-			case CTeamManager::Quality::S: m_fPower = 6.0f; break;
-			case CTeamManager::Quality::A: m_fPower = 5.5f; break;
-			case CTeamManager::Quality::B: m_fPower = 5.0f; break;
-			case CTeamManager::Quality::C: m_fPower = 4.5f; break;
-			case CTeamManager::Quality::D: m_fPower = 4.0f; break;
-			case CTeamManager::Quality::E: m_fPower = 3.5f; break;
-			case CTeamManager::Quality::F: m_fPower = 3.0f; break;
-			case CTeamManager::Quality::G: m_fPower = 2.5f; break;
+			case Quality::S: m_fPower = 6.0f; break;
+			case Quality::A: m_fPower = 5.5f; break;
+			case Quality::B: m_fPower = 5.0f; break;
+			case Quality::C: m_fPower = 4.5f; break;
+			case Quality::D: m_fPower = 4.0f; break;
+			case Quality::E: m_fPower = 3.5f; break;
+			case Quality::F: m_fPower = 3.0f; break;
+			case Quality::G: m_fPower = 2.5f; break;
 			default:
 				break;
 			}
 
-			switch (CTeamManager::GetInstance((int)pBallCount->GetOffenseTeam())->GetTakingBatterState().m_nTrajectory)
+			switch (tTakingBatterData.m_nTrajectory)
 			{
 			case 1: fAngleDef = 10.0f; break;
 			case 2: fAngleDef = 20.0f; break;
@@ -95,13 +93,20 @@ void CBatting::Update(int AttackPlayer)
 			// タイミングチェック 
 			if (fTyming > ce_fHittingTyming || fTyming < -ce_fHittingTyming)
 			{
-				// スイングタイミングが違う時はストライクカウントを増やす
-				pBallCount->AddStrikeCount();
+				pGameManager->GetCountManager()->AddStrikeCount();
 				break;
 			}
 			else
 			{
-				Collision::Result2D result = Collision::Hit2D(m_pBattingCursor->GetCollision(false), CPitchingCursor::GetCollision(false));
+				Collision::Circle batting, pitching;
+				CBattingCursor* pBattingCursor = pScene->GetGameObject<CBattingCursor>();
+				CPitchingCursor* pPitchingCursor = pScene->GetGameObject<CPitchingCursor>();
+				batting.pos = pBattingCursor->GetPos();
+				batting.radius = pBattingCursor->GetSize().x;
+				pitching.pos = pPitchingCursor->GetPos();
+				pitching.radius = pPitchingCursor->GetSize().x;
+
+				Collision::Result2D result = Collision::Hit2D(pitching,batting);
 				// バットに当たった
 				if(result.isHit)
 				{
@@ -122,7 +127,7 @@ void CBatting::Update(int AttackPlayer)
 					// 捉えた場所が端すぎるならファールチップとしてストライクにする
 					if (fabsf(fDistanceRatio.x) >= 75.0f || fabsf(fDistanceRatio.y) >= 75.0f)
 					{
-						pBallCount->AddStrikeCount();
+						pGameManager->GetCountManager()->AddStrikeCount();
 						break;
 					}
 
@@ -156,7 +161,7 @@ void CBatting::Update(int AttackPlayer)
 				else
 				{
 					// 空振り
-					pBallCount->AddStrikeCount();
+					pGameManager->GetCountManager()->AddStrikeCount();
 				}
 			}
 		} while (0);
@@ -176,4 +181,8 @@ DirectX::XMFLOAT3 CBatting::GetDirection()
 bool CBatting::GetBatting()
 {
 	return m_bBatting;
+}
+
+void CBatting::CheckHit()
+{
 }

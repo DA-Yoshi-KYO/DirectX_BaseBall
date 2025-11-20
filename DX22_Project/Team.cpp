@@ -192,3 +192,8 @@ void CTeam::Load(TeamKind team)
         m_pMemberData.push_back(pDataBase);
     }
 }
+
+CFielder* CTeam::GetTakingBatter(int TakingNo)
+{
+    return m_pStartingLineup[TakingNo - 1];
+}

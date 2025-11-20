@@ -15,16 +15,8 @@ public:
 	void Draw();
 
 public:
-	// ------------Getter------------
-	/// <summary> GetDirection:打球の進行方向を取得する </summary>
-	/// <returns> 打球の進行方向 </returns>
 	DirectX::XMFLOAT3 GetDirection();
-	/// <summary> GetBatting:バットにボールが当たったか </summary>
-	/// <returns> true:当たった,false:当っていない </returns>
 	bool GetBatting();
-	/// <summary> GetSwing:スイングを行ったか </summary>
-	/// <returns> true:スイングした,false:スイングしていない </returns>
-	bool GetSwing();
 
 private:
 	// メンバ変数
@@ -34,4 +26,6 @@ private:
 
 	// 静的メンバ変数
 	bool m_bSwing;	// スイングしたか
+	int m_nTakingBatterNo[2];	// 打順
+	void CheckHit();
 };

@@ -100,7 +100,7 @@ public:
 
 	struct Circle	// ‰~Œ^
 	{
-		DirectX::XMFLOAT2 pos;
+		DirectX::XMFLOAT3 pos;
 		float radius;
 	};
 
