@@ -5,215 +5,22 @@
 #include "ImGuiManager.h"
 #include "Input.h"
 
-constexpr float ce_fCursorMove = 75.0f;
-constexpr float ce_fCursorMoveBench = 325.0f;
-constexpr DirectX::XMFLOAT4 ce_fCursorReliefOriginMove = { 325.0f, 45.0f,325.0f, 45.0f };
-constexpr DirectX::XMFLOAT2 ce_fLineupPos = { 370.0f,170.0f };
-constexpr DirectX::XMFLOAT2 ce_fLineupSize = { 240.0f,45.0f };
-constexpr DirectX::XMFLOAT2 ce_fLineupNamePos = { 360.0f,-195.0f };
-constexpr DirectX::XMFLOAT2 ce_fPositionPos = { 220.0f,170.0f };
-constexpr DirectX::XMFLOAT2 ce_fPositionSize = { 45.0f,45.0f };
-constexpr float ce_fLineupNameSize = 30.0f;
-constexpr DirectX::XMFLOAT4 ce_fOriginBenchPos1 = { 1000.0f,0.0f, 180.0f,0.0f };
-constexpr DirectX::XMFLOAT4 ce_fOriginBenchPos2 = { -1000.0f,0.0f, -180.0f,0.0f };
-constexpr DirectX::XMFLOAT2 ce_fBenchSize = { 1320.0f,720.0f };
+//constexpr float ce_fCursorMove = 75.0f;
+//constexpr float ce_fCursorMoveBench = 325.0f;
+//constexpr DirectX::XMFLOAT4 ce_fCursorReliefOriginMove = { 325.0f, 45.0f,325.0f, 45.0f };
+//constexpr DirectX::XMFLOAT2 ce_fLineupPos = { 370.0f,170.0f };
+//constexpr DirectX::XMFLOAT2 ce_fLineupNamePos = { 360.0f,-195.0f };
+//constexpr DirectX::XMFLOAT2 ce_fPositionPos = { 220.0f,170.0f };
+//constexpr DirectX::XMFLOAT2 ce_fPositionSize = { 45.0f,45.0f };
+//constexpr float ce_fLineupNameSize = 30.0f;
+//constexpr DirectX::XMFLOAT4 ce_fOriginBenchPos1 = { 1000.0f,0.0f, 180.0f,0.0f };
+//constexpr DirectX::XMFLOAT4 ce_fOriginBenchPos2 = { -1000.0f,0.0f, -180.0f,0.0f };
 
-CSceneMemberselect::CSceneMemberselect(CTeamManager::Teams player1, CTeamManager::Teams player2)
-	: m_pTexture{}
-	, m_tVecPitcherSpriteParam{}, m_tVecBatterSpriteParam{},m_fBenchOriginPos{},m_nSelect{}
-	, m_ePhase(SelectPhase::Home), m_eBatterChange(BatterChange::None)
-	, m_nCursor{ (int)CursorPhase::Start,(int)CursorPhase::Start }, m_nBenchCursor{(int)BenchCursorPhase::Cancel,(int)BenchCursorPhase::Cancel}
-	, m_tBackParam{}, m_tCursorParam{}
-	, m_bEnd(false), m_bReady{ false,false }, m_bMemberChange(false), m_bChanging(false), m_bChangingPitcher(false)
+
+CSceneMemberselect::CSceneMemberselect(TeamKind player1, TeamKind player2)
 {
-	auto& spPlayer1 = CTeamManager::GetInstance(Player::One);
-	CTeamManager* pPlayer1 = spPlayer1.get();
-	auto& spPlayer2 = CTeamManager::GetInstance(Player::Two);
-	CTeamManager* pPlayer2 = spPlayer2.get();
-
-	if(!pPlayer1->Load(player1)) SetEnd(true);
-	if(!pPlayer2->Load(player2)) SetEnd(true);
-
-	SpriteParam tParam;
-	DirectX::XMFLOAT4X4 vp[2];
-	vp[0] = CCamera::Get2DViewMatrix();
-	vp[1] = CCamera::Get2DProjectionMatrix();
-
-	m_pWrite = std::make_unique<CWrite>(&m_tFont);
-	m_pWrite->Init(GetSwapChain());
-
-	// フォントデータを改変
-	m_tFont.m_fFontSize = 80;
-	m_tFont.m_eFontThick = DWRITE_FONT_WEIGHT_ULTRA_BLACK;
-	m_tFont.m_Color = D2D1::ColorF(D2D1::ColorF::Black);
-	m_tFont.m_wsFont = m_pWrite->GetFontName(0);
-	m_tFont.m_ShadowColor = D2D1::ColorF(D2D1::ColorF::White);
-	m_tFont.m_ShadowOffset = D2D1::Point2F(5.0f, -5.0f);
-	m_tFont.m_eTextAlignment = DWRITE_TEXT_ALIGNMENT_CENTER;
-
-	// フォントをセット
-	m_pWrite->SetFont(m_tFont);
-
-	std::vector<CTeamManager::PitcherState> tVecPlayer1Pitcher = pPlayer1->GetPitcherState();
-	for (auto itr = tVecPlayer1Pitcher.begin(); itr != tVecPlayer1Pitcher.end(); itr++)
-	{
-		tParam.pos = { 0.0f,0.0f };
-		tParam.size = ce_fLineupSize;
-		tParam.rotate = 0.0f;
-		tParam.offsetPos = { 0.0f,0.0f };
-		tParam.color = { 1.0f,1.0f,1.0f,1.0f };
-		tParam.uvPos = { 0.0f / (float)ce_nSheetSplit,3.0f / (float)ce_nSheetSplit };
-		tParam.uvSize = { 3.0f / (float)ce_nSheetSplit,1.0f / (float)ce_nSheetSplit };
-		tParam.view = vp[0];
-		tParam.proj = vp[1];
-		m_tVecPitcherSpriteParam[Player::One].push_back(tParam);
-	}
-	std::vector<CTeamManager::BatterState> tVecPlayer1Batter = pPlayer1->GetBatterState();
-	for (auto itr = tVecPlayer1Batter.begin(); itr != tVecPlayer1Batter.end(); itr++)
-	{
-		tParam.pos = { 0.0f,0.0f };
-		tParam.size = ce_fLineupSize;
-		tParam.rotate = 0.0f;
-		tParam.offsetPos = { 0.0f,0.0f };
-		tParam.color = { 1.0f,1.0f,1.0f,1.0f };
-
-		switch ((*itr).m_eAptitude)
-		{
-		case CTeamManager::FieldingNo::Chatcher:
-			tParam.uvPos = { 0.0f / (float)ce_nSheetSplit, 2.0f / (float)ce_nSheetSplit };
-			break;
-		case CTeamManager::FieldingNo::First:
-		case CTeamManager::FieldingNo::Second:
-		case CTeamManager::FieldingNo::Third:
-		case CTeamManager::FieldingNo::Short:
-			tParam.uvPos = { 0.0f / (float)ce_nSheetSplit, 1.0f / (float)ce_nSheetSplit };
-			break;
-		case CTeamManager::FieldingNo::Left:
-		case CTeamManager::FieldingNo::Center:
-		case CTeamManager::FieldingNo::Right:
-			tParam.uvPos = { 0.0f / (float)ce_nSheetSplit,0.0f / (float)ce_nSheetSplit };
-			break;
-		default:
-			break;
-		}
-
-		tParam.uvSize = { 3.0f / (float)ce_nSheetSplit,1.0f / (float)ce_nSheetSplit };
-		tParam.view = vp[0];
-		tParam.proj = vp[1];
-		m_tVecBatterSpriteParam[Player::One].push_back(tParam);
-	}
-	std::vector<CTeamManager::PitcherState> tVecPlayer2Pitcher = pPlayer2->GetPitcherState();
-	for (auto itr = tVecPlayer2Pitcher.begin(); itr != tVecPlayer2Pitcher.end(); itr++)
-	{
-		tParam.pos = { 0.0f,0.0f };
-		tParam.size = ce_fLineupSize;
-		tParam.rotate = 0.0f;
-		tParam.offsetPos = { 0.0f,0.0f };
-		tParam.color = { 1.0f,1.0f,1.0f,1.0f };
-		tParam.uvPos = { 0.0f / (float)ce_nSheetSplit,3.0f / (float)ce_nSheetSplit };
-		tParam.uvSize = { 3.0f / (float)ce_nSheetSplit,1.0f / (float)ce_nSheetSplit };
-		tParam.view = vp[0];
-		tParam.proj = vp[1];
-		m_tVecPitcherSpriteParam[Player::Two].push_back(tParam);
-	}
-	std::vector<CTeamManager::BatterState> tVecPlayer2Batter = pPlayer2->GetBatterState();
-	for (auto itr = tVecPlayer2Batter.begin(); itr != tVecPlayer2Batter.end(); itr++)
-	{
-		tParam.pos = { 0.0f,0.0f };
-		tParam.size = ce_fLineupSize;
-		tParam.rotate = 0.0f;
-		tParam.offsetPos = { 0.0f,0.0f };
-		tParam.color = { 1.0f,1.0f,1.0f,1.0f };
-
-		switch ((*itr).m_eAptitude)
-		{
-		case CTeamManager::FieldingNo::Chatcher:
-			tParam.uvPos = { 0.0f / (float)ce_nSheetSplit, 2.0f / (float)ce_nSheetSplit };
-			break;
-		case CTeamManager::FieldingNo::First:
-		case CTeamManager::FieldingNo::Second:
-		case CTeamManager::FieldingNo::Third:
-		case CTeamManager::FieldingNo::Short:
-			tParam.uvPos = { 0.0f / (float)ce_nSheetSplit, 1.0f / (float)ce_nSheetSplit };
-			break;
-		case CTeamManager::FieldingNo::Left:
-		case CTeamManager::FieldingNo::Center:
-		case CTeamManager::FieldingNo::Right:
-			tParam.uvPos = { 0.0f / (float)ce_nSheetSplit,0.0f / (float)ce_nSheetSplit };
-			break;
-		default:
-			break;
-		}
-
-		tParam.uvSize = { 3.0f / (float)ce_nSheetSplit,1.0f / (float)ce_nSheetSplit };
-		tParam.view = vp[0];
-		tParam.proj = vp[1];
-		m_tVecBatterSpriteParam[Player::Two].push_back(tParam);
-	}
-
-	pPlayer1->InitStarter();
-	pPlayer2->InitStarter();
-
-	m_tCursorParam[Player::One].pos = { -80.0f,230.0f };
-	m_tCursorParam[Player::One].size = { 40.0f,40.0f };
-	m_tCursorParam[Player::One].rotate = 0.0f;
-	m_tCursorParam[Player::One].color = { 1.0f,0.0f,0.0f,1.0f };
-	m_tCursorParam[Player::One].offsetPos = { 0.0f,0.0f };
-	m_tCursorParam[Player::One].uvPos = { 0.0f,0.0f };
-	m_tCursorParam[Player::One].uvSize = { 1.0f,1.0f };
-	m_tCursorParam[Player::One].view = vp[0];
-	m_tCursorParam[Player::One].proj = vp[1];
-
-	m_tCursorParam[Player::Two].pos = { 80.0f,230.0f };
-	m_tCursorParam[Player::Two].size = { 40.0f,40.0f };
-	m_tCursorParam[Player::Two].rotate = 0.0f;
-	m_tCursorParam[Player::Two].color = { 0.0f,1.0f,0.0f,1.0f };
-	m_tCursorParam[Player::Two].offsetPos = { 0.0f,0.0f };
-	m_tCursorParam[Player::Two].uvPos = { 0.0f,0.0f };
-	m_tCursorParam[Player::Two].uvSize = { 1.0f,1.0f };
-	m_tCursorParam[Player::Two].view = vp[0];
-	m_tCursorParam[Player::Two].proj = vp[1];
-
-	m_tPositionSpriteParam.pos = { 0.0f,0.0f };
-	m_tPositionSpriteParam.size = ce_fPositionSize;
-	m_tPositionSpriteParam.rotate = 0.0f;
-	m_tPositionSpriteParam.color = { 1.0f,1.0f,1.0f,1.0f };
-	m_tPositionSpriteParam.offsetPos = { 0.0f,0.0f };
-	m_tPositionSpriteParam.uvPos = { 0.0f,0.0f };
-	m_tPositionSpriteParam.uvSize = { 1.0f / (float)ce_nSheetSplit,1.0f / (float)ce_nSheetSplit };
-	m_tPositionSpriteParam.view = vp[0];
-	m_tPositionSpriteParam.proj = vp[1];
-	
-	m_tBenchPitcherSpriteParam.pos = { ce_fOriginBenchPos1.x,ce_fOriginBenchPos1.y };
-	m_tBenchPitcherSpriteParam.size = ce_fBenchSize;
-	m_tBenchPitcherSpriteParam.rotate = 0.0f;
-	m_tBenchPitcherSpriteParam.color = { 1.0f,1.0f,1.0f,1.0f };
-	m_tBenchPitcherSpriteParam.offsetPos = { 0.0f,0.0f };
-	m_tBenchPitcherSpriteParam.uvPos = { 0.0f,0.0f };
-	m_tBenchPitcherSpriteParam.uvSize = { 1.0f,1.0f };
-	m_tBenchPitcherSpriteParam.view = vp[0];
-	m_tBenchPitcherSpriteParam.proj = vp[1];
-
-	m_tBenchBatterSpriteParam.pos = { ce_fOriginBenchPos1.x,ce_fOriginBenchPos1.y };
-	m_tBenchBatterSpriteParam.size = ce_fBenchSize;
-	m_tBenchBatterSpriteParam.rotate = 0.0f;
-	m_tBenchBatterSpriteParam.color = { 1.0f,1.0f,1.0f,1.0f };
-	m_tBenchBatterSpriteParam.offsetPos = { 0.0f,0.0f };
-	m_tBenchBatterSpriteParam.uvPos = { 0.0f,0.0f };
-	m_tBenchBatterSpriteParam.uvSize = { 1.0f,1.0f };
-	m_tBenchBatterSpriteParam.view = vp[0];
-	m_tBenchBatterSpriteParam.proj = vp[1];
-
-	for (int i = 0; i < (int)TextureKind::Max; i++)
-	{
-		m_pTexture[i] = std::make_unique<Texture>();
-	}
-	if(FAILED(m_pTexture[(int)TextureKind::Back]->Create(PATH_TEX("MemberSelectBack.jpg")))) ERROR_MESSAGE("MemberSelectBack.jpg");
-	if(FAILED(m_pTexture[(int)TextureKind::PlayerSeeat]->Create(PATH_TEX("PlayerSeeat.png")))) ERROR_MESSAGE("PlayerSeeat.png");
-	if(FAILED(m_pTexture[(int)TextureKind::Cursor]->Create(PATH_TEX("Ball.png")))) ERROR_MESSAGE("Ball.png");
-	if(FAILED(m_pTexture[(int)TextureKind::PositionSeeat]->Create(PATH_TEX("PositionSeeat.png")))) ERROR_MESSAGE("PositionSeeat.png");
-	if(FAILED(m_pTexture[(int)TextureKind::BenchBatter]->Create(PATH_TEX("BenchBatter.png")))) ERROR_MESSAGE("BenchBatter.png");
-	if(FAILED(m_pTexture[(int)TextureKind::BenchPitcher]->Create(PATH_TEX("BenchPitcher.png")))) ERROR_MESSAGE("BenchPitcher.png");
+	m_eTeamKind[0] = player1;
+	m_eTeamKind[1] = player2;
 }
 
 CSceneMemberselect::~CSceneMemberselect()
@@ -221,80 +28,19 @@ CSceneMemberselect::~CSceneMemberselect()
 
 }
 
+void CSceneMemberselect::Init()
+{
+	m_pDirector = std::make_unique<CMemberSelectDirector>();
+	m_pDirector->Init(m_eTeamKind[0], m_eTeamKind[1]);
+}
+
 void CSceneMemberselect::Update()
 {
-	static float fTime = 0.0f;
-	constexpr float easeMaxTime = 0.5f;
-
-	if (!m_bEnd)
-	{
-		switch (m_ePhase)
-		{
-		case CSceneMemberselect::SelectPhase::Home:
-			if (!m_bChanging || fTime > easeMaxTime)
-			{
-				m_tCursorParam[Player::One].rotate = DirectX::XMConvertToRadians(fTime * 180.0f);
-				m_tCursorParam[Player::Two].rotate = DirectX::XMConvertToRadians(fTime * 180.0f);
-				fTime += 1.0f / fFPS;
-				m_bChanging = false;
-
-				for (int i = 0; i < Player::MaxPlayer; i++)
-				{
-					m_tVecPrevBatterMember = CTeamManager::GetInstance(i)->GetBatterState();
-					m_tVecPrevPitcherMember = CTeamManager::GetInstance(i)->GetPitcherState();
-					UpdateHome((Player)i);
-					if (m_ePhase != SelectPhase::Home)
-					{
-						fTime = 0.0f;
-						break;
-					}
-				}
-			}
-			else
-			{
-				if (m_bChangingPitcher) m_tBenchPitcherSpriteParam.pos.x = easeOutBack(fTime, easeMaxTime, m_fBenchOriginPos.z, m_fBenchOriginPos.x);
-				else  m_tBenchBatterSpriteParam.pos.x = easeOutBack(fTime, easeMaxTime, m_fBenchOriginPos.z, m_fBenchOriginPos.x);
-			}
-
-			fTime += 1.0f / fFPS;
-			break;
-		case CSceneMemberselect::SelectPhase::Player1Pitcher:
-			UpdateBenchPitcher(Player::One);
-			break;
-		case CSceneMemberselect::SelectPhase::Player1Batter:
-			UpdateBenchBatter(Player::One);
-			break;
-		case CSceneMemberselect::SelectPhase::Player1Option:
-			break;
-		case CSceneMemberselect::SelectPhase::Player2Pitcher:
-			UpdateBenchPitcher(Player::Two);
-			break;
-		case CSceneMemberselect::SelectPhase::Player2Batter:
-			UpdateBenchBatter(Player::Two);
-			break;
-		case CSceneMemberselect::SelectPhase::Player2Option:
-			break;
-		case CSceneMemberselect::SelectPhase::GameOption:
-			break;
-		default:
-			break;
-		}
-
-		if (m_bReady[Player::One]  && m_bReady[Player::Two])
-		{
-			SetNext(SceneKind::Game);
-			m_bEnd = true;
-		}
-	}
+	m_pDirector->Update();
+	CScene::Update();
 }
 
-void CSceneMemberselect::Draw()
-{
-	DrawMain();
-	DrawBench();
-	DrawCursor();
-}
-
+/*
 void CSceneMemberselect::SetBenchParam(Player player)
 {
 
@@ -1370,3 +1116,4 @@ void CSceneMemberselect::DrawCursor()
 		break;
 	}
 }
+*/

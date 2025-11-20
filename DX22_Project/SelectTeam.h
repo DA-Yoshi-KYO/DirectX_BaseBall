@@ -1,7 +1,7 @@
 #pragma once
 
 #include "GameObject.h"
-#include "TeamManager.h"
+#include "Team.h"
 
 class CSelectTeam : public CGameObject
 {
@@ -9,11 +9,11 @@ public:
 	CSelectTeam();
 	~CSelectTeam();
 	void Init() {};
-	virtual void Init(CTeamManager::Teams kind, int TeamNo);
+	virtual void Init(TeamKind kind, int TeamNo);
 	void Update() override;
 	void Move(bool isRight);
 
-	bool GetIsSelect() { return m_nIndex == CTeamManager::Teams::Max / 2; }
+	bool GetIsSelect() { return m_nIndex == TeamKind::Max / 2; }
 	bool GetIsMove() { return m_bIsMove; }
 
 private:

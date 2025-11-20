@@ -19,5 +19,6 @@ private:
 
 private:
 	void InitStarter();
+	void InitStartingLineup();
 
 };

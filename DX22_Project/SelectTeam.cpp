@@ -19,38 +19,38 @@ CSelectTeam::~CSelectTeam()
 
 }
 
-void CSelectTeam::Init(CTeamManager::Teams kind, int TeamNo)
+void CSelectTeam::Init(TeamKind kind, int TeamNo)
 {
 	CSpriteRenderer* pRenderer = AddComponent<CSpriteRenderer>();
 
 	m_tParam.m_f3Pos = DirectX::XMFLOAT3(-400.0f + 800.0f * (TeamNo - 1), 0.0f, 0.0f);
 	switch (kind)
 	{
-	case CTeamManager::Bears:
-		m_nIndex = CTeamManager::Teams::Max / 2;
+	case TeamKind::Bears:
+		m_nIndex = TeamKind::Max / 2;
 		pRenderer->Load(PATH_TEX("Teams/Bears.png"));
 		break;
-	case CTeamManager::Rabbits:
-		m_nIndex = CTeamManager::Teams::Max / 2 + 1;
+	case TeamKind::Rabbits:
+		m_nIndex = TeamKind::Max / 2 + 1;
 		pRenderer->Load(PATH_TEX("Teams/Rabbits.png"));
 		break;
-	case CTeamManager::Tigers:
-		m_nIndex = CTeamManager::Teams::Max / 2 + 2;
+	case TeamKind::Tigers:
+		m_nIndex = TeamKind::Max / 2 + 2;
 		pRenderer->Load(PATH_TEX("Teams/Tigers.png"));
 		break;
-	case CTeamManager::Elephants:
-		m_nIndex = CTeamManager::Teams::Max / 2 - 2;
+	case TeamKind::Elephants:
+		m_nIndex = TeamKind::Max / 2 - 2;
 		pRenderer->Load(PATH_TEX("Teams/Elephants.png"));
 		break;
-	case CTeamManager::Monkeys:
-		m_nIndex = CTeamManager::Teams::Max / 2 - 1;
+	case TeamKind::Monkeys:
+		m_nIndex = TeamKind::Max / 2 - 1;
 		pRenderer->Load(PATH_TEX("Teams/Monkeys.png"));
 		break;
 	default:
 		break;
 	}
 
-	m_tParam.m_f3Pos.y = ce_fMovePos * CTeamManager::Teams::Max / 2 - m_nIndex;
+	m_tParam.m_f3Pos.y = ce_fMovePos * TeamKind::Max / 2 - m_nIndex;
 }
 
 void CSelectTeam::Update()
@@ -72,10 +72,10 @@ void CSelectTeam::Move(bool isUp)
 	m_f3InitPos = m_tParam.m_f3Pos;
 	if (isUp)
 	{
-		if (m_nIndex == CTeamManager::Teams::Max - 1)
+		if (m_nIndex == TeamKind::Max - 1)
 		{
 			DirectX::XMFLOAT3 f3MostUp = ce_f3SelectClothesPos;
-			f3MostUp.y -= ce_fMovePos * int(CTeamManager::Teams::Max / 2);
+			f3MostUp.y -= ce_fMovePos * int(TeamKind::Max / 2);
 			m_f3InitPos = m_f3TargetPos = f3MostUp;
 			m_nIndex = 0;
 		}
@@ -91,9 +91,9 @@ void CSelectTeam::Move(bool isUp)
 		if (m_nIndex == 0)
 		{
 			DirectX::XMFLOAT3 f3MostDown = ce_f3SelectClothesPos;
-			f3MostDown.y += ce_fMovePos * int(CTeamManager::Teams::Max / 2);
+			f3MostDown.y += ce_fMovePos * int(TeamKind::Max / 2);
 			m_f3InitPos = m_f3TargetPos = f3MostDown;
-			m_nIndex = CTeamManager::Teams::Max - 1;
+			m_nIndex = TeamKind::Max - 1;
 		}
 		else
 		{

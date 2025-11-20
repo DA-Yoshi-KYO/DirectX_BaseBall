@@ -161,6 +161,7 @@
     <ClCompile Include="CountObject.cpp" />
     <ClCompile Include="DefenceManager.cpp" />
     <ClCompile Include="Fielder.cpp" />
+    <ClCompile Include="FielderSelectBack.cpp" />
     <ClCompile Include="FieldManager.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="Batting.cpp" />
@@ -197,7 +198,9 @@
     <ClCompile Include="MemberIcon.cpp" />
     <ClCompile Include="MemberName.cpp" />
     <ClCompile Include="MemberSelectBackGround.cpp" />
+    <ClCompile Include="MemberSelectCursor.cpp" />
     <ClCompile Include="MemberSelectDirector.cpp" />
+    <ClCompile Include="MemberSelectFieldBase.cpp" />
     <ClCompile Include="MeshBuffer.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="ModelRenderer.cpp" />
@@ -208,9 +211,11 @@
     <ClCompile Include="OutCount.cpp" />
     <ClCompile Include="OutFielder.cpp" />
     <ClCompile Include="Pitcher.cpp" />
+    <ClCompile Include="PitcherSelectBack.cpp" />
     <ClCompile Include="Pitching.cpp" />
     <ClCompile Include="PitchingCursor.cpp" />
     <ClCompile Include="PlayerData.cpp" />
+    <ClCompile Include="PositionIcon.cpp" />
     <ClCompile Include="PostProcess.cpp" />
     <ClCompile Include="PostProcessChain.cpp" />
     <ClCompile Include="RendererComponent.cpp" />
@@ -218,11 +223,14 @@
     <ClCompile Include="SceneTeamselect.cpp" />
     <ClCompile Include="Score.cpp" />
     <ClCompile Include="ScoreBoard.cpp" />
+    <ClCompile Include="SelectFielderField.cpp" />
+    <ClCompile Include="SelectPitcherField.cpp" />
     <ClCompile Include="SelectTeam.cpp" />
     <ClCompile Include="Sound.cpp" />
     <ClCompile Include="Sprite3DRenderer.cpp" />
     <ClCompile Include="SpriteRenderer.cpp" />
     <ClCompile Include="SpriteRendererBase.cpp" />
+    <ClCompile Include="StartingLineupField.cpp" />
     <ClCompile Include="StrikeCount.cpp" />
     <ClCompile Include="Team.cpp" />
     <ClCompile Include="TeamManager.cpp" />
@@ -237,6 +245,7 @@
     <ClCompile Include="StrikeZone.cpp" />
     <ClCompile Include="TeamSelectBackGround.cpp" />
     <ClCompile Include="TeamSelectDirector.cpp" />
+    <ClCompile Include="TextRenderer.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="TitleBackGround.cpp" />
     <ClCompile Include="TitleBall.cpp" />
@@ -264,6 +273,7 @@
     <ClInclude Include="DefenceManager.h" />
     <ClInclude Include="Easing.h" />
     <ClInclude Include="Fielder.h" />
+    <ClInclude Include="FielderSelectBack.h" />
     <ClInclude Include="FieldManager.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="Batting.h" />
@@ -302,7 +312,9 @@
     <ClInclude Include="MemberIcon.h" />
     <ClInclude Include="MemberName.h" />
     <ClInclude Include="MemberSelectBackGround.h" />
+    <ClInclude Include="MemberSelectCursor.h" />
     <ClInclude Include="MemberSelectDirector.h" />
+    <ClInclude Include="MemberSelectFieldBase.h" />
     <ClInclude Include="MeshBuffer.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="ModelRenderer.h" />
@@ -310,9 +322,11 @@
     <ClInclude Include="OutCount.h" />
     <ClInclude Include="OutFielder.h" />
     <ClInclude Include="Pitcher.h" />
+    <ClInclude Include="PitcherSelectBack.h" />
     <ClInclude Include="Pitching.h" />
     <ClInclude Include="PitchingCursor.h" />
     <ClInclude Include="PlayerData.h" />
+    <ClInclude Include="PositionIcon.h" />
     <ClInclude Include="PostProcess.h" />
     <ClInclude Include="PostProcessChain.h" />
     <ClInclude Include="RendererComponent.h" />
@@ -320,11 +334,14 @@
     <ClInclude Include="SceneTeamselect.h" />
     <ClInclude Include="Score.h" />
     <ClInclude Include="ScoreBoard.h" />
+    <ClInclude Include="SelectFielderField.h" />
+    <ClInclude Include="SelectPitcherField.h" />
     <ClInclude Include="SelectTeam.h" />
     <ClInclude Include="Sound.h" />
     <ClInclude Include="Sprite3DRenderer.h" />
     <ClInclude Include="SpriteRenderer.h" />
     <ClInclude Include="SpriteRendererBase.h" />
+    <ClInclude Include="StartingLineupField.h" />
     <ClInclude Include="StrikeCount.h" />
     <ClInclude Include="Team.h" />
     <ClInclude Include="TeamManager.h" />
@@ -338,6 +355,7 @@
     <ClInclude Include="StrikeZone.h" />
     <ClInclude Include="TeamSelectBackGround.h" />
     <ClInclude Include="TeamSelectDirector.h" />
+    <ClInclude Include="TextRenderer.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TitleBackGround.h" />
     <ClInclude Include="TitleBall.h" />

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "TeamManager.h"
+#include "Team.h"
 #include "SelectTeam.h"
 #include "TeamSelectBackGround.h"
 #include <array>
@@ -12,16 +12,16 @@ public:
 	~CTeamSelectDirector();
 	void Init();
 	void Update();
-	static CTeamManager::Teams GetTeam(int TeamNo);
+	static TeamKind GetTeam(int TeamNo);
 
 private:
-	std::array<CSelectTeam*, CTeamManager::Teams::Max> m_pTeams1;
-	std::array<CSelectTeam*, CTeamManager::Teams::Max> m_pTeams2;
+	std::array<CSelectTeam*, TeamKind::Max> m_pTeams1;
+	std::array<CSelectTeam*, TeamKind::Max> m_pTeams2;
 	CTeamSelectBackGround* m_pBackGround;
 	bool IsSelectedPlayer1;
 	bool IsSelectedPlayer2;
-	static CTeamManager::Teams m_eTeam1;
-	static CTeamManager::Teams m_eTeam2;
+	static TeamKind m_eTeam1;
+	static TeamKind m_eTeam2;
 
 };
 

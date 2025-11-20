@@ -29,6 +29,7 @@ CTeamDirector::~CTeamDirector()
 void CTeamDirector::TeamInit()
 {
     InitStarter();
+    InitStartingLineup();
 }
 
 void CTeamDirector::TeamUninit()
@@ -58,4 +59,21 @@ void CTeamDirector::InitStarter()
 
     int nRand = rand() % pPitcherList.size();
     m_pTeam[m_nPlayerNo]->SetStarterPitcher(pStarterList[m_nPlayerNo]);
+}
+
+void CTeamDirector::InitStartingLineup()
+{
+    std::list<CFielder*> pFielder = m_pTeam[m_nPlayerNo]->GetFielderMember();
+    std::list<CFielder*> pLineupList;
+    pLineupList.clear();
+    for (auto itr : pFielder)
+    {
+        if (itr->GetPlayerData().m_nLineupNo != 0) pLineupList.push_back(itr);
+    }
+    pLineupList.sort([](CFielder* A, CFielder* B)
+        {
+            return A->GetPlayerData().m_nLineupNo < B->GetPlayerData().m_nLineupNo;
+        });
+
+    m_pTeam[m_nPlayerNo]->SetStartingLineup(pLineupList);
 }

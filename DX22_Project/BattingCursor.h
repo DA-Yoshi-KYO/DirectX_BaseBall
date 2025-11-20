@@ -3,7 +3,7 @@
 
 constexpr DirectX::XMFLOAT3 ce_fBattingCursorPos = { 0.0f,-150.0f,0.0f };	// 打撃カーソルの初期位置
 
-class CBattingCursor : CGameObject
+class CBattingCursor : public CGameObject
 {
 public:
 	CBattingCursor();

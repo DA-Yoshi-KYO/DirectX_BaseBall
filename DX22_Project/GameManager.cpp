@@ -17,7 +17,10 @@ CGameManager::CGameManager()
 
 CGameManager::~CGameManager()
 {
-
+	for (int i = 0; i < 2; i++)
+	{
+		if (!m_pTeamManager[i]) m_pTeamManager[i]->TeamUninit();
+	}
 }
 
 void CGameManager::Init()
@@ -27,8 +30,7 @@ void CGameManager::Init()
 	if (!m_pDefenceManager) m_pDefenceManager = std::make_unique<CDefenceManager>();
 	for (int i = 0; i < 2; i++)
 	{
-		if (!m_pTeamManager[i]) m_pTeamManager[i] = std::make_unique<CTeamManager>();
-		m_pTeamManager[i]->Init(i + 1);
+		if (!m_pTeamManager[i]) m_pTeamManager[i] = std::make_unique<CTeamDirector>(i + 1);
 	}
 }
 

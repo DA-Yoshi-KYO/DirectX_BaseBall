@@ -3,8 +3,8 @@
 #include "Input.h"
 #include "SceneMemberselect.h"
 
-CTeamManager::Teams CTeamSelectDirector::m_eTeam1 = CTeamManager::Teams::Bears;
-CTeamManager::Teams CTeamSelectDirector::m_eTeam2 = CTeamManager::Teams::Bears;
+TeamKind CTeamSelectDirector::m_eTeam1 = TeamKind::Bears;
+TeamKind CTeamSelectDirector::m_eTeam2 = TeamKind::Bears;
 
 CTeamSelectDirector::CTeamSelectDirector()
 	: m_pTeams1{}, m_pTeams2{}
@@ -25,13 +25,13 @@ void CTeamSelectDirector::Init()
 	for (int i = 0; i < m_pTeams1.size(); i++)
 	{
 		m_pTeams1[i] = pScene->AddGameObject<CSelectTeam>("Player1Team", Tag::UI);
-		m_pTeams1[i]->Init((CTeamManager::Teams)i, 1);
+		m_pTeams1[i]->Init((TeamKind)i, 1);
 	}
 
 	for (int i = 0; i < m_pTeams2.size(); i++)
 	{
 		m_pTeams2[i] = pScene->AddGameObject<CSelectTeam>("Player2Team", Tag::UI);
-		m_pTeams2[i]->Init((CTeamManager::Teams)i, 2);
+		m_pTeams2[i]->Init((TeamKind)i, 2);
 	}
 
 }
@@ -67,7 +67,7 @@ void CTeamSelectDirector::Update()
 
 			if (isStop)
 			{
-				m_eTeam1 = (CTeamManager::Teams)nSelectTeam;
+				m_eTeam1 = (TeamKind)nSelectTeam;
 				IsSelectedPlayer1 = true;
 			}
 		}
@@ -102,7 +102,7 @@ void CTeamSelectDirector::Update()
 
 			if (isStop)
 			{
-				m_eTeam2 = (CTeamManager::Teams)nSelectTeam;
+				m_eTeam2 = (TeamKind)nSelectTeam;
 				IsSelectedPlayer2 = true;
 			}
 		}
@@ -118,12 +118,12 @@ void CTeamSelectDirector::Update()
 	}
 }
 
-CTeamManager::Teams CTeamSelectDirector::GetTeam(int TeamNo)
+TeamKind CTeamSelectDirector::GetTeam(int TeamNo)
 {
 	switch (TeamNo)
 	{
 	case 1:return m_eTeam1; break;
 	case 2:return m_eTeam2; break;
-	default: return CTeamManager::Teams::Bears; break;
+	default: return TeamKind::Bears; break;
 	}
 }

@@ -109,6 +109,12 @@
     <Filter Include="Code\GameObject\Game\PlayerData">
       <UniqueIdentifier>{5cd162d1-5d6a-4937-be45-1191a8d5aa98}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Code\GameObject\MemberSelect\Parent">
+      <UniqueIdentifier>{00a43509-ce2b-4e2f-89ce-9af120a99cd8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\GameObject\MemberSelect\Parent\Parent">
+      <UniqueIdentifier>{1d27e6d5-28f6-42c6-9148-bd355ccbdb04}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -402,9 +408,42 @@
     <ClCompile Include="MemberSelectDirector.cpp">
       <Filter>Code\Scene\Director</Filter>
     </ClCompile>
-    <ClCompile Include="MemberIcon.cpp" />
-    <ClCompile Include="MemberName.cpp" />
-    <ClCompile Include="MemberBack.cpp" />
+    <ClCompile Include="MemberBack.cpp">
+      <Filter>Code\GameObject\MemberSelect</Filter>
+    </ClCompile>
+    <ClCompile Include="MemberName.cpp">
+      <Filter>Code\GameObject\MemberSelect</Filter>
+    </ClCompile>
+    <ClCompile Include="MemberIcon.cpp">
+      <Filter>Code\GameObject\MemberSelect\Parent</Filter>
+    </ClCompile>
+    <ClCompile Include="MemberSelectFieldBase.cpp">
+      <Filter>Code\GameObject\MemberSelect\Parent\Parent</Filter>
+    </ClCompile>
+    <ClCompile Include="StartingLineupField.cpp">
+      <Filter>Code\GameObject\MemberSelect\Parent\Parent</Filter>
+    </ClCompile>
+    <ClCompile Include="TextRenderer.cpp">
+      <Filter>Code\Component\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="SelectPitcherField.cpp">
+      <Filter>Code\GameObject\MemberSelect\Parent\Parent</Filter>
+    </ClCompile>
+    <ClCompile Include="SelectFielderField.cpp">
+      <Filter>Code\GameObject\MemberSelect\Parent\Parent</Filter>
+    </ClCompile>
+    <ClCompile Include="FielderSelectBack.cpp">
+      <Filter>Code\GameObject\MemberSelect</Filter>
+    </ClCompile>
+    <ClCompile Include="PitcherSelectBack.cpp">
+      <Filter>Code\GameObject\MemberSelect</Filter>
+    </ClCompile>
+    <ClCompile Include="PositionIcon.cpp">
+      <Filter>Code\GameObject\MemberSelect</Filter>
+    </ClCompile>
+    <ClCompile Include="MemberSelectCursor.cpp">
+      <Filter>Code\GameObject\MemberSelect</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imconfig.h">
@@ -689,9 +728,42 @@
     <ClInclude Include="MemberSelectDirector.h">
       <Filter>Code\Scene\Director</Filter>
     </ClInclude>
-    <ClInclude Include="MemberIcon.h" />
-    <ClInclude Include="MemberName.h" />
-    <ClInclude Include="MemberBack.h" />
+    <ClInclude Include="MemberBack.h">
+      <Filter>Code\GameObject\MemberSelect</Filter>
+    </ClInclude>
+    <ClInclude Include="MemberName.h">
+      <Filter>Code\GameObject\MemberSelect</Filter>
+    </ClInclude>
+    <ClInclude Include="MemberIcon.h">
+      <Filter>Code\GameObject\MemberSelect\Parent</Filter>
+    </ClInclude>
+    <ClInclude Include="MemberSelectFieldBase.h">
+      <Filter>Code\GameObject\MemberSelect\Parent\Parent</Filter>
+    </ClInclude>
+    <ClInclude Include="StartingLineupField.h">
+      <Filter>Code\GameObject\MemberSelect\Parent\Parent</Filter>
+    </ClInclude>
+    <ClInclude Include="TextRenderer.h">
+      <Filter>Code\Component\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="SelectPitcherField.h">
+      <Filter>Code\GameObject\MemberSelect\Parent\Parent</Filter>
+    </ClInclude>
+    <ClInclude Include="SelectFielderField.h">
+      <Filter>Code\GameObject\MemberSelect\Parent\Parent</Filter>
+    </ClInclude>
+    <ClInclude Include="FielderSelectBack.h">
+      <Filter>Code\GameObject\MemberSelect</Filter>
+    </ClInclude>
+    <ClInclude Include="PitcherSelectBack.h">
+      <Filter>Code\GameObject\MemberSelect</Filter>
+    </ClInclude>
+    <ClInclude Include="PositionIcon.h">
+      <Filter>Code\GameObject\MemberSelect</Filter>
+    </ClInclude>
+    <ClInclude Include="MemberSelectCursor.h">
+      <Filter>Code\GameObject\MemberSelect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="History.txt">

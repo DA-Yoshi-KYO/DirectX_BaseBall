@@ -37,8 +37,11 @@ private:
 public:
 	void SetStarterPitcher(CPitcher* starter) { m_pStarterPitcher = starter; }
 	CPitcher* GetStarterPitcher() { return m_pStarterPitcher; }
+	void SetStartingLineup(std::list<class CFielder*> lineup) { m_pStartingLineup = lineup; }
+	std::list<class CFielder*> GetStartingLineup() { return m_pStartingLineup; }
 
 private:
 	CPitcher* m_pStarterPitcher;
+	std::list<class CFielder*> m_pStartingLineup;
 
 };

@@ -3,12 +3,12 @@
 #include "GameObject.h"
 #include "PlayerData.h"
 
-class CMemberBack : public CGameObject
+class CPositionIcon : public CGameObject
 {
 public:
-	CMemberBack();
-	~CMemberBack();
-	void Init() override {}
+	CPositionIcon();
+	~CPositionIcon();
+	void Init() override;
 	void Init(Positions position);
 
 };

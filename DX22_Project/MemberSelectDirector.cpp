@@ -1,6 +1,8 @@
 #include "MemberSelectDirector.h"
 #include "Main.h"
 #include "MemberSelectBackGround.h"
+#include "Pitcher.h"
+#include "Fielder.h"
 
 CMemberSelectDirector::CMemberSelectDirector()
 	: m_pIconsTeam1{}, m_pIconsTeam2{}
@@ -24,8 +26,37 @@ void CMemberSelectDirector::Init(TeamKind kind1, TeamKind kind2)
 	pTeam1->Load(kind1);
 	for (auto itr : pTeam1->GetAllMember())
 	{
-		m_pIconsTeam1.push_back(std::make_unique<CMemberIcon>());
-		m_pIconsTeam1.rbegin()->get()->Init(itr);
+		if (dynamic_cast<CPitcher*>(itr))
+		{
+			if (dynamic_cast<CPitcher*>(itr) == pTeam1->GetStarterPitcher())
+			{
+				m_pIconsTeam1[(int)MemberKind::StarterPitcher].push_back(std::make_unique<CMemberIcon>());
+				m_pIconsTeam1[(int)MemberKind::StarterPitcher].rbegin()->get()->Init(itr);
+			}
+			else
+			{
+				m_pIconsTeam1[(int)MemberKind::RestStarterPitcher].push_back(std::make_unique<CMemberIcon>());
+				m_pIconsTeam1[(int)MemberKind::RestStarterPitcher].rbegin()->get()->Init(itr);
+			}
+
+			continue;
+		}
+
+		if (dynamic_cast<CFielder*>(itr))
+		{
+			if (dynamic_cast<CFielder*>(itr)->GetPlayerData().m_nLineupNo != 0)
+			{
+				m_pIconsTeam1[(int)MemberKind::StarterFielder].push_back(std::make_unique<CMemberIcon>());
+				m_pIconsTeam1[(int)MemberKind::StarterFielder].rbegin()->get()->Init(itr);
+			}
+			else
+			{
+				m_pIconsTeam1[(int)MemberKind::BenchFielder].push_back(std::make_unique<CMemberIcon>());
+				m_pIconsTeam1[(int)MemberKind::BenchFielder].rbegin()->get()->Init(itr);
+			}
+
+			continue;
+		}
 	}
 
 	m_pTeams[1] = std::make_unique<CTeamDirector>(2);
@@ -33,7 +64,42 @@ void CMemberSelectDirector::Init(TeamKind kind1, TeamKind kind2)
 	pTeam2->Load(kind2);
 	for (auto itr : pTeam2->GetAllMember())
 	{
-		m_pIconsTeam2.push_back(std::make_unique<CMemberIcon>());
-		m_pIconsTeam2.rbegin()->get()->Init(itr);
+		if (dynamic_cast<CPitcher*>(itr))
+		{
+			if (dynamic_cast<CPitcher*>(itr) == pTeam2->GetStarterPitcher())
+			{
+				m_pIconsTeam2[(int)MemberKind::StarterPitcher].push_back(std::make_unique<CMemberIcon>());
+				m_pIconsTeam2[(int)MemberKind::StarterPitcher].rbegin()->get()->Init(itr);
+			}
+			else
+			{
+				m_pIconsTeam2[(int)MemberKind::RestStarterPitcher].push_back(std::make_unique<CMemberIcon>());
+				m_pIconsTeam2[(int)MemberKind::RestStarterPitcher].rbegin()->get()->Init(itr);
+			}
+
+			continue;
+		}
+
+		if (dynamic_cast<CFielder*>(itr))
+		{
+			if (dynamic_cast<CFielder*>(itr)->GetPlayerData().m_nLineupNo != 0)
+			{
+				m_pIconsTeam2[(int)MemberKind::StarterFielder].push_back(std::make_unique<CMemberIcon>());
+				m_pIconsTeam2[(int)MemberKind::StarterFielder].rbegin()->get()->Init(itr);
+			}
+			else
+			{
+				m_pIconsTeam2[(int)MemberKind::BenchFielder].push_back(std::make_unique<CMemberIcon>());
+				m_pIconsTeam2[(int)MemberKind::BenchFielder].rbegin()->get()->Init(itr);
+			}
+
+			continue;
+		}
 	}
+
+}
+
+void CMemberSelectDirector::Update()
+{
+
 }

@@ -1,27 +1,19 @@
 SceneTitle...
-・Director作る
-・オブジェクト配置
-・アニメーションする
-・キー入力受け付け
+済
 
 SceneTeamSelect...
 済
 
 SceneMemberSelect...
-・Director作る
 ・オブジェクト配置
 ・アニメーションする
 ・キー入力受け付け
-・TeamManagerのインスタンスどうする？
-(シングルトンになりそー)
 
 SceneGame...
 ・攻撃側
-	└バッティング
 	└バッティングカーソル
 	└走塁
 ・守備側
-	└ピッチング
 	└ピッチングカーソル
 	└守備
 ・スコア

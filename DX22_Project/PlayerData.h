@@ -20,13 +20,6 @@ enum class Hand
 	Left
 };
 
-struct PlayerData
-{
-	std::wstring m_wsName;
-	Hand m_eHandy;
-	Positions m_eMainPosition;
-};
-
 enum class Positions
 {
 	Pitcher,
@@ -38,6 +31,14 @@ enum class Positions
 	Left,
 	Center,
 	Right,
+};
+
+struct PlayerData
+{
+	std::wstring m_wsName;
+	Hand m_eHandy;
+	Positions m_eMainPosition;
+	int m_nLineupNo;
 };
 
 class CPlayerDataBase

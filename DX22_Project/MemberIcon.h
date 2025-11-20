@@ -11,6 +11,7 @@ public:
 	~CMemberIcon();
 	void Init(CPlayerDataBase* pData);
 	CPlayerDataBase* GetOwner() { return m_pPlayerData; }
+	void SetPos(DirectX::XMFLOAT3 pos);
 	
 private:
 	CMemberBack* m_pBack;
