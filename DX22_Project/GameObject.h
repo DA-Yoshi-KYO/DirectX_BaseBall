@@ -6,6 +6,7 @@
 #include "imgui.h"
 #include "RendererComponent.h"
 #include <list>
+#include "CollisionBase.h"
 
 // オブジェクトタグ
 enum class Tag
@@ -48,6 +49,11 @@ public:
     /// オブジェクトが破棄された時の処理
     /// </summary>
     virtual void OnDestroy();
+
+    /// <summary>
+    /// オブジェクトが衝突された時の処理
+    /// </summary>
+    virtual void OnCollision(CCollisionBase* other, std::string thisTag, Collision::Result result);
 
     /// <summary>
     /// オブジェクトを破棄する

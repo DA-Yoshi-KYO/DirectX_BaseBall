@@ -50,6 +50,8 @@ void CBattingCursor::Update()
 		DirectX::XMFLOAT3 fStrikeZonePos = pStrikeZone->GetPos();
 		DirectX::XMFLOAT3 fStrikeZoneSize = pStrikeZone->GetSize();
 		DirectX::XMFLOAT2 fInput = pBallCount->GetOffenseTeam() == CGameManager::Team::Player1 ? CGetLStick((int)CGameManager::Team::Player1) : CGetLStick((int)CGameManager::Team::Player2);
+
+
 		DirectX::XMFLOAT2 fMaxPos = { fabsf(fStrikeZonePos.x) + fStrikeZoneSize.x / 1.5f , fabsf(fStrikeZonePos.y) + fStrikeZoneSize.y / 1.5f };
 		m_tParam.m_f3Pos = { fStrikeZonePos.x + fInput.x * fMaxPos.x,fStrikeZonePos.y + fInput.y * fMaxPos.y,0.0f };
 

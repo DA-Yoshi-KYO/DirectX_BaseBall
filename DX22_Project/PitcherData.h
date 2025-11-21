@@ -1,5 +1,5 @@
 #pragma once
-#include "PlayerData.h"
+#include "PlayerDataBase.h"
 
 enum PitcherKind
 {
@@ -15,11 +15,11 @@ struct PitcherData
 	PitcherKind m_eKind;
 };
 
-class CPitcher : public CPlayerDataBase
+class CPitcherData : public CPlayerDataBase
 {
 public:
-	CPitcher();
-	~CPitcher();
+	CPitcherData();
+	~CPitcherData();
 	void SetPitcherData(PitcherData data) { m_tPitcherData = data; }
 	PitcherData GetPitcherData() { return m_tPitcherData; }
 

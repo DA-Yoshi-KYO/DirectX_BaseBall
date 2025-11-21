@@ -1,27 +1,27 @@
 #pragma once
 
-#include "PlayerData.h"
+#include "GameObject.h"
+#include "FielderData.h"
+#include "CollisionBox.h"
 
-struct FielderData
-{
-	int m_nTrajectory;
-	Quality m_eMeet;
-	Quality m_ePower;
-	Quality m_eSpeed;
-	Quality m_eThrowing;
-	Quality m_eDefence;
-	Quality m_eChatch;
-};
-
-class CFielder : public CPlayerDataBase
+class CFielder : public CGameObject
 {
 public:
 	CFielder();
 	~CFielder();
-	void SetFielderData(FielderData data) { m_tFielderData = data; }
-	FielderData SetFielderData() { return m_tFielderData; }
+	void Init() override;
+	void Update() override;
+	void ResetPos();
+	void OnCollision(CCollisionBase* other, std::string thisTag, Collision::Result result) override;
+	void SetData(CFielderData* fielder, Positions position);
+	bool SetBaseCoverFrag(int baseIndex, bool frag);
 
-protected:
-	FielderData m_tFielderData;
+private:
+	CFielderData* m_pFielderData;
+	Positions m_ePosition;
+	bool m_bIsOparation;
+	bool m_bChatch;
+	bool m_bMostNearToBase[(int)BaseKind::Max];
+	CCollisionBox* m_pCollision;
 
 };

@@ -2,11 +2,11 @@
 #include <string>
 #include <fstream>
 #include <sstream>
-#include "Pitcher.h"
-#include "Fielder.h"
-#include "Chatcher.h"
-#include "InFielder.h"
-#include "OutFielder.h"
+#include "PitcherData.h"
+#include "FielderData.h"
+#include "ChatcherData.h"
+#include "InFielderData.h"
+#include "OutFielderData.h"
 #include "Defines.h"
 #include "DirectX.h"
 
@@ -146,23 +146,23 @@ void CTeam::Load(TeamKind team)
         }
 
         CPlayerDataBase* pDataBase = nullptr;
-        CPitcher* pPitcher = nullptr;
-        CChatcher* pChatcher = nullptr;
-        CInFielder* pInFielder = nullptr;
-        COutFielder* pOutFielder = nullptr;
+        CPitcherData* pPitcher = nullptr;
+        CChatcherData* pChatcher = nullptr;
+        CInFielderData* pInFielder = nullptr;
+        COutFielderData* pOutFielder = nullptr;
         switch (data.m_eMainPosition)
         {
         case Positions::Pitcher:
-            pDataBase = new CPitcher();
+            pDataBase = new CPitcherData();
             pDataBase->SetPlayerData(data);
-            pPitcher = dynamic_cast<CPitcher*>(pDataBase);
+            pPitcher = dynamic_cast<CPitcherData*>(pDataBase);
             pPitcher->SetPitcherData(pitcherData);
             m_pPitcherData.push_back(pPitcher);
             break;
         case Positions::Chatcher:
-            pDataBase = new CChatcher();
+            pDataBase = new CChatcherData();
             pDataBase->SetPlayerData(data);
-            pChatcher = dynamic_cast<CChatcher*>(pDataBase);
+            pChatcher = dynamic_cast<CChatcherData*>(pDataBase);
             pChatcher->SetFielderData(fielderData);
             m_pFielderData.push_back(pChatcher);
             m_pChatcherData.push_back(pChatcher);
@@ -171,9 +171,9 @@ void CTeam::Load(TeamKind team)
         case Positions::Second:
         case Positions::Third:
         case Positions::Short:
-            pDataBase = new CInFielder();
+            pDataBase = new CInFielderData();
             pDataBase->SetPlayerData(data);
-            pInFielder = dynamic_cast<CInFielder*>(pDataBase);
+            pInFielder = dynamic_cast<CInFielderData*>(pDataBase);
             pInFielder->SetFielderData(fielderData);
             m_pFielderData.push_back(pInFielder);
             m_pInFielderData.push_back(pInFielder);
@@ -181,9 +181,9 @@ void CTeam::Load(TeamKind team)
         case Positions::Left:
         case Positions::Center:
         case Positions::Right:
-            pDataBase = new COutFielder();
+            pDataBase = new COutFielderData();
             pDataBase->SetPlayerData(data);
-            pOutFielder = dynamic_cast<COutFielder*>(pDataBase);
+            pOutFielder = dynamic_cast<COutFielderData*>(pDataBase);
             pOutFielder->SetFielderData(fielderData);
             m_pFielderData.push_back(pOutFielder);
             m_pOutFielderData.push_back(pOutFielder);
@@ -193,7 +193,14 @@ void CTeam::Load(TeamKind team)
     }
 }
 
-CFielder* CTeam::GetTakingBatter(int TakingNo)
+CFielderData* CTeam::GetTakingBatter(int TakingNo)
 {
-    return m_pStartingLineup[TakingNo - 1];
+    int i = 1;
+    for (auto itr : m_pStartingLineup)
+    {
+        if (i == TakingNo) return itr;
+        ++i;
+    }
+
+    return nullptr;
 }

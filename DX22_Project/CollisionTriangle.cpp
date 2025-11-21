@@ -1,11 +1,11 @@
 #include "CollisionTriangle.h"
 
-void CollisionTriangle::Init()
+void CCollisionTriangle::Init()
 {
 	m_tCollisionInfo.type = Collision::eTriangle;
 }
 
-void CollisionTriangle::SetInfo(DirectX::XMFLOAT3* point)
+void CCollisionTriangle::SetInfo(DirectX::XMFLOAT3* point)
 {
 	m_tCollisionInfo.triangle.point[0] = point[0];
 	m_tCollisionInfo.triangle.point[1] = point[1];

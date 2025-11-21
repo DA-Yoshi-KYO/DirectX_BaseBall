@@ -387,22 +387,22 @@
     <ClCompile Include="MemberSelectBackGround.cpp">
       <Filter>Code\GameObject\MemberSelect</Filter>
     </ClCompile>
-    <ClCompile Include="PlayerData.cpp">
+    <ClCompile Include="PlayerDataBase.cpp">
       <Filter>Code\GameObject\Game\PlayerData</Filter>
     </ClCompile>
-    <ClCompile Include="Chatcher.cpp">
+    <ClCompile Include="ChatcherData.cpp">
       <Filter>Code\GameObject\Game\PlayerData</Filter>
     </ClCompile>
-    <ClCompile Include="Fielder.cpp">
+    <ClCompile Include="FielderData.cpp">
       <Filter>Code\GameObject\Game\PlayerData</Filter>
     </ClCompile>
-    <ClCompile Include="InFielder.cpp">
+    <ClCompile Include="InFielderData.cpp">
       <Filter>Code\GameObject\Game\PlayerData</Filter>
     </ClCompile>
-    <ClCompile Include="OutFielder.cpp">
+    <ClCompile Include="OutFielderData.cpp">
       <Filter>Code\GameObject\Game\PlayerData</Filter>
     </ClCompile>
-    <ClCompile Include="Pitcher.cpp">
+    <ClCompile Include="PitcherData.cpp">
       <Filter>Code\GameObject\Game\PlayerData</Filter>
     </ClCompile>
     <ClCompile Include="Team.cpp">
@@ -461,6 +461,9 @@
     </ClCompile>
     <ClCompile Include="ColllisionPlane.cpp">
       <Filter>Code\Component\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="Fielder.cpp">
+      <Filter>Code\GameObject\Game\Difence</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -719,22 +722,22 @@
     <ClInclude Include="MemberSelectBackGround.h">
       <Filter>Code\GameObject\MemberSelect</Filter>
     </ClInclude>
-    <ClInclude Include="PlayerData.h">
+    <ClInclude Include="PlayerDataBase.h">
       <Filter>Code\GameObject\Game\PlayerData</Filter>
     </ClInclude>
-    <ClInclude Include="Chatcher.h">
+    <ClInclude Include="ChatcherData.h">
       <Filter>Code\GameObject\Game\PlayerData</Filter>
     </ClInclude>
-    <ClInclude Include="Fielder.h">
+    <ClInclude Include="FielderData.h">
       <Filter>Code\GameObject\Game\PlayerData</Filter>
     </ClInclude>
-    <ClInclude Include="InFielder.h">
+    <ClInclude Include="InFielderData.h">
       <Filter>Code\GameObject\Game\PlayerData</Filter>
     </ClInclude>
-    <ClInclude Include="OutFielder.h">
+    <ClInclude Include="OutFielderData.h">
       <Filter>Code\GameObject\Game\PlayerData</Filter>
     </ClInclude>
-    <ClInclude Include="Pitcher.h">
+    <ClInclude Include="PitcherData.h">
       <Filter>Code\GameObject\Game\PlayerData</Filter>
     </ClInclude>
     <ClInclude Include="Easing.h">
@@ -796,6 +799,9 @@
     </ClInclude>
     <ClInclude Include="ColllisionPlane.h">
       <Filter>Code\Component\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Fielder.h">
+      <Filter>Code\GameObject\Game\Difence</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

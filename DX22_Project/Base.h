@@ -18,4 +18,9 @@ public:
 	~CBase();
 	void Init() override;
 	void Init(BaseKind kind);
+	BaseKind GetKind() { return m_eBaseKind; }
+
+private:
+	BaseKind m_eBaseKind;
+
 };

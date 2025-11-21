@@ -18,5 +18,17 @@ public:
 	~CBall();
 	void Init() override;
 	void Update() override;
+	void OnCollision(CCollisionBase* other, std::string thisTag, Collision::Result result) override;
+
+	void UpdateInPlay();
+	void UpdateBatting();
+	bool GetIsFryBall() { return m_bFryBall; }
+
 private:
+	Collision::Info m_LucusCollision;
+	Collision::Info m_BoxCollision;
+	DirectX::XMFLOAT3 m_f3Velocity;
+	bool m_bFryBall;
+
+
 };

@@ -156,7 +156,7 @@
     <ClCompile Include="BallCount.cpp" />
     <ClCompile Include="Base.cpp" />
     <ClCompile Include="BaseCount.cpp" />
-    <ClCompile Include="Chatcher.cpp" />
+    <ClCompile Include="ChatcherData.cpp" />
     <ClCompile Include="CollisionBase.cpp" />
     <ClCompile Include="CollisionBox.cpp" />
     <ClCompile Include="CollisionLine.cpp" />
@@ -166,6 +166,7 @@
     <ClCompile Include="CountObject.cpp" />
     <ClCompile Include="DefenceManager.cpp" />
     <ClCompile Include="Fielder.cpp" />
+    <ClCompile Include="FielderData.cpp" />
     <ClCompile Include="FielderSelectBack.cpp" />
     <ClCompile Include="FieldManager.cpp" />
     <ClCompile Include="GameManager.cpp" />
@@ -195,7 +196,7 @@
     <ClCompile Include="imgui_impl_win32.cpp" />
     <ClCompile Include="imgui_tables.cpp" />
     <ClCompile Include="imgui_widgets.cpp" />
-    <ClCompile Include="InFielder.cpp" />
+    <ClCompile Include="InFielderData.cpp" />
     <ClCompile Include="Inning.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -214,12 +215,12 @@
     <ClCompile Include="Model_get.cpp" />
     <ClCompile Include="Model_morph.cpp" />
     <ClCompile Include="OutCount.cpp" />
-    <ClCompile Include="OutFielder.cpp" />
-    <ClCompile Include="Pitcher.cpp" />
+    <ClCompile Include="OutFielderData.cpp" />
+    <ClCompile Include="PitcherData.cpp" />
     <ClCompile Include="PitcherSelectBack.cpp" />
     <ClCompile Include="Pitching.cpp" />
     <ClCompile Include="PitchingCursor.cpp" />
-    <ClCompile Include="PlayerData.cpp" />
+    <ClCompile Include="PlayerDataBase.cpp" />
     <ClCompile Include="PositionIcon.cpp" />
     <ClCompile Include="PostProcess.cpp" />
     <ClCompile Include="PostProcessChain.cpp" />
@@ -272,7 +273,7 @@
     <ClInclude Include="BallCount.h" />
     <ClInclude Include="Base.h" />
     <ClInclude Include="BaseCount.h" />
-    <ClInclude Include="Chatcher.h" />
+    <ClInclude Include="ChatcherData.h" />
     <ClInclude Include="CollisionBase.h" />
     <ClInclude Include="CollisionBox.h" />
     <ClInclude Include="CollisionLine.h" />
@@ -283,6 +284,7 @@
     <ClInclude Include="DefenceManager.h" />
     <ClInclude Include="Easing.h" />
     <ClInclude Include="Fielder.h" />
+    <ClInclude Include="FielderData.h" />
     <ClInclude Include="FielderSelectBack.h" />
     <ClInclude Include="FieldManager.h" />
     <ClInclude Include="GameManager.h" />
@@ -314,7 +316,7 @@
     <ClInclude Include="imstb_rectpack.h" />
     <ClInclude Include="imstb_textedit.h" />
     <ClInclude Include="imstb_truetype.h" />
-    <ClInclude Include="InFielder.h" />
+    <ClInclude Include="InFielderData.h" />
     <ClInclude Include="Inning.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="Main.h" />
@@ -330,12 +332,12 @@
     <ClInclude Include="ModelRenderer.h" />
     <ClInclude Include="Oparation.h" />
     <ClInclude Include="OutCount.h" />
-    <ClInclude Include="OutFielder.h" />
-    <ClInclude Include="Pitcher.h" />
+    <ClInclude Include="OutFielderData.h" />
+    <ClInclude Include="PitcherData.h" />
     <ClInclude Include="PitcherSelectBack.h" />
     <ClInclude Include="Pitching.h" />
     <ClInclude Include="PitchingCursor.h" />
-    <ClInclude Include="PlayerData.h" />
+    <ClInclude Include="PlayerDataBase.h" />
     <ClInclude Include="PositionIcon.h" />
     <ClInclude Include="PostProcess.h" />
     <ClInclude Include="PostProcessChain.h" />

@@ -18,22 +18,13 @@ class CField : public CGameObject
 public:
 	CField();
 	~CField();
+	void Init() override;
 	void Update() override;
-	// ベースの種類
-	enum class BaseKind
-	{
-		First,	// ファーストベース
-		Second,	// セカンドベース
-		Third,	// サードベース
-		Home,	// ホームベース
-
-		Max
-	};
 
 public:
 	/// <summary> OnCollision:グラウンドに当たった時の処理 </summary>
 	/// <param name="collision"> 当たった結果 </param>
-	void OnCollision(Collision::Result collision);
+	void OnCollision(CCollisionBase* other, std::string thisTag, Collision::Result result) override;
 
 private:
 	// 当たり判定情報
@@ -42,7 +33,7 @@ private:
 	std::vector<Collision::Info> m_ThirdBaseLine;	// 三塁線
 	std::vector<Collision::Info> m_LeftFoul;		// レフト側ファールゾーン
 	std::vector<Collision::Info> m_RightFoul;		// ライト側ファールゾーン
-	std::vector<Collision::Info> m_HomeRunZone;		// ホームランゾーン
+	bool m_bCollisionSwap;
 
 private:
 	// 内部処理

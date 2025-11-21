@@ -2,7 +2,7 @@
 
 #include "CollisionBase.h"
 
-class CollisionBox : public CCollisionBase
+class CCollisionBox : public CCollisionBase
 {
 public:
 	using CCollisionBase::CCollisionBase;

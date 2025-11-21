@@ -39,6 +39,7 @@ void CScene::Uninit()
 
 void CScene::Update()
 {
+    // オブジェクトの更新処理
     for (auto& list : m_pGameObject_List)
     {
         for (auto obj : list)
@@ -47,6 +48,21 @@ void CScene::Update()
         }
     }
 
+    for (int i = 0; i < m_pCollisionList.size(); i++)
+    {
+        for (int j = i + 1; j < m_pCollisionList.size(); j++)
+        {
+            Collision::Result result = m_pCollisionList[i]->IsHit(m_pCollisionList[j]);
+            if (result.isHit)
+            {
+                m_pCollisionList[i]->GetGameObject()->OnCollision(m_pCollisionList[j],m_pCollisionList[i]->GetTag(), result);
+                m_pCollisionList[j]->GetGameObject()->OnCollision(m_pCollisionList[i],m_pCollisionList[j]->GetTag(), result);
+                break;
+            }
+        }
+    }
+
+    // 更新を受けて削除予定のオブジェクトがあればIDを削除
     for (auto itr = m_tIDVec.begin(); itr != m_tIDVec.end();)
     {
         if (GetGameObject(*itr)->IsDestroy())
@@ -59,6 +75,7 @@ void CScene::Update()
         }
     }
 
+    // 更新を受けて削除予定のオブジェクトがあれば削除
     for (auto& list : m_pGameObject_List)
     {
         list.remove_if([](CGameObject* pObj)

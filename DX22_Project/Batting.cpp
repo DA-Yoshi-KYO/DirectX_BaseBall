@@ -4,7 +4,7 @@
 #include "PitchingCursor.h"
 #include "Main.h"
 #include "GameManager.h"
-#include "Fielder.h"
+#include "FielderData.h"
 
 constexpr float ce_fJustTyming = 139.0f;	// ジャストミートになるタイミング
 constexpr float ce_fHittingTyming = 4.0f;	// バットに当たれるタイミング(+-)

@@ -31,6 +31,8 @@ enum class Positions
 	Left,
 	Center,
 	Right,
+
+	None
 };
 
 struct PlayerData
@@ -38,6 +40,7 @@ struct PlayerData
 	std::wstring m_wsName;
 	Hand m_eHandy;
 	Positions m_eMainPosition;
+	Positions m_eEntryPosition;
 	int m_nLineupNo;
 };
 

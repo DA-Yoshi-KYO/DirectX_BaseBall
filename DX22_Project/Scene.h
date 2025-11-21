@@ -2,6 +2,7 @@
 
 #include "Defines.h"
 #include "GameObject.h"
+#include "CollisionBase.h"
 #include <array>
 #include <list>
 
@@ -37,6 +38,11 @@ public:
 
 		gameObject->Init();
         gameObject->SetTag(inTag);
+
+        for (auto itr : gameObject->GetSameComponents<CCollisionBase>())
+        {
+            m_pCollisionList.push_back(itr);
+        }
 
 		return gameObject;
 	}
@@ -114,5 +120,6 @@ protected:
 
 private:
     std::vector<ObjectID> m_tIDVec;
+    std::vector<CCollisionBase*> m_pCollisionList;
 
 };

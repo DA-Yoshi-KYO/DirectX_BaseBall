@@ -14,9 +14,7 @@
 // ==============================
 //    定数定義
 // ==============================
-constexpr float ce_fDifencePower = 0.2f;	// 守備移動速度
-constexpr float ce_fDifence = 0.4f;			// 守備操作速度
-constexpr float ce_fThrowingPower = 2.0f;	// 送球の強さ
+
 
 // ==============================
 //    静的変数の初期化
@@ -48,16 +46,6 @@ CFielding::CFielding()
 		m_Collision[i].box.size = m_tParam[i].size;
 	}
 
-	// モデルの読み込み
-	if (!m_pFieldMember[(int)FieldMember::Pitcher]->Load(PATH_MODEL("ball.obj"))) ERROR_MESSAGE("");
-	if (!m_pFieldMember[(int)FieldMember::Chatcher]->Load(PATH_MODEL("ball.obj")))ERROR_MESSAGE("");
-	if (!m_pFieldMember[(int)FieldMember::First]->Load(PATH_MODEL("ball.obj")))ERROR_MESSAGE("");
-	if (!m_pFieldMember[(int)FieldMember::Second]->Load(PATH_MODEL("ball.obj")))ERROR_MESSAGE("");
-	if (!m_pFieldMember[(int)FieldMember::Third]->Load(PATH_MODEL("ball.obj")))ERROR_MESSAGE("");
-	if (!m_pFieldMember[(int)FieldMember::Short]->Load(PATH_MODEL("ball.obj")))ERROR_MESSAGE("");
-	if (!m_pFieldMember[(int)FieldMember::Left]->Load(PATH_MODEL("ball.obj")))ERROR_MESSAGE("");
-	if (!m_pFieldMember[(int)FieldMember::Center]->Load(PATH_MODEL("ball.obj")))ERROR_MESSAGE("");
-	if (!m_pFieldMember[(int)FieldMember::Right]->Load(PATH_MODEL("ball.obj")))ERROR_MESSAGE("");
 }
 
 CFielding::~CFielding()
@@ -70,7 +58,7 @@ void CFielding::Update(int DefencePlayer)
 	CField* pField = pScene->GetGameObject<CField>();
 	CBall* pBall = pScene->GetGameObject<CBall>();
 	CGameManager* pGameManager = CGameManager::GetInstance();
-	CTeamManager* pTeamManager = pGameManager->GetTeamManager(DefencePlayer);
+	//CTeamManager* pTeamManager = pGameManager->GetTeamManager(DefencePlayer);
 
 	// 計算に使う変数の定義
 	DirectX::XMFLOAT3 fFieldPos = pField->GetPos();
@@ -82,62 +70,10 @@ void CFielding::Update(int DefencePlayer)
 	switch (pGameManager->GetPhase())
 	{
 	case GamePhase::Batting:
-		// 守備位置の初期化
-		m_tParam[(int)FieldMember::Pitcher].pos = { fFieldPos.x,fFieldPos.y, fFieldPos.z + fFieldPosLine.z * 2.5f };
-		m_tParam[(int)FieldMember::Chatcher].pos = { fFieldPos.x,fFieldPos.y, fFieldPos.z + fFieldPosLine.z * 7.3f };
-		m_tParam[(int)FieldMember::First].pos = { fFieldPos.x - fFieldPosLine.x * 1.7f,fFieldPos.y, fFieldPos.z + fFieldPosLine.z * 2.5f };
-		m_tParam[(int)FieldMember::Second].pos = { fFieldPos.x - fFieldPosLine.x * 0.9f,fFieldPos.y, fFieldPos.z + fFieldPosLine.z * 1.2f };
-		m_tParam[(int)FieldMember::Third].pos = { fFieldPos.x + fFieldPosLine.x * 1.7f,fFieldPos.y, fFieldPos.z + fFieldPosLine.z * 2.5f };
-		m_tParam[(int)FieldMember::Short].pos = { fFieldPos.x + fFieldPosLine.x * 0.9f,fFieldPos.y, fFieldPos.z + fFieldPosLine.z * 1.2f };
-		m_tParam[(int)FieldMember::Left].pos = { fFieldPos.x + fFieldPosLine.x * 2.3f,fFieldPos.y, fFieldPos.z - fFieldPosLine.z * 1.7f };
-		m_tParam[(int)FieldMember::Center].pos = { fFieldPos.x,fFieldPos.y, fFieldPos.z - fFieldPosLine.z * 2.3f };
-		m_tParam[(int)FieldMember::Right].pos = { fFieldPos.x - fFieldPosLine.x * 2.3f,fFieldPos.y, fFieldPos.z - fFieldPosLine.z * 1.7f };
-		
-		m_bHold = false;
-		m_eChatch = ChatchPattern::NotChatch;
-		break;
+
+				break;
 	case GamePhase::InPlay:
-		// インプレー終了時に抜け出さない用
-		if (!pGameManager->GetEndInplay())
-		{
-			// ボールを持っていない時は操作選手の探索を行う
-			if (!m_bHold)
-			{
-				m_nOperationNo = OperationSearch();
-			}
-			else
-			{
-				// ボールを持っている時はボールの位置を操作選手の位置にする
-				pBall->SetPos(m_tParam[m_nOperationNo].pos);
-				m_fThrowDirection = {};
-			}
-			float fMovePow = pTeamManager->GetFielderState((CTeamManager::FieldingNo)(m_nOperationNo + 1)).m_eDefence * (0.45f / 7.0f) + 0.2f;
-			// 移動処理
-			if (IsKeyPress(DefencePlayer, Input::Up))	m_tParam[m_nOperationNo].pos.z -= fMovePow;
-			if (IsKeyPress(DefencePlayer, Input::Down)) m_tParam[m_nOperationNo].pos.z += fMovePow;
-			if (IsKeyPress(DefencePlayer, Input::Left)) m_tParam[m_nOperationNo].pos.x -= fMovePow;
-			if (IsKeyPress(DefencePlayer, Input::Right))m_tParam[m_nOperationNo].pos.x += fMovePow;
 
-			// ベースに近い選手を初期化
-			for (int i = 0; i < (int)CField::BaseKind::Max; i++)
-			{
-				m_nBaseNearNo[i] = -1;
-			}
-			// ベースに近い選手を操作選手以外から探索
-			m_nBaseNearNo[(int)CField::BaseKind::First]	= BaseSearch(CField::BaseKind::First);
-			m_nBaseNearNo[(int)CField::BaseKind::Second]= BaseSearch(CField::BaseKind::Second);
-			m_nBaseNearNo[(int)CField::BaseKind::Third] = BaseSearch(CField::BaseKind::Third);
-			m_nBaseNearNo[(int)CField::BaseKind::Home]	= BaseSearch(CField::BaseKind::Home);
-			// ベースカバー処理
-			BaseCover();
-
-			// 当たり判定情報の更新
-			for (int i = 0; i < (int)FieldMember::Max; i++)
-			{
-				m_Collision[i].type = Collision::eBox;
-				m_Collision[i].box.center = m_tParam[i].pos;
-				m_Collision[i].box.size = m_tParam[i].size;
-			}
 
 			if (!m_bHold)
 			{

@@ -1,11 +1,11 @@
 #include "TeamManager.h"
 #include <algorithm>
 #include "DirectX.h"
-#include "Pitcher.h"
-#include "Fielder.h"
-#include "Chatcher.h"
-#include "InFielder.h"
-#include "OutFielder.h"
+#include "PitcherData.h"
+#include "FielderData.h"
+#include "ChatcherData.h"
+#include "InFielderData.h"
+#include "OutFielderData.h"
 #include <vector>
 
 std::array<CTeam*, 2>  CTeamDirector::m_pTeam = {};
@@ -47,9 +47,9 @@ CTeam* CTeamDirector::GetTeam()
 
 void CTeamDirector::InitStarter()
 {
-    std::list<CPitcher*> pPitcherList = m_pTeam[m_nPlayerNo]->GetPitcherMember();
+    std::list<CPitcherData*> pPitcherList = m_pTeam[m_nPlayerNo]->GetPitcherMember();
 
-    std::vector<CPitcher*> pStarterList;
+    std::vector<CPitcherData*> pStarterList;
     pStarterList.clear();
 
     for (auto itr : pPitcherList)
@@ -63,14 +63,14 @@ void CTeamDirector::InitStarter()
 
 void CTeamDirector::InitStartingLineup()
 {
-    std::list<CFielder*> pFielder = m_pTeam[m_nPlayerNo]->GetFielderMember();
-    std::list<CFielder*> pLineupList;
+    std::list<CFielderData*> pFielder = m_pTeam[m_nPlayerNo]->GetFielderMember();
+    std::list<CFielderData*> pLineupList;
     pLineupList.clear();
     for (auto itr : pFielder)
     {
         if (itr->GetPlayerData().m_nLineupNo != 0) pLineupList.push_back(itr);
     }
-    pLineupList.sort([](CFielder* A, CFielder* B)
+    pLineupList.sort([](CFielderData* A, CFielderData* B)
         {
             return A->GetPlayerData().m_nLineupNo < B->GetPlayerData().m_nLineupNo;
         });

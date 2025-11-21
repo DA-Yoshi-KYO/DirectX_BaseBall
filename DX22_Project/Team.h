@@ -20,33 +20,33 @@ public:
 	~CTeam();
 	void Load(TeamKind team);
 	std::list<class CPlayerDataBase*> GetAllMember() { return m_pMemberData; }
-	std::list<class CPitcher*> GetPitcherMember() { return m_pPitcherData; }
-	std::list<class CFielder*> GetFielderMember() { return m_pFielderData; }
-	std::list<class CChatcher*> GetChatcherMember() { return m_pChatcherData; }
-	std::list<class CInFielder*> GetInFielderMember() { return m_pInFielderData; }
-	std::list<class COutFielder*> GetOutFielderMember() { return m_pOutFielderData; }
+	std::list<class CPitcherData*> GetPitcherMember() { return m_pPitcherData; }
+	std::list<class CFielderData*> GetFielderMember() { return m_pFielderData; }
+	std::list<class CChatcherData*> GetChatcherMember() { return m_pChatcherData; }
+	std::list<class CInFielderData*> GetInFielderMember() { return m_pInFielderData; }
+	std::list<class COutFielderData*> GetOutFielderMember() { return m_pOutFielderData; }
 
 private:
-	std::list<class CPlayerDataBase*> m_pMemberData;
-	std::list<class CPitcher*> m_pPitcherData;
-	std::list<class CFielder*> m_pFielderData;
-	std::list<class CChatcher*> m_pChatcherData;
-	std::list<class CInFielder*> m_pInFielderData;
-	std::list<class COutFielder*> m_pOutFielderData;
+	std::list<CPlayerDataBase*> m_pMemberData;
+	std::list<CPitcherData*> m_pPitcherData;
+	std::list<CFielderData*> m_pFielderData;
+	std::list<CChatcherData*> m_pChatcherData;
+	std::list<CInFielderData*> m_pInFielderData;
+	std::list<COutFielderData*> m_pOutFielderData;
 
 public:
-	void SetStarterPitcher(CPitcher* starter) { m_pStarterPitcher = starter; }
-	CPitcher* GetStarterPitcher() { return m_pStarterPitcher; }
-	void SetStartingLineup(std::list<class CFielder*> lineup) { m_pStartingLineup = lineup; }
-	std::list<class CFielder*> GetStartingLineup() { return m_pStartingLineup; }
+	void SetStarterPitcher(CPitcherData* starter) { m_pStarterPitcher = starter; }
+	CPitcherData* GetStarterPitcher() { return m_pStarterPitcher; }
+	void SetStartingLineup(std::list<CFielderData*> lineup) { m_pStartingLineup = lineup; }
+	std::list<CFielderData*> GetStartingLineup() { return m_pStartingLineup; }
 
-	CFielder* GetTakingBatter(int TakingNo);
-	CPitcher* GetTakingPitcher() { return m_pTakingPitcher; }
-	void SetTakingPitcher(CPitcher* pitcher) { m_pTakingPitcher = pitcher; }
+	CFielderData* GetTakingBatter(int TakingNo);
+	CPitcherData* GetTakingPitcher() { return m_pTakingPitcher; }
+	void SetTakingPitcher(CPitcherData* pitcher) { m_pTakingPitcher = pitcher; }
 
 private:
-	CPitcher* m_pStarterPitcher;
-	std::list<class CFielder*> m_pStartingLineup;
-	CPitcher* m_pTakingPitcher;
+	CPitcherData* m_pStarterPitcher;
+	std::list<CFielderData*> m_pStartingLineup;
+	CPitcherData* m_pTakingPitcher;
 
 };
