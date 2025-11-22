@@ -30,6 +30,7 @@ void CSpriteRenderer::Draw()
     Sprite::SetColor(m_tParam.m_f4Color);
 
     DirectX::XMMATRIX mWorld =
+        DirectX::XMMatrixScaling(1.0f, -1.0f, 1.0f) * 
         DirectX::XMMatrixRotationRollPitchYaw(m_tParam.m_f3Rotate.x, m_tParam.m_f3Rotate.y, m_tParam.m_f3Rotate.z) *
         DirectX::XMMatrixTranslation(m_tParam.m_f3Pos.x, m_tParam.m_f3Pos.y, m_tParam.m_f3Pos.z);
     mWorld = DirectX::XMMatrixTranspose(mWorld);
@@ -54,8 +55,8 @@ void CSpriteRenderer::Draw()
     Sprite::SetProjection(proj);
 
     // シェーダーのセット
-    Sprite::SetVertexShader(nullptr);
-    Sprite::SetPixelShader(nullptr);
+    Sprite::SetVertexShader(m_pVSList[m_sVSKey]);
+    Sprite::SetPixelShader(m_pPSList[m_sPSKey]);
 
     // テクスチャのセット
     Sprite::SetTexture(m_pTextureList[m_sTextureKey]);
