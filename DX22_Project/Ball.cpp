@@ -77,7 +77,7 @@ void CBall::OnCollision(CCollisionBase* other, std::string thisTag, Collision::R
 		// フェンスを越えていたらホームラン
 		if (m_tParam.m_f3Pos.y >= ce_fFenceHeight + WORLD_AJUST && otherTag == "HomeRunFence")
 		{
-			CRunning::HomeRun();
+			//CRunning::HomeRun();
 			return;
 		}
 

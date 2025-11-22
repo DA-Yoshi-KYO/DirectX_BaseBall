@@ -14,6 +14,8 @@
 
 // SingletonInstances
 #include "DebugSystem.h"
+#include "Camera.h"
+#include "PostProcessChain.h"
 
 // Scenes
 #include "SceneTitle.h"
@@ -41,6 +43,8 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
 
     // SingletonInstances
     CDebugSystem::GetInstance();
+    CCamera::GetInstance();
+    CPostProcessChain::GetInstance();
 
     // Scenes
     g_pScene = new CSceneTitle();
@@ -61,6 +65,8 @@ void Uninit()
     SAFE_DELETE(g_pTransition);
 
     // SingletonInstances
+    CPostProcessChain::GetInstance()->Release();
+    CCamera::GetInstance()->Release();
     CDebugSystem::GetInstance()->Release();
 
     // PreLoadAssets
@@ -113,6 +119,7 @@ void Draw()
 	BeginDrawDirectX();
 
     g_pScene->Draw();
+    g_pTransition->Draw();
     if (g_bDebugMode) CDebugSystem::GetInstance()->Draw();
 
 	EndDrawDirectX();
@@ -125,12 +132,16 @@ CScene* GetScene()
 
 void ChangeScene(CScene* inScene)
 {
+    g_pNextScene = inScene;
+    g_bSceneChanging = true;
 }
 
 void FadeIn(std::function<void()> onFadeComplete)
 {
+    g_pTransition->FadeIn(50, onFadeComplete);
 }
 
 void FadeOut(std::function<void()> onFadeComplete)
 {
+    g_pTransition->FadeOut(50, onFadeComplete);
 }

@@ -1,6 +1,3 @@
-// ==============================
-//    インクルード部
-// ==============================
 #include "Running.h"
 #include "BallCount.h"
 #include "Ball.h"
@@ -10,14 +7,10 @@
 #include "TeamManager.h"
 #include "GameManager.h"
 
-// ==============================
-//    定数定義
-// ==============================
+/*
 constexpr float ce_fBetweenLegnth = 20.0f;	// ランナー間距離の限界
 
-// ==============================
-//    静的変数の初期化
-// ==============================
+
 CRunning::RunnerParam CRunning::m_tRunnerParam[(int)RunnerKind::Max] = {};
 Collision::Info CRunning::m_RunnerCollision[(int)RunnerKind::Max] = {};
 bool CRunning::m_bOnBase[(int)RunnerKind::Max] = {};
@@ -557,3 +550,5 @@ bool CRunning::GetOnBase(RunnerKind kind)
 {
     return m_bOnBase[(int)kind];
 }
+
+*/

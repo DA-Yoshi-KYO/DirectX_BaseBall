@@ -37,11 +37,11 @@ void Sprite::Init()
 	// シェーダー
 	m_defVS = std::make_shared<VertexShader>();
     HRESULT hr = m_defVS->Load("Assets/Shader/VS_Sprite.cso");
-    if (FAILED(hr)) MessageBox(NULL, "LoadFailed:VS_Sprite", "Error:Sprite.cpp", MB_OK);
+    if (FAILED(hr)) MessageBox(NULL, "LoadFailed:VS_Sprite.cso", "Error:Sprite.cpp", MB_OK);
 	m_data.vs = m_defVS.get();
 	m_defPS = std::make_shared <PixelShader>();
 	hr = m_defPS->Load("Assets/Shader/PS_Sprite.cso");
-    if (FAILED(hr)) MessageBox(NULL, "LoadFailed:PS_Sprite", "Error:Sprite.cpp", MB_OK);
+    if (FAILED(hr)) MessageBox(NULL, "LoadFailed:PS_Sprite.cso", "Error:Sprite.cpp", MB_OK);
 	m_data.ps = m_defPS.get();
 }
 

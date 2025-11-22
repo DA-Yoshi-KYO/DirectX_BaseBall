@@ -1,6 +1,7 @@
 #pragma once
 
 #include <list>
+#include "PlayerDataBase.h"
 
 enum TeamKind
 {
@@ -42,6 +43,7 @@ public:
 
 	CFielderData* GetTakingBatter(int TakingNo);
 	CPitcherData* GetTakingPitcher() { return m_pTakingPitcher; }
+	CFielderData* GetPositionFielder(Positions position);
 	void SetTakingPitcher(CPitcherData* pitcher) { m_pTakingPitcher = pitcher; }
 
 private:

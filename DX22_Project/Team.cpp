@@ -204,3 +204,13 @@ CFielderData* CTeam::GetTakingBatter(int TakingNo)
 
     return nullptr;
 }
+
+CFielderData* CTeam::GetPositionFielder(Positions position)
+{
+    for (auto itr : m_pStartingLineup)
+    {
+        if (itr->GetPlayerData().m_eEntryPosition == position) return itr;
+    }
+
+    return nullptr;
+}

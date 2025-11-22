@@ -5,7 +5,7 @@
 #include "CameraBatter.h"
 #include "CameraInplay.h"
 
-std::array<CCamera*, (int)CameraKind::MAX_CAMERA> m_pInstance = {};
+std::array<CCamera*, (int)CameraKind::MAX_CAMERA> CCamera::m_pInstance = {};
 CameraKind CCamera::m_eKind = CAM_DEBUG;
 
 CCamera::CCamera()
@@ -53,7 +53,7 @@ DirectX::XMFLOAT4X4 CCamera::GetProjectionMatrix(bool transpose)
 
 CCamera* CCamera::GetInstance()
 {
-	if (m_pInstance[(int)m_eKind])
+	if (!m_pInstance[(int)m_eKind])
 	{
 		switch (m_eKind)
 		{
@@ -65,4 +65,16 @@ CCamera* CCamera::GetInstance()
 	}
 
 	return m_pInstance[(int)m_eKind];
+}
+
+void CCamera::Release()
+{
+	for (auto itr : m_pInstance)
+	{
+		if (itr)
+		{
+			delete itr;
+			itr = nullptr;
+		}
+	}
 }

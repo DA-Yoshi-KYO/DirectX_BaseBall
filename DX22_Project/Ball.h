@@ -23,6 +23,7 @@ public:
 	void UpdateInPlay();
 	void UpdateBatting();
 	bool GetIsFryBall() { return m_bFryBall; }
+	void SetVelocity(DirectX::XMFLOAT3 vel) { m_f3Velocity = vel; }
 
 private:
 	Collision::Info m_LucusCollision;

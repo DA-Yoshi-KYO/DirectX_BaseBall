@@ -3,6 +3,7 @@
 #include "GameObject.h"
 #include "FielderData.h"
 #include "CollisionBox.h"
+#include "Base.h"
 
 class CFielder : public CGameObject
 {
@@ -23,5 +24,8 @@ private:
 	bool m_bChatch;
 	bool m_bMostNearToBase[(int)BaseKind::Max];
 	CCollisionBox* m_pCollision;
+
+	void BaseCover();
+	void Throwing(BaseKind kind);
 
 };

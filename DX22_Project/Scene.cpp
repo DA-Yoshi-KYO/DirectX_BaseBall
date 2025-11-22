@@ -39,6 +39,8 @@ void CScene::Uninit()
 
 void CScene::Update()
 {
+    CCamera::GetInstance()->Update();
+
     // オブジェクトの更新処理
     for (auto& list : m_pGameObject_List)
     {
@@ -98,7 +100,8 @@ void CScene::Update()
 void CScene::Draw()
 {
     // 描画前にレンダーターゲットをクリアする
-    RenderTarget* pRTV = CPostProcessChain::GetInstance()->GetScreenTarget();
+    // RenderTarget* pRTV = CPostProcessChain::GetInstance()->GetScreenTarget();
+    RenderTarget* pRTV = GetDefaultRTV();
     DepthStencil* pDSV = GetDefaultDSV();
     float clear[4] = { 1.0f,1.0f, 1.0f, 1.0f };
     pRTV->Clear(clear);
@@ -116,7 +119,7 @@ void CScene::Draw()
     }
 
     // ポストプロセスの適用処理
-    CPostProcessChain::GetInstance()->Attach();
+    //CPostProcessChain::GetInstance()->Attach();
 }
 
 std::vector<ObjectID> CScene::GetIDVec()

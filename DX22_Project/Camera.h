@@ -23,10 +23,12 @@ public:
 	DirectX::XMFLOAT4X4 GetProjectionMatrix(bool transpose = true);
 	DirectX::XMFLOAT3 GetPos() { return m_pos; }
 	DirectX::XMFLOAT3 GetLook() { return m_look; }
+	DirectX::XMFLOAT3 GetUp() { return m_up; }
 	DirectX::XMFLOAT3 GetForward() { return m_look; }
 
 	static CCamera* GetInstance();
-	CameraKind SetCameraKind(CameraKind kind) { m_eKind = kind; }
+	void Release();
+	void SetCameraKind(CameraKind kind) { m_eKind = kind; }
 protected:
 	DirectX::XMFLOAT3 m_pos;
 	DirectX::XMFLOAT3 m_look;

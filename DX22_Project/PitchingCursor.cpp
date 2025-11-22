@@ -35,8 +35,8 @@ CPitchingCursor::CPitchingCursor()
 {
 	CSpriteRenderer* pRenderer = AddComponent<CSpriteRenderer>();
 	pRenderer->Load(PATH_TEX("Ball.png"));
-	pRenderer->LoadVertexShader(PATH_SHADER("VS_Sprite"));
-	pRenderer->LoadPixelShader(PATH_SHADER("PS_Sprite"));
+	pRenderer->LoadVertexShader(PATH_SHADER("VS_Sprite.cso"));
+	pRenderer->LoadPixelShader(PATH_SHADER("PS_Sprite.cso"));
 	// テクスチャパラメータの初期化
 	m_tBallParam.m_f3Pos = ce_fPitchingCursorPos;
 	m_tBallParam.m_f3Size = DirectX::XMFLOAT3(20.0f, 20.0f,0.0f);
@@ -58,8 +58,7 @@ CPitchingCursor::CPitchingCursor()
 	m_Collision.type = Collision::Type2D::eCircle;
 	m_Collision.square.pos = { m_tBallParam.m_f3Pos.x, m_tBallParam.m_f3Pos.y };
 	m_Collision.square.size = { m_tBallParam.m_f3Size.x,m_tBallParam.m_f3Size.y };
-	m_Collision.circle.pos = {m_tBallParam.m_f3Pos.x, m_tBallParam.m_f3Pos.y
-};
+	m_Collision.circle.pos = {m_tBallParam.m_f3Pos.x, m_tBallParam.m_f3Pos.y,0.0f};
 	m_Collision.circle.radius = m_tBallParam.m_f3Size.x;
 }
 
@@ -188,7 +187,7 @@ void CPitchingCursor::Update()
 	// コリジョン情報更新
 	m_Collision.square.pos = { m_tPredParam.m_f3Pos.x,m_tPredParam.m_f3Pos.y };
 	m_Collision.square.size = { m_tPredParam.m_f3Size.x,m_tPredParam.m_f3Size.y };
-	m_Collision.circle.pos = { m_tPredParam.m_f3Pos.x, m_tPredParam.m_f3Pos.y };
+	m_Collision.circle.pos = { m_tPredParam.m_f3Pos.x, m_tPredParam.m_f3Pos.y,0.0f };
 	m_Collision.circle.radius = m_tPredParam.m_f3Size.x / 2.0f;
 }
 

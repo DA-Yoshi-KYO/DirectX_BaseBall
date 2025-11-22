@@ -22,8 +22,8 @@ void CTitleBat::Init()
 {
 	CSpriteRenderer* pRenderer = AddComponent<CSpriteRenderer>();
 	pRenderer->Load(PATH_TEX("Bat.png"));
-	pRenderer->LoadVertexShader(PATH_SHADER("VS_Sprite"));
-	pRenderer->LoadPixelShader(PATH_SHADER("PS_Sprite"));
+	pRenderer->LoadVertexShader(PATH_SHADER("VS_Sprite.cso"));
+	pRenderer->LoadPixelShader(PATH_SHADER("PS_Sprite.cso"));
 
 	m_fDurationTime = 0.5f;
 }

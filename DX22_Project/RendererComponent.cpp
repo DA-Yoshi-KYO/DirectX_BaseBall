@@ -86,7 +86,7 @@ void CRendererComponent::SetUVSize(DirectX::XMFLOAT2 inUVSize)
 	m_tParam.m_f2UVSize = inUVSize;
 }
 
-void CRendererComponent::SetCullingMode(D3D11_CULL_MODE inCulling)
+void CRendererComponent::SetCulling(D3D11_CULL_MODE inCulling)
 {
 	m_tParam.m_eCulling = inCulling;
 }

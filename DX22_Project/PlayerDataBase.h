@@ -32,6 +32,7 @@ enum class Positions
 	Center,
 	Right,
 
+	Max,
 	None
 };
 

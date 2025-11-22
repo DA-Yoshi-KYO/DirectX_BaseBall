@@ -12,6 +12,11 @@ CSceneTitle::CSceneTitle()
 
 CSceneTitle::~CSceneTitle()
 {
+
+}
+
+void CSceneTitle::Init()
+{
 	m_pDirector = std::make_unique<CTitleDirector>();
 	m_pDirector->Init();
 }
@@ -19,4 +24,6 @@ CSceneTitle::~CSceneTitle()
 void CSceneTitle::Update()
 {
 	m_pDirector->Update();
+
+	CScene::Update();
 }

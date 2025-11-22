@@ -18,8 +18,8 @@ void CMemberBack::Init(Positions position)
 {
 	CSpriteRenderer* pRenderer = AddComponent<CSpriteRenderer>();
 	pRenderer->Load(PATH_TEX("PlayerSeeat.png"));
-	pRenderer->LoadVertexShader(PATH_SHADER("VS_Sprite"));
-	pRenderer->LoadPixelShader(PATH_SHADER("PS_Sprite"));
+	pRenderer->LoadVertexShader(PATH_SHADER("VS_Sprite.cso"));
+	pRenderer->LoadPixelShader(PATH_SHADER("PS_Sprite.cso"));
 
 	m_tParam.m_f3Size = ce_fLineupSize;
 	m_tParam.m_f2UVSize = DirectX::XMFLOAT2(3.0f / ce_nSplit.x, 1.0f / ce_nSplit.y);

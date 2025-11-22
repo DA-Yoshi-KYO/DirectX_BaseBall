@@ -1,7 +1,7 @@
 #pragma once
 
 #include "GameObject.h"
-#include "PlayerData.h"
+#include "PlayerDataBase.h"
 
 class CPositionIcon : public CGameObject
 {

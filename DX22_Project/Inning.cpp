@@ -26,8 +26,8 @@ void CInning::Init()
 {
 	CSpriteRenderer* pRenderer = AddComponent<CSpriteRenderer>();
 	pRenderer->Load(PATH_TEX("BallCountSheet.png"));
-	pRenderer->LoadVertexShader(PATH_SHADER("VS_Sprite"));
-	pRenderer->LoadPixelShader(PATH_SHADER("PS_Sprite"));
+	pRenderer->LoadVertexShader(PATH_SHADER("VS_Sprite.cso"));
+	pRenderer->LoadPixelShader(PATH_SHADER("PS_Sprite.cso"));
 
 	m_tParam.m_f3Size = ce_fInningSize;
 }

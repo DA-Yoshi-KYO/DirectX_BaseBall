@@ -13,7 +13,8 @@ CSceneTeamSelect::~CSceneTeamSelect()
 
 void CSceneTeamSelect::Init()
 {
-	m_pTeamSelectDirector = std::unique_ptr<CTeamSelectDirector>();
+	m_pTeamSelectDirector = std::make_unique<CTeamSelectDirector>(); 
+	m_pTeamSelectDirector->Init();
 }
 
 void CSceneTeamSelect::Update()

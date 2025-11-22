@@ -33,9 +33,9 @@ void CTitleDirector::Init()
 
 	m_pBackGround = pScene->AddGameObject<CTitleBackGround>("BackGround", Tag::UI);
 	m_pBall = pScene->AddGameObject<CTitleBall>("Ball", Tag::UI);
-	for (auto itr : m_pBat)
+	for (int i = 0; i < m_pBat.size(); i++)
 	{
-		itr = pScene->AddGameObject<CTitleBat>("Bat", Tag::UI);
+		m_pBat[i] = pScene->AddGameObject<CTitleBat>("Bat", Tag::UI);
 	}
 	m_pBat[1]->SetIsRight(true);
 	m_pStartButton = pScene->AddGameObject<CTitleStartButton>("StartButton", Tag::UI);
@@ -104,19 +104,18 @@ void CTitleDirector::UpdateSelect()
 {
 	if (IsKeyTrigger(1, Input::Down) || IsKeyTrigger(2, Input::Down))
 	{
-		m_nSelect != ce_nMaxSelectIndex ? m_nSelect++ : NULL;
+		m_nSelect != ce_nMaxSelectIndex ? m_nSelect++ : m_nSelect;
 		m_pSelectCursor->SetIndex(m_nSelect);
 	}
 	else if (IsKeyTrigger(1, Input::Up) || IsKeyTrigger(2, Input::Up)) 
 	{
-		m_nSelect != 0 ? m_nSelect-- : NULL;
+		m_nSelect != 0 ? m_nSelect-- : m_nSelect;
 		m_pSelectCursor->SetIndex(m_nSelect);
 	}
 
 
 	if (IsKeyTrigger(1, Input::A) || IsKeyTrigger(2, Input::A))
 	{
-		m_bEnd = true;
 		switch (m_nSelect)
 		{
 		case 0:

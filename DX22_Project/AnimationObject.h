@@ -6,10 +6,10 @@ class CAnimationObject : public CGameObject
 {
 public:
 	CAnimationObject();
-	~CAnimationObject();
+	virtual ~CAnimationObject();
 	void Update() override;
 	virtual bool IsAnimation() { return m_bIsAnimation; };
-	virtual bool IsCompliteAnimation() { return m_fTime >= m_fDurationTime; }
+	virtual bool IsCompliteAnimation();
 	void StartAnimation() { m_bIsAnimation = true; }
 	void PauseAnimation() { m_bIsPause = true; }
 	virtual void EndAnimation() { m_bIsAnimation = false; }

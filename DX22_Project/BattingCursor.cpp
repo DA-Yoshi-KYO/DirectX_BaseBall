@@ -26,8 +26,8 @@ void CBattingCursor::Init()
 {
 	CSpriteRenderer* pRenderer = AddComponent<CSpriteRenderer>();
 	pRenderer->Load(PATH_TEX("Cursor.png"));
-	pRenderer->LoadVertexShader(PATH_SHADER("VS_Sprite"));
-	pRenderer->LoadPixelShader(PATH_SHADER("PS_Sprite"));
+	pRenderer->LoadVertexShader(PATH_SHADER("VS_Sprite.cso"));
+	pRenderer->LoadPixelShader(PATH_SHADER("PS_Sprite.cso"));
 
 	// テクスチャパラメータの初期化
 	m_tParam.m_f3Pos = ce_fBattingCursorPos;
@@ -49,7 +49,7 @@ void CBattingCursor::Update()
 		// 移動処理
 		DirectX::XMFLOAT3 fStrikeZonePos = pStrikeZone->GetPos();
 		DirectX::XMFLOAT3 fStrikeZoneSize = pStrikeZone->GetSize();
-		DirectX::XMFLOAT2 fInput = pBallCount->GetOffenseTeam() == CGameManager::Team::Player1 ? CGetLStick((int)CGameManager::Team::Player1) : CGetLStick((int)CGameManager::Team::Player2);
+		DirectX::XMFLOAT2 fInput = { 0.0f,0.0f };//pBallCount->GetOffenseTeam() == CGameManager::Team::Player1 ? CGetLStick((int)CGameManager::Team::Player1) : CGetLStick((int)CGameManager::Team::Player2);
 
 
 		DirectX::XMFLOAT2 fMaxPos = { fabsf(fStrikeZonePos.x) + fStrikeZoneSize.x / 1.5f , fabsf(fStrikeZonePos.y) + fStrikeZoneSize.y / 1.5f };

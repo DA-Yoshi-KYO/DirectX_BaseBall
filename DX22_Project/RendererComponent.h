@@ -127,7 +127,7 @@ public:
 	/// <param name="・D3D11_CULL_BACK">
 	/// 裏面カリング(表面のみ描画)
 	/// </param>
-	void SetCullingMode(D3D11_CULL_MODE inCulling);
+	void SetCulling(D3D11_CULL_MODE inCulling);
 
 	/// <summary>
 	/// 描画用のパラメータを取得

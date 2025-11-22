@@ -164,6 +164,7 @@
     <ClCompile Include="ColllisionPlane.cpp" />
     <ClCompile Include="CountManager.cpp" />
     <ClCompile Include="CountObject.cpp" />
+    <ClCompile Include="DebugSystem.cpp" />
     <ClCompile Include="DefenceManager.cpp" />
     <ClCompile Include="Fielder.cpp" />
     <ClCompile Include="FielderData.cpp" />
@@ -281,6 +282,7 @@
     <ClInclude Include="ColllisionPlane.h" />
     <ClInclude Include="CountManager.h" />
     <ClInclude Include="CountObject.h" />
+    <ClInclude Include="DebugSystem.h" />
     <ClInclude Include="DefenceManager.h" />
     <ClInclude Include="Easing.h" />
     <ClInclude Include="Fielder.h" />

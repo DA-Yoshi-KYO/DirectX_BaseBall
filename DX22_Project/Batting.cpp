@@ -62,7 +62,7 @@ void CBatting::Update(int AttackPlayer)
 			// 早すぎるスイングはスイングとして扱わない
 			if (fTyming > 50.0f) break;
 
-			FielderData tTakingBatterData = pTeamDirector->GetTeam()->GetTakingBatter(m_nTakingBatterNo[AttackPlayer - 1])->SetFielderData();
+			FielderData tTakingBatterData = pTeamDirector->GetTeam()->GetTakingBatter(m_nTakingBatterNo[AttackPlayer - 1])->GetFielderData();
 			switch (tTakingBatterData.m_ePower)
 			{
 			case Quality::S: m_fPower = 6.0f; break;

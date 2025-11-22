@@ -23,3 +23,8 @@ void CAnimationObject::Update()
 	}
 	CGameObject::Update();
 }
+
+bool CAnimationObject::IsCompliteAnimation()
+{
+	return m_fTime >= m_fDurationTime;
+}

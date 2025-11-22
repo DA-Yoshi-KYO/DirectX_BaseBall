@@ -9,8 +9,8 @@ CScoreBoard::CScoreBoard()
 {
 	CSpriteRenderer* pRenderer = AddComponent<CSpriteRenderer>(); 
 	pRenderer->Load(PATH_TEX("BallCount.png"));
-	pRenderer->LoadVertexShader(PATH_SHADER("VS_Sprite"));
-	pRenderer->LoadPixelShader(PATH_SHADER("PS_Sprite"));
+	pRenderer->LoadVertexShader(PATH_SHADER("VS_Sprite.cso"));
+	pRenderer->LoadPixelShader(PATH_SHADER("PS_Sprite.cso"));
 
 	m_tParam.m_f3Pos = ce_fBackPos;
 	m_tParam.m_f3Size = ce_fBackSize;

@@ -5,7 +5,6 @@
 #include "Ball.h"
 #include "GameManager.h"
 #include "Input.h"
-#include "Base.h"
 
 constexpr float ce_fDifencePower = 0.2f;	// 守備移動速度
 constexpr float ce_fDifence = 0.4f;			// 守備操作速度
@@ -14,6 +13,7 @@ constexpr float ce_fThrowingPower = 2.0f;	// 送球の強さ
 CFielder::CFielder()
 	: m_pFielderData(nullptr), m_ePosition(Positions::Pitcher)
 	, m_bIsOparation(false), m_bChatch(false)
+	, m_bMostNearToBase{}, m_pCollision{}
 {
 	m_tParam.m_f3Size = { 5.0f,5.0f,5.0f };
 }
@@ -29,6 +29,11 @@ void CFielder::Init()
 	pRenderer->Load(PATH_MODEL("Ball.obj"));
 	pRenderer->LoadVertexShader(PATH_SHADER("VS_Object.cso"));
 	pRenderer->LoadPixelShader(PATH_SHADER("PS_TexColor.cso"));
+
+	m_pCollision = AddComponent<CCollisionBox>();
+	m_pCollision->SetTag("Fielder");
+	m_pCollision->SetInfo(m_tParam.m_f3Pos, m_tParam.m_f3Size);
+
 }
 
 void CFielder::Update()
@@ -51,43 +56,16 @@ void CFielder::Update()
 		if (m_bChatch)
 		{
 			pBall->SetPos(m_tParam.m_f3Pos);
+			// 送球処理
+			if (IsKeyPress(DefencePlayer, Input::B)) Throwing(BaseKind::First);
+			if (IsKeyPress(DefencePlayer, Input::Y)) Throwing(BaseKind::Second);
+			if (IsKeyPress(DefencePlayer, Input::X)) Throwing(BaseKind::Third);
+			if (IsKeyPress(DefencePlayer, Input::A)) Throwing(BaseKind::Home);
 		}
 	}
 	else
 	{
-		std::list<CBase*> pField = GetScene()->GetSameGameObject<CBase>();
-		int index = 0;
-		for (auto itr : pField)
-		{
-			if (!m_bMostNearToBase[index]) continue;
-
-			DirectX::XMFLOAT3 fBasePos = itr->GetPos();
-			DirectX::XMFLOAT3 fBaseSize = itr->GetSize();
-			Collision::Info2D member;
-			Collision::Info2D base;
-			member.type = Collision::eSquare;
-			member.square.pos = { m_tParam.m_f3Pos.x,m_tParam.m_f3Pos.z };
-			member.square.size = { m_tParam.m_f3Size.x,m_tParam.m_f3Size.z };
-			base.type = Collision::eSquare;
-			base.square.pos = { fBasePos.x,fBasePos.z };
-			base.square.size = { fBaseSize.x,fBaseSize.z };
-			if (Collision::Hit2D(member, base).isHit)
-			{
-				//m_bBaseCovered[i] = true;
-				break;
-			}
-			DirectX::XMVECTOR vecBasePos = DirectX::XMLoadFloat3(&fBasePos);
-			DirectX::XMVECTOR vecMemberPos = DirectX::XMLoadFloat3(&m_tParam.m_f3Pos);
-			DirectX::XMVECTOR vecDirection = DirectX::XMVectorSubtract(vecBasePos, vecMemberPos);
-			vecDirection = DirectX::XMVector3Normalize(vecDirection);
-			vecDirection = DirectX::XMVectorScale(vecDirection, ce_fDifencePower);
-			DirectX::XMFLOAT3 fMove;
-			DirectX::XMStoreFloat3(&fMove, vecDirection);
-			m_tParam.m_f3Pos.x += fMove.x;
-			m_tParam.m_f3Pos.z += fMove.z;
-
-			break;
-		}
+		BaseCover();
 	}
 
 	// 当たり判定情報の更新
@@ -151,7 +129,6 @@ void CFielder::OnCollision(CCollisionBase* other, std::string thisTag, Collision
 	{
 		CGameManager::GetInstance()->GetCountManager()->AddOutCount();
 	}
-
 }
 
 void CFielder::SetData(CFielderData* fielder, Positions position)
@@ -176,4 +153,84 @@ bool CFielder::SetBaseCoverFrag(int baseIndex, bool frag)
 	m_bMostNearToBase[baseIndex] = frag;
 
 	return true;
+}
+
+void CFielder::BaseCover()
+{
+	std::list<CBase*> pField = GetScene()->GetSameGameObject<CBase>();
+	int index = 0;
+	for (auto itr : pField)
+	{
+		if (!m_bMostNearToBase[index]) continue;
+
+		DirectX::XMFLOAT3 fBasePos = itr->GetPos();
+		DirectX::XMFLOAT3 fBaseSize = itr->GetSize();
+		Collision::Info2D member;
+		Collision::Info2D base;
+		member.type = Collision::eSquare;
+		member.square.pos = { m_tParam.m_f3Pos.x,m_tParam.m_f3Pos.z };
+		member.square.size = { m_tParam.m_f3Size.x,m_tParam.m_f3Size.z };
+		base.type = Collision::eSquare;
+		base.square.pos = { fBasePos.x,fBasePos.z };
+		base.square.size = { fBaseSize.x,fBaseSize.z };
+		if (Collision::Hit2D(member, base).isHit)
+		{
+			itr->SetBaseCover(true);
+			continue;
+		}
+		else
+		{
+			itr->SetBaseCover(false);
+		}
+		DirectX::XMVECTOR vecBasePos = DirectX::XMLoadFloat3(&fBasePos);
+		DirectX::XMVECTOR vecMemberPos = DirectX::XMLoadFloat3(&m_tParam.m_f3Pos);
+		DirectX::XMVECTOR vecDirection = DirectX::XMVectorSubtract(vecBasePos, vecMemberPos);
+		vecDirection = DirectX::XMVector3Normalize(vecDirection);
+		vecDirection = DirectX::XMVectorScale(vecDirection, ce_fDifencePower);
+		DirectX::XMFLOAT3 fMove;
+		DirectX::XMStoreFloat3(&fMove, vecDirection);
+		m_tParam.m_f3Pos.x += fMove.x;
+		m_tParam.m_f3Pos.z += fMove.z;
+
+		++index;
+	}
+}
+
+void CFielder::Throwing(BaseKind kind)
+{
+	std::list<CBase*> pField = GetScene()->GetSameGameObject<CBase>();
+	CBase* pBase = nullptr;
+	for (auto itr : pField)
+	{
+		if (itr->GetKind() == kind) pBase = itr;
+	}
+	if (!pBase) return;
+
+	CScene* pScene = GetScene();
+	CBall* pBall = pScene->GetGameObject<CBall>();
+	CGameManager* pManager = CGameManager::GetInstance();
+	CTeamDirector* pTeamManager = pManager->GetTeamManager(pManager->GetDefenceManager()->GetPlayerNo());
+
+	DirectX::XMFLOAT3 fBaseCoverPos = m_tParam.m_f3Pos;
+	DirectX::XMFLOAT3 fBallPos = pBall->GetPos();
+	DirectX::XMVECTOR vecBallPos = DirectX::XMLoadFloat3(&fBallPos);
+	DirectX::XMVECTOR vecBaseCoverPos = DirectX::XMLoadFloat3(&fBaseCoverPos);
+	DirectX::XMVECTOR vecDirection = DirectX::XMVectorSubtract(vecBaseCoverPos, vecBallPos);
+	DirectX::XMVECTOR vecThrowLength = DirectX::XMVector3Length(vecDirection);
+	float fThrowAngle = DirectX::XMVectorGetX(vecThrowLength);
+	fThrowAngle /= 400.0f;
+
+	vecDirection = DirectX::XMVector3Normalize(vecDirection);
+	vecBallPos = DirectX::XMVectorAdd(vecBallPos, DirectX::XMVectorScale(vecDirection, 5.0f));
+	DirectX::XMFLOAT3 fNewBallPos;
+	DirectX::XMStoreFloat3(&fNewBallPos, vecBallPos);
+	pBall->SetPos(fNewBallPos);
+	float fThrowPow = int(pTeamManager->GetTeam()->GetPositionFielder(m_ePosition)->GetFielderData().m_eThrowing) * (3.5f / 7.0f) + 0.5f;
+	vecDirection = DirectX::XMVectorScale(vecDirection, ce_fThrowingPower);
+	DirectX::XMFLOAT3 fVelocity;
+	DirectX::XMStoreFloat3(&fVelocity, vecDirection);
+
+	fVelocity.y = fThrowAngle;
+	pBall->SetVelocity(fVelocity);
+	m_bChatch = false;
 }

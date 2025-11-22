@@ -16,11 +16,12 @@ void CSpriteRenderer::Draw()
     if (m_sTextureKey.empty()) return;
 
     // 深度バッファを無効にする 
-    RenderTarget* pRTV = CPostProcessChain::GetInstance()->GetScreenTarget();
+    //RenderTarget* pRTV = CPostProcessChain::GetInstance()->GetScreenTarget();
+    RenderTarget* pRTV =GetDefaultRTV();
     SetRenderTargets(1, &pRTV, nullptr);
 
     // カリングのセット
-    SetCullingMode(m_tParam.m_eCulling);
+    //SetCullingMode(m_tParam.m_eCulling);
     // 描画用パラメータのセット
     Sprite::SetOffset(DirectX::XMFLOAT2());
     Sprite::SetSize(DirectX::XMFLOAT2(m_tParam.m_f3Size.x, m_tParam.m_f3Size.y));
@@ -53,8 +54,8 @@ void CSpriteRenderer::Draw()
     Sprite::SetProjection(proj);
 
     // シェーダーのセット
-    Sprite::SetVertexShader(m_pVSList[m_sVSKey]);
-    Sprite::SetPixelShader(m_pPSList[m_sPSKey]);
+    Sprite::SetVertexShader(nullptr);
+    Sprite::SetPixelShader(nullptr);
 
     // テクスチャのセット
     Sprite::SetTexture(m_pTextureList[m_sTextureKey]);

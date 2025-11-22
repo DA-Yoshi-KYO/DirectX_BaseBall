@@ -12,15 +12,18 @@
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 bool g_bEnd = false;
+HWND myHWnd;
+DWORD fpsCount = 0;			//FPS値計測カウンタ
 
 // エントリポイント
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+	//_CrtSetBreakAlloc(739);
 
 	//--- 変数宣言
 	WNDCLASSEX wcex;
-	HWND hWnd;
+	
 	MSG message;
 
 	// ウィンドクラス情報の設定
@@ -47,7 +50,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	DWORD style = WS_CAPTION | WS_SYSMENU;
 	DWORD exStyle = WS_EX_OVERLAPPEDWINDOW;
 	AdjustWindowRectEx(&rect, style, false, exStyle);
-	hWnd = CreateWindowEx(
+	myHWnd = CreateWindowEx(
 		exStyle, wcex.lpszClassName,
 		NULL, style,
 		CW_USEDEFAULT, CW_USEDEFAULT,
@@ -57,11 +60,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	);
 
 	// ウィンドウの表示
-	ShowWindow(hWnd, nCmdShow);
-	UpdateWindow(hWnd);
+	ShowWindow(myHWnd, nCmdShow);
+	UpdateWindow(myHWnd);
 
 	// 初期化処理
-	if (FAILED(Init(hWnd, SCREEN_WIDTH, SCREEN_HEIGHT)))
+	if (FAILED(Init(myHWnd, SCREEN_WIDTH, SCREEN_HEIGHT)))
 	{
 		Uninit();
 		UnregisterClass(wcex.lpszClassName, hInstance);
@@ -74,7 +77,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	DWORD preExecTime = countStartTime;
 	DWORD time = timeGetTime();	//現在の処理時間
 	DWORD oldTime = time;		//以前に実行した時間
-	DWORD fpsCount = 0;			//FPS値計測カウンタ
 	DWORD FPS = 0;				//直近のFPS
 	DWORD fpsTime = time;		//fpsの計測し始め
 
@@ -112,7 +114,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 					//sprintf→文字列に対してprintfで書き込む
 					sprintf(mes, "FPS:%d", fpsCount);
 					//FPSの表示
-					SetWindowText(hWnd, mes);
+					SetWindowText(myHWnd, mes);
 
 					//次の計測の準備
 					fpsCount = 0;
@@ -150,4 +152,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 void AppEnd()
 {
 	g_bEnd = true;
+}
+
+HWND GetMyWindow()
+{
+	return myHWnd;
+}
+
+int GetFPS()
+{
+	return fpsCount;
 }
