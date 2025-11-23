@@ -5,6 +5,7 @@ SceneTeamSelect...
 済
 
 SceneMemberSelect...
+・メモリリークは恐らくCWrite関連のフォールスポジティブなので無視
 ・オブジェクト配置
 ・アニメーションする
 ・キー入力受け付け
