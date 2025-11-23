@@ -17,9 +17,14 @@ void CAnimationObject::Update()
 {
 	if (m_bIsAnimation && !m_bIsPause)
 	{
-		if (m_fTime < m_fDurationTime) ExecAnimation();
+		if (m_fTime < m_fDurationTime)
+		{
+			m_fTime += 1.0f / fFPS;
+			m_fTime = std::min(m_fTime, m_fDurationTime);
+			ExecAnimation();
+		}
 		else m_bIsAnimation = false;
-		m_fTime += 1.0f / fFPS;
+		
 	}
 	CGameObject::Update();
 }

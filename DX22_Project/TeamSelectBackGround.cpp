@@ -3,6 +3,7 @@
 
 CTeamSelectBackGround::CTeamSelectBackGround()
 {
+	m_tParam.m_f3Pos = DirectX::XMFLOAT3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f);
 	m_tParam.m_f3Size = DirectX::XMFLOAT3(SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f);
 }
 

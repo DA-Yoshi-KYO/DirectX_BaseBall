@@ -86,6 +86,7 @@ void Uninit()
 void Update()
 {
     UpdateInput();
+
     if (CDebugSystem::GetInstance()->IsUpdate())
     {
         if (g_bSceneChanging)

@@ -37,7 +37,7 @@ void CTitleDirector::Init()
 	{
 		m_pBat[i] = pScene->AddGameObject<CTitleBat>("Bat", Tag::UI);
 	}
-	m_pBat[1]->SetIsRight(true);
+	m_pBat[1]->SetIsRight(false);
 	m_pStartButton = pScene->AddGameObject<CTitleStartButton>("StartButton", Tag::UI);
 	m_pEndButton = pScene->AddGameObject<CTitleEndButton>("EndButton", Tag::UI);
 	m_pSelectCursor = pScene->AddGameObject<CTitleSelectCursor>("SelectCursor", Tag::UI);
@@ -68,6 +68,7 @@ void CTitleDirector::UpdateAnimation()
 			itr->EndAnimation();
 		}
 		m_pSelectCursor->SetActive(true);
+		return;
 	}
 
 	// ‹^—ƒRƒ‹[ƒ`ƒ“ˆ—...

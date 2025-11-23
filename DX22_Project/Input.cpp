@@ -23,6 +23,7 @@ void UpdateInput()
 	memcpy_s(g_oldTable, sizeof(g_oldTable), g_keyTable, sizeof(g_keyTable));
 	// Œ»İ‚Ì“ü—Í‚ğæ“¾
 	GetKeyboardState(g_keyTable);
+	Controller_Update();
 }
 
 bool IsKeyPress(BYTE key)

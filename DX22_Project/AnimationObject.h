@@ -2,6 +2,8 @@
 
 #include "GameObject.h"
 
+#undef min
+
 class CAnimationObject : public CGameObject
 {
 public:

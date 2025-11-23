@@ -9,6 +9,7 @@ void CTransition::Init()
     m_pSprite = AddComponent<CSpriteRenderer>();
     m_pSprite->Load(PATH_TEX("Fade.png"));
 
+    m_tParam.m_f3Pos = DirectX::XMFLOAT3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f);
     m_tParam.m_f3Size = DirectX::XMFLOAT3(SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f);
     m_tParam.m_f4Color = DirectX::XMFLOAT4(1.0f,1.0f,1.0f,0.0f);
 

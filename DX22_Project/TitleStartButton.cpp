@@ -3,13 +3,14 @@
 #include "Easing.h"
 #include "Oparation.h"
 
-constexpr DirectX::XMFLOAT3 ce_fStartButtonPos = DirectX::XMFLOAT3(1000.0f, -180.0f, 0.0f);
-constexpr DirectX::XMFLOAT3 ce_fEndButtonPos = DirectX::XMFLOAT3(0.0f, -180.0f, 0.0f);
+constexpr DirectX::XMFLOAT3 ce_fStartButtonPos = DirectX::XMFLOAT3(SCREEN_WIDTH * 0.5f + 1000.0f, SCREEN_HEIGHT * 0.5f + 180.0f, 0.0f);
+constexpr DirectX::XMFLOAT3 ce_fEndButtonPos = DirectX::XMFLOAT3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f + 180.0f, 0.0f);
 
 CTitleStartButton::CTitleStartButton()
 	: CAnimationObject()
 {
-
+	m_tParam.m_f3Pos = ce_fStartButtonPos;
+	m_tParam.m_f3Size = DirectX::XMFLOAT3(160.0f, 90.0f, 0.0f);
 }
 
 CTitleStartButton::~CTitleStartButton()

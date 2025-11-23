@@ -3,8 +3,8 @@
 #include "Easing.h"
 #include "Oparation.h"
 
-constexpr DirectX::XMFLOAT3 ce_fStartBallPos = DirectX::XMFLOAT3(-700.0f, 700.0f, 0.0f);
-constexpr DirectX::XMFLOAT3 ce_fEndBallPos = DirectX::XMFLOAT3(0.0f,150.0f,0.0f);
+constexpr DirectX::XMFLOAT3 ce_fStartBallPos = DirectX::XMFLOAT3(-60.0f, -360.0f, 0.0f);
+constexpr DirectX::XMFLOAT3 ce_fEndBallPos = DirectX::XMFLOAT3(SCREEN_WIDTH  * 0.5f,250.0f,0.0f);
 constexpr float ce_fEndRotate = DirectX::XMConvertToRadians(1800.0f);
 
 CTitleBall::CTitleBall()
@@ -34,7 +34,8 @@ void CTitleBall::ExecAnimation()
 	const float easePosYTime = 2.0f;
 	const float easeRotateTime = 3.3f;
 	
-	m_tParam.m_f3Pos = ce_fStartBallPos +  (ce_fEndBallPos - ce_fStartBallPos) * CEasing::EaseOutBack(m_fTime, easePosXTime);
+	m_tParam.m_f3Pos.x = ce_fStartBallPos.x +  (ce_fEndBallPos.x - ce_fStartBallPos.x) * CEasing::EaseOutBack(m_fTime, easePosXTime);
+	m_tParam.m_f3Pos.y = ce_fStartBallPos.y +  (ce_fEndBallPos.y - ce_fStartBallPos.y) * CEasing::EaseOutBounce(m_fTime, easePosYTime);
 	m_tParam.m_f3Rotate.z = 0.0f + (ce_fEndRotate - 0.0f) * CEasing::EaseOutBack(m_fTime, easeRotateTime);
 }
 

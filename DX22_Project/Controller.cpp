@@ -27,13 +27,8 @@ void Controller_Update()
 	for (int i = 0; i < PAD_MAX; i++)
 	{
 		OldButtons[i] = state[i];
-		if (XInputGetState(i, &state[i]) != ERROR_SUCCESS)
-		{
-			//std::string strErrMsg = "No";
-			//strErrMsg += std::to_string(i + 1);
-			//strErrMsg += "Controller DisConnect";
-			//MessageBox(NULL, strErrMsg.c_str(),"ControllerError", MB_OK);
-		}
+
+
 		XInputSetState(i, &vibration[i]);
 
 		/* 一定Frame経過時のバイブの無効化 */

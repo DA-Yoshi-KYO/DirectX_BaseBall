@@ -2,7 +2,7 @@
 #include "SpriteRenderer.h"
 #include "Oparation.h"
 
-constexpr DirectX::XMFLOAT3 ce_f3SelectClothesPos = DirectX::XMFLOAT3(-400.0f,0.0f,0.0f);
+constexpr DirectX::XMFLOAT3 ce_f3SelectClothesPos = DirectX::XMFLOAT3(SCREEN_WIDTH * 0.5f + -400.0f,0.0f,0.0f);
 constexpr float ce_fMovePos = 300.0f;
 constexpr float ce_fPartitionOffset = 150.0f;
 constexpr float ce_fMoveDuration = 1.0f;
@@ -23,7 +23,8 @@ void CSelectTeam::Init(TeamKind kind, int TeamNo)
 {
 	CSpriteRenderer* pRenderer = AddComponent<CSpriteRenderer>();
 
-	m_tParam.m_f3Pos = DirectX::XMFLOAT3(-400.0f + 800.0f * (TeamNo - 1), 0.0f, 0.0f);
+	m_tParam.m_f3Pos = ce_f3SelectClothesPos;
+	m_tParam.m_f3Pos.x += 800.0f * (TeamNo - 1);
 	switch (kind)
 	{
 	case TeamKind::Bears:
