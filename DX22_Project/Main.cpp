@@ -16,6 +16,8 @@
 #include "DebugSystem.h"
 #include "Camera.h"
 #include "PostProcessChain.h"
+#include "GameManager.h"
+#include "TeamManager.h"
 
 // Scenes
 #include "SceneTitle.h"
@@ -68,6 +70,8 @@ void Uninit()
     CPostProcessChain::GetInstance()->Release();
     CCamera::GetInstance()->Release();
     CDebugSystem::GetInstance()->Release();
+    CGameManager::GetInstance()->Release();
+    CTeamDirector::TeamUninit();
 
     // PreLoadAssets
     CRendererComponent::UnloadShader();

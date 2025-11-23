@@ -29,6 +29,7 @@ class CTextRenderer : public CComponent
 {
 public:
 	using CComponent::CComponent;
+	~CTextRenderer();
 	void Init() override;
 	void Init(TextParam param);
 	void SetString(std::string text) { m_sText = text; }

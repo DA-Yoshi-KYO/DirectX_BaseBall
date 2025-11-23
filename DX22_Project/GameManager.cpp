@@ -19,7 +19,7 @@ CGameManager::~CGameManager()
 {
 	for (int i = 0; i < 2; i++)
 	{
-		if (!m_pTeamManager[i]) m_pTeamManager[i]->TeamUninit();
+		if (m_pTeamManager[i]) m_pTeamManager[i]->TeamUninit();
 	}
 }
 
@@ -53,4 +53,9 @@ CGameManager* CGameManager::GetInstance()
 	}
 
 	return m_pInstance;
+}
+
+void CGameManager::Release()
+{
+	SAFE_DELETE(m_pInstance);
 }

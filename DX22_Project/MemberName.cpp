@@ -19,7 +19,7 @@ void CMemberName::Init(std::wstring name)
 
 	TextParam text{};
 	text.m_fFontSize = 30;
-	text.m_Color = DirectX::XMFLOAT4(1.0f,1.0f,1.0f,1.0f);
+	text.m_Color = DirectX::XMFLOAT4(0.0f,0.0f,0.0f,1.0f);
 	text.m_eFontName = FontName::LINESeedJP_TTF_Eb;
 	text.m_ShadowColor = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
 	text.m_ShadowOffSet = D2D1::Point2F(5.0f, -5.0f);

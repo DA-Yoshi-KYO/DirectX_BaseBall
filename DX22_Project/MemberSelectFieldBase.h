@@ -1,5 +1,6 @@
 #pragma once
 
+#include "PlayerDataBase.h"
 #include "MemberIcon.h"
 #include <vector>
 
@@ -7,13 +8,12 @@ class CMemberSelectFieldBase
 {
 public:
 	CMemberSelectFieldBase();
-	~CMemberSelectFieldBase();
-	void Init(int playerNo);
+	virtual ~CMemberSelectFieldBase();
+	void Init(int playerNo, std::list<CPlayerDataBase*> list);
 	virtual void Update() = 0;
-	void SetMemberList(std::vector<CMemberIcon*> list) { m_pMemberList = list; }
 
 protected:
-	std::vector<CMemberIcon*> m_pMemberList;
+	std::vector<std::unique_ptr<CMemberIcon>> m_pMemberList;
 	int m_nPlayerNo;
 
 };

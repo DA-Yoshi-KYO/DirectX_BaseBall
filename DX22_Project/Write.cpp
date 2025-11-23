@@ -149,6 +149,11 @@ CWrite::CWrite(FontData* outFont)
 
 }
 
+CWrite::~CWrite()
+{
+
+}
+
 HRESULT CWrite::Init(IDXGISwapChain* swapChain)
 {
 	HRESULT result = S_OK;
@@ -397,7 +402,7 @@ std::wstring CWrite::GetFontName(int num)
 	// フォント名のリストが空だった場合
 	if (m_wsFontNameList.empty())
 	{
-		return nullptr;
+		return L"";
 	}
 
 	// リストのサイズを超えていた場合

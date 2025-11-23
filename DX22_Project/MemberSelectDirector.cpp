@@ -5,7 +5,6 @@
 #include "FielderData.h"
 
 CMemberSelectDirector::CMemberSelectDirector()
-	: m_pIconsTeam1{}, m_pIconsTeam2{}
 {
 
 }
@@ -17,89 +16,113 @@ CMemberSelectDirector::~CMemberSelectDirector()
 
 void CMemberSelectDirector::Init(TeamKind kind1, TeamKind kind2)
 {
-	CScene* pScene = GetScene();
+	CScene* pScene = GetScene();	// オブジェクト追加用に現在シーンを取得
 
+	// ---背景の追加
 	pScene->AddGameObject<CMemberSelectBackGround>("BackGround", Tag::UI);
 
+	// ---プレイヤー1の初期化処理
+	// チームデータの作成・読み込み
 	m_pTeams[0] = std::make_unique<CTeamDirector>(1);
 	CTeam* pTeam1 = m_pTeams[0]->GetTeam();
 	pTeam1->Load(kind1);
-	for (auto itr : pTeam1->GetAllMember())
+	m_pTeams[0]->TeamInit();
+	
+	// ---選手アイコンの作成
+	// 各種アイコンデータクラスのインスタンスを生成
+	for (int i = 0; i < m_pBenchFielder.size(); i++)
 	{
-		if (dynamic_cast<CPitcherData*>(itr))
-		{
-			if (dynamic_cast<CPitcherData*>(itr) == pTeam1->GetStarterPitcher())
-			{
-				m_pIconsTeam1[(int)MemberKind::StarterPitcher].push_back(std::make_unique<CMemberIcon>());
-				m_pIconsTeam1[(int)MemberKind::StarterPitcher].rbegin()->get()->Init(itr);
-			}
-			else
-			{
-				m_pIconsTeam1[(int)MemberKind::RestStarterPitcher].push_back(std::make_unique<CMemberIcon>());
-				m_pIconsTeam1[(int)MemberKind::RestStarterPitcher].rbegin()->get()->Init(itr);
-			}
-
-			continue;
-		}
-
-		if (dynamic_cast<CFielderData*>(itr))
-		{
-			if (dynamic_cast<CFielderData*>(itr)->GetPlayerData().m_nLineupNo != 0)
-			{
-				m_pIconsTeam1[(int)MemberKind::StarterFielder].push_back(std::make_unique<CMemberIcon>());
-				m_pIconsTeam1[(int)MemberKind::StarterFielder].rbegin()->get()->Init(itr);
-			}
-			else
-			{
-				m_pIconsTeam1[(int)MemberKind::BenchFielder].push_back(std::make_unique<CMemberIcon>());
-				m_pIconsTeam1[(int)MemberKind::BenchFielder].rbegin()->get()->Init(itr);
-			}
-
-			continue;
-		}
+		m_pBenchFielder[i] = std::make_unique<CSelectFielderField>();
+	}
+	for (int i = 0; i < m_pBenchPitcher.size(); i++)
+	{
+		m_pBenchPitcher[i] = std::make_unique<CSelectPitcherField>();
+	}
+	for (int i = 0; i < m_pStartingLineup.size(); i++)
+	{
+		m_pStartingLineup[i] = std::make_unique<CStartingLineupField>();
+	}
+	
+	// コピー用変数の定義
+	std::list<CFielderData*> pAllFielder = pTeam1->GetFielderMember();	// 全野手リスト
+	std::list<CPitcherData*> pAllPitcher = pTeam1->GetPitcherMember();	// 全投手リスト
+	std::list<CFielderData*> pStartingFielder = pTeam1->GetStartingLineup();	// 初期スタメン野手リスト
+	std::list<CFielderData*> pBenchFielder;		// 初期ベンチ野手リスト
+	CPitcherData* pStarterPitcher = pTeam1->GetStarterPitcher(); // 初期先発投手データ
+	std::list<CPitcherData*> pBenchPitcher;		// 初期ベンチ投手リスト
+	
+	// 野手データの振り分け
+	for (auto itr : pAllFielder)
+	{
+		// データからベンチ野手を振り分け
+		if (itr->GetPlayerData().m_nLineupNo == 0) pBenchFielder.push_back(itr);
+	}
+	
+	// 投手データの振り分け
+	for (auto itr : pAllPitcher)
+	{
+		// ベンチ投手を振り分け
+		if (pStarterPitcher != itr) pBenchPitcher.push_back(itr);
 	}
 
+	// それぞれのデータを元に選手用アイコンを作成
+	m_pStartingLineup[0]->Init(1, pStartingFielder, pStarterPitcher);
+	/*
+	m_pBenchFielder[0]->Init(1, pBenchFielder);
+	m_pBenchPitcher[0]->Init(1, pBenchPitcher);
+
+	// ---プレイヤー2の初期化処理
+	// チームデータの作成・読み込み
 	m_pTeams[1] = std::make_unique<CTeamDirector>(2);
 	CTeam* pTeam2 = m_pTeams[1]->GetTeam();
 	pTeam2->Load(kind2);
-	for (auto itr : pTeam2->GetAllMember())
+	m_pTeams[1]->TeamInit();
+
+	// 選手アイコンの作成
+	// 全野手、投手リストと先発投手のデータをプレイヤー2のものに更新
+	pAllFielder = pTeam2->GetFielderMember();	
+	pAllPitcher = pTeam2->GetPitcherMember();
+	pStarterPitcher = pTeam2->GetStarterPitcher();
+	pStartingFielder = pTeam2->GetStartingLineup();
+	// プレイヤー2用の振り分けを行うのでリストをクリア
+	pBenchFielder.clear();
+	pBenchPitcher.clear();
+
+	// 野手データの振り分け
+	for (auto itr : pAllFielder)
 	{
-		if (dynamic_cast<CPitcherData*>(itr))
-		{
-			if (dynamic_cast<CPitcherData*>(itr) == pTeam2->GetStarterPitcher())
-			{
-				m_pIconsTeam2[(int)MemberKind::StarterPitcher].push_back(std::make_unique<CMemberIcon>());
-				m_pIconsTeam2[(int)MemberKind::StarterPitcher].rbegin()->get()->Init(itr);
-			}
-			else
-			{
-				m_pIconsTeam2[(int)MemberKind::RestStarterPitcher].push_back(std::make_unique<CMemberIcon>());
-				m_pIconsTeam2[(int)MemberKind::RestStarterPitcher].rbegin()->get()->Init(itr);
-			}
-
-			continue;
-		}
-
-		if (dynamic_cast<CFielderData*>(itr))
-		{
-			if (dynamic_cast<CFielderData*>(itr)->GetPlayerData().m_nLineupNo != 0)
-			{
-				m_pIconsTeam2[(int)MemberKind::StarterFielder].push_back(std::make_unique<CMemberIcon>());
-				m_pIconsTeam2[(int)MemberKind::StarterFielder].rbegin()->get()->Init(itr);
-			}
-			else
-			{
-				m_pIconsTeam2[(int)MemberKind::BenchFielder].push_back(std::make_unique<CMemberIcon>());
-				m_pIconsTeam2[(int)MemberKind::BenchFielder].rbegin()->get()->Init(itr);
-			}
-
-			continue;
-		}
+		// データからベンチ野手を振り分け
+		if (itr->GetPlayerData().m_nLineupNo == 0) pBenchFielder.push_back(itr);
+	}
+	
+	// 投手データの振り分け
+	for (auto itr : pAllPitcher)
+	{
+		// ベンチ投手を振り分け
+		if (pStarterPitcher != itr) pBenchPitcher.push_back(itr);
 	}
 
+	// それぞれのデータを元に選手用アイコンを作成
+	m_pStartingLineup[1]->Init(2, pStartingFielder, pStarterPitcher);
+	m_pBenchFielder[1]->Init(2, pBenchFielder);
+	m_pBenchPitcher[1]->Init(2, pBenchPitcher);
+*/
 }
 
 void CMemberSelectDirector::Update()
 {
-
+	/*
+	for (int i = 0; i < m_pBenchFielder.size(); i++)
+	{
+		m_pBenchFielder[i]->Update();
+	}
+	for (int i = 0; i < m_pBenchPitcher.size(); i++)
+	{
+		m_pBenchPitcher[i]->Update();
+	}
+	for (int i = 0; i < m_pStartingLineup.size(); i++)
+	{
+		m_pStartingLineup[i]->Update();
+	}
+	*/
 }

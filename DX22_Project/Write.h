@@ -62,6 +62,8 @@ public:
 public:
 	// FontData‚Ì‰Šú‰»
 	CWrite(FontData* outFont);
+	~CWrite();
+
 	// DirectXŠÖŒW‚Ì‰Šú‰»
 	HRESULT Init(IDXGISwapChain* swapChain);
 

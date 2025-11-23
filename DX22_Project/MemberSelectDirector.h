@@ -5,6 +5,9 @@
 #include <memory>
 #include <vector>
 #include <array>
+#include "StartingLineupField.h"
+#include "SelectPitcherField.h"
+#include "SelectFielderField.h"
 
 enum class MemberKind
 {
@@ -26,8 +29,8 @@ public:
 	void Update();
 
 private:
-	std::array<std::vector<std::unique_ptr<CMemberIcon>>, (int)MemberKind::Max> m_pIconsTeam1;
-	std::array<std::vector<std::unique_ptr<CMemberIcon>>, (int)MemberKind::Max> m_pIconsTeam2;
 	std::array<std::unique_ptr<CTeamDirector>,2> m_pTeams;
-
+	std::array<std::unique_ptr<CStartingLineupField>, 2> m_pStartingLineup;
+	std::array<std::unique_ptr<CSelectPitcherField>, 2> m_pBenchPitcher;
+	std::array<std::unique_ptr<CSelectFielderField>, 2> m_pBenchFielder;
 };

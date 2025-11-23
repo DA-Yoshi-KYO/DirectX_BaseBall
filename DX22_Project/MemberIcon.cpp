@@ -3,6 +3,7 @@
 
 CMemberIcon::CMemberIcon()
 	: m_pBack(nullptr), m_pName(nullptr)
+	, m_pPlayerData(nullptr)
 {
 
 }
@@ -26,6 +27,8 @@ void CMemberIcon::Init(CPlayerDataBase* pData)
 
 void CMemberIcon::SetPos(DirectX::XMFLOAT3 pos)
 {
+	DirectX::XMFLOAT3 inPos = pos;
 	m_pBack->SetPos(pos);
+
 	m_pName->SetPos(pos);
 }

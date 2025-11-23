@@ -2,6 +2,11 @@
 #include "DirectX.h"
 #include "GameObject.h"
 
+CTextRenderer::~CTextRenderer()
+{
+	SAFE_DELETE(m_pWrite);
+}
+
 void CTextRenderer::Init()
 {
 	m_pWrite = nullptr;
@@ -45,7 +50,7 @@ void CTextRenderer::Init(TextParam param)
 void CTextRenderer::Draw()
 {
 	DirectX::XMFLOAT3 center = m_pGameObject->GetPos();
-	DirectX::XMFLOAT3 size = m_pGameObject->GetPos();
+	DirectX::XMFLOAT3 size = m_pGameObject->GetSize();
 
 	D2D_RECT_F rect;
 	rect.right = center.x + size.x * 0.5f;

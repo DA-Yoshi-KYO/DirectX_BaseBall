@@ -10,7 +10,7 @@ public:
 	CTeamDirector(int PlayerNo);
 	~CTeamDirector();
 	void TeamInit();
-	void TeamUninit();	// 明示的な終了処理(破棄タイミングはゲーム終了後)
+	static void TeamUninit();	// 明示的な終了処理(破棄タイミングはゲーム終了後)
 	CTeam* GetTeam();
 
 private:

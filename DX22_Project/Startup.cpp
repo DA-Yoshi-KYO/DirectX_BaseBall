@@ -19,7 +19,8 @@ DWORD fpsCount = 0;			//FPS値計測カウンタ
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-	//_CrtSetBreakAlloc(739);
+	//_CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_FILE);
+	//_CrtSetBreakAlloc(71502);
 
 	//--- 変数宣言
 	WNDCLASSEX wcex;

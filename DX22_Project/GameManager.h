@@ -28,6 +28,7 @@ public:
 
 public:
     static CGameManager* GetInstance();
+    void Release();
     CCountManager* GetCountManager() { return m_pCountManager.get(); };
     CAttackManager* GetAttackManager() { return m_pAttackManager.get(); };
     CDefenceManager* GetDefenceManager() { return m_pDefenceManager.get(); };

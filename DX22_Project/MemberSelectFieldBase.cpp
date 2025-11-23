@@ -11,7 +11,13 @@ CMemberSelectFieldBase::~CMemberSelectFieldBase()
 
 }
 
-void CMemberSelectFieldBase::Init(int playerNo)
+void CMemberSelectFieldBase::Init(int playerNo, std::list<CPlayerDataBase*> list)
 {
 	m_nPlayerNo = playerNo - 1;
+	
+	for (auto itr : list)
+	{
+		auto& data = m_pMemberList.emplace_back(std::make_unique<CMemberIcon>());
+		data->Init(itr);
+	}
 }
