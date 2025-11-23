@@ -18,10 +18,11 @@ private:
 	std::array<CSelectTeam*, TeamKind::Max> m_pTeams1;
 	std::array<CSelectTeam*, TeamKind::Max> m_pTeams2;
 	CTeamSelectBackGround* m_pBackGround;
-	bool IsSelectedPlayer1;
-	bool IsSelectedPlayer2;
+	bool m_bSelectedPlayer1;
+	bool m_bSelectedPlayer2;
 	static TeamKind m_eTeam1;
 	static TeamKind m_eTeam2;
+	bool m_bEnd;
 
 };
 

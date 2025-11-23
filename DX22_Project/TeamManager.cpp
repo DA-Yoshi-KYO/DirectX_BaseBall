@@ -17,7 +17,7 @@ CTeamDirector::CTeamDirector(int PlayerNo)
 
     for (auto i = 0; i < m_pTeam.size(); i++)
     {
-        if (m_nPlayerNo == i && m_pTeam[i]) m_pTeam[i] = new CTeam();
+        if (m_nPlayerNo == i && !m_pTeam[i]) m_pTeam[i] = new CTeam();
     }
 }
 

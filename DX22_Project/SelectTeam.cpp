@@ -2,16 +2,18 @@
 #include "SpriteRenderer.h"
 #include "Oparation.h"
 
-constexpr DirectX::XMFLOAT3 ce_f3SelectClothesPos = DirectX::XMFLOAT3(SCREEN_WIDTH * 0.5f + -400.0f,0.0f,0.0f);
+#undef min
+
+constexpr DirectX::XMFLOAT3 ce_f3SelectClothesPos = DirectX::XMFLOAT3(SCREEN_WIDTH * 0.5f + -400.0f, SCREEN_HEIGHT * 0.5f,0.0f);
 constexpr float ce_fMovePos = 300.0f;
 constexpr float ce_fPartitionOffset = 150.0f;
 constexpr float ce_fMoveDuration = 1.0f;
 
 CSelectTeam::CSelectTeam()
-	: m_nIndex(0), m_bIsMove(false)
+	: m_nIndex(0), m_nTeamIndex(1), m_bIsMove(false)
 	, m_f3InitPos(), m_f3TargetPos(), m_fTime(0.0f)
 {
-	m_tParam.m_f3Size = DirectX::XMFLOAT3(100.0f, 100.0f, 0.0f);
+	m_tParam.m_f3Size = DirectX::XMFLOAT3(200.0f, 200.0f, 0.0f);
 }
 
 CSelectTeam::~CSelectTeam()
@@ -24,7 +26,8 @@ void CSelectTeam::Init(TeamKind kind, int TeamNo)
 	CSpriteRenderer* pRenderer = AddComponent<CSpriteRenderer>();
 
 	m_tParam.m_f3Pos = ce_f3SelectClothesPos;
-	m_tParam.m_f3Pos.x += 800.0f * (TeamNo - 1);
+	m_nTeamIndex = TeamNo - 1;
+	m_tParam.m_f3Pos.x += 800.0f * m_nTeamIndex;
 	switch (kind)
 	{
 	case TeamKind::Bears:
@@ -51,7 +54,7 @@ void CSelectTeam::Init(TeamKind kind, int TeamNo)
 		break;
 	}
 
-	m_tParam.m_f3Pos.y = ce_fMovePos * TeamKind::Max / 2 - m_nIndex;
+	m_tParam.m_f3Pos.y = SCREEN_HEIGHT * 0.5f - ce_fMovePos * (TeamKind::Max / 2 - m_nIndex);
 }
 
 void CSelectTeam::Update()
@@ -59,8 +62,9 @@ void CSelectTeam::Update()
 	if (m_bIsMove)
 	{
 		m_fTime += 1.0f / fFPS;
+		m_fTime = std::min(m_fTime, ce_fMoveDuration);
 		m_tParam.m_f3Pos = m_f3InitPos + (m_f3TargetPos - m_f3InitPos) * (m_fTime / ce_fMoveDuration);
-		m_bIsMove = m_fTime <= ce_fMoveDuration;
+		m_bIsMove = m_fTime < ce_fMoveDuration;
 	}
 	else m_fTime = 0.0f;
 }
@@ -71,11 +75,12 @@ void CSelectTeam::Move(bool isUp)
 	m_bIsMove = true;
 
 	m_f3InitPos = m_tParam.m_f3Pos;
-	if (isUp)
+	if (!isUp)
 	{
 		if (m_nIndex == TeamKind::Max - 1)
 		{
 			DirectX::XMFLOAT3 f3MostUp = ce_f3SelectClothesPos;
+			f3MostUp.x += 800.0f * m_nTeamIndex;
 			f3MostUp.y -= ce_fMovePos * int(TeamKind::Max / 2);
 			m_f3InitPos = m_f3TargetPos = f3MostUp;
 			m_nIndex = 0;
@@ -92,6 +97,7 @@ void CSelectTeam::Move(bool isUp)
 		if (m_nIndex == 0)
 		{
 			DirectX::XMFLOAT3 f3MostDown = ce_f3SelectClothesPos;
+			f3MostDown.x += 800.0f * m_nTeamIndex;
 			f3MostDown.y += ce_fMovePos * int(TeamKind::Max / 2);
 			m_f3InitPos = m_f3TargetPos = f3MostDown;
 			m_nIndex = TeamKind::Max - 1;

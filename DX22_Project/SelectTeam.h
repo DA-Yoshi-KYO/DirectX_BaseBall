@@ -18,6 +18,7 @@ public:
 
 private:
 	int m_nIndex;
+	int m_nTeamIndex;
 	bool m_bIsMove;
 	DirectX::XMFLOAT3 m_f3InitPos;
 	DirectX::XMFLOAT3 m_f3TargetPos;

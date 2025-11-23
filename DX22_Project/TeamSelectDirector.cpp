@@ -7,7 +7,9 @@ TeamKind CTeamSelectDirector::m_eTeam1 = TeamKind::Bears;
 TeamKind CTeamSelectDirector::m_eTeam2 = TeamKind::Bears;
 
 CTeamSelectDirector::CTeamSelectDirector()
-	: m_pTeams1{}, m_pTeams2{}
+	: m_pTeams1{}, m_pTeams2{}, m_pBackGround(nullptr)
+	, m_bSelectedPlayer1(false), m_bSelectedPlayer2(false)
+	, m_bEnd(false)
 {
 
 }
@@ -38,7 +40,7 @@ void CTeamSelectDirector::Init()
 
 void CTeamSelectDirector::Update()
 {
-	if (!IsSelectedPlayer1)
+	if (!m_bSelectedPlayer1)
 	{
 		if (IsKeyTrigger(1, Input::Up))
 		{
@@ -56,24 +58,24 @@ void CTeamSelectDirector::Update()
 		}
 		else if (IsKeyTrigger(1, Input::A))
 		{
-			bool isStop = true;
+			bool isMove = false;
 			int nSelectTeam = -1;
 			for (int i = 0; i < m_pTeams1.size(); i++)
 			{
-				isStop = m_pTeams1[i]->GetIsMove();
-				if (!isStop) break;
+				isMove = m_pTeams1[i]->GetIsMove();
+				if (isMove) break;
 				if (m_pTeams1[i]->GetIsSelect()) nSelectTeam = i;
 			}
 
-			if (isStop)
+			if (!isMove)
 			{
 				m_eTeam1 = (TeamKind)nSelectTeam;
-				IsSelectedPlayer1 = true;
+				m_bSelectedPlayer1 = true;
 			}
 		}
 	}
 
-	if (!IsSelectedPlayer2)
+	if (!m_bSelectedPlayer2)
 	{
 		if (IsKeyTrigger(2, Input::Up))
 		{
@@ -91,30 +93,34 @@ void CTeamSelectDirector::Update()
 		}
 		else if (IsKeyTrigger(2, Input::A))
 		{
-			bool isStop = true;
+			bool isMove = false;
 			int nSelectTeam = -1;
 			for (int i = 0; i < m_pTeams2.size(); i++)
 			{
-				isStop = m_pTeams2[i]->GetIsMove();
-				if (!isStop) break;
+				isMove = m_pTeams2[i]->GetIsMove();
+				if (isMove) break;
 				if (m_pTeams2[i]->GetIsSelect()) nSelectTeam = i;
 			}
 
-			if (isStop)
+			if (!isMove)
 			{
 				m_eTeam2 = (TeamKind)nSelectTeam;
-				IsSelectedPlayer2 = true;
+				m_bSelectedPlayer2 = true;
 			}
 		}
 	}
 
-	if (IsSelectedPlayer1 && IsSelectedPlayer2)
+	if (m_bSelectedPlayer1 && m_bSelectedPlayer2)
 	{
-		FadeOut([]()
-			{
-				ChangeScene(new CSceneMemberselect(m_eTeam1, m_eTeam2));
-				FadeIn(nullptr);
-			});
+		if (!m_bEnd)
+		{
+			m_bEnd = true;
+			FadeOut([]()
+				{
+					ChangeScene(new CSceneMemberselect(m_eTeam1, m_eTeam2));
+					FadeIn(nullptr);
+				});
+		}
 	}
 }
 
