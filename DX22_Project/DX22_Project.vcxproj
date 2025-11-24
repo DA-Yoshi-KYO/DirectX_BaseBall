@@ -156,6 +156,8 @@
     <ClCompile Include="BallCount.cpp" />
     <ClCompile Include="Base.cpp" />
     <ClCompile Include="BaseCount.cpp" />
+    <ClCompile Include="BenchBatterBack.cpp" />
+    <ClCompile Include="BenchPitcherBack.cpp" />
     <ClCompile Include="ChatcherData.cpp" />
     <ClCompile Include="CollisionBase.cpp" />
     <ClCompile Include="CollisionBox.cpp" />
@@ -274,6 +276,8 @@
     <ClInclude Include="BallCount.h" />
     <ClInclude Include="Base.h" />
     <ClInclude Include="BaseCount.h" />
+    <ClInclude Include="BenchBatterBack.h" />
+    <ClInclude Include="BenchPitcherBack.h" />
     <ClInclude Include="ChatcherData.h" />
     <ClInclude Include="CollisionBase.h" />
     <ClInclude Include="CollisionBox.h" />

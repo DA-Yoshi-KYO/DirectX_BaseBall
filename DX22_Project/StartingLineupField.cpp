@@ -3,7 +3,7 @@
 CStartingLineupField::CStartingLineupField()
 	: CMemberSelectFieldBase()
 {
-
+	m_bActive = true;
 }
 
 CStartingLineupField::~CStartingLineupField()

@@ -465,6 +465,9 @@
     <ClCompile Include="Fielder.cpp">
       <Filter>Code\GameObject\Game\Difence</Filter>
     </ClCompile>
+    <ClCompile Include="DebugSystem.cpp" />
+    <ClCompile Include="BenchPitcherBack.cpp" />
+    <ClCompile Include="BenchBatterBack.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imconfig.h">
@@ -803,6 +806,9 @@
     <ClInclude Include="Fielder.h">
       <Filter>Code\GameObject\Game\Difence</Filter>
     </ClInclude>
+    <ClInclude Include="DebugSystem.h" />
+    <ClInclude Include="BenchPitcherBack.h" />
+    <ClInclude Include="BenchBatterBack.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="History.txt">

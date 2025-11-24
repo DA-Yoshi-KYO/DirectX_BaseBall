@@ -2,6 +2,7 @@
 
 CMemberSelectFieldBase::CMemberSelectFieldBase()
 	: m_pMemberList{}, m_nPlayerNo(1)
+	, m_bActive(false)
 {
 
 }

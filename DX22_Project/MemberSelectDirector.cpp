@@ -65,6 +65,11 @@ void CMemberSelectDirector::Init(TeamKind kind1, TeamKind kind2)
 		if (pStarterPitcher != itr) pBenchPitcher.push_back(itr);
 	}
 
+	// それぞれのデータを元に選手用アイコンを作成
+	m_pStartingLineup[0]->Init(1, pStartingFielder, pStarterPitcher);
+	m_pBenchFielder[0]->Init(1, pBenchFielder);
+	m_pBenchPitcher[0]->Init(1, pBenchPitcher);
+
 	// ポジション用アイコンを作成
 	// 野手ポジションアイコンをスタメンに沿って作成
 	int index = 0;
@@ -82,11 +87,6 @@ void CMemberSelectDirector::Init(TeamKind kind1, TeamKind kind2)
 	m_pPitcherIcon[0]->Init(Positions::Pitcher);
 	m_pPitcherIcon[0]->SetPos(DirectX::XMFLOAT3(163.0f, 628.0f, 0.0f));
 	m_pPitcherIcon[0]->SetSize(DirectX::XMFLOAT3(45.0f, 45.0f, 0.0f));
-
-	// それぞれのデータを元に選手用アイコンを作成
-	m_pStartingLineup[0]->Init(1, pStartingFielder, pStarterPitcher);
-	m_pBenchFielder[0]->Init(1, pBenchFielder);
-	m_pBenchPitcher[0]->Init(1, pBenchPitcher);
 
 	// ---プレイヤー2の初期化処理
 	// チームデータの作成・読み込み
