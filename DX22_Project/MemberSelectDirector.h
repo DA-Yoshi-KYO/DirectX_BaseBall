@@ -8,6 +8,7 @@
 #include "StartingLineupField.h"
 #include "SelectPitcherField.h"
 #include "SelectFielderField.h"
+#include "PositionIcon.h"
 
 enum class MemberKind
 {
@@ -33,4 +34,6 @@ private:
 	std::array<std::unique_ptr<CStartingLineupField>, 2> m_pStartingLineup;
 	std::array<std::unique_ptr<CSelectPitcherField>, 2> m_pBenchPitcher;
 	std::array<std::unique_ptr<CSelectFielderField>, 2> m_pBenchFielder;
+	std::array<std::array<CPositionIcon*, 9>, 2> m_pPositionLineup;
+	std::array<CPositionIcon*, 2> m_pPitcherIcon;
 };

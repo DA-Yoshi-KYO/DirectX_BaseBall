@@ -65,9 +65,26 @@ void CMemberSelectDirector::Init(TeamKind kind1, TeamKind kind2)
 		if (pStarterPitcher != itr) pBenchPitcher.push_back(itr);
 	}
 
+	// ポジション用アイコンを作成
+	// 野手ポジションアイコンをスタメンに沿って作成
+	int index = 0;
+	for (auto itr : pStartingFielder)
+	{
+		m_pPositionLineup[0][index] = pScene->AddGameObject<CPositionIcon>("PositionLineupIcon", Tag::UI);
+		m_pPositionLineup[0][index]->Init(itr->GetPlayerData().m_eEntryPosition);
+		m_pPositionLineup[0][index]->SetPos(DirectX::XMFLOAT3(165.0f, 205.0f + 47.0f * index, 0.0f));
+		m_pPositionLineup[0][index]->SetSize(DirectX::XMFLOAT3(45.0f, 45.0f, 0.0f));
+
+		++index;
+	}
+	// 投手アイコンは変更がない為位置を固定して作成
+	m_pPitcherIcon[0] = pScene->AddGameObject<CPositionIcon>("PitcherIcon", Tag::UI);
+	m_pPitcherIcon[0]->Init(Positions::Pitcher);
+	m_pPitcherIcon[0]->SetPos(DirectX::XMFLOAT3(163.0f, 628.0f, 0.0f));
+	m_pPitcherIcon[0]->SetSize(DirectX::XMFLOAT3(45.0f, 45.0f, 0.0f));
+
 	// それぞれのデータを元に選手用アイコンを作成
 	m_pStartingLineup[0]->Init(1, pStartingFielder, pStarterPitcher);
-	/*
 	m_pBenchFielder[0]->Init(1, pBenchFielder);
 	m_pBenchPitcher[0]->Init(1, pBenchPitcher);
 
@@ -106,12 +123,28 @@ void CMemberSelectDirector::Init(TeamKind kind1, TeamKind kind2)
 	m_pStartingLineup[1]->Init(2, pStartingFielder, pStarterPitcher);
 	m_pBenchFielder[1]->Init(2, pBenchFielder);
 	m_pBenchPitcher[1]->Init(2, pBenchPitcher);
-*/
+
+	// ポジション用アイコンを作成
+	// 野手ポジションアイコンをスタメンに沿って作成
+	index = 0;
+	for (auto itr : pStartingFielder)
+	{
+		m_pPositionLineup[1][index] = pScene->AddGameObject<CPositionIcon>("PositionLineupIcon", Tag::UI);
+		m_pPositionLineup[1][index]->Init(itr->GetPlayerData().m_eEntryPosition);
+		m_pPositionLineup[1][index]->SetPos(DirectX::XMFLOAT3(930.0f, 205.0f + 47.0f * index, 0.0f));
+		m_pPositionLineup[1][index]->SetSize(DirectX::XMFLOAT3(45.0f, 45.0f, 0.0f));
+
+		++index;
+	}
+	// 投手アイコンは変更がない為位置を固定して作成
+	m_pPitcherIcon[1] = pScene->AddGameObject<CPositionIcon>("PitcherIcon", Tag::UI);
+	m_pPitcherIcon[1]->Init(Positions::Pitcher);
+	m_pPitcherIcon[1]->SetPos(DirectX::XMFLOAT3(930.0f, 628.0f, 0.0f));
+	m_pPitcherIcon[1]->SetSize(DirectX::XMFLOAT3(45.0f, 45.0f, 0.0f));
 }
 
 void CMemberSelectDirector::Update()
 {
-	/*
 	for (int i = 0; i < m_pBenchFielder.size(); i++)
 	{
 		m_pBenchFielder[i]->Update();
@@ -124,5 +157,4 @@ void CMemberSelectDirector::Update()
 	{
 		m_pStartingLineup[i]->Update();
 	}
-	*/
 }

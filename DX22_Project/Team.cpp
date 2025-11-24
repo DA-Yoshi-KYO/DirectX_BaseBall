@@ -116,6 +116,7 @@ void CTeam::Load(TeamKind team)
         data.m_wsName = rows[i][csvData::Name];
         data.m_eHandy = rows[i][csvData::Handed] == L"ç∂" ? Hand::Left : Hand::Right;
         data.m_eMainPosition = Positions(std::stoi(rows[i][csvData::Position]) - 1);
+        data.m_eEntryPosition = Positions(std::stoi(rows[i][csvData::PositionEntry]) - 1);
         data.m_nLineupNo = std::stoi(rows[i][csvData::LineupNo]);
 
         PitcherData pitcherData{};
