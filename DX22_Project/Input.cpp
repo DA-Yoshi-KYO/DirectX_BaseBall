@@ -1,9 +1,12 @@
 #include "Input.h"
 #include "Controller.h"
+#include "Main.h"
 
 //--- ƒOƒ[ƒoƒ‹•Ï”
 BYTE g_keyTable[256];
 BYTE g_oldTable[256];
+POINT g_Mouse;
+const int g_nMouseBtn[] = { VK_LBUTTON, VK_RBUTTON, VK_MBUTTON, VK_XBUTTON1, VK_XBUTTON2 };
 
 HRESULT InitInput()
 {
@@ -24,6 +27,56 @@ void UpdateInput()
 	// Œ»Ý‚Ì“ü—Í‚ðŽæ“¾
 	GetKeyboardState(g_keyTable);
 	Controller_Update();
+
+	POINT pt;
+	GetCursorPos(&pt);
+	ScreenToClient(GetMyWindow(), &pt);
+	g_Mouse = pt;
+}
+
+POINT* GetMousePosition(bool CenterIsZero)
+{
+	POINT pt = g_Mouse;
+	if (CenterIsZero)
+	{
+		pt.x -= SCREEN_WIDTH / 2;
+		pt.y -= SCREEN_HEIGHT / 2;
+	}
+	return &pt;
+}
+
+void SetMousePosition(POINT inPos, bool CenterIsZero)
+{
+	POINT pt = inPos;
+	if (CenterIsZero)
+	{
+		pt.x += SCREEN_WIDTH / 2;
+		pt.y += SCREEN_HEIGHT / 2;
+	}
+
+	g_Mouse.x = pt.x;
+	g_Mouse.y = pt.y;
+
+	ClientToScreen(GetMyWindow(), &pt);
+	SetCursorPos(pt.x, pt.y);
+}
+
+bool IsMouseButtonPress(DWORD dwBtnID)
+{
+	if (dwBtnID >= _countof(g_nMouseBtn)) return false;
+	return IsKeyPress(g_nMouseBtn[dwBtnID]);
+}
+
+bool IsMouseButtonTrigger(DWORD dwBtnID)
+{
+	if (dwBtnID >= _countof(g_nMouseBtn)) return false;
+	return IsKeyTrigger(g_nMouseBtn[dwBtnID]);
+}
+
+bool IsMouseButtonRelease(DWORD dwBtnID)
+{
+	if (dwBtnID >= _countof(g_nMouseBtn)) return false;
+	return IsKeyRelease(g_nMouseBtn[dwBtnID]);
 }
 
 bool IsKeyPress(BYTE key)

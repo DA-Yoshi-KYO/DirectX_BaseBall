@@ -1,8 +1,10 @@
 #include "CameraDebug.h"
 #include "Defines.h"
+#include "Oparation.h"
+#include "Input.h"
 
 CCameraDebug::CCameraDebug()
-	: m_radXZ(0.0f), m_radY(DirectX::XMConvertToRadians(00.0f)), m_radius(0.0f)
+	: m_radXZ(0.0f), m_radY(DirectX::XMConvertToRadians(00.0f)), m_radius(10.0f)
 {
 	m_pos = { WORLD_AJUST,WORLD_AJUST, WORLD_AJUST + 161.0f };
 	m_look = { WORLD_AJUST,WORLD_AJUST + 3.5f, WORLD_AJUST + 111.0f };
@@ -14,23 +16,68 @@ CCameraDebug::~CCameraDebug()
 
 void CCameraDebug::Update()
 {
-	if (IsKeyPress(VK_UP))m_look.z -= CAMERA_SPEED;
-	if (IsKeyPress(VK_DOWN))m_look.z += CAMERA_SPEED;
-	if (IsKeyPress(VK_RIGHT))m_look.x -= CAMERA_SPEED;
-	if (IsKeyPress(VK_LEFT))m_look.x += CAMERA_SPEED;
-	if (IsKeyPress(VK_SHIFT))m_look.y += CAMERA_SPEED;
-	if (IsKeyPress(VK_CONTROL))m_look.y -= CAMERA_SPEED;
+	// カメラの座標と注視点を使い、前方向ベクトルを取得
+	DirectX::XMFLOAT3 f3Forward = m_look - m_pos;
+	DirectX::XMVECTOR vForward = DirectX::XMLoadFloat3(&f3Forward);
+	vForward = DirectX::XMVector3Normalize(vForward);
+	DirectX::XMStoreFloat3(&f3Forward, vForward);
 
-	if (IsKeyPress('A')) m_radXZ += CAMERA_ROTATE;
-	if (IsKeyPress('D')) m_radXZ -= CAMERA_ROTATE;
-	if (IsKeyPress('W')) m_radY += CAMERA_ROTATE;
-	if (IsKeyPress('S')) m_radY -= CAMERA_ROTATE;
+	// カメラの規定の上方向ベクトルを取得
+	DirectX::XMFLOAT3 fUp = m_up;
+	DirectX::XMVECTOR vUp = DirectX::XMLoadFloat3(&m_up);
+	vUp = DirectX::XMVector3Normalize(vUp);
+	DirectX::XMStoreFloat3(&fUp, vUp);
 
-	if (IsKeyPress('E')) m_radius += CAMERA_SPEED;
-	if (IsKeyPress('Q')) m_radius -= CAMERA_SPEED;
+	// カメラの前方向ベクトルと上方向ベクトルの内積を使い、右方向ベクトルを取得
+	DirectX::XMVECTOR vRight = DirectX::XMVector3Cross(vUp, vForward);
+	DirectX::XMFLOAT3 f3Right;
+	DirectX::XMStoreFloat3(&f3Right, vRight);
 
-	if (m_radius <= 10.0f) m_radius = 10.0f;
+	// キーボード入力からVelocityを計算
+	DirectX::XMFLOAT3 f3Velocity{};
+	if (IsKeyPress('W'))f3Velocity += f3Forward;
+	if (IsKeyPress('S'))f3Velocity -= f3Forward;
+	if (IsKeyPress('D'))f3Velocity += f3Right;
+	if (IsKeyPress('A'))f3Velocity -= f3Right;
+	if (IsKeyPress('Q'))f3Velocity += fUp;
+	if (IsKeyPress('E'))f3Velocity -= fUp;
 
+	// 計算したVelocityを注視点に加算
+	m_look += f3Velocity;
+
+	// 右クリックした際にカーソル表示を無効化し、マウスの座標を中央に移す
+	if (IsMouseButtonTrigger(MOUSEBUTTON_R))
+	{
+		POINT center;
+		center.x = 0;
+		center.y = 0;
+		ShowCursor(false);
+		SetMousePosition(center);
+	}
+
+	// 右クリックを押しながらカメラの回転を行う
+	if (IsMouseButtonPress(MOUSEBUTTON_R))
+	{
+		// マウス座標から中央からの移動量を取得する
+		POINT mousePos = *GetMousePosition();
+		// 移動量を回転に反映させる
+		m_radXZ += mousePos.x * CAMERA_SPEED;
+		m_radY += mousePos.y * CAMERA_SPEED;
+
+		// カメラの座標を中央に戻す
+		POINT center;
+		center.x = 0;
+		center.y = 0;
+		SetMousePosition(center);
+	}
+
+	// 右クリックを離した際にカーソル表示をもとに戻す
+	if (IsMouseButtonRelease(MOUSEBUTTON_R))
+	{
+		ShowCursor(true);
+	}
+
+	// 注視点、回転、カメラの距離からカメラの座標を計算する
 	m_pos.x = cosf(m_radY) * sinf(m_radXZ) * m_radius + m_look.x;
 	m_pos.y = sinf(m_radY) * m_radius + m_look.y;
 	m_pos.z = cosf(m_radY) * cosf(m_radXZ) * m_radius + m_look.z;
