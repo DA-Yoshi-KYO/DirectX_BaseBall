@@ -26,8 +26,8 @@ void CFadeBlack::DrawFadeOut(float alpha)
 
 void CFadeBlack::DrawFade(float alpha)
 {
-	RenderTarget* pRTV = GetDefaultRTV();	// デフォルトのRenderTargetViewを取得
-	SetRenderTargets(1, &pRTV, nullptr);		// 第三引数がNULLの場合、2D表示となる
+	//RenderTarget* pRTV = GetDefaultRTV();	// デフォルトのRenderTargetViewを取得
+	//SetRenderTargets(1, &pRTV, nullptr);		// 第三引数がNULLの場合、2D表示となる
 
 	// フェードの表示設定 
 	DirectX::XMFLOAT4X4 world, view, proj;

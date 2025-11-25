@@ -21,7 +21,8 @@ void CModelRenderer::Draw()
     // キーが設定されていない時は描画しない
     if (m_sModelKey.empty()) return;
 
-    RenderTarget* pRTV = CPostProcessChain::GetInstance()->GetScreenTarget();
+    // RenderTarget* pRTV = CPostProcessChain::GetInstance()->GetScreenTarget();
+    RenderTarget* pRTV = GetDefaultRTV();
     DepthStencil* pDSV = GetDefaultDSV();
     SetRenderTargets(1, &pRTV, pDSV);
     

@@ -16,7 +16,7 @@ void CSpriteRenderer::Draw()
     if (m_sTextureKey.empty()) return;
 
     // 深度バッファを無効にする 
-    //RenderTarget* pRTV = CPostProcessChain::GetInstance()->GetScreenTarget();
+    // RenderTarget* pRTV = CPostProcessChain::GetInstance()->GetScreenTarget();
     RenderTarget* pRTV =GetDefaultRTV();
     SetRenderTargets(1, &pRTV, nullptr);
 

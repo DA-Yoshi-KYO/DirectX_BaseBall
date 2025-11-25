@@ -93,7 +93,6 @@ void CPostProcessChain::Attach()
 
         // スプライトの表示
         SetMatrix();
-        Sprite::SetVertexShader(nullptr);
         Sprite::SetPixelShader(nullptr);
         Sprite::SetTexture(m_pScreenRTV);   // これまでの描画結果をテクスチャとして使用
         Sprite::Draw();

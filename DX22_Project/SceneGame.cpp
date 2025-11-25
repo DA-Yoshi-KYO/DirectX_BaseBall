@@ -22,6 +22,6 @@ void CSceneGame::Init()
 void CSceneGame::Update()
 {
 	CGameManager::GetInstance()->Update();
-	CSceneGame::Update();
+	CScene::Update();
 }
 

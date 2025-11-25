@@ -72,8 +72,10 @@ void CField::OnCollision(CCollisionBase* other, std::string thisTag, Collision::
 void CField::InitModel()
 {
 	// ÉÇÉfÉãÇÃì«Ç›çûÇ›
-	AddComponent<CModelRenderer>()->Load(PATH_MODEL("Baseball_Ground.fbx"), 0.1f);
-
+	CModelRenderer* pModel = AddComponent<CModelRenderer>();
+	pModel->Load(PATH_MODEL("Baseball_Ground.fbx"),0.1f);
+	pModel->LoadVertexShader(PATH_SHADER("VS_Object.cso"));
+	pModel->LoadPixelShader(PATH_SHADER("PS_TexColor.cso"));
 	m_tParam.m_f3Pos = { 0.0f + WORLD_AJUST,-10.0f + WORLD_AJUST,0.0f + WORLD_AJUST - 40.0f };
 	m_tParam.m_f3Size = { 50.0f,50.0f,50.0f };
 	m_tParam.m_f3Rotate = { 0.0f,0.0f,0.0f };

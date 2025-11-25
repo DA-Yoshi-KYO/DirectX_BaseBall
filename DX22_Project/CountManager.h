@@ -1,39 +1,47 @@
 #pragma once
 
 #include <array>
+#include "StrikeCount.h"
+#include "BallCount.h"
+#include "OutCount.h"
+#include "BaseCount.h"
+#include "Score.h"
+#include "Inning.h"
+#include "ScoreBoard.h"
 
 class CCountManager
 {
 public:
-	CCountManager();
-	~CCountManager();
-	void Init();
-	void Update();
+    CCountManager();
+    ~CCountManager();
+    void Init();
+    void Update();
 
-	void AddStrikeCount();
-	void AddBallCount();
-	void AddOutCount();
-	void SetIsBase(bool isBase, int index);
-
-private:
-	std::array<class CStrikeCount*, 2> m_pStrikeCount;
-	std::array<class CBallCount*, 3> m_pBallCount;
-	std::array<class COutCount*, 2> m_pOutCount;
-	std::array<class CBaseCount*, 3> m_pBaseCount;
-	std::array<class CScore*, 2> m_pScore;
-	class CInning* m_pInning;
-
-	struct CountParam
-	{
-		int m_nStrikeCount;
-		int m_nBallCount;
-		int m_nOutCount;
-	}m_tParam;
+    void AddStrikeCount();
+    void AddBallCount();
+    void AddOutCount();
+    void SetIsBase(bool isBase, int index);
 
 private:
-	void ThreeStrike();
-	void FourBall();
-	void ThreeOut();
+    std::array<CStrikeCount*, 2> m_pStrikeCount;
+    std::array<CBallCount*, 3> m_pBallCount;
+    std::array<COutCount*, 2> m_pOutCount;
+    std::array<CBaseCount*, 3> m_pBaseCount;
+    std::array<CScore*, 2> m_pScore;
+    CInning* m_pInning;
+    CScoreBoard* m_pScoreBoard;
+
+    struct CountParam
+    {
+        int m_nStrikeCount;
+        int m_nBallCount;
+        int m_nOutCount;
+    }m_tParam;
+
+private:
+    void ThreeStrike();
+    void FourBall();
+    void ThreeOut();
 
 };
 

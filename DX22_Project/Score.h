@@ -12,6 +12,8 @@ public:
 	void Draw() override;
 	void AddScore();
 	void SetScoreOnePos(DirectX::XMFLOAT3 inPos) { m_f3ScoreOnePos = inPos; }
+	int Inspecter(bool isEnd = true) override;
+
 private:
 	int m_nScore;
 	DirectX::XMFLOAT2 m_f2ScoreUVPos[2];

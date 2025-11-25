@@ -4,6 +4,7 @@
 constexpr DirectX::XMFLOAT3 ce_fPitcherPos = { WORLD_AJUST, WORLD_AJUST - 8.0f, WORLD_AJUST + 65.0f };	// グラウンドにいるピッチャーの位置(基準値)
 
 CBase::CBase()
+    : m_eBaseKind(BaseKind::First), m_bIsBaseCovered(false)
 {
 
 }
@@ -21,8 +22,9 @@ void CBase::Init()
 void CBase::Init(BaseKind kind)
 {
     CModelRenderer* pRenderer = AddComponent<CModelRenderer>();
+    m_eBaseKind = kind;
 
-    switch (kind)
+    switch (m_eBaseKind)
     {
     case BaseKind::Home:
         m_tParam.m_f3Pos = { ce_fPitcherPos.x, 0.0f, ce_fPitcherPos.z + 75.0f };
@@ -55,4 +57,6 @@ void CBase::Init(BaseKind kind)
     default:
         break;
     }
+    pRenderer->LoadVertexShader(PATH_SHADER("VS_Object.cso"));
+    pRenderer->LoadPixelShader(PATH_SHADER("PS_TexColor.cso"));
 }

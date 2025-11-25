@@ -28,6 +28,8 @@ CScene* g_pNextScene;
 CTransition* g_pTransition;
 bool g_bSceneChanging = false;
 bool g_bDebugMode = false;
+CameraKind g_eTempCamera = CameraKind::CAM_DEBUG;
+bool g_bSwap = true;
 
 HRESULT Init(HWND hWnd, UINT width, UINT height)
 {
@@ -91,8 +93,15 @@ void Update()
 {
     UpdateInput();
 
+
     if (CDebugSystem::GetInstance()->IsUpdate())
     {
+        if (!g_bSwap)
+        {
+            CCamera::GetInstance()->SetCameraKind(g_eTempCamera);
+        }
+        else g_eTempCamera = CCamera::GetInstance()->GetCameraKind();
+        
         if (g_bSceneChanging)
         {
             CDebugSystem::GetInstance()->ReleaseGameObject();
@@ -106,6 +115,11 @@ void Update()
 
         g_pScene->Update();
         g_pTransition->Update();
+    }
+    else
+    {
+        CCamera::GetInstance()->SetCameraKind(CAM_DEBUG);
+        CCamera::GetInstance()->Update();
     }
 
     if (IsKeyPress(VK_SHIFT))

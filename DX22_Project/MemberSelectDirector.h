@@ -39,6 +39,8 @@ private:
 	std::array<CPositionIcon*, 2> m_pPitcherIcon;
 	std::array<CMemberSelectCursor*, 2> m_pCursor;
 	std::array<int,2> m_nSelectIndex;
+	std::array<bool,2> m_bReady;
+	bool m_bEnd;
 
 	void Input();
 };

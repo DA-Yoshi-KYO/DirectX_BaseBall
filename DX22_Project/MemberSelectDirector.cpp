@@ -4,6 +4,7 @@
 #include "PitcherData.h"
 #include "FielderData.h"
 #include "Input.h"
+#include "SceneGame.h"
 
 enum class SelectKind
 {
@@ -14,7 +15,11 @@ enum class SelectKind
 };
 
 CMemberSelectDirector::CMemberSelectDirector()
-	: m_nSelectIndex()
+	: m_nSelectIndex(), m_bReady{}, m_pCursor{}
+	, m_pBenchFielder{}, m_pBenchPitcher{}, m_pStartingLineup{}
+	, m_pPositionLineup{} , m_pPitcherIcon{}
+	, m_pTeams{}
+	, m_bEnd(false)
 {
 
 }
@@ -165,18 +170,35 @@ void CMemberSelectDirector::Init(TeamKind kind1, TeamKind kind2)
 
 void CMemberSelectDirector::Update()
 {
+	if (m_bEnd) return;
 	Input();
 	for (int i = 0; i < m_pBenchFielder.size(); i++)
 	{
+		if (m_bReady[i]) continue;
 		m_pBenchFielder[i]->Update();
 	}
 	for (int i = 0; i < m_pBenchPitcher.size(); i++)
 	{
+		if (m_bReady[i]) continue;
 		m_pBenchPitcher[i]->Update();
 	}
 	for (int i = 0; i < m_pStartingLineup.size(); i++)
 	{
+		if (m_bReady[i]) continue;
 		m_pStartingLineup[i]->Update();
+	}
+
+	if (m_bReady[0] && m_bReady[1])
+	{
+		if (!m_bEnd)
+		{
+			m_bEnd = true;
+			FadeOut([]()
+				{
+					ChangeScene(new CSceneGame());
+					FadeIn(nullptr);
+				});
+		}
 	}
 }
 
@@ -184,6 +206,10 @@ void CMemberSelectDirector::Input()
 {
 	for (int i = 0; i < 2; i++)
 	{
+		if (m_pBenchPitcher[i]->GetActive() || m_pBenchFielder[i]->GetActive())
+			break;
+		if (m_bReady[i]) continue;
+
 		if (IsKeyTrigger(i + 1, Input::Down))
 		{
 			if (m_nSelectIndex[i] != int(SelectKind::Max) - 1) m_nSelectIndex[i]++;
@@ -197,10 +223,13 @@ void CMemberSelectDirector::Input()
 			switch (m_nSelectIndex[i])
 			{
 				case int(SelectKind::Start) :
+					m_bReady[i] = true;
 					break;
 				case int(SelectKind::PitcherSelect) :
+					m_pBenchPitcher[i]->SetActive(true);
 					break;
 				case int(SelectKind::BatterSelect) :
+					m_pBenchFielder[i]->SetActive(true);
 					break;
 				default:
 					break;

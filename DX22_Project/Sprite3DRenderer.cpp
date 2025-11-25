@@ -17,7 +17,8 @@ void CSprite3DRenderer::Draw()
     if (m_sTextureKey.empty()) return;
 
     // フラグによって深度バッファを使用するか決める
-    RenderTarget* pRTV = CPostProcessChain::GetInstance()->GetScreenTarget();
+    // RenderTarget* pRTV = CPostProcessChain::GetInstance()->GetScreenTarget();
+    RenderTarget* pRTV = GetDefaultRTV();
     DepthStencil* pDSV = GetDefaultDSV();
     if (m_bIsDepth) SetRenderTargets(1, &pRTV, pDSV);
     else SetRenderTargets(1, &pRTV, nullptr);

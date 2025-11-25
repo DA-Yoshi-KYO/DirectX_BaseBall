@@ -2,7 +2,7 @@
 #include "SpriteRenderer.h"
 
 // スコアボードのパラメータ
-constexpr DirectX::XMFLOAT3 ce_fBackPos = { 480.0f,260.0f,0.0f };
+constexpr DirectX::XMFLOAT3 ce_fBackPos = { SCREEN_WIDTH - 170.0f,SCREEN_HEIGHT - 120.0f,0.0f };
 constexpr DirectX::XMFLOAT3 ce_fBackSize = { 280.0f,170.0f,0.0f };
 
 CScoreBoard::CScoreBoard()

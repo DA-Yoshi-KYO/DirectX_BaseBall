@@ -29,6 +29,7 @@ public:
 	static CCamera* GetInstance();
 	void Release();
 	void SetCameraKind(CameraKind kind) { m_eKind = kind; }
+	CameraKind GetCameraKind() { return m_eKind; }
 protected:
 	DirectX::XMFLOAT3 m_pos;
 	DirectX::XMFLOAT3 m_look;

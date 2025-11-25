@@ -33,7 +33,7 @@ CDebugSystem::~CDebugSystem()
 
 void CDebugSystem::Update()
 {
-
+    
 }
 
 void CDebugSystem::Draw()

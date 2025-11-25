@@ -4,6 +4,7 @@
 #include "AttackManager.h"
 #include "DefenceManager.h"
 #include "TeamManager.h"
+#include "FieldManager.h"
 
 #define PLAYER_1 1
 #define PLAYER_2 2
@@ -39,6 +40,7 @@ private:
     std::unique_ptr<CCountManager> m_pCountManager;
     std::unique_ptr<CAttackManager> m_pAttackManager;
     std::unique_ptr<CDefenceManager> m_pDefenceManager;
+    std::unique_ptr<CFieldManager> m_pFieldManager;
     std::unique_ptr<CTeamDirector> m_pTeamManager[2];
     GamePhase m_ePhase;
 
