@@ -3,8 +3,18 @@
 #include "MemberSelectBackGround.h"
 #include "PitcherData.h"
 #include "FielderData.h"
+#include "Input.h"
+
+enum class SelectKind
+{
+	Start,
+	PitcherSelect,
+	BatterSelect,
+	Max
+};
 
 CMemberSelectDirector::CMemberSelectDirector()
+	: m_nSelectIndex()
 {
 
 }
@@ -141,10 +151,21 @@ void CMemberSelectDirector::Init(TeamKind kind1, TeamKind kind2)
 	m_pPitcherIcon[1]->Init(Positions::Pitcher);
 	m_pPitcherIcon[1]->SetPos(DirectX::XMFLOAT3(930.0f, 628.0f, 0.0f));
 	m_pPitcherIcon[1]->SetSize(DirectX::XMFLOAT3(45.0f, 45.0f, 0.0f));
+
+	//---ÉJÅ[É\ÉãÇÃçÏê¨
+	for (int i = 0; i < m_pCursor.size(); i++)
+	{
+		m_pCursor[i] = pScene->AddGameObject<CMemberSelectCursor>("Cursor", Tag::UI);
+	}
+	m_pCursor[0]->SetColor(DirectX::XMFLOAT4(1, 0, 0, 1));
+	m_pCursor[0]->SetPos(DirectX::XMFLOAT3(SCREEN_WIDTH * 0.5f - 114.0f, 114.0f, 0.0f));
+	m_pCursor[1]->SetColor(DirectX::XMFLOAT4(0, 1, 0, 1));
+	m_pCursor[1]->SetPos(DirectX::XMFLOAT3(SCREEN_WIDTH * 0.5f + 114.0f, 114.0f, 0.0f));
 }
 
 void CMemberSelectDirector::Update()
 {
+	Input();
 	for (int i = 0; i < m_pBenchFielder.size(); i++)
 	{
 		m_pBenchFielder[i]->Update();
@@ -156,5 +177,35 @@ void CMemberSelectDirector::Update()
 	for (int i = 0; i < m_pStartingLineup.size(); i++)
 	{
 		m_pStartingLineup[i]->Update();
+	}
+}
+
+void CMemberSelectDirector::Input()
+{
+	for (int i = 0; i < 2; i++)
+	{
+		if (IsKeyTrigger(i + 1, Input::Down))
+		{
+			if (m_nSelectIndex[i] != int(SelectKind::Max) - 1) m_nSelectIndex[i]++;
+		}
+		else if (IsKeyTrigger(i + 1, Input::Up))
+		{
+			if (m_nSelectIndex[i] != int(SelectKind::Start)) m_nSelectIndex[i]--;
+		}
+		else if (IsKeyTrigger(i + 1, Input::A))
+		{
+			switch (m_nSelectIndex[i])
+			{
+				case int(SelectKind::Start) :
+					break;
+				case int(SelectKind::PitcherSelect) :
+					break;
+				case int(SelectKind::BatterSelect) :
+					break;
+				default:
+					break;
+			}
+		}
+		m_pCursor[i]->SetPos(DirectX::XMFLOAT3((SCREEN_WIDTH * 0.5f - 114.0f) + (114.0f * 2) * i, 114.0f + m_nSelectIndex[i] * 71.0f, 0.0f));
 	}
 }

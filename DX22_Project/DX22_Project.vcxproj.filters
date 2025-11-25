@@ -466,8 +466,12 @@
       <Filter>Code\GameObject\Game\Difence</Filter>
     </ClCompile>
     <ClCompile Include="DebugSystem.cpp" />
-    <ClCompile Include="BenchPitcherBack.cpp" />
-    <ClCompile Include="BenchBatterBack.cpp" />
+    <ClCompile Include="BenchBatterBack.cpp">
+      <Filter>Code\GameObject\MemberSelect</Filter>
+    </ClCompile>
+    <ClCompile Include="BenchPitcherBack.cpp">
+      <Filter>Code\GameObject\MemberSelect</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imconfig.h">
@@ -807,8 +811,12 @@
       <Filter>Code\GameObject\Game\Difence</Filter>
     </ClInclude>
     <ClInclude Include="DebugSystem.h" />
-    <ClInclude Include="BenchPitcherBack.h" />
-    <ClInclude Include="BenchBatterBack.h" />
+    <ClInclude Include="BenchPitcherBack.h">
+      <Filter>Code\GameObject\MemberSelect</Filter>
+    </ClInclude>
+    <ClInclude Include="BenchBatterBack.h">
+      <Filter>Code\GameObject\MemberSelect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="History.txt">
