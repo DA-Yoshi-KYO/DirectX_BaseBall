@@ -1,10 +1,4 @@
-// ==============================
-//    インクルード部
-// ==============================
 #include "StrikeZone.h"
-#include "Camera.h"
-#include "Sprite.h"
-#include "Main.h"
 #include "SpriteRenderer.h"
 
 CStrikeZone::CStrikeZone()
@@ -19,9 +13,9 @@ CStrikeZone::CStrikeZone()
 	m_tParam.m_f2UVSize = { 1.0f,1.0f };
 
 	// 当たり判定情報の初期化
-	//m_Collision.type = Collision::Type2D::eSquare;
-	//m_Collision.square.pos = m_tParam.pos;
-	//m_Collision.square.size = m_tParam.size;
+	m_Collision.type = Collision::Type2D::eSquare;
+	m_Collision.square.pos = m_tParam.m_f3Pos;
+	m_Collision.square.size = m_tParam.m_f3Size;
 }
 
 CStrikeZone::~CStrikeZone()
@@ -38,9 +32,9 @@ void CStrikeZone::Init()
 
 void CStrikeZone::Update()
 {
-//	// 当たり判定情報の更新
-//	m_Collision.square.pos = m_tParam.pos;
-//	m_Collision.square.size = m_tParam.size;
+	// 当たり判定情報の更新
+	m_Collision.square.pos = m_tParam.m_f3Pos;
+	m_Collision.square.size = m_tParam.m_f3Size;
 }
 
 Collision::Info2D CStrikeZone::GetCollision()

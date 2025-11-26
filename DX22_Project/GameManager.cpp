@@ -53,7 +53,20 @@ void CGameManager::Init()
 
 void CGameManager::Update()
 {
-    //if (m_pAttackManager) m_pAttackManager->Update();
+    CCamera* pCamera = CCamera::GetInstance();
+    switch (m_ePhase)
+    {
+    case GamePhase::Batting:
+        pCamera->SetCameraKind(CAM_BATTER);
+        break;
+    case GamePhase::InPlay:
+        pCamera->SetCameraKind(CAM_INPLAY);
+        break;
+    default:
+        break;
+    }
+    if (m_pAttackManager) m_pAttackManager->Update();
+    if (m_pDefenceManager) m_pDefenceManager->Update();
     if (m_pCountManager) m_pCountManager->Update();
 }
 

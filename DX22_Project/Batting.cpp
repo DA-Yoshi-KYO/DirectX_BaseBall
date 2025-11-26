@@ -154,6 +154,9 @@ void CBatting::Update(int AttackPlayer)
 					vecMove = DirectX::XMVectorScale(vecMove, fShotPower);
 					DirectX::XMStoreFloat3(&m_fMoveDirection, vecMove);
 
+					pScene->GetGameObject<CBall>()->SetVelocity(m_fMoveDirection);
+					pGameManager->SetPhase(GamePhase::InPlay);
+
 					// ƒoƒbƒg‚É“–‚½‚Á‚½
 					m_bBatting = true;
 					break;
@@ -181,6 +184,11 @@ DirectX::XMFLOAT3 CBatting::GetDirection()
 bool CBatting::GetBatting()
 {
 	return m_bBatting;
+}
+
+bool CBatting::GetSwing()
+{
+	return m_bSwing;
 }
 
 void CBatting::CheckHit()

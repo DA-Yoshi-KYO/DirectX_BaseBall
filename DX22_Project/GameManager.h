@@ -26,6 +26,7 @@ public:
     void Update();
     void Draw();
     GamePhase GetPhase() { return m_ePhase; }
+    void SetPhase(GamePhase phase) { m_ePhase = phase; }
 
 public:
     static CGameManager* GetInstance();
@@ -33,7 +34,7 @@ public:
     CCountManager* GetCountManager() { return m_pCountManager.get(); };
     CAttackManager* GetAttackManager() { return m_pAttackManager.get(); };
     CDefenceManager* GetDefenceManager() { return m_pDefenceManager.get(); };
-    CTeamDirector* GetTeamManager(int teamNo) { return m_pTeamManager[teamNo].get(); };
+    CTeamDirector* GetTeamManager(int teamNo) { return m_pTeamManager[teamNo - 1].get(); };
 
 private:
     static CGameManager* m_pInstance;

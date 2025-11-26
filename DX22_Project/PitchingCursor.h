@@ -15,6 +15,10 @@ public:
 	void Update() override;
 	void Draw() override;
 	void SetMove(bool isMove) { m_bMove = isMove; };
+	DirectX::XMFLOAT3 GetBallPos() { return m_tBallParam.m_f3Pos; }
+	DirectX::XMFLOAT3 GetPredPos() { return m_tPredParam.m_f3Pos; }
+	void SetBallPos(DirectX::XMFLOAT3 pos) { m_tBallParam.m_f3Pos = pos; }
+	void SetPredPos(DirectX::XMFLOAT3 pos) { m_tPredParam.m_f3Pos = pos; }
 
 private:
 	RendererParam m_tBallParam;

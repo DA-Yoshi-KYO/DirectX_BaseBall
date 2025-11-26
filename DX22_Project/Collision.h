@@ -94,8 +94,8 @@ public:
 
 	struct Square	// ’ZŒ`
 	{
-		DirectX::XMFLOAT2 pos;
-		DirectX::XMFLOAT2 size;
+		DirectX::XMFLOAT3 pos;
+		DirectX::XMFLOAT3 size;
 	};
 
 	struct Circle	// ‰~Œ^

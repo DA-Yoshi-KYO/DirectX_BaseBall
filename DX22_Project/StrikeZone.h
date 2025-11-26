@@ -1,6 +1,4 @@
 #pragma once
-#include "Texture.h"
-#include "Defines.h"
 #include "Collision.h"
 #include "GameObject.h"
 

@@ -168,11 +168,11 @@ void CFielder::BaseCover()
 		Collision::Info2D member;
 		Collision::Info2D base;
 		member.type = Collision::eSquare;
-		member.square.pos = { m_tParam.m_f3Pos.x,m_tParam.m_f3Pos.z };
-		member.square.size = { m_tParam.m_f3Size.x,m_tParam.m_f3Size.z };
+		member.square.pos = { m_tParam.m_f3Pos.x,m_tParam.m_f3Pos.z,0.0f };
+		member.square.size = { m_tParam.m_f3Size.x,m_tParam.m_f3Size.z,0.0f };
 		base.type = Collision::eSquare;
-		base.square.pos = { fBasePos.x,fBasePos.z };
-		base.square.size = { fBaseSize.x,fBaseSize.z };
+		base.square.pos = { fBasePos.x,fBasePos.z,0.0f };
+		base.square.size = { fBaseSize.x,fBaseSize.z,0.0f };
 		if (Collision::Hit2D(member, base).isHit)
 		{
 			itr->SetBaseCover(true);

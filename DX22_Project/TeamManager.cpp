@@ -59,6 +59,7 @@ void CTeamDirector::InitStarter()
 
     int nRand = rand() % pPitcherList.size();
     m_pTeam[m_nPlayerNo]->SetStarterPitcher(pStarterList[m_nPlayerNo]);
+    m_pTeam[m_nPlayerNo]->SetTakingPitcher(pStarterList[m_nPlayerNo]);
 }
 
 void CTeamDirector::InitStartingLineup()

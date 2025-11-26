@@ -152,6 +152,12 @@ void CCountManager::FourBall()
     m_tParam.m_nStrikeCount = 0;
     m_tParam.m_nBallCount = 0;
 
+
+    for (int i = 0; i < m_pStrikeCount.size(); i++)
+    {
+        if (i < m_tParam.m_nStrikeCount) m_pStrikeCount[i]->SetActive(true);
+        else m_pStrikeCount[i]->SetActive(false);
+    }
     for (int i = 0; i < m_pBaseCount.size(); i++)
     {
         if (!m_pBaseCount[i]->GetActive())

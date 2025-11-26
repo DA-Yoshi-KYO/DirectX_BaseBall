@@ -9,6 +9,7 @@ public:
 	CDefenceManager();
 	~CDefenceManager();
 	void Init();
+	void Update();
 	void SetPlayerNo(int no) { m_nPlayerNo = no; }
 	int GetPlayerNo() { return m_nPlayerNo; }
 	CPitching* GetPitching() { return m_pPitching.get(); }

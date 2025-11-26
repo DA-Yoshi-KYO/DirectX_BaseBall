@@ -11,6 +11,7 @@
 #include "BallCount.h"
 #include "Controller.h"
 #include "SpriteRenderer.h"
+#include "GameManager.h"
 
 CBattingCursor::CBattingCursor()
 	: m_bMove(true)
@@ -42,17 +43,19 @@ void CBattingCursor::Update()
 {
 	CScene* pScene = GetScene();
 	CStrikeZone* pStrikeZone = pScene->GetGameObject<CStrikeZone>();
+	CAttackManager* pAttackManager = CGameManager::GetInstance()->GetAttackManager();
 
 	// カーソル移動可能なときに移動処理をする
 	if (m_bMove)
 	{
+		int nAttackPlayer = pAttackManager->GetPlayerNo();
 		// 移動処理
 		DirectX::XMFLOAT3 fStrikeZonePos = pStrikeZone->GetPos();
 		DirectX::XMFLOAT3 fStrikeZoneSize = pStrikeZone->GetSize();
-		DirectX::XMFLOAT2 fInput = { 0.0f,0.0f };//pBallCount->GetOffenseTeam() == CGameManager::Team::Player1 ? CGetLStick((int)CGameManager::Team::Player1) : CGetLStick((int)CGameManager::Team::Player2);
+		DirectX::XMFLOAT2 fInput = CGetLStick(nAttackPlayer - 1);
 
 
-		DirectX::XMFLOAT2 fMaxPos = { fabsf(fStrikeZonePos.x) + fStrikeZoneSize.x / 1.5f , fabsf(fStrikeZonePos.y) + fStrikeZoneSize.y / 1.5f };
+		DirectX::XMFLOAT2 fMaxPos = { fStrikeZoneSize.x / 1.5f , fStrikeZoneSize.y / 1.5f };
 		m_tParam.m_f3Pos = { fStrikeZonePos.x + fInput.x * fMaxPos.x,fStrikeZonePos.y + fInput.y * fMaxPos.y,0.0f };
 
 		// 移動補正

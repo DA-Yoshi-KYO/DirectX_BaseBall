@@ -64,24 +64,26 @@ DirectX::XMFLOAT2 CGetLStick(int index)
 	Pos.y = state[g_nControllerIndex].Gamepad.sThumbLY;
 
 	if (fabsf(Pos.x) < XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE) Pos.x = 0.0f;
+	else
+	{
+		if (Pos.x < 0.0f) Pos.x += XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE / 2.0f;
+		else if (Pos.x > 0.0f) Pos.x -= XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE / 2.0f;
+	}
 	if (fabsf(Pos.y) < XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE) Pos.y = 0.0f;
-	
-	if (Pos.x < 0.0f) Pos.x += XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE;
-	else if(Pos.x > 0.0f) Pos.x -= XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE;
+	else
+	{
+		if (Pos.y < 0.0f) Pos.y += XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE / 2.0f;
+		else if (Pos.y > 0.0f) Pos.y -= XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE / 2.0f;
+	}
 
-	if (Pos.y < 0.0f) Pos.y += XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE;
-	else if(Pos.y > 0.0f) Pos.y -= XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE;
 
-	const float maxPow = 32767.0f - XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE;
-	Pos.x = Pos.x / maxPow;
-	Pos.y = Pos.y / maxPow;
 
-	if (Pos.x >= 1.0f) Pos.x = 1.0f;
-	if (Pos.x <= -1.0f) Pos.x = -1.0f;
-	if (Pos.y >= 1.0f) Pos.y = 1.0f;
-	if (Pos.y <= -1.0f) Pos.y = -1.0f;
 
-	//Pos.y *= -1;
+	const float maxPow = 32767.0f - XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE / 2.0f;
+	Pos.x /= maxPow;
+	Pos.y /= maxPow;
+
+	Pos.y *= -1;
 
 	return Pos;
 }

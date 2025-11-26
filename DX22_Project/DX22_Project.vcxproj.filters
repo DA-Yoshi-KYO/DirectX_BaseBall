@@ -472,6 +472,12 @@
     <ClCompile Include="BenchPitcherBack.cpp">
       <Filter>Code\GameObject\MemberSelect</Filter>
     </ClCompile>
+    <ClCompile Include="PitchingCircle.cpp">
+      <Filter>Code\GameObject\Game\Difence</Filter>
+    </ClCompile>
+    <ClCompile Include="ReleasePoint.cpp">
+      <Filter>Code\GameObject\Game\Difence</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imconfig.h">
@@ -816,6 +822,12 @@
     </ClInclude>
     <ClInclude Include="BenchBatterBack.h">
       <Filter>Code\GameObject\MemberSelect</Filter>
+    </ClInclude>
+    <ClInclude Include="PitchingCircle.h">
+      <Filter>Code\GameObject\Game\Difence</Filter>
+    </ClInclude>
+    <ClInclude Include="ReleasePoint.h">
+      <Filter>Code\GameObject\Game\Difence</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

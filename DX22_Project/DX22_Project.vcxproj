@@ -222,11 +222,13 @@
     <ClCompile Include="PitcherData.cpp" />
     <ClCompile Include="PitcherSelectBack.cpp" />
     <ClCompile Include="Pitching.cpp" />
+    <ClCompile Include="PitchingCircle.cpp" />
     <ClCompile Include="PitchingCursor.cpp" />
     <ClCompile Include="PlayerDataBase.cpp" />
     <ClCompile Include="PositionIcon.cpp" />
     <ClCompile Include="PostProcess.cpp" />
     <ClCompile Include="PostProcessChain.cpp" />
+    <ClCompile Include="ReleasePoint.cpp" />
     <ClCompile Include="RendererComponent.cpp" />
     <ClCompile Include="SceneMemberselect.cpp" />
     <ClCompile Include="SceneTeamselect.cpp" />
@@ -342,11 +344,13 @@
     <ClInclude Include="PitcherData.h" />
     <ClInclude Include="PitcherSelectBack.h" />
     <ClInclude Include="Pitching.h" />
+    <ClInclude Include="PitchingCircle.h" />
     <ClInclude Include="PitchingCursor.h" />
     <ClInclude Include="PlayerDataBase.h" />
     <ClInclude Include="PositionIcon.h" />
     <ClInclude Include="PostProcess.h" />
     <ClInclude Include="PostProcessChain.h" />
+    <ClInclude Include="ReleasePoint.h" />
     <ClInclude Include="RendererComponent.h" />
     <ClInclude Include="SceneMemberselect.h" />
     <ClInclude Include="SceneTeamselect.h" />

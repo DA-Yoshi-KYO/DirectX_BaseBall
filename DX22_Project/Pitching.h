@@ -1,17 +1,16 @@
-// ==============================
-//    インクルード部
-// ==============================
 #pragma once
 #include "Defines.h"
 #include "StrikeZone.h"
 #include "PitchingCursor.h"
-#include "Texture.h"
+#include "ReleasePoint.h"
+#include "PitchingCircle.h"
 
 class CPitching
 {
 public:
 	CPitching();
 	~CPitching();
+	void Init();
 	void Update(int DefenceTeam);
 	void Draw();
 
@@ -105,14 +104,8 @@ public:
 	float GetBendStartTime();
 
 private:
-	// テクスチャの種類
-	enum class TexKind
-	{
-		ReleasePoint,	// リリースサークル
-		PitchingCircle,	// ピッチングサークル
-
-		Max
-	};
+	CReleasePoint* m_pReleasePoint;
+	CPitchingCircle* m_pPitchingCircle;
 
 	// メンバ変数
 	int m_nPitchingPhase;	// 投球の流れ

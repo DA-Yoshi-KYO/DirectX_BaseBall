@@ -17,6 +17,7 @@ public:
 public:
 	DirectX::XMFLOAT3 GetDirection();
 	bool GetBatting();
+	bool GetSwing();
 
 private:
 	// ƒƒ“ƒo•Ï”
