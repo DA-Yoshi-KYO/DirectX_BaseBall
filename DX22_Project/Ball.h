@@ -5,12 +5,13 @@
 #include "StrikeZone.h"
 #include "Pitching.h"
 #include "PitchingCursor.h"
+#include "CollisionBox.h"
+#include "CollisionLine.h"
 
 class CBatting;
 
-constexpr DirectX::XMFLOAT3 ce_fBallPos = { 0.0f,-3.0f,65.0f };
-constexpr DirectX::XMFLOAT3 ce_fBallEndPos = { 0.0f,-5.0f,148.0f };
-
+constexpr DirectX::XMFLOAT3 ce_fBallPos = { 0.0f,-3.0f,-145.0f };
+constexpr DirectX::XMFLOAT3 ce_fJustmeetPos = { 0.0f,-2.5f, -219.0f };
 class CBall : public CGameObject
 {
 public:
@@ -26,8 +27,8 @@ public:
 	void SetVelocity(DirectX::XMFLOAT3 vel) { m_f3Velocity = vel; }
 
 private:
-	Collision::Info m_LucusCollision;
-	Collision::Info m_BoxCollision;
+	CCollisionLine* m_pLucusCollision;
+	CCollisionBox* m_pBoxCollision;
 	DirectX::XMFLOAT3 m_f3Velocity;
 	bool m_bFryBall;
 

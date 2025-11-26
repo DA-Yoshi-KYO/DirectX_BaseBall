@@ -54,7 +54,7 @@ void CModelRenderer::Draw()
     for (unsigned int i = 0; i < pModel->GetMeshNum(); i++)
     {
         Texture* tex = pModel->GetMaterial(i)->pTexture;
-        if (tex)pPS->SetTexture(0, tex);
+        if (tex) pPS->SetTexture(0, tex);
         if (pModel) pModel->Draw(i);
     }
 }

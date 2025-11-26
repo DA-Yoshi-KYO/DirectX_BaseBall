@@ -7,6 +7,7 @@
 #include "Running.h"
 #include "ModelRenderer.h"
 #include "Field.h"
+#include "Oparation.h"
 
 constexpr DirectX::XMFLOAT2 ce_fBallLimitX = { 2.7f,-2.7f };
 constexpr DirectX::XMFLOAT2 ce_fBallLimitY = { -2.7f,2.3f };
@@ -23,13 +24,14 @@ CBall::CBall()
 	m_tParam.m_f3Pos = { ce_fBallPos.x + WORLD_AJUST ,ce_fBallPos.y + WORLD_AJUST, ce_fBallPos.z + WORLD_AJUST };
 	m_tParam.m_f3Size = ce_fBallSize;
 	m_tParam.m_f3Rotate = { 0.0f,0.0f,0.0f };
-	//m_BallCollision.type = Collision::eBox;
-	//m_BallCollision.box.center = m_tParam.m_f3Pos;
-	//m_BallCollision.box.size = { ce_fBallSize.x / 2.0f,ce_fBallSize.y / 2.0f,ce_fBallSize.z / 2.0f };
 
-	//m_LucusCollision.type = Collision::eLine;
-	//m_LucusCollision.line.start = m_tParam.m_f3Pos;
-	//m_LucusCollision.line.end = m_tParam.m_f3Pos;
+	m_pBoxCollision = AddComponent<CCollisionBox>();
+	m_pBoxCollision->SetTag("Ball");
+	m_pBoxCollision->SetInfo(m_tParam.m_f3Pos, m_tParam.m_f3Size);
+	
+	m_pLucusCollision = AddComponent<CCollisionLine>();
+	m_pLucusCollision->SetTag("BallLine");
+	m_pLucusCollision->SetInfo(m_f3OldPos, m_tParam.m_f3Pos);
 }
 
 CBall::~CBall()
@@ -49,7 +51,7 @@ void CBall::Init()
 
 void CBall::Update()
 {
-	m_LucusCollision.line.start = m_tParam.m_f3Pos;
+	m_f3OldPos = m_tParam.m_f3Pos;
 	switch (CGameManager::GetInstance()->GetPhase())
 	{
 	case GamePhase::Batting: UpdateBatting(); break;
@@ -57,10 +59,9 @@ void CBall::Update()
 	default:
 		break;
 	}
-	m_BoxCollision.type = Collision::eBox;
-	m_BoxCollision.box.center = m_tParam.m_f3Pos;
-	m_BoxCollision.box.size = { ce_fBallSize.x / 2.0f,ce_fBallSize.y / 2.0f,ce_fBallSize.z / 2.0f };
-	m_LucusCollision.line.end = m_tParam.m_f3Pos;
+	
+	m_pBoxCollision->SetInfo(m_tParam.m_f3Pos, m_tParam.m_f3Size * 1.5f);
+	m_pLucusCollision->SetInfo(m_f3OldPos, m_tParam.m_f3Pos);
 
 	CGameObject::Update();
 }
@@ -81,48 +82,49 @@ void CBall::OnCollision(CCollisionBase* other, std::string thisTag, Collision::R
 			return;
 		}
 
-			// 越えていなかったらフェンス反射の計算をする
-			// 計算に使用する変数を定義
-			DirectX::XMVECTOR vecStart = DirectX::XMLoadFloat3(&m_LucusCollision.line.start);
-			DirectX::XMVECTOR vecEnd = DirectX::XMLoadFloat3(&m_LucusCollision.line.end);
-			DirectX::XMVECTOR vecDir = DirectX::XMVectorSubtract(vecEnd, vecStart);
-			DirectX::XMVECTOR vecPoint[3];
-			vecPoint[0] = DirectX::XMLoadFloat3(&otherInfo.triangle.point[0]);
-			vecPoint[1] = DirectX::XMLoadFloat3(&otherInfo.triangle.point[1]);
-			vecPoint[2] = DirectX::XMLoadFloat3(&otherInfo.triangle.point[2]);
+		Collision::Info info = m_pLucusCollision->GetInfo();
+		// 越えていなかったらフェンス反射の計算をする
+		// 計算に使用する変数を定義
+		DirectX::XMVECTOR vecStart = DirectX::XMLoadFloat3(&info.line.start);
+		DirectX::XMVECTOR vecEnd = DirectX::XMLoadFloat3(&info.line.end);
+		DirectX::XMVECTOR vecDir = DirectX::XMVectorSubtract(vecEnd, vecStart);
+		DirectX::XMVECTOR vecPoint[3];
+		vecPoint[0] = DirectX::XMLoadFloat3(&otherInfo.triangle.point[0]);
+		vecPoint[1] = DirectX::XMLoadFloat3(&otherInfo.triangle.point[1]);
+		vecPoint[2] = DirectX::XMLoadFloat3(&otherInfo.triangle.point[2]);
 
-			// 衝突位置の検出
-			DirectX::XMVECTOR vecHitPoint = DirectX::XMVectorAdd(vecStart, DirectX::XMVectorScale(vecDir, result.t));
+		// 衝突位置の検出
+		DirectX::XMVECTOR vecHitPoint = DirectX::XMVectorAdd(vecStart, DirectX::XMVectorScale(vecDir, result.t));
 
-			// 衝突した三角形の法線を求める
-			DirectX::XMVECTOR vecEdge1 = DirectX::XMVectorSubtract(vecPoint[1], vecPoint[0]);
-			DirectX::XMVECTOR vecEdge2 = DirectX::XMVectorSubtract(vecPoint[2], vecPoint[0]);
-			DirectX::XMVECTOR vecNormal = DirectX::XMVector3Normalize(DirectX::XMVector3Cross(vecEdge1, vecEdge2));
+		// 衝突した三角形の法線を求める
+		DirectX::XMVECTOR vecEdge1 = DirectX::XMVectorSubtract(vecPoint[1], vecPoint[0]);
+		DirectX::XMVECTOR vecEdge2 = DirectX::XMVectorSubtract(vecPoint[2], vecPoint[0]);
+		DirectX::XMVECTOR vecNormal = DirectX::XMVector3Normalize(DirectX::XMVector3Cross(vecEdge1, vecEdge2));
 
-			// 反射ベクトルの計算 (修正済み)
-			float dotProduct = DirectX::XMVectorGetX(DirectX::XMVector3Dot(vecDir, vecNormal));
-			DirectX::XMVECTOR vecReflectDir = DirectX::XMVectorSubtract(
-				vecDir,
-				DirectX::XMVectorScale(vecNormal, 2.0f * dotProduct)
-			);
-			vecReflectDir = DirectX::XMVector3Normalize(vecReflectDir);
+		// 反射ベクトルの計算 (修正済み)
+		float dotProduct = DirectX::XMVectorGetX(DirectX::XMVector3Dot(vecDir, vecNormal));
+		DirectX::XMVECTOR vecReflectDir = DirectX::XMVectorSubtract(
+			vecDir,
+			DirectX::XMVectorScale(vecNormal, 2.0f * dotProduct)
+		);
+		vecReflectDir = DirectX::XMVector3Normalize(vecReflectDir);
 
-			// 反射後の位置を補正（スタック防止）
-			vecHitPoint = DirectX::XMVectorAdd(vecHitPoint, DirectX::XMVectorScale(vecNormal, 5.0f));
+		// 反射後の位置を補正（スタック防止）
+		vecHitPoint = DirectX::XMVectorAdd(vecHitPoint, DirectX::XMVectorScale(vecNormal, 5.0f));
 
-			// 速度の減衰
-			float fRestitution = 0.8f;
-			float ballVelocity = DirectX::XMVectorGetX(DirectX::XMVector3Length(vecDir));
+		// 速度の減衰
+		float fRestitution = 0.8f;
+		float ballVelocity = DirectX::XMVectorGetX(DirectX::XMVector3Length(vecDir));
 
-			DirectX::XMVECTOR vecNewVelocity = DirectX::XMVectorScale(vecReflectDir, fRestitution * ballVelocity);
+		DirectX::XMVECTOR vecNewVelocity = DirectX::XMVectorScale(vecReflectDir, fRestitution * ballVelocity);
 
-			// 移動先の更新
-			DirectX::XMFLOAT3 curDir;
-			DirectX::XMStoreFloat3(&curDir, vecDir);
-			DirectX::XMStoreFloat3(&m_LucusCollision.line.start, vecHitPoint);
-			DirectX::XMStoreFloat3(&m_tParam.m_f3Pos, vecHitPoint);
-			DirectX::XMStoreFloat3(&m_LucusCollision.line.end, DirectX::XMVectorAdd(vecHitPoint, vecNewVelocity));
-			DirectX::XMStoreFloat3(&m_f3Velocity, vecNewVelocity);
+		// 移動先の更新
+		DirectX::XMFLOAT3 curDir;
+		DirectX::XMStoreFloat3(&curDir, vecDir);
+		DirectX::XMStoreFloat3(&info.line.start, vecHitPoint);
+		DirectX::XMStoreFloat3(&m_tParam.m_f3Pos, vecHitPoint);
+		DirectX::XMStoreFloat3(&info.line.end, DirectX::XMVectorAdd(vecHitPoint, vecNewVelocity));
+		DirectX::XMStoreFloat3(&m_f3Velocity, vecNewVelocity);
 	}
 }
 

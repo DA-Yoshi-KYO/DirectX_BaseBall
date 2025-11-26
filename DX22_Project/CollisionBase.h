@@ -13,6 +13,7 @@ class CCollisionBase : public CComponent
 public:
     using CComponent::CComponent;
     virtual ~CCollisionBase();
+    void Draw() override;
 
     /// <summary>
     /// 衝突が起きたかどうかを取得

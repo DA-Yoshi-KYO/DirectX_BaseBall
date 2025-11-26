@@ -112,6 +112,7 @@ public:
 
     std::vector<ObjectID> GetIDVec();
     std::array<std::list<CGameObject*>, (int)Tag::Max> GetGameObjectList();
+    std::vector<CCollisionBase*> GetCollisionList() { return m_pCollisionList; }
 
     void DrawGrid();
 

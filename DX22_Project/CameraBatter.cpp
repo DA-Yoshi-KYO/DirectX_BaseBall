@@ -1,15 +1,9 @@
 #include "CameraBatter.h"
-#include "Defines.h"
-#include "Input.h"
-
-#define CAMERA_SPEEDQ (0.5f)
-#define CAMERA_ROTATEQ (0.01f)
 
 CCameraBatter::CCameraBatter()
-	: m_radXZ(0.0f), m_radY(DirectX::XMConvertToRadians(30.0f)), m_radius(0.0f)
 {
-	m_pos = { WORLD_AJUST,WORLD_AJUST + 5.0f, WORLD_AJUST + 173.0f };
-	m_look = { WORLD_AJUST,WORLD_AJUST, WORLD_AJUST + 65.0f };
+	m_pos = { 0.0f,2.2f, -235.0f };
+	m_look = { 0.0f,0.0f, -220.0f };
 }
 
 CCameraBatter::~CCameraBatter()

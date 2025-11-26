@@ -9,7 +9,7 @@
 // ==============================
 //    定数定義
 // ==============================
-constexpr float ce_fGroundY = -5.0f;	// グラウンドの見た目上の高さ
+constexpr float ce_fGroundY = -8.0f;	// グラウンドの見た目上の高さ
 constexpr float ce_fFenceHeight = ce_fGroundY + 15.0f;	// フェンスの高さ
 constexpr float ce_fInOutBorderZ = WORLD_AJUST;	// 内外野の境目
 

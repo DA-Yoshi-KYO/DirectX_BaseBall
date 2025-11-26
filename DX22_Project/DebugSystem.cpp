@@ -14,7 +14,7 @@
 CDebugSystem* CDebugSystem::m_pInstance = nullptr;
 
 CDebugSystem::CDebugSystem()
-    : m_pObject(nullptr), m_bUpdate(true), m_pPostProcess(nullptr)
+    : m_pObject(nullptr), m_bUpdate(true),m_bCollision(false), m_pPostProcess(nullptr)
 {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -62,8 +62,6 @@ void CDebugSystem::Draw()
 
 void CDebugSystem::DrawHierarchy()
 {
-    ImGui::SetNextWindowPos(ImVec2(20, 20));
-    ImGui::SetNextWindowSize(ImVec2(280, 200));
     ImGui::Begin("Hierarchy");
     ImGui::BeginChild(ImGui::GetID((void*)0), ImVec2(250, 160), ImGuiWindowFlags_NoTitleBar);
 
@@ -127,8 +125,6 @@ void CDebugSystem::DrawHierarchy()
 void CDebugSystem::DrawCameraParam()
 {
     CCamera* pCamera = CCamera::GetInstance();
-    ImGui::SetNextWindowPos(ImVec2(20, SCREEN_HEIGHT - 500));
-    ImGui::SetNextWindowSize(ImVec2(280, 200));
     ImGui::Begin("Camera");
     ImGui::BeginChild(ImGui::GetID((void*)0), ImVec2(250, 160), ImGuiWindowFlags_NoTitleBar);
 
@@ -162,8 +158,6 @@ void CDebugSystem::DrawCameraParam()
 
 void CDebugSystem::DrawUpdateTick()
 {
-    ImGui::SetNextWindowPos(ImVec2(20,SCREEN_HEIGHT - 100));
-    ImGui::SetNextWindowSize(ImVec2(280, 80));
     ImGui::Begin("UpdateTick");
 
     ImGui::BeginChild(ImGui::GetID((void*)0), ImVec2(ce_f2InspecterSize.x,35.0f), ImGuiWindowFlags_NoTitleBar);
@@ -222,9 +216,6 @@ void CDebugSystem::DrawSceneSelect()
 
 void CDebugSystem::DrawCollision()
 {
-    /*
-    ImGui::SetNextWindowPos(ImVec2(SCREEN_WIDTH - 300, SCREEN_HEIGHT - 120));
-    ImGui::SetNextWindowSize(ImVec2(280, 100));
     ImGui::Begin("Collision");
 
     ImGui::BeginChild(ImGui::GetID((void*)0), ImVec2(ce_f2InspecterSize), ImGuiWindowFlags_NoTitleBar);
@@ -233,17 +224,15 @@ void CDebugSystem::DrawCollision()
     ImGui::End();
     if (!m_bCollision)return;
 
-    auto CollisionVec = GetScene()->GetCollisionVec();
+    auto CollisionVec = GetScene()->GetCollisionList();
     for (int i = 0; i < CollisionVec.size(); i++)
     {
         CollisionVec[i]->Draw();
     }
-    */
+    
 }
 void CDebugSystem::DrawMousePos()
 {
-    ImGui::SetNextWindowPos(ImVec2(SCREEN_WIDTH / 2 - 140, 20.0f));
-    ImGui::SetNextWindowSize(ImVec2(280, 70));
     ImGui::Begin("Mouse");
     ImGui::BeginChild(ImGui::GetID((void*)0), ImVec2(ce_f2InspecterSize), ImGuiWindowFlags_NoTitleBar);
 
@@ -258,8 +247,6 @@ void CDebugSystem::DrawMousePos()
 
 void CDebugSystem::DrawFPS()
 {
-    ImGui::SetNextWindowPos(ImVec2(SCREEN_WIDTH / 2 + 170, 20.0f));
-    ImGui::SetNextWindowSize(ImVec2(140, 70));
     ImGui::Begin("FPS");
     ImGui::BeginChild(ImGui::GetID((void*)0), ImVec2(120.0f,30.0f), ImGuiWindowFlags_NoTitleBar);
 
@@ -272,8 +259,6 @@ void CDebugSystem::DrawFPS()
 
 void CDebugSystem::DrawPostProcess()
 {
-    ImGui::SetNextWindowPos(ImVec2(20, SCREEN_HEIGHT - 300));
-    ImGui::SetNextWindowSize(ImVec2(280, 200));
     ImGui::Begin("PostProcess");
     ImGui::BeginChild(ImGui::GetID((void*)0), ImVec2(250, 160), ImGuiWindowFlags_NoTitleBar);
 
@@ -296,37 +281,35 @@ void CDebugSystem::DrawPostProcess()
 
 void CDebugSystem::DrawActivePostProcess()
 {
-    //ImGui::SetNextWindowPos(ImVec2(SCREEN_WIDTH - 300, 530));
-    //ImGui::SetNextWindowSize(ImVec2(280, 170));
-    //ImGui::Begin("ActivePostProcess");
-    //ImGui::BeginChild(ImGui::GetID((void*)0), ImVec2(250, 135), ImGuiWindowFlags_NoTitleBar);
+    ImGui::Begin("ActivePostProcess");
+    ImGui::BeginChild(ImGui::GetID((void*)0), ImVec2(250, 135), ImGuiWindowFlags_NoTitleBar);
 
-    //CPostProcessChain* pPostProcessChain = CPostProcessChain::GetInstance();
-    //std::vector<CPostProcess*> pActivePostProcess = pPostProcessChain->GetAllPostProcessObject();
-    //std::vector<std::string> effects;
-    //effects.clear();
-    //for (int i = 0; i < (pActivePostProcess).size(); i++)
-    //{
-    //    effects.push_back((pActivePostProcess)[i]->GetName());
-    //}
+    CPostProcessChain* pPostProcessChain = CPostProcessChain::GetInstance();
+    std::vector<CPostProcess*> pActivePostProcess = pPostProcessChain->GetAllPostProcessObject();
+    std::vector<std::string> effects;
+    effects.clear();
+    for (int i = 0; i < (pActivePostProcess).size(); i++)
+    {
+        effects.push_back((pActivePostProcess)[i]->GetName());
+    }
 
-    //static int current = 0;
-    //current = std::min(current, int(effects.size() - 1));
+    static int current = 0;
+    current = std::min(current, int(effects.size() - 1));
 
-    //if (!effects.empty())
-    //{
-    //    ImGui::ListBox("Effects", &current,
-    //        [](void* data, int idx, const char** out_text)
-    //        {
-    //            auto& list = *(std::vector<std::string>*)data;
-    //            *out_text = list[idx].c_str();
-    //            return true;
-    //        },
-    //        (void*)&effects, effects.size());
-    //}
+    if (!effects.empty())
+    {
+        ImGui::ListBox("Effects", &current,
+            [](void* data, int idx, const char** out_text)
+            {
+                auto& list = *(std::vector<std::string>*)data;
+                *out_text = list[idx].c_str();
+                return true;
+            },
+            (void*)&effects, effects.size());
+    }
 
-    //ImGui::EndChild();
-    //ImGui::End();
+    ImGui::EndChild();
+    ImGui::End();
 }
 
 CDebugSystem* CDebugSystem::GetInstance()

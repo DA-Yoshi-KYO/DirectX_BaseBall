@@ -26,6 +26,7 @@ private:
     class CGameObject* m_pObject;
     class CPostProcess* m_pPostProcess;
     bool m_bUpdate;
+    bool m_bCollision;
 
 private:
     void DrawHierarchy();

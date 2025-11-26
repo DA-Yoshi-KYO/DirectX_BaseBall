@@ -59,6 +59,7 @@ void CGameObject::Draw()
     for (auto comp : m_pComponent_List)
 	{
         if (!comp) continue;
+        if (dynamic_cast<CCollisionBase*>(comp)) continue;
         // 描画用コンポーネントを使用する場合、汎用パラメータをコンポーネントに渡す
 		if (dynamic_cast<CRendererComponent*>(comp))dynamic_cast<CRendererComponent*>(comp)->SetRendererParam(m_tParam);
 		comp->Draw();
