@@ -24,6 +24,9 @@ public:
 	DirectX::XMFLOAT3 GetPos() { return m_pos; }
 	DirectX::XMFLOAT3 GetLook() { return m_look; }
 	DirectX::XMFLOAT3 GetUp() { return m_up; }
+	void SetPos(DirectX::XMFLOAT3 pos) { m_pos = pos; }
+	void SetLook(DirectX::XMFLOAT3 look) { m_look = look; }
+	void SetUp(DirectX::XMFLOAT3 up) { m_up = up; }
 	DirectX::XMFLOAT3 GetForward() { return m_look; }
 
 	static CCamera* GetInstance();

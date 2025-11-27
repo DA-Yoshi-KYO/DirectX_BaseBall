@@ -4,7 +4,7 @@
 #include "DirectX.h"
 #include "Main.h"
 #include "Oparation.h"
-#include "Camera.h"
+#include "CameraDebug.h"
 #include "Input.h"
 #include "PostProcessChain.h"
 #include "PostProcess.h"
@@ -14,7 +14,7 @@
 CDebugSystem* CDebugSystem::m_pInstance = nullptr;
 
 CDebugSystem::CDebugSystem()
-    : m_pObject(nullptr), m_bUpdate(true),m_bCollision(false), m_pPostProcess(nullptr)
+    : m_pObject(nullptr), m_bUpdate(true),m_bCollision(false), m_pPostProcess(nullptr), m_bCameraMove(true)
 {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -127,29 +127,63 @@ void CDebugSystem::DrawCameraParam()
     CCamera* pCamera = CCamera::GetInstance();
     ImGui::Begin("Camera");
     ImGui::BeginChild(ImGui::GetID((void*)0), ImVec2(250, 160), ImGuiWindowFlags_NoTitleBar);
-
-    if (ImGui::CollapsingHeader(std::string("[Transform]").c_str()))
+    
+    if (m_bUpdate)
     {
-        ImGui::Text(std::string("Position").c_str());
-        DirectX::XMFLOAT3 pos = pCamera->GetPos();
-        ImGui::Text("PosX: %.3f", pos.x);
-        ImGui::Text("PosY: %.3f", pos.y);
-        ImGui::Text("PosZ: %.3f", pos.z);
-        ImGui::Spacing();
+        if (ImGui::CollapsingHeader(std::string("[Transform]").c_str()))
+        {
+            ImGui::Text(std::string("Position").c_str());
+            DirectX::XMFLOAT3 pos = pCamera->GetPos();
+            ImGui::Text("PosX: %.3f", pos.x);
+            ImGui::Text("PosY: %.3f", pos.y);
+            ImGui::Text("PosZ: %.3f", pos.z);
+            ImGui::Spacing();
 
-        ImGui::Text(std::string("Look").c_str());
-        DirectX::XMFLOAT3 look = pCamera->GetLook();
-        ImGui::Text("LookX: %.3f", look.x);
-        ImGui::Text("LookY: %.3f", look.y);
-        ImGui::Text("LookZ: %.3f", look.z);
-        ImGui::Spacing();
+            ImGui::Text(std::string("Look").c_str());
+            DirectX::XMFLOAT3 look = pCamera->GetLook();
+            ImGui::Text("LookX: %.3f", look.x);
+            ImGui::Text("LookY: %.3f", look.y);
+            ImGui::Text("LookZ: %.3f", look.z);
+            ImGui::Spacing();
 
-        ImGui::Text(std::string("UpVector").c_str());
-        DirectX::XMFLOAT3 up = pCamera->GetUp();
-        ImGui::Text("UpX: %.3f", up.x);
-        ImGui::Text("UpY: %.3f", up.y);
-        ImGui::Text("UpZ: %.3f", up.z);
-        ImGui::Spacing();
+            ImGui::Text(std::string("UpVector").c_str());
+            DirectX::XMFLOAT3 up = pCamera->GetUp();
+            ImGui::Text("UpX: %.3f", up.x);
+            ImGui::Text("UpY: %.3f", up.y);
+            ImGui::Text("UpZ: %.3f", up.z);
+            ImGui::Spacing();
+        }
+    }
+    else
+    {
+        if (ImGui::CollapsingHeader(std::string("[Transform]").c_str()))
+        {
+            DirectX::XMFLOAT3 pos = pCamera->GetPos();
+            float inputPos[3] = { pos.x,pos.y,pos.z };
+            ImGui::InputFloat3("Position", inputPos);
+            ImGui::Spacing();
+            pos = DirectX::XMFLOAT3(inputPos[0], inputPos[1], inputPos[2]);
+            pCamera->SetPos(pos);
+
+            ImGui::Text(std::string("Look").c_str());
+            DirectX::XMFLOAT3 look = pCamera->GetLook();
+            float inputLook[3] = { look.x,look.y,look.z };
+            ImGui::InputFloat3("Look", inputLook);
+            ImGui::Spacing();
+            look = DirectX::XMFLOAT3(inputLook[0], inputLook[1], inputLook[2]);
+            pCamera->SetLook(look);
+
+            ImGui::Text(std::string("UpVector").c_str());
+            DirectX::XMFLOAT3 up = pCamera->GetUp();
+            float inputUp[3] = { up.x,up.y,up.z };
+            ImGui::InputFloat3("Up", inputUp);
+            ImGui::Spacing();
+            look = DirectX::XMFLOAT3(inputUp[0], inputUp[1], inputUp[2]);
+            pCamera->SetUp(up);
+
+            ImGui::Checkbox("CameraMove", &m_bCameraMove);
+            dynamic_cast<CCameraDebug*>(pCamera)->SetMove(m_bCameraMove);
+        }
     }
 
     ImGui::EndChild();

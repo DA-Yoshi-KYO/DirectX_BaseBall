@@ -25,12 +25,14 @@ public:
 	void UpdateBatting();
 	bool GetIsFryBall() { return m_bFryBall; }
 	void SetVelocity(DirectX::XMFLOAT3 vel) { m_f3Velocity = vel; }
+	void SetPitching(float time) { m_fBallTime = time; m_bPitched = true; }
 
 private:
 	CCollisionLine* m_pLucusCollision;
 	CCollisionBox* m_pBoxCollision;
 	DirectX::XMFLOAT3 m_f3Velocity;
 	bool m_bFryBall;
-
+	bool m_bPitched;
+	float m_fBallTime;
 
 };

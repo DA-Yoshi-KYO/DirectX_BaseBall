@@ -4,7 +4,7 @@
 #include "Input.h"
 
 CCameraDebug::CCameraDebug()
-	: m_radXZ(0.0f), m_radY(DirectX::XMConvertToRadians(180.0f)), m_radius(10.0f)
+	: m_radXZ(0.0f), m_radY(DirectX::XMConvertToRadians(180.0f)), m_radius(10.0f), m_bMove(true)
 {
 	m_pos = { 0.0f,0.0f, 0.0f };
 	m_look = { 0.0f,0.0f, 10.0f };
@@ -16,6 +16,7 @@ CCameraDebug::~CCameraDebug()
 
 void CCameraDebug::Update()
 {
+	if (!m_bMove) return;
 	// カメラの座標と注視点を使い、前方向ベクトルを取得
 	DirectX::XMFLOAT3 f3Forward = m_look - m_pos;
 	DirectX::XMVECTOR vForward = DirectX::XMLoadFloat3(&f3Forward);

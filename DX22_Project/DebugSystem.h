@@ -27,6 +27,7 @@ private:
     class CPostProcess* m_pPostProcess;
     bool m_bUpdate;
     bool m_bCollision;
+    bool m_bCameraMove;
 
 private:
     void DrawHierarchy();

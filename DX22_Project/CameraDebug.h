@@ -11,8 +11,12 @@ public:
 	CCameraDebug();
 	~CCameraDebug();
 	void Update() final;
+	void SetMove(bool move) { m_bMove = move; }
+
 private:
 	float m_radXZ;
 	float m_radY;
 	float m_radius;
+	bool m_bMove;
+
 };

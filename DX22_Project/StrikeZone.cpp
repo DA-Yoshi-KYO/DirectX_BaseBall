@@ -5,7 +5,7 @@ CStrikeZone::CStrikeZone()
 	: m_Collision{}
 {
 	// ƒpƒ‰ƒ[ƒ^‚Ì‰Šú‰»
-	m_tParam.m_f3Pos = { SCREEN_WIDTH / 2.0f,450.0f,0.0f };
+	m_tParam.m_f3Pos = ce_fStrikeZonePos;
 	m_tParam.m_f3Size = ce_fStrikeZoneSize;
 	m_tParam.m_f3Rotate = { 0.0f,0.0f,0.0f };
 	m_tParam.m_f4Color = { 1.0f,1.0f,1.0f,1.0f };

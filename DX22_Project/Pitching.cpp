@@ -6,7 +6,7 @@
 #include "PitcherData.h"
 
 constexpr float ce_fMax_Speed = 170.0f;		// 最高球速
-constexpr float ce_fSpeed_Ajust = 40.0f;	// 球速をこの数値で割ることで体感速度に補正
+constexpr float ce_fSpeed_Adjust = 40.0f;	// 球速をこの数値で割ることで体感速度に補正
 constexpr DirectX::XMFLOAT2 ce_fReleasePointSize = { 30.0f,30.0f };				// リリースタイミングのサイズ
 constexpr float ce_fSetPositionTime = 4.0f;	// セットポジションから投球までの時間(秒)
 constexpr float ce_fMinControl = 30.0f;
@@ -190,6 +190,7 @@ void CPitching::Update(int DefenceTeam)
 				DirectX::XMFLOAT3 releasePointSize = m_pReleasePoint->GetSize();
 
 
+				m_fChatchTime = ce_fSpeed_Adjust / KMETER(m_fSpeed) * 60.0f * 60.0f;
 				// リリースが速い
 				if (pitchingCircleSize.x > releasePointSize.x)
 				{
@@ -246,6 +247,7 @@ void CPitching::Update(int DefenceTeam)
 				// 投球したらボールをリリースする処理に移る
 				m_pPitchingCircle->Pitched();
 				m_nPitchingPhase = (int)CPitching::PitchingPhase::Release;
+				pScene->GetGameObject<CBall>()->SetPitching(m_fChatchTime);
 				fPitchTime = 0.0f;
 			}
 			else if (pitchingCircleSize.x < 0.0f)
@@ -269,10 +271,10 @@ void CPitching::Update(int DefenceTeam)
 				// 投球したらボールをリリースする処理に移る
 				m_pPitchingCircle->Pitched();
 				m_nPitchingPhase = (int)CPitching::PitchingPhase::Release;
+				pScene->GetGameObject<CBall>()->SetPitching(m_fChatchTime);
 				fPitchTime = 0.0f;
 			}
 			// 球速に応じて捕球までの時間を決める
-			m_fChatchTime = ce_fSpeed_Ajust / KMETER(m_fSpeed) * 60.0f * 60.0f;
 			break;
 			// 投球
 		case (int)CPitching::PitchingPhase::Release:
