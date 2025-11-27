@@ -9,7 +9,7 @@
 #include "Field.h"
 #include "Oparation.h"
 
-constexpr DirectX::XMFLOAT2 ce_fStrikeZoneSizeXYIn3D = { 1.54f,1.54f };
+constexpr DirectX::XMFLOAT3 ce_fStrikeZoneSizeIn3D = { 1.54f,1.54f,0.0f };
 constexpr  DirectX::XMFLOAT3 ce_fBallSize = { 0.5f,0.5f,0.5f };
 constexpr  DirectX::XMFLOAT3 ce_fInplayBallSize = { 2.0f,2.0f,2.0f };
 constexpr int ce_nBallRotateSec = 220 / 60;
@@ -143,32 +143,40 @@ void CBall::UpdateBatting()
 			DirectX::XMVECTOR vecDir = DirectX::XMLoadFloat3(&f3Dir);
 			DirectX::XMVECTOR vecInitPos = DirectX::XMLoadFloat3(&ce_fBallPos);
 
+			// スクリーン上の投球予測地点座標から3D座標に投影する
 			CPitchingCursor* pCursor = GetScene()->GetGameObject<CPitchingCursor>();
-			DirectX::XMFLOAT3 f3PredPos = pCursor->GetPredPos();
-			DirectX::XMFLOAT3 f3OffsetFromCenter = ce_fStrikeZonePos - f3PredPos;
-			DirectX::XMFLOAT3 f3BendedPos = DirectX::XMFLOAT3(ce_fJustmeetPos.x + 0.0f, ce_fJustmeetPos.y + 0.0f, ce_fJustmeetPos.z);
-			DirectX::XMVECTOR vecZoneCenterPos = DirectX::XMLoadFloat3(&f3BendedPos);
-			vecDir = DirectX::XMVector3Normalize(vecDir);
-			float Az = DirectX::XMVectorGetZ(vecInitPos);
-			float Bz = DirectX::XMVectorGetZ(vecZoneCenterPos);
+			DirectX::XMFLOAT3 f3PredPos = pCursor->GetPredPos();	// スクリーン上の投球予測点	
+			DirectX::XMFLOAT3 f3OffsetFromCenter = ce_fStrikeZonePos - f3PredPos;	// ストライクゾーン中央からの距離を求める
+			DirectX::XMFLOAT3 f3StrikeZoneHarfSize = ce_fStrikeZoneSize / 2.0f;		// ストライクゾーンの半分のサイズを求める
+			DirectX::XMFLOAT3 f3ZoneLimitToCursor = f3OffsetFromCenter / f3StrikeZoneHarfSize;	// ゾーンハーフサイズの地点を+-1.0fとして、カーソル位置を-1~1に正規化する
+			DirectX::XMFLOAT3 f3CusorPos3D = f3ZoneLimitToCursor * ce_fStrikeZoneSizeIn3D;	// 正規化したカーソル位置を3D空間上のゾーンサイズを使って3D空間に投影する
+			DirectX::XMFLOAT3 f3BendedPos = DirectX::XMFLOAT3(ce_fJustmeetPos.x + f3CusorPos3D.x, ce_fJustmeetPos.y + f3CusorPos3D.y, ce_fJustmeetPos.z);	// 求めたカーソル位置は中心からのOffSet座標なので、ゾーンの中心座標を加算する
+			
+			// 投球予測地点への方向でキャッチャーミットまでの距離を移動するVelocityを求める
+			DirectX::XMVECTOR vecZoneCenterPos = DirectX::XMLoadFloat3(&f3BendedPos);	// 投球予測地点
+			vecDir = DirectX::XMVector3Normalize(vecDir);	// 方向を正規化
+			float Az = DirectX::XMVectorGetZ(vecInitPos);	// 投球位置(投手の位置)のZ位置
+			float Bz = DirectX::XMVectorGetZ(vecZoneCenterPos);	// ストライクゾーン上のZ位置
 
-			float dz = Bz - Az;
+			float dz = Bz - Az;	// 直線状の距離を求める
 
-			// t = (targetZ - A.z) / (B.z - A.z)
+			// t = (targetZ - A.z) / (B.z - A.z)として、ABベクトルを通るtargetZ位置ベクトルの長さを求める
 			float t = (-224.0f - Az) / dz;
 
-			// C = A + t(B - A)
+			// C = A + t(B - A)として、targetCの座標ベクトルを求める
 			DirectX::XMVECTOR AB = DirectX::XMVectorSubtract(vecZoneCenterPos, vecInitPos);
 			DirectX::XMVECTOR targetC = DirectX::XMVectorAdd(vecInitPos, DirectX::XMVectorScale(AB, t));
 
 			// 誤差をなくす
 			targetC = DirectX::XMVectorSetZ(targetC, -224.0f);
+
+			// 投球位置からキャッチャー位置までの距離を求める
 			DirectX::XMVECTOR vecLengthOfPitch = targetC - vecInitPos;
+			// その距離をm_fBallTime秒で進み終わるようにVelocityを求める
 			DirectX::XMVECTOR vecVel = DirectX::XMVectorScale(vecLengthOfPitch, 1.0f / (fFPS * m_fBallTime));
 			DirectX::XMStoreFloat3(&m_f3Velocity, vecVel);
 			bRelease = true;
 		}
-
 
 		fTime += 1.0f / fFPS;
 		m_tParam.m_f3Pos += m_f3Velocity;

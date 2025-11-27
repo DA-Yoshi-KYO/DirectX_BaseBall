@@ -31,6 +31,7 @@ CPitching::CPitching()
 	m_tPitcherState.m_fSpeed = 148.0f;
 	m_tPitcherState.m_fStamina = 70.0f;
 	m_tPitcherState.m_fControl = 70.0f;
+	m_tPitcherState.m_eThrowKind = BenderKind::Fourseam;
 	m_tPitcherState.m_nBenderQuality[(int)BenderKind::Fourseam] = 1;
 	m_tPitcherState.m_nBenderQuality[(int)BenderKind::Twoseam] = 2;
 	m_tPitcherState.m_nBenderQuality[(int)BenderKind::Slider] = 3;
