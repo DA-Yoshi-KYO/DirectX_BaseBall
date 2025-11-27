@@ -4,7 +4,7 @@
 #include "Main.h"
 
 CGameObject::CGameObject()
-    : m_bDestroy(false)
+    : m_bDestroy(false), m_bActive(true)
     , m_eTag(Tag::None)
     , m_tID{ "Object", 0 }
 {

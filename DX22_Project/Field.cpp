@@ -19,6 +19,7 @@ constexpr float ce_fHomeToBatterBoxX = 0.0f;	// バッターボックスまでの距離
 constexpr float ce_fHomeToBatterBoxZ = 5.0f;	// バッターボックスまでの距離
 
 CField::CField()
+	: CGameObject()
 {
 
 }

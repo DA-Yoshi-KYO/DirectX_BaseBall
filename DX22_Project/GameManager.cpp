@@ -12,7 +12,30 @@ CGameManager::CGameManager()
     , m_pDefenceManager(nullptr), m_pTeamManager{ nullptr, nullptr }
     , m_ePhase(GamePhase::Batting)
 {
+    if (!m_pFieldManager)
+    {
+        m_pFieldManager = std::make_unique<CFieldManager>();
+    }
+    if (!m_pCountManager)
+    {
+        m_pCountManager = std::make_unique<CCountManager>();
+    }
+    if (!m_pAttackManager)
+    {
+        m_pAttackManager = std::make_unique<CAttackManager>();
+    }
+    if (!m_pDefenceManager)
+    {
+        m_pDefenceManager = std::make_unique<CDefenceManager>();
+    }
 
+    for (int i = 0; i < 2; i++)
+    {
+        if (!m_pTeamManager[i])
+        {
+            m_pTeamManager[i] = std::make_unique<CTeamDirector>(i + 1);
+        }
+    }
 }
 
 CGameManager::~CGameManager()
@@ -22,33 +45,10 @@ CGameManager::~CGameManager()
 
 void CGameManager::Init()
 {
-    if (!m_pCountManager)
-    {
-        m_pCountManager = std::make_unique<CCountManager>();
-        m_pCountManager->Init();
-    }
-    if (!m_pAttackManager)
-    {
-        m_pAttackManager = std::make_unique<CAttackManager>();
-        m_pAttackManager->Init();
-    }
-    if (!m_pDefenceManager)
-    {
-        m_pDefenceManager = std::make_unique<CDefenceManager>();
-        m_pDefenceManager->Init();
-    }
-    if (!m_pFieldManager)
-    {
-        m_pFieldManager = std::make_unique<CFieldManager>();
-        m_pFieldManager->Init();
-    }
-    for (int i = 0; i < 2; i++)
-    {
-        if (!m_pTeamManager[i])
-        {
-            m_pTeamManager[i] = std::make_unique<CTeamDirector>(i + 1);
-        }
-    }
+    m_pFieldManager->Init();
+    m_pCountManager->Init();
+    m_pAttackManager->Init();
+    m_pDefenceManager->Init();
 }
 
 void CGameManager::Update()

@@ -22,9 +22,13 @@ void CDefenceManager::Init()
 
 	m_pPitching = std::make_unique<CPitching>();
 	m_pPitching->Init();
+	m_pFielding = std::make_unique<CFielding>();
+	m_pFielding->Init();
+	m_pFielding->SetFielderData(m_nPlayerNo);
 }
 
 void CDefenceManager::Update()
 {
 	m_pPitching->Update(m_nPlayerNo);
+	m_pFielding->Update(m_nPlayerNo);
 }

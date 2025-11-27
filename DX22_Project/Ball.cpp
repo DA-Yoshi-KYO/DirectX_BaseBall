@@ -15,7 +15,8 @@ constexpr  DirectX::XMFLOAT3 ce_fInplayBallSize = { 2.0f,2.0f,2.0f };
 constexpr int ce_nBallRotateSec = 220 / 60;
 
 CBall::CBall()
-	: m_bFryBall(true), m_bPitched(false)
+	: CGameObject()
+	, m_bFryBall(true), m_bPitched(false)
 	, m_f3Velocity{}, m_fBallTime(0.0f)
 {
 
@@ -73,7 +74,6 @@ void CBall::OnCollision(CCollisionBase* other, std::string thisTag, Collision::R
 
 	if (dynamic_cast<CField*>(other->GetGameObject()) && thisTag == "BallLine")
 	{
-		m_bFryBall = true;
 		// フェンスを越えていたらホームラン
 		if (m_tParam.m_f3Pos.y >= ce_fFenceHeight + WORLD_AJUST && otherTag == "HomeRunFence")
 		{
@@ -141,9 +141,14 @@ void CBall::UpdateBatting()
 		{
 			DirectX::XMFLOAT3 f3Dir = ce_fJustmeetPos - ce_fBallPos;
 			DirectX::XMVECTOR vecDir = DirectX::XMLoadFloat3(&f3Dir);
+			vecDir = DirectX::XMVector3Normalize(vecDir);	// 方向を正規化
 			DirectX::XMVECTOR vecInitPos = DirectX::XMLoadFloat3(&ce_fBallPos);
 
 			// スクリーン上の投球予測地点座標から3D座標に投影する
+			DirectX::XMFLOAT3 f3Up = CCamera::GetInstance()->GetUp();
+			DirectX::XMVECTOR vecRight = DirectX::XMVector3Normalize(DirectX::XMVector3Cross(DirectX::XMLoadFloat3(&f3Up), vecDir));
+			DirectX::XMFLOAT3 f3Right;
+			DirectX::XMStoreFloat3(&f3Right, vecRight);
 			CPitchingCursor* pCursor = GetScene()->GetGameObject<CPitchingCursor>();
 			DirectX::XMFLOAT3 f3PredPos = pCursor->GetPredPos();	// スクリーン上の投球予測点	
 			DirectX::XMFLOAT3 f3OffsetFromCenter = ce_fStrikeZonePos - f3PredPos;	// ストライクゾーン中央からの距離を求める
@@ -151,10 +156,10 @@ void CBall::UpdateBatting()
 			DirectX::XMFLOAT3 f3ZoneLimitToCursor = f3OffsetFromCenter / f3StrikeZoneHarfSize;	// ゾーンハーフサイズの地点を+-1.0fとして、カーソル位置を-1~1に正規化する
 			DirectX::XMFLOAT3 f3CusorPos3D = f3ZoneLimitToCursor * ce_fStrikeZoneSizeIn3D;	// 正規化したカーソル位置を3D空間上のゾーンサイズを使って3D空間に投影する
 			DirectX::XMFLOAT3 f3BendedPos = DirectX::XMFLOAT3(ce_fJustmeetPos.x + f3CusorPos3D.x, ce_fJustmeetPos.y + f3CusorPos3D.y, ce_fJustmeetPos.z);	// 求めたカーソル位置は中心からのOffSet座標なので、ゾーンの中心座標を加算する
-			
+			f3BendedPos.x *= f3Right.x;
+
 			// 投球予測地点への方向でキャッチャーミットまでの距離を移動するVelocityを求める
 			DirectX::XMVECTOR vecZoneCenterPos = DirectX::XMLoadFloat3(&f3BendedPos);	// 投球予測地点
-			vecDir = DirectX::XMVector3Normalize(vecDir);	// 方向を正規化
 			float Az = DirectX::XMVectorGetZ(vecInitPos);	// 投球位置(投手の位置)のZ位置
 			float Bz = DirectX::XMVectorGetZ(vecZoneCenterPos);	// ストライクゾーン上のZ位置
 
@@ -212,11 +217,15 @@ void CBall::UpdateInPlay()
 	m_f3Velocity.y *= 0.99f;
 	m_f3Velocity.z *= 0.99f;
 
+
+	m_tParam.m_f3Pos += m_f3Velocity;
+
+
 	m_f3Velocity.y -= MSEC(GRAVITY);
  
 	if (m_tParam.m_f3Pos.y < 0.0f + WORLD_AJUST + ce_fGroundY)
 	{
-		m_bFryBall = true;
+		m_bFryBall = false;
 		//if(CFielding::GetChatchPattern() == CFielding::ChatchPattern::NotChatch)m_bFry = false;
 		m_f3Velocity.x *= 0.95f;
 		m_f3Velocity.y *= 0.5f;

@@ -61,16 +61,13 @@ public:
 	struct Info
 	{
 		Type type;
-		union
-		{
-			Box box;
-			Sphere sphere;
-			Plane plane;
-			Ray ray;
-			Line line;
-			Point point;
-			Triangle triangle;
-		};
+		Box box;
+		Sphere sphere;
+		Plane plane;
+		Ray ray;
+		Line line;
+		Point point;
+		Triangle triangle;
 	};
 
 	//--- “–‚½‚è”»’è‚ÌŒ‹‰Ê 

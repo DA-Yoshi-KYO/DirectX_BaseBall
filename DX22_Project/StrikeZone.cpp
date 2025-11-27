@@ -2,7 +2,7 @@
 #include "SpriteRenderer.h"
 
 CStrikeZone::CStrikeZone()
-	: m_Collision{}
+	: CGameObject(), m_Collision{}
 {
 	// ƒpƒ‰ƒ[ƒ^‚Ì‰Šú‰»
 	m_tParam.m_f3Pos = ce_fStrikeZonePos;

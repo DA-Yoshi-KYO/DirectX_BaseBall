@@ -15,13 +15,13 @@ CSceneGame::~CSceneGame()
 
 void CSceneGame::Init()
 {
-	CGameManager::GetInstance()->Init();
-	CCamera::GetInstance()->SetCameraKind(CameraKind::CAM_BATTER);
+    CGameManager::GetInstance()->Init();
+    CCamera::GetInstance()->SetCameraKind(CameraKind::CAM_BATTER);
 }
 
 void CSceneGame::Update()
 {
-	CGameManager::GetInstance()->Update();
-	CScene::Update();
+    CGameManager::GetInstance()->Update();
+    CScene::Update();
 }
 

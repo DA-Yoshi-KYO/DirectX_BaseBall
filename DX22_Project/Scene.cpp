@@ -22,15 +22,15 @@ void CScene::Init()
 
 void CScene::Uninit()
 {
-	for (auto list : m_pGameObject_List)
-	{
+    for (auto list : m_pGameObject_List)
+    {
         for (auto obj : list)
         {
             obj->Uninit();
             delete obj;
         }
         list.clear();
-	}
+    }
     CPostProcessChain::GetInstance()->ClearPostProcessList();
     CDebugSystem::GetInstance()->ReleaseGameObject();
 

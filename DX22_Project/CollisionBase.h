@@ -62,8 +62,8 @@ public:
     Collision::Info GetInfo() { return m_tCollisionInfo; }
 
 protected:
-    bool m_bActive;     // 衝突判定が有効かどうか
-    std::string m_sTag; // 衝突判定識別用タグ
-    Collision::Info m_tCollisionInfo;
+    bool m_bActive = true;     // 衝突判定が有効かどうか
+    std::string m_sTag = ""; // 衝突判定識別用タグ
+    Collision::Info m_tCollisionInfo = {};
 
 };

@@ -4,7 +4,9 @@
 constexpr int ce_nSheetSplit = 5;
 
 CReleasePoint::CReleasePoint()
+	: CGameObject()
 {
+	m_tParam.m_f3Size = DirectX::XMFLOAT3();
 	m_tParam.m_f4Color = {0.0f,0.0f,1.0f,0.5f};
 	m_tParam.m_f2UVPos = { 1.0f / (float)ce_nSheetSplit,2.0f / (float)ce_nSheetSplit };
 	m_tParam.m_f2UVSize = { 1.0f / (float)ce_nSheetSplit,1.0f / (float)ce_nSheetSplit };

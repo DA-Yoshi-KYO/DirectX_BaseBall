@@ -31,7 +31,7 @@ constexpr DirectX::XMFLOAT3 ce_fBenderValue[(int)CPitching::BenderKind::Max] =
 };
 
 CPitchingCursor::CPitchingCursor()
-	: m_bMove{ true }
+	: CGameObject(), m_bMove{ true }
 {
 	CSpriteRenderer* pRenderer = AddComponent<CSpriteRenderer>();
 	pRenderer->Load(PATH_TEX("Ball.png"));

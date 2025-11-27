@@ -14,11 +14,13 @@ public:
 	void Update() override;
 	void ResetPos();
 	void OnCollision(CCollisionBase* other, std::string thisTag, Collision::Result result) override;
-	void SetData(CFielderData* fielder, Positions position);
+	void SetData(CFielderData* fielder);
+	void SetData(FielderData data);
 	bool SetBaseCoverFrag(int baseIndex, bool frag);
+	void SetOparation(bool oparation) { m_bIsOparation = oparation; }
 
 private:
-	CFielderData* m_pFielderData;
+	FielderData m_tFielderData;
 	Positions m_ePosition;
 	bool m_bIsOparation;
 	bool m_bChatch;

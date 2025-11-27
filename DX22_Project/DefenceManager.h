@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Pitching.h"
+#include "Fielding.h"
 #include <memory>
 
 class CDefenceManager
@@ -17,5 +18,6 @@ public:
 private:
 	int m_nPlayerNo;
 	std::unique_ptr<CPitching> m_pPitching;
+	std::unique_ptr<CFielding> m_pFielding;
 
 };

@@ -6,7 +6,6 @@
 #include "GameManager.h"
 #include "FielderData.h"
 
-constexpr float ce_fJustTyming = 139.0f;	// ジャストミートになるタイミング
 constexpr float ce_fHittingTyming = 4.0f;	// バットに当たれるタイミング(+-)
 constexpr float ce_fAngleMax = 60.0f;		// x方向打球角度の限界(+-)
 
@@ -23,7 +22,7 @@ constexpr float ce_fAngleMax = 60.0f;		// x方向打球角度の限界(+-)
 
 
 CBatting::CBatting()
-	: m_bBatting(false), m_fMoveDirection{}
+	: m_bBatting(false),m_bSwing(false), m_fMoveDirection{}
 	, m_fPower(0.0f), m_nTakingBatterNo{1,1}
 {
 
@@ -36,10 +35,10 @@ CBatting::~CBatting()
 
 void CBatting::Update(int AttackPlayer)
 {
-	DirectX::XMFLOAT3 fBallPos = GetScene()->GetGameObject<CBall>()->GetPos();
+	CScene* pScene = GetScene();
+	DirectX::XMFLOAT3 fBallPos = pScene->GetGameObject<CBall>()->GetPos();
 	CGameManager* pGameManager = CGameManager::GetInstance();
 	CTeamDirector* pTeamDirector = pGameManager->GetTeamManager(AttackPlayer);
-	CScene* pScene = GetScene();
 
 	// ピッチャーがボールを受け取ったらスイング可能にする
 	if (fBallPos.z == ce_fBallPos.z + WORLD_AJUST && CGameManager::GetInstance()->GetPhase() == GamePhase::Batting)
@@ -51,7 +50,7 @@ void CBatting::Update(int AttackPlayer)
 	// 投球中にスイングを掛けていない時にスイングが出来る
 	if (IsKeyTrigger(AttackPlayer,Input::A) && !m_bSwing)
 	{
-		float fTyming = ce_fJustTyming + WORLD_AJUST - fBallPos.z;	// どのタイミングで振ったか(0がジャスト、マイナスが遅れている、プラスが早い)
+		float fTyming = fBallPos.z - ce_fJustmeetPos.z;	// どのタイミングで振ったか(0がジャスト、マイナスが遅れている、プラスが早い)
 		float fAngle = 30.0f;		// 打球角度
 		float fDirection = 0.0f;	// 打球方向
 		float fShotPower = 0.0f;	// ショットの強さ
@@ -103,7 +102,7 @@ void CBatting::Update(int AttackPlayer)
 				CPitchingCursor* pPitchingCursor = pScene->GetGameObject<CPitchingCursor>();
 				batting.pos = pBattingCursor->GetPos();
 				batting.radius = pBattingCursor->GetSize().x;
-				pitching.pos = pPitchingCursor->GetPos();
+				pitching.pos = pPitchingCursor->GetPredPos();
 				pitching.radius = pPitchingCursor->GetSize().x;
 
 				Collision::Result2D result = Collision::Hit2D(pitching,batting);
@@ -146,7 +145,7 @@ void CBatting::Update(int AttackPlayer)
 					// x計算のsinfに-を付けると左バッターになる
 					m_fMoveDirection.x = cosf(fAngle) * sinf(fDirection);
 					m_fMoveDirection.y = sinf(fAngle);                    
-					m_fMoveDirection.z = -cosf(fAngle) * fabs(cosf(fDirection));
+					m_fMoveDirection.z = cosf(fAngle) * fabs(cosf(fDirection));
 
 					// 進行方向ベクトルを正規化し、スケーリングすることで打球の強さを決める
 					DirectX::XMVECTOR vecMove = DirectX::XMLoadFloat3(&m_fMoveDirection);

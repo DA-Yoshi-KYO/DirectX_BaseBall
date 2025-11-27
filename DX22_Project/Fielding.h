@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Fielder.h"
-#include "FielderData.h"
+#include <array>
 
 class CFielding
 {
@@ -10,8 +10,9 @@ public:
 	~CFielding();
 	void Init();
 	void Update(int DefencePlayer);
+	void SetFielderData(int DefencePlayer);
 
 private:
-	CFielder* m_pFielder[(int)Positions::Max];
+	std::array<CFielder*, (int)Positions::Max> m_pFielder;
 
 };

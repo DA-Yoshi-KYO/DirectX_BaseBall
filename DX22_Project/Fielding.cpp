@@ -1,4 +1,7 @@
 #include "Fielding.h"
+#include "Main.h"
+#include "GameManager.h"
+#include "Oparation.h"
 
 // ==============================
 //    ÉÅÉÇ
@@ -10,22 +13,79 @@
 // Throwing0.5f...å®óÕG
 
 CFielding::CFielding()
+    : m_pFielder{}
 {
 
 }
 
 CFielding::~CFielding()
 {
+
 }
 
 void CFielding::Init()
 {
-	
+    CScene* pScene = GetScene();
+    
+    for (int i = 0; i < m_pFielder.size(); i++)
+    {
+        m_pFielder[i] = pScene->AddGameObject<CFielder>("Fielder", Tag::GameObject);
+    }
+
 }
 
 void CFielding::Update(int DefencePlayer)
 {
+    if (CGameManager::GetInstance()->GetPhase() != GamePhase::InPlay) return;
+    std::list<CFielder*> fielderList;
+    for (int i = 0; i < m_pFielder.size(); i++)
+    {
+        fielderList.push_back(m_pFielder[i]);
+        m_pFielder[i]->SetOparation(false);
+        for (int j = 0; j < int(BaseKind::Max); j++)
+        {
+            m_pFielder[i]->SetBaseCoverFrag(j, false);
+        }
+    }
 
+    auto baseList = GetScene()->GetSameGameObject<CBase>();
+
+    CFielder* pMostBallNear = nullptr;
+    DirectX::XMVECTOR mostNear = DirectX::XMVectorSet(FLT_MAX, FLT_MAX, FLT_MAX, 0.0f);
+    CBall* pBall = GetScene()->GetGameObject<CBall>();
+    for (auto itr : fielderList)
+    {
+        DirectX::XMFLOAT3 distance = pBall->GetPos() - itr->GetPos();
+        DirectX::XMVECTOR vecDistance = DirectX::XMVector3Length(DirectX::XMLoadFloat3(&distance));
+        if (DirectX::XMVector3LessOrEqual(vecDistance, mostNear))
+        {
+            mostNear = vecDistance;
+            pMostBallNear = itr;
+        }
+    }
+    pMostBallNear->SetOparation(true);
+}
+
+void CFielding::SetFielderData(int DefencePlayer)
+{
+    CTeamDirector* pTeamDirector = CGameManager::GetInstance()->GetTeamManager(DefencePlayer);
+
+    for (auto itr : pTeamDirector->GetTeam()->GetStartingLineup())
+    {
+        PlayerData data = itr->GetPlayerData();
+
+        if (data.m_eEntryPosition != Positions::Max)
+        {
+            m_pFielder[int(data.m_eEntryPosition)]->SetData(itr);
+            m_pFielder[int(data.m_eEntryPosition)]->ResetPos();
+        }
+    }
+    FielderData data{};
+    data.m_eDefence = Quality::D;
+    data.m_eThrowing = Quality::D;
+    data.m_eChatch = Quality::D;
+    m_pFielder[int(Positions::Pitcher)]->SetData(data);
+    m_pFielder[int(Positions::Pitcher)]->ResetPos();
 }
 
 //

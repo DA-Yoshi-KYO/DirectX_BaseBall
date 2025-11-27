@@ -4,7 +4,8 @@
 constexpr DirectX::XMFLOAT3 ce_fPitcherPos = { WORLD_AJUST, WORLD_AJUST - 8.0f, WORLD_AJUST + 65.0f };	// グラウンドにいるピッチャーの位置(基準値)
 
 CBase::CBase()
-    : m_eBaseKind(BaseKind::First), m_bIsBaseCovered(false)
+    : CGameObject()
+    , m_eBaseKind(BaseKind::First), m_bIsBaseCovered(false)
 {
 
 }
@@ -21,7 +22,7 @@ void CBase::Init()
 
 void CBase::Init(BaseKind kind)
 {
-    CModelRenderer* pRenderer = AddComponent<CModelRenderer>();
+   // CModelRenderer* pRenderer = AddComponent<CModelRenderer>();
     m_eBaseKind = kind;
 
     switch (m_eBaseKind)
@@ -31,32 +32,32 @@ void CBase::Init(BaseKind kind)
         m_tParam.m_f3Size = { 1.5f,0.5f,1.5f };
         m_tParam.m_f3Rotate = { 0.0f,0.0f,0.0f };
        
-        pRenderer->Load(PATH_MODEL("HomeBase.obj"));
+       // pRenderer->Load(PATH_MODEL("HomeBase.obj"));
         break;
     case BaseKind::First:
        m_tParam.m_f3Pos = { ce_fPitcherPos.x - 70.0f,0.0f,ce_fPitcherPos.z };
        m_tParam.m_f3Rotate = { 0.0f,DirectX::XMConvertToRadians(45.0f),0.0f };
        m_tParam.m_f3Size = { 3.0f,3.0f,3.0f };
        
-       pRenderer->Load(PATH_MODEL("base.obj"));
+     //  pRenderer->Load(PATH_MODEL("base.obj"));
         break;
     case BaseKind::Second:
        m_tParam.m_f3Pos = { ce_fPitcherPos.x ,0.0f,ce_fPitcherPos.z - 75.0f };
        m_tParam.m_f3Size = { 3.0f,3.0f,3.0f };
        m_tParam.m_f3Rotate = { 0.0f,DirectX::XMConvertToRadians(45.0f),0.0f };
         
-       pRenderer->Load(PATH_MODEL("base.obj"));
+  //     pRenderer->Load(PATH_MODEL("base.obj"));
         break;
     case BaseKind::Third:
        m_tParam.m_f3Pos = { ce_fPitcherPos.x + 70.0f, 0.0f,ce_fPitcherPos.z };
        m_tParam.m_f3Size = { 3.0f,3.0f,3.0f };
        m_tParam.m_f3Rotate = { 0.0f,DirectX::XMConvertToRadians(45.0f),0.0f };
 
-        pRenderer->Load(PATH_MODEL("base.obj"));
+ //       pRenderer->Load(PATH_MODEL("base.obj"));
         break;
     default:
         break;
     }
-    pRenderer->LoadVertexShader(PATH_SHADER("VS_Object.cso"));
-    pRenderer->LoadPixelShader(PATH_SHADER("PS_TexColor.cso"));
+  //  pRenderer->LoadVertexShader(PATH_SHADER("VS_Object.cso"));
+    //pRenderer->LoadPixelShader(PATH_SHADER("PS_TexColor.cso"));
 }
