@@ -196,6 +196,8 @@ void CPitchingCursor::Update()
 
 void CPitchingCursor::Draw()
 {
+	if (CGameManager::GetInstance()->GetPhase() != GamePhase::Batting) return;
+
 	m_tParam = m_tBallParam;
 	CGameObject::Draw();
 

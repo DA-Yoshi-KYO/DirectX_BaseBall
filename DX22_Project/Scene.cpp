@@ -107,7 +107,7 @@ void CScene::Draw()
     pRTV->Clear(clear);
     SetRenderTargets(1, &pRTV, pDSV);
 
-    DrawGrid(); // グリッドの描画
+    // DrawGrid(); // グリッドの描画
 
     // シーンの描画
     for (auto& list : m_pGameObject_List)

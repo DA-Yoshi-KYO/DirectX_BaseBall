@@ -10,6 +10,7 @@ public:
 	~CBattingCursor();
 	void Init() override;
 	void Update() override;
+	void Draw() override;
 private:
 	bool m_bMove;	//  ƒJ[ƒ\ƒ‹‚ğ“®‚©‚¹‚é‚©
 };

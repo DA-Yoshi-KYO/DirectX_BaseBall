@@ -12,6 +12,7 @@ public:
 	~CStrikeZone();
 	void Init() override;
 	void Update() override;
+	void Draw() override;
 	
 public:
 	Collision::Info2D GetCollision();

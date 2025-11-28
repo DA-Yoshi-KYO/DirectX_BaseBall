@@ -10,6 +10,7 @@ public:
 	~CPitchingCircle();
 	void Init() override;
 	void Update() override;
+	void Draw() override;
 	void ResetInitSize();
 	void StartScaleDown();
 	void Pitched();

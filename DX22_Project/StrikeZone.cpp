@@ -1,5 +1,6 @@
 #include "StrikeZone.h"
 #include "SpriteRenderer.h"
+#include "GameManager.h"
 
 CStrikeZone::CStrikeZone()
 	: CGameObject(), m_Collision{}
@@ -35,6 +36,13 @@ void CStrikeZone::Update()
 	// “–‚½‚è”»’èî•ñ‚ÌXV
 	m_Collision.square.pos = m_tParam.m_f3Pos;
 	m_Collision.square.size = m_tParam.m_f3Size;
+}
+
+void CStrikeZone::Draw()
+{
+	if (CGameManager::GetInstance()->GetPhase() != GamePhase::Batting) return;
+
+	CGameObject::Draw();
 }
 
 Collision::Info2D CStrikeZone::GetCollision()

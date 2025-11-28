@@ -1,6 +1,6 @@
 #include "PitchingCircle.h"
 #include "SpriteRenderer.h"
-
+#include "GameManager.h"
 
 constexpr float ce_fCircleTime = 0.5f;		// ピッチングサークルが縮むまでの時間(秒)
 
@@ -35,6 +35,13 @@ void CPitchingCircle::Update()
 		m_tParam.m_f3Size.y -= (ce_fPitchingCircleFirstSize.y - ce_fPitchingCircleEndSize.y) / (ce_fCircleTime * fFPS);
 	}
 	CGameObject::Update();
+}
+
+void CPitchingCircle::Draw()
+{
+	if (CGameManager::GetInstance()->GetPhase() != GamePhase::Batting) return;
+
+	CGameObject::Draw();
 }
 
 void CPitchingCircle::ResetInitSize()

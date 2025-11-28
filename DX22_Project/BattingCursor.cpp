@@ -71,3 +71,10 @@ void CBattingCursor::Update()
 	//m_Collision.circle.pos = m_tParam.m_f3Pos;
 	//m_Collision.circle.radius = m_tParam.size.x / 4.0f;
 }
+
+void CBattingCursor::Draw()
+{
+	if (CGameManager::GetInstance()->GetPhase() != GamePhase::Batting) return;
+
+	CGameObject::Draw();
+}
