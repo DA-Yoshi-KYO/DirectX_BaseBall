@@ -1,5 +1,6 @@
 ﻿#include "Collision.h"
 #include "Geometory.h"
+#include "Camera.h"
 #undef min
 
 Collision::Result Collision::Hit(Info a, Info b)
@@ -495,4 +496,9 @@ void Collision::DrawCollision(Collision::Info collision)
     default:
         break;
     }
+
+    CCamera* pMainCamera = CCamera::GetInstance();
+    Geometory::SetView(pMainCamera->GetViewMatrix());
+    Geometory::SetProjection(pMainCamera->GetProjectionMatrix());
+    Geometory::DrawLines();
 }

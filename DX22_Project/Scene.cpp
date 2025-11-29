@@ -134,9 +134,7 @@ std::array<std::list<CGameObject*>, (int)Tag::Max> CScene::GetGameObjectList()
 
 void CScene::DrawGrid()
 {
-    CCamera* pMainCamera = CCamera::GetInstance();
-    Geometory::SetView(pMainCamera->GetViewMatrix());
-    Geometory::SetProjection(pMainCamera->GetProjectionMatrix());
+
 
     // グリッド
     DirectX::XMFLOAT4 lineColor(0.5f, 0.5f, 0.5f, 1.0f);

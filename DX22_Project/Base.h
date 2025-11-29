@@ -18,6 +18,7 @@ public:
 	~CBase();
 	void Init() override;
 	void Init(BaseKind kind);
+	void Update() override;
 	BaseKind GetKind() { return m_eBaseKind; }
 	bool IsBaseCover() { return m_bIsBaseCovered; }
 	void SetBaseCover(bool isBaseCover) { m_bIsBaseCovered = isBaseCover; }

@@ -99,6 +99,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		else
 		{
 			time = timeGetTime();//ミリ秒 / FPS
+			// 1フレーム経過
 			if (time - oldTime >= 1000 / 60)
 			{
 				Update();
@@ -107,6 +108,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 #ifdef _DEBUG	//デバッグ時のみ実行
 				//処理回数をカウント
 				fpsCount++;
+
 				//前回の実行から一秒以上経過したら
 				if (time - fpsTime >= 1000)
 				{
