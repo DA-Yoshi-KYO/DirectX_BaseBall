@@ -5,6 +5,7 @@
 #include "Ball.h"
 #include "GameManager.h"
 #include "Input.h"
+#include "Oparation.h"
 
 constexpr float ce_fDifencePower = 0.2f;	// ç”õˆÚ“®‘¬“x
 constexpr float ce_fDifence = 0.4f;			// ç”õ‘€ì‘¬“x
@@ -16,7 +17,7 @@ CFielder::CFielder()
     , m_bIsOparation(true), m_bChatch(false)
     , m_bMostNearToBase{}, m_pCollision{}
 {
-        m_tParam.m_f3Size = { 5.0f,5.0f,5.0f };
+    m_tParam.m_f3Size = { 5.0f,5.0f,5.0f };
 }
 
 CFielder::~CFielder()
@@ -126,14 +127,25 @@ void CFielder::ResetPos()
 void CFielder::OnCollision(CCollisionBase* other, std::string thisTag, Collision::Result result)
 {
     CBall* pBall = dynamic_cast<CBall*>(other->GetGameObject());
-    if (!pBall) return;
-    m_bChatch = true;
-    m_bIsOparation = true;
-    pBall->SetActive(false);
-    bool isFry = pBall->GetIsFryBall();
-    if (isFry)
+    CBase* pBase = dynamic_cast<CBase*>(other->GetGameObject());
+
+    if (pBall)
     {
-        CGameManager::GetInstance()->GetCountManager()->AddOutCount();
+        m_bChatch = true;
+        m_bIsOparation = true;
+        pBall->SetActive(false);
+        bool isFry = pBall->GetIsFryBall();
+        if (isFry)
+        {
+            CGameManager::GetInstance()->GetCountManager()->AddOutCount();
+        }
+        return;
+    }
+    if (pBase)
+    {
+        pBase->SetBaseCover(true);
+
+        return;
     }
 }
 
@@ -169,31 +181,14 @@ bool CFielder::SetBaseCoverFrag(int baseIndex, bool frag)
 
 void CFielder::BaseCover()
 {
-    std::list<CBase*> pField = GetScene()->GetSameGameObject<CBase>();
+    std::list<CBase*> pBase = GetScene()->GetSameGameObject<CBase>();
     int index = 0;
-    for (auto itr : pField)
+    for (auto itr : pBase)
     {
-        if (!m_bMostNearToBase[index]) continue;
+        if (itr->IsBaseCover()) continue;
 
         DirectX::XMFLOAT3 fBasePos = itr->GetPos();
-        DirectX::XMFLOAT3 fBaseSize = itr->GetSize();
-        Collision::Info2D member;
-        Collision::Info2D base;
-        member.type = Collision::eSquare;
-        member.square.pos = { m_tParam.m_f3Pos.x,m_tParam.m_f3Pos.z,0.0f };
-        member.square.size = { m_tParam.m_f3Size.x,m_tParam.m_f3Size.z,0.0f };
-        base.type = Collision::eSquare;
-        base.square.pos = { fBasePos.x,fBasePos.z,0.0f };
-        base.square.size = { fBaseSize.x,fBaseSize.z,0.0f };
-        if (Collision::Hit2D(member, base).isHit)
-        {
-            itr->SetBaseCover(true);
-            continue;
-        }
-        else
-        {
-            itr->SetBaseCover(false);
-        }
+        
         DirectX::XMVECTOR vecBasePos = DirectX::XMLoadFloat3(&fBasePos);
         DirectX::XMVECTOR vecMemberPos = DirectX::XMLoadFloat3(&m_tParam.m_f3Pos);
         DirectX::XMVECTOR vecDirection = DirectX::XMVectorSubtract(vecBasePos, vecMemberPos);
@@ -223,24 +218,23 @@ void CFielder::Throwing(BaseKind kind)
     CGameManager* pManager = CGameManager::GetInstance();
     CTeamDirector* pTeamManager = pManager->GetTeamManager(pManager->GetDefenceManager()->GetPlayerNo());
 
-    DirectX::XMFLOAT3 fBaseCoverPos = m_tParam.m_f3Pos;
-    DirectX::XMFLOAT3 fBallPos = pBall->GetPos();
-    DirectX::XMVECTOR vecBallPos = DirectX::XMLoadFloat3(&fBallPos);
-    DirectX::XMVECTOR vecBaseCoverPos = DirectX::XMLoadFloat3(&fBaseCoverPos);
-    DirectX::XMVECTOR vecDirection = DirectX::XMVectorSubtract(vecBaseCoverPos, vecBallPos);
-    DirectX::XMVECTOR vecThrowLength = DirectX::XMVector3Length(vecDirection);
+    DirectX::XMFLOAT3 fDir = pBase->GetPos() - m_tParam.m_f3Pos;
+
+    DirectX::XMVECTOR vecDistance = DirectX::XMLoadFloat3(&fDir);
+    DirectX::XMVECTOR vecThrowLength = DirectX::XMVector3Length(vecDistance);
     float fThrowAngle = DirectX::XMVectorGetX(vecThrowLength);
     fThrowAngle /= 400.0f;
 
-    vecDirection = DirectX::XMVector3Normalize(vecDirection);
-    vecBallPos = DirectX::XMVectorAdd(vecBallPos, DirectX::XMVectorScale(vecDirection, 5.0f));
+    DirectX::XMVECTOR vecDirection = DirectX::XMVector3Normalize(vecDistance);
+    DirectX::XMVECTOR vecBallPos = DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&m_tParam.m_f3Pos), DirectX::XMVectorScale(vecDirection, m_tParam.m_f3Size.x));
     DirectX::XMFLOAT3 fNewBallPos;
     DirectX::XMStoreFloat3(&fNewBallPos, vecBallPos);
     pBall->SetPos(fNewBallPos);
-    float fThrowPow = int(pTeamManager->GetTeam()->GetPositionFielder(m_ePosition)->GetFielderData().m_eThrowing) * (3.5f / 7.0f) + 0.5f;
-    vecDirection = DirectX::XMVectorScale(vecDirection, ce_fThrowingPower);
+    
+    float fThrowPow = int(m_tFielderData.m_eThrowing) * (3.5f / 7.0f) + 0.5f;
+    DirectX::XMVECTOR vecVelocity = DirectX::XMVectorScale(vecDirection, ce_fThrowingPower);
     DirectX::XMFLOAT3 fVelocity;
-    DirectX::XMStoreFloat3(&fVelocity, vecDirection);
+    DirectX::XMStoreFloat3(&fVelocity, vecVelocity);
 
     fVelocity.y = fThrowAngle;
     pBall->SetVelocity(fVelocity);
