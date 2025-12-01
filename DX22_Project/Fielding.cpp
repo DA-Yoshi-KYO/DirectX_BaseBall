@@ -37,33 +37,58 @@ void CFielding::Init()
 void CFielding::Update(int DefencePlayer)
 {
     if (CGameManager::GetInstance()->GetPhase() != GamePhase::InPlay) return;
-    std::list<CFielder*> fielderList;
+    m_pActiveFielderList.clear();
     for (int i = 0; i < m_pFielder.size(); i++)
     {
-        fielderList.push_back(m_pFielder[i]);
-        m_pFielder[i]->SetOparation(false);
+        m_pActiveFielderList.push_back(m_pFielder[i]);
+        m_pActiveFielderList[i]->SetOparation(false);
         for (int j = 0; j < int(BaseKind::Max); j++)
         {
-            m_pFielder[i]->SetBaseCoverFrag(j, false);
+            m_pActiveFielderList[i]->SetBaseCoverFrag(j, false);
         }
     }
 
-    auto baseList = GetScene()->GetSameGameObject<CBase>();
-
-    CFielder* pMostBallNear = nullptr;
+    CFielder* pMostNear = nullptr;
     DirectX::XMVECTOR mostNear = DirectX::XMVectorSet(FLT_MAX, FLT_MAX, FLT_MAX, 0.0f);
     CBall* pBall = GetScene()->GetGameObject<CBall>();
-    for (auto itr : fielderList)
+    int nMostNearIndex = 0;
+    for (int i = 0; i < m_pActiveFielderList.size(); i++)
     {
-        DirectX::XMFLOAT3 distance = pBall->GetPos() - itr->GetPos();
+        DirectX::XMFLOAT3 distance = pBall->GetPos() - m_pActiveFielderList[i]->GetPos();
         DirectX::XMVECTOR vecDistance = DirectX::XMVector3Length(DirectX::XMLoadFloat3(&distance));
         if (DirectX::XMVector3LessOrEqual(vecDistance, mostNear))
         {
             mostNear = vecDistance;
-            pMostBallNear = itr;
+            pMostNear = m_pActiveFielderList[i];
+            nMostNearIndex = i;
         }
     }
-    pMostBallNear->SetOparation(true);
+    pMostNear->SetOparation(true);
+    m_pActiveFielderList.erase(m_pActiveFielderList.begin() + nMostNearIndex);
+    
+    auto baseList = GetScene()->GetSameGameObject<CBase>();
+    nMostNearIndex = 0;
+    int nBaseIndex = 0;
+    for (auto itr : baseList)
+    {
+        mostNear = DirectX::XMVectorSet(FLT_MAX, FLT_MAX, FLT_MAX, 0.0f);
+        for (int i = 0; i < m_pActiveFielderList.size(); i++)
+        {
+
+            DirectX::XMFLOAT3 distance = itr->GetPos() - m_pActiveFielderList[i]->GetPos();
+            DirectX::XMVECTOR vecDistance = DirectX::XMVector3Length(DirectX::XMLoadFloat3(&distance));
+            if (DirectX::XMVector3LessOrEqual(vecDistance, mostNear))
+            {
+                mostNear = vecDistance;
+                pMostNear = m_pActiveFielderList[i];
+                nMostNearIndex = i;
+            }
+
+        }
+        pMostNear->SetBaseCoverFrag(nBaseIndex, true);
+        nBaseIndex++;
+        m_pActiveFielderList.erase(m_pActiveFielderList.begin() + nMostNearIndex);
+    }
 }
 
 void CFielding::SetFielderData(int DefencePlayer)

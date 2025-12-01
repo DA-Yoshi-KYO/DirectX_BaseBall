@@ -42,6 +42,7 @@ public:
 	virtual void Init();
 	virtual void Uninit();
 	virtual void Update();
+	virtual void LateUpdate();
 	virtual void WriteBuffer();
 	virtual void Draw();
 
@@ -54,7 +55,7 @@ public:
 	/// オブジェクトが衝突された時の処理
 	/// </summary>
 	virtual void OnCollision(CCollisionBase* other, std::string thisTag, Collision::Result result);
-
+	
 	/// <summary>
 	/// オブジェクトを破棄する
 	/// </summary>

@@ -26,5 +26,6 @@ public:
 private:
 	BaseKind m_eBaseKind;
 	bool m_bIsBaseCovered;
+	bool m_bIsCoverCheck;
 
 };

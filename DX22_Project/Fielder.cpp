@@ -46,6 +46,43 @@ void CFielder::Update()
     if (ePhase == GamePhase::InPlay)
     {
         int DefencePlayer = pGameManager->GetDefenceManager()->GetPlayerNo();
+        int a = 0;
+        switch (m_ePosition)
+        {
+        case Positions::Pitcher:
+            a = 0;
+            break;
+        case Positions::Chatcher:
+            a = 0;
+            break;
+        case Positions::First:
+            a = 0;
+            break;
+        case Positions::Second:
+            a = 0;
+            break;
+        case Positions::Third:
+            a = 0;
+            break;
+        case Positions::Short:
+            a = 0;
+            break;
+        case Positions::Left:
+            a = 0;
+            break;
+        case Positions::Center:
+            a = 0;
+            break;
+        case Positions::Right:
+            a = 0;
+            break;
+        case Positions::Max:
+            break;
+        case Positions::None:
+            break;
+        default:
+            break;
+        }
 
         if (m_bIsOparation)
         {
@@ -67,16 +104,19 @@ void CFielder::Update()
                 if (IsKeyPress(DefencePlayer, Input::A)) Throwing(BaseKind::Home);
             }
         }
-        else
-        {
-            BaseCover();
-        }
+            
     }
 
     // “–‚½‚è”»’èî•ñ‚ÌXV
     m_pCollision->SetInfo(m_tParam.m_f3Pos, m_tParam.m_f3Size);
 
     CGameObject::Update();
+}
+
+void CFielder::LateUpdate()
+{
+    if (m_bIsOparation) return;
+    BaseCover();
 }
 
 void CFielder::ResetPos()
@@ -163,17 +203,6 @@ void CFielder::SetData(FielderData data)
 
 bool CFielder::SetBaseCoverFrag(int baseIndex, bool frag)
 {
-    if (frag)
-    {
-        if (m_bIsOparation) return false;
-        for (int i = 0; i < (int)BaseKind::Max; i++)
-        {
-            if (i != baseIndex)
-            {
-                if (m_bMostNearToBase[i]) return false;
-            }
-        }
-    }
     m_bMostNearToBase[baseIndex] = frag;
 
     return true;
@@ -185,8 +214,16 @@ void CFielder::BaseCover()
     int index = 0;
     for (auto itr : pBase)
     {
-        if (itr->IsBaseCover()) continue;
-
+        if (itr->IsBaseCover())
+        {
+            ++index;
+            continue;
+        }
+        if (!m_bMostNearToBase[index])
+        {
+            ++index;
+            continue;
+        }
         DirectX::XMFLOAT3 fBasePos = itr->GetPos();
         
         DirectX::XMVECTOR vecBasePos = DirectX::XMLoadFloat3(&fBasePos);

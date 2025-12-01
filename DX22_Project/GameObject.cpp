@@ -49,6 +49,10 @@ void CGameObject::Update()
 	}
 }
 
+void CGameObject::LateUpdate()
+{
+}
+
 void CGameObject::WriteBuffer()
 {
 

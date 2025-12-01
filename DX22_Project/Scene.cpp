@@ -57,10 +57,20 @@ void CScene::Update()
             Collision::Result result = m_pCollisionList[i]->IsHit(m_pCollisionList[j]);
             if (result.isHit)
             {
-                m_pCollisionList[i]->GetGameObject()->OnCollision(m_pCollisionList[j],m_pCollisionList[i]->GetTag(), result);
-                m_pCollisionList[j]->GetGameObject()->OnCollision(m_pCollisionList[i],m_pCollisionList[j]->GetTag(), result);
+                CGameObject* hitA = m_pCollisionList[i]->GetGameObject();
+                CGameObject* hitB = m_pCollisionList[j]->GetGameObject();
+                hitA->OnCollision(m_pCollisionList[j],m_pCollisionList[i]->GetTag(), result);
+                hitB->OnCollision(m_pCollisionList[i],m_pCollisionList[j]->GetTag(), result);
                 break;
             }
+        }
+    }
+
+    for (auto& list : m_pGameObject_List)
+    {
+        for (auto obj : list)
+        {
+            obj->LateUpdate();
         }
     }
 

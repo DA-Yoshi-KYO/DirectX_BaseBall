@@ -14,5 +14,5 @@ public:
 
 private:
 	std::array<CFielder*, (int)Positions::Max> m_pFielder;
-
+	std::vector<CFielder*> m_pActiveFielderList;
 };

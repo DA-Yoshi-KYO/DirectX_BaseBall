@@ -74,6 +74,6 @@ void CBase::Init(BaseKind kind)
 void CBase::Update()
 {
     GetComponent<CCollisionBox>()->SetInfo(m_tParam.m_f3Pos, m_tParam.m_f3Size);
-
+    m_bIsBaseCovered = false;
     CGameObject::Update();
 }

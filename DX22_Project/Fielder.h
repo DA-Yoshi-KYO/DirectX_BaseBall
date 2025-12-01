@@ -12,6 +12,7 @@ public:
 	~CFielder();
 	void Init() override;
 	void Update() override;
+	void LateUpdate() override;
 	void ResetPos();
 	void OnCollision(CCollisionBase* other, std::string thisTag, Collision::Result result) override;
 	void SetData(CFielderData* fielder);
