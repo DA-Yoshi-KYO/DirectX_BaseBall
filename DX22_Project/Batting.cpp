@@ -5,6 +5,7 @@
 #include "Main.h"
 #include "GameManager.h"
 #include "FielderData.h"
+#include "Runner.h"
 
 constexpr float ce_fHittingTyming = 4.0f;	// バットに当たれるタイミング(+-)
 constexpr float ce_fAngleMax = 60.0f;		// x方向打球角度の限界(+-)
@@ -154,6 +155,7 @@ void CBatting::Update(int AttackPlayer)
 					DirectX::XMStoreFloat3(&m_fMoveDirection, vecMove);
 
 					pScene->GetGameObject<CBall>()->SetVelocity(m_fMoveDirection);
+					pScene->AddGameObject<CRunner>("Runner", Tag::GameObject);
 					pGameManager->SetPhase(GamePhase::InPlay);
 
 					// バットに当たった

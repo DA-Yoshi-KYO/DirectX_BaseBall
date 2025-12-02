@@ -24,6 +24,7 @@ public:
 	void UpdateInPlay();
 	void UpdateBatting();
 	bool GetIsFryBall() { return m_bFryBall; }
+	void SetIsFryBall(bool isFry) { m_bFryBall = isFry; }
 	void SetVelocity(DirectX::XMFLOAT3 vel) { m_f3Velocity = vel; }
 	void SetPitching(float time) { m_fBallTime = time; m_bPitched = true; }
 

@@ -178,6 +178,9 @@ void CFielder::OnCollision(CCollisionBase* other, std::string thisTag, Collision
         if (isFry)
         {
             CGameManager::GetInstance()->GetCountManager()->AddOutCount();
+            pBall->SetIsFryBall(false);
+
+
         }
         return;
     }

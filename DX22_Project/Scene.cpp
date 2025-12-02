@@ -61,7 +61,6 @@ void CScene::Update()
                 CGameObject* hitB = m_pCollisionList[j]->GetGameObject();
                 hitA->OnCollision(m_pCollisionList[j],m_pCollisionList[i]->GetTag(), result);
                 hitB->OnCollision(m_pCollisionList[i],m_pCollisionList[j]->GetTag(), result);
-                break;
             }
         }
     }
