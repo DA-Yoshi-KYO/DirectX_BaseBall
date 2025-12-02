@@ -478,6 +478,9 @@
     <ClCompile Include="ReleasePoint.cpp">
       <Filter>Code\GameObject\Game\Difence</Filter>
     </ClCompile>
+    <ClCompile Include="Runner.cpp">
+      <Filter>Code\GameObject\Game\Attack</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imconfig.h">
@@ -828,6 +831,9 @@
     </ClInclude>
     <ClInclude Include="ReleasePoint.h">
       <Filter>Code\GameObject\Game\Difence</Filter>
+    </ClInclude>
+    <ClInclude Include="Runner.h">
+      <Filter>Code\GameObject\Game\Attack</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

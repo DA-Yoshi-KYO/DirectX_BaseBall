@@ -113,57 +113,6 @@ void CFielding::SetFielderData(int DefencePlayer)
     m_pFielder[int(Positions::Pitcher)]->ResetPos();
 }
 
-//
-//int CFielding::OperationSearch()
-//{
-//	DirectX::XMFLOAT3 fBallPos = CBall::GetInstance()->GetPos();
-//	DirectX::XMVECTOR vecBallPos = DirectX::XMLoadFloat3(&fBallPos);
-//	DirectX::XMVECTOR vecMostNear = DirectX::XMVectorSet(FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX);
-//	int nMostNearNo = -1;
-//
-//	for (int i = 0; i < (int)FieldMember::Max; i++)
-//	{
-//		DirectX::XMVECTOR vecMemberPos = DirectX::XMLoadFloat3(&m_tParam[i].pos);
-//		DirectX::XMVECTOR vecDistance = DirectX::XMVectorSubtract(vecBallPos, vecMemberPos);
-//		vecDistance = DirectX::XMVector3Length(vecDistance);
-//
-//		if (DirectX::XMVector3Less(vecDistance, vecMostNear) || i == 0)
-//		{
-//			vecMostNear = vecDistance;
-//			nMostNearNo = i;
-//		}
-//	}
-//	return nMostNearNo;
-//}
-//
-//int CFielding::BaseSearch(CField::BaseKind kind)
-//{
-//	DirectX::XMFLOAT3 fBasePos = CField ::GetInstance()->GetBasePos(kind);
-//	DirectX::XMVECTOR vecBasePos = DirectX::XMLoadFloat3(&fBasePos);
-//	DirectX::XMVECTOR vecMostNear = DirectX::XMVectorSet(FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX);
-//	int nMostNearNo = -1;
-//
-//	for (int i = 0; i < (int)FieldMember::Max; i++)
-//	{
-//		DirectX::XMVECTOR vecMemberPos = DirectX::XMLoadFloat3(&m_tParam[i].pos);
-//		DirectX::XMVECTOR vecDistance = DirectX::XMVectorSubtract(vecBasePos, vecMemberPos);
-//		vecDistance = DirectX::XMVector3Length(vecDistance);
-//
-//		if (i == m_nOperationNo)continue;
-//		for (int j = 0; j < (int)CField::BaseKind::Max; j++)
-//		{
-//			if (i == m_nBaseNearNo[j])continue;
-//		}
-//
-//		if (DirectX::XMVector3Less(vecDistance, vecMostNear))
-//		{
-//			vecMostNear = vecDistance;
-//			nMostNearNo = i;
-//		}
-//	}
-//	return nMostNearNo;
-//}
-
 //void CFielding::OutProcess(CRunning::RunnerParam* RunnerParam, CField::BaseKind kind)
 //{
 //	CField* pField = CField::GetInstance().get();

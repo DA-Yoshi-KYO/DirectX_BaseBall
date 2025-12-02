@@ -230,6 +230,7 @@
     <ClCompile Include="PostProcessChain.cpp" />
     <ClCompile Include="ReleasePoint.cpp" />
     <ClCompile Include="RendererComponent.cpp" />
+    <ClCompile Include="Runner.cpp" />
     <ClCompile Include="SceneMemberselect.cpp" />
     <ClCompile Include="SceneTeamselect.cpp" />
     <ClCompile Include="Score.cpp" />
@@ -352,6 +353,7 @@
     <ClInclude Include="PostProcessChain.h" />
     <ClInclude Include="ReleasePoint.h" />
     <ClInclude Include="RendererComponent.h" />
+    <ClInclude Include="Runner.h" />
     <ClInclude Include="SceneMemberselect.h" />
     <ClInclude Include="SceneTeamselect.h" />
     <ClInclude Include="Score.h" />
