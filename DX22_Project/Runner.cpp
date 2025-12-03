@@ -3,6 +3,8 @@
 #include "Main.h"
 #include "Oparation.h"
 #include "Ball.h"
+#include "GameManager.h"
+#include "Input.h"
 
 CRunner::CRunner()
 	: CGameObject()
@@ -168,7 +170,58 @@ void CRunner::GoToNextBase()
 
 void CRunner::UpdateInput()
 {
+	CAttackManager* pAttackManager = CGameManager::GetInstance()->GetAttackManager();
+	int nAttackPlayerNo = pAttackManager->GetPlayerNo();
+	if (IsKeyTrigger(nAttackPlayerNo, Input::Y))
+	{
+		if (IsKeyPress(nAttackPlayerNo, Input::B))
+		{
+			m_bIsStop = true;
+			return;
+		}
 
+		m_bIsStop = false;
+		m_bFrontMove = true;
+		switch (m_eCurrentRunnerKind)
+		{
+		case RunnerKind::StayFirst:
+			m_eCurrentRunnerKind = RunnerKind::FirstToSecond;
+			break;
+		case RunnerKind::StaySecond:
+			m_eCurrentRunnerKind = RunnerKind::SecondToThird;
+			break;
+		case RunnerKind::StayThird:
+			m_eCurrentRunnerKind = RunnerKind::ThirdToHome;
+			break;
+		default:
+			break;
+		}
+		return;
+	}
+
+	if (IsKeyTrigger(nAttackPlayerNo, Input::B))
+	{
+		switch (m_eCurrentRunnerKind)
+		{
+		case RunnerKind::StayFirst:
+		case RunnerKind::StaySecond:
+		case RunnerKind::StayThird:
+			return;
+			break;
+		default:
+			break;
+		}
+
+		if (IsKeyPress(nAttackPlayerNo, Input::Y))
+		{
+			m_bIsStop = true;
+			return;
+		}
+
+		m_bIsStop = false;
+		m_bFrontMove = false;
+		return;
+	}
 }
 
 void CRunner::UpdateBackTempBase()
