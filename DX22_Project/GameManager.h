@@ -44,5 +44,7 @@ private:
     std::unique_ptr<CFieldManager> m_pFieldManager;
     std::unique_ptr<CTeamDirector> m_pTeamManager[2];
     GamePhase m_ePhase;
+    float m_fWaitTime;
 
+    void CheckEndInplay();
 };

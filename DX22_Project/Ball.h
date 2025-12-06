@@ -24,15 +24,18 @@ public:
 	void UpdateInPlay();
 	void UpdateBatting();
 	bool GetIsFryBall() { return m_bFryBall; }
+	bool GetCaught() { return m_bCaught; }
 	void SetIsFryBall(bool isFry) { m_bFryBall = isFry; }
 	void SetVelocity(DirectX::XMFLOAT3 vel) { m_f3Velocity = vel; }
 	void SetPitching(float time) { m_fBallTime = time; m_bPitched = true; }
+	void SetCaught(bool isChatch) { m_bCaught = isChatch; }
 
 private:
 	CCollisionLine* m_pLucusCollision;
 	CCollisionBox* m_pBoxCollision;
 	DirectX::XMFLOAT3 m_f3Velocity;
 	bool m_bFryBall;
+	bool m_bCaught;
 	bool m_bPitched;
 	float m_fBallTime;
 

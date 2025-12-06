@@ -12,6 +12,7 @@ CRunner::CRunner()
 	, m_eCurrentRunnerKind(RunnerKind::BatterToFirst)
 	, m_pCollision(nullptr),m_bIsStop(false), m_bFrontMove(true)
 	, m_f3TargetPos(), m_bRunOut(true), m_bBackTempBase(false)
+	, m_fStiffTime(0.0f)
 {
 	m_tParam.m_f3Pos = DirectX::XMFLOAT3(0.0f, -4.5f, -218.0f);
 	m_tParam.m_f3Size = DirectX::XMFLOAT3(5.0f, 5.0f, 5.0f);
@@ -103,6 +104,12 @@ void CRunner::Update()
 		}
 	}
 	m_pCollision->SetInfo(m_tParam.m_f3Pos, m_tParam.m_f3Size);
+
+	if (m_fStiffTime != 0.0f)
+	{
+		m_fStiffTime -= 1.0f / fFPS;
+		m_fStiffTime = std::max(0.0f, m_fStiffTime);
+	}
 }
 
 void CRunner::OnCollision(CCollisionBase* other, std::string thisTag, Collision::Result result)
@@ -117,17 +124,23 @@ void CRunner::OnCollision(CCollisionBase* other, std::string thisTag, Collision:
 	if (tag == "FirstBase")
 	{
 		m_eTempBase = GotBase::First;
+		if (m_fStiffTime > 0.0f) return;
 		m_eCurrentRunnerKind = RunnerKind::StayFirst;
+		return;
 	}
 	if (tag == "SecondBase")
 	{
 		m_eTempBase = GotBase::Second;
+		if (m_fStiffTime > 0.0f) return;
 		m_eCurrentRunnerKind = RunnerKind::StaySecond;
+		return;
 	}
 	if (tag == "ThirdBase")
 	{
 		m_eTempBase = GotBase::Third;
+		if (m_fStiffTime > 0.0f) return;
 		m_eCurrentRunnerKind = RunnerKind::StayThird;
+		return;
 	}
 }
 
@@ -170,10 +183,13 @@ void CRunner::GoToNextBase()
 
 void CRunner::UpdateInput()
 {
+	if (m_fStiffTime > 0.0f) return;
+
 	CAttackManager* pAttackManager = CGameManager::GetInstance()->GetAttackManager();
 	int nAttackPlayerNo = pAttackManager->GetPlayerNo();
 	if (IsKeyTrigger(nAttackPlayerNo, Input::Y))
 	{
+		m_fStiffTime = 1.0f;
 		if (IsKeyPress(nAttackPlayerNo, Input::B))
 		{
 			m_bIsStop = true;
@@ -201,6 +217,7 @@ void CRunner::UpdateInput()
 
 	if (IsKeyTrigger(nAttackPlayerNo, Input::B))
 	{
+		m_fStiffTime = 1.0f;
 		switch (m_eCurrentRunnerKind)
 		{
 		case RunnerKind::StayFirst:

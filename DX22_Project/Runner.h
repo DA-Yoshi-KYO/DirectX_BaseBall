@@ -39,7 +39,8 @@ public:
 	void NotRunOut() { m_bRunOut = false; }
 	void GoToNextBase();
 	GotBase GetNowBase() { return m_eNowBase; }
-	
+	RunnerKind GetCurrentKind() { return m_eCurrentRunnerKind; }
+
 private:
 	GotBase m_eNowBase;
 	GotBase m_eTempBase;
@@ -47,6 +48,7 @@ private:
 	bool m_bFrontMove;
 	bool m_bRunOut;
 	bool m_bBackTempBase;
+	float m_fStiffTime;
 	CCollisionBox* m_pCollision;
 	std::array<DirectX::XMFLOAT3, int(BaseKind::Max)> m_f3TargetPos;
 	RunnerKind m_eCurrentRunnerKind;

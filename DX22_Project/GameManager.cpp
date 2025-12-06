@@ -4,13 +4,14 @@
 #include "Main.h"
 #include "TeamManager.h"
 #include "GameManager.h"
+#include "Runner.h"
 
 CGameManager* CGameManager::m_pInstance = nullptr;
 
 CGameManager::CGameManager()
     : m_pCountManager(nullptr), m_pAttackManager(nullptr)
     , m_pDefenceManager(nullptr), m_pTeamManager{ nullptr, nullptr }
-    , m_ePhase(GamePhase::Batting)
+    , m_ePhase(GamePhase::Batting), m_fWaitTime(0.0f)
 {
     if (!m_pFieldManager)
     {
@@ -61,6 +62,7 @@ void CGameManager::Update()
         break;
     case GamePhase::InPlay:
         pCamera->SetCameraKind(CAM_INPLAY);
+        CheckEndInplay();
         break;
     default:
         break;
@@ -88,4 +90,30 @@ CGameManager* CGameManager::GetInstance()
 void CGameManager::Release()
 {
     SAFE_DELETE(m_pInstance);
+}
+
+void CGameManager::CheckEndInplay()
+{
+    CScene* pScene = GetScene();
+    bool isEnd = true;
+
+    auto RunnerList = pScene->GetSameGameObject<CRunner>();
+    for (auto itr : RunnerList)
+    {
+        RunnerKind eKind = itr->GetCurrentKind();
+
+        switch (eKind)
+        {
+        case RunnerKind::BatterToFirst:
+        case RunnerKind::FirstToSecond:
+        case RunnerKind::SecondToThird:
+        case RunnerKind::ThirdToHome:
+            m_fWaitTime = 0.0f;
+            return;
+            break;
+        }
+    }
+
+    CBall* pBall = pScene->GetGameObject<CBall>();
+    if (!pBall->GetCaught()) return;
 }

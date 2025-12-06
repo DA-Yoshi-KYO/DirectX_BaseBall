@@ -179,8 +179,7 @@ void CFielder::OnCollision(CCollisionBase* other, std::string thisTag, Collision
         {
             CGameManager::GetInstance()->GetCountManager()->AddOutCount();
             pBall->SetIsFryBall(false);
-
-
+            pBall->SetCaught(true);
         }
         return;
     }
@@ -279,4 +278,5 @@ void CFielder::Throwing(BaseKind kind)
     fVelocity.y = fThrowAngle;
     pBall->SetVelocity(fVelocity);
     m_bChatch = false;
+    pBall->SetCaught(false);
 }
