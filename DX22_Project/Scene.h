@@ -16,6 +16,8 @@ public:
 	virtual void Update();
 	virtual void Draw();
 
+    void AnyObjectDestroy() { m_bAnyObjectDestroy = true; }
+
     // ゲームオブジェクトを追加する
 	template<typename T = CGameObject>
 	T* AddGameObject(std::string inName, Tag inTag)
@@ -122,5 +124,6 @@ protected:
 private:
     std::vector<ObjectID> m_tIDVec;
     std::vector<CCollisionBase*> m_pCollisionList;
+    bool m_bAnyObjectDestroy;
 
 };

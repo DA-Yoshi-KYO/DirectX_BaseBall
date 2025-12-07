@@ -6,6 +6,7 @@
 #include "DebugSystem.h"
 
 CScene::CScene()
+    : m_bAnyObjectDestroy(false)
 {
 
 }
@@ -72,37 +73,56 @@ void CScene::Update()
             obj->LateUpdate();
         }
     }
-
-    // 更新を受けて削除予定のオブジェクトがあればIDを削除
-    for (auto itr = m_tIDVec.begin(); itr != m_tIDVec.end();)
+    
+    // 何かしらのオブジェクトが削除されたと通知された際に、リストから削除する処理を行う
+    if (m_bAnyObjectDestroy)
     {
-        if (GetGameObject(*itr)->IsDestroy())
+        // 更新を受けて削除予定のオブジェクトがあればコリジョンを削除
+        for (auto itr = m_pCollisionList.begin(); itr != m_pCollisionList.end();)
         {
-            itr = m_tIDVec.erase(itr);
-        }
-        else
-        {
-            itr++;
-        }
-    }
-
-    // 更新を受けて削除予定のオブジェクトがあれば削除
-    for (auto& list : m_pGameObject_List)
-    {
-        list.remove_if([](CGameObject* pObj)
+            if ((*itr)->GetGameObject()->IsDestroy())
             {
-                if (pObj->IsDestroy())
+                itr = m_pCollisionList.erase(itr);
+            }
+            else
+            {
+                itr++;
+            }
+        }
+
+        // 更新を受けて削除予定のオブジェクトがあればIDを削除
+        for (auto itr = m_tIDVec.begin(); itr != m_tIDVec.end();)
+        {
+            if (GetGameObject(*itr)->IsDestroy())
+            {
+                itr = m_tIDVec.erase(itr);
+            }
+            else
+            {
+                itr++;
+            }
+        }
+
+        // 更新を受けて削除予定のオブジェクトがあれば削除
+        for (auto& list : m_pGameObject_List)
+        {
+            list.remove_if([](CGameObject* pObj)
                 {
-                    pObj->OnDestroy();
-                    pObj->Uninit();
-                    delete pObj;
-                    pObj = nullptr;
+                    if (pObj->IsDestroy())
+                    {
+                        pObj->OnDestroy();
+                        pObj->Uninit();
+                        delete pObj;
+                        pObj = nullptr;
 
-                    return true;
-                }
-                return false;
-            });
+                        return true;
+                    }
+                    return false;
+                });
 
+        }
+
+        m_bAnyObjectDestroy = false;
     }
 }
 

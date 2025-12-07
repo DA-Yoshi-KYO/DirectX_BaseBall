@@ -115,6 +115,9 @@ void CFielder::Update()
 
 void CFielder::LateUpdate()
 {
+    CGameManager* pGameManager = CGameManager::GetInstance();
+    GamePhase ePhase = pGameManager->GetPhase();
+    if (ePhase != GamePhase::InPlay) return;
     if (m_bIsOparation) return;
     BaseCover();
 }

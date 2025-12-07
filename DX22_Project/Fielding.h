@@ -11,6 +11,7 @@ public:
 	void Init();
 	void Update(int DefencePlayer);
 	void SetFielderData(int DefencePlayer);
+	void ResetFieldersPos();
 
 private:
 	std::array<CFielder*, (int)Positions::Max> m_pFielder;

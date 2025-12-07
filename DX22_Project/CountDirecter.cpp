@@ -1,5 +1,6 @@
 #include "CountDirecter.h"
 #include "Main.h"
+#include "Runner.h"
 
 constexpr DirectX::XMFLOAT3 ce_fCountPos = { 1025.0f,590,0.0f };
 constexpr DirectX::XMFLOAT3 ce_fCountSize = { 35.0f,35.0f,0.0f };
@@ -87,10 +88,21 @@ void CCountDirecter::Init()
 
 void CCountDirecter::Update()
 {
+
 }
 
 void CCountDirecter::EndInplay()
 {
+    auto RunnerList = GetScene()->GetSameGameObject<CRunner>();
+    
+    for (int i = 0; i < int(GotBase::Max); i++)
+    {
+        SetIsBase(false, i);
+    }
+    for (auto itr : RunnerList)
+    {
+        SetIsBase(true, int(itr->GetNowBase()));
+    }
 }
 
 void CCountDirecter::AddStrikeCount()

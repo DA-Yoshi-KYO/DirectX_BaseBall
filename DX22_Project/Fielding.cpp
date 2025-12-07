@@ -113,6 +113,14 @@ void CFielding::SetFielderData(int DefencePlayer)
     m_pFielder[int(Positions::Pitcher)]->ResetPos();
 }
 
+void CFielding::ResetFieldersPos()
+{
+    for (auto itr : m_pFielder)
+    {
+        itr->ResetPos();
+    }
+}
+
 //void CFielding::OutProcess(CRunning::RunnerParam* RunnerParam, CField::BaseKind kind)
 //{
 //	CField* pField = CField::GetInstance().get();

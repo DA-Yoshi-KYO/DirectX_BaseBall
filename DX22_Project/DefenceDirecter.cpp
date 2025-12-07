@@ -35,4 +35,5 @@ void CDefenceDirecter::Update()
 
 void CDefenceDirecter::EndInplay()
 {
+	m_pFielding->ResetFieldersPos();
 }
