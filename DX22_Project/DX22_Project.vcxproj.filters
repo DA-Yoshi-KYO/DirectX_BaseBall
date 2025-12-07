@@ -88,9 +88,6 @@
     <Filter Include="Code\GameObject\Game\ScoreBoard\CountObject\BaseCount">
       <UniqueIdentifier>{bbe01b9d-f9dd-4057-adfc-c2c8dd0ae4f6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Code\Scene\Kind">
-      <UniqueIdentifier>{a9c95300-0300-430d-860f-a9ebd8f6b377}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Code\Scene\Transition">
       <UniqueIdentifier>{c4147102-dcd4-4e84-861b-a7f1f1d3478b}</UniqueIdentifier>
     </Filter>
@@ -123,6 +120,9 @@
     </Filter>
     <Filter Include="Code\Scene\Director\InGame">
       <UniqueIdentifier>{9fd1d4c8-8b8f-4a19-bef2-0f6d18fa1701}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\Scene\Kind">
+      <UniqueIdentifier>{a9c95300-0300-430d-860f-a9ebd8f6b377}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -311,12 +311,6 @@
     </ClCompile>
     <ClCompile Include="SceneTitle.cpp">
       <Filter>Code\Scene\Kind</Filter>
-    </ClCompile>
-    <ClCompile Include="Fade.cpp">
-      <Filter>Code\Scene\Transition</Filter>
-    </ClCompile>
-    <ClCompile Include="FadeBlack.cpp">
-      <Filter>Code\Scene\Transition</Filter>
     </ClCompile>
     <ClCompile Include="Transition.cpp">
       <Filter>Code\Scene\Transition</Filter>
@@ -664,12 +658,6 @@
     </ClInclude>
     <ClInclude Include="SceneTitle.h">
       <Filter>Code\Scene\Kind</Filter>
-    </ClInclude>
-    <ClInclude Include="Fade.h">
-      <Filter>Code\Scene\Transition</Filter>
-    </ClInclude>
-    <ClInclude Include="FadeBlack.h">
-      <Filter>Code\Scene\Transition</Filter>
     </ClInclude>
     <ClInclude Include="Transition.h">
       <Filter>Code\Scene\Transition</Filter>
