@@ -1,19 +1,19 @@
-#include "FieldManager.h"
+#include "FieldDirecter.h"
 #include "Main.h"
 #include "Ball.h"
 #include "Field.h"
 #include "StrikeZone.h"
 #include "Base.h"
 
-CFieldManager::CFieldManager()
+CFieldDirecter::CFieldDirecter()
 {
 }
 
-CFieldManager::~CFieldManager()
+CFieldDirecter::~CFieldDirecter()
 {
 }
 
-void CFieldManager::Init()
+void CFieldDirecter::Init()
 {
 	CScene* pScene = GetScene();
 
@@ -26,4 +26,8 @@ void CFieldManager::Init()
 		pScene->AddGameObject<CBase>("Base", Tag::GameObject)->Init(BaseKind(i));
 	}
 
+}
+
+void CFieldDirecter::EndInplay()
+{
 }

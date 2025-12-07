@@ -1,20 +1,20 @@
-#include "DefenceManager.h"
+#include "DefenceDirecter.h"
 #include "Input.h"
-#include "TeamManager.h"
+#include "TeamDirecter.h"
 #include "Main.h"
 
-CDefenceManager::CDefenceManager()
+CDefenceDirecter::CDefenceDirecter()
 	: m_nPlayerNo(2), m_pPitching(nullptr)
 {
 
 }
 
-CDefenceManager::~CDefenceManager()
+CDefenceDirecter::~CDefenceDirecter()
 {
 
 }
 
-void CDefenceManager::Init()
+void CDefenceDirecter::Init()
 {
 	CScene* pScene = GetScene();
 
@@ -27,8 +27,12 @@ void CDefenceManager::Init()
 	m_pFielding->SetFielderData(m_nPlayerNo);
 }
 
-void CDefenceManager::Update()
+void CDefenceDirecter::Update()
 {
 	m_pPitching->Update(m_nPlayerNo);
 	m_pFielding->Update(m_nPlayerNo);
+}
+
+void CDefenceDirecter::EndInplay()
+{
 }

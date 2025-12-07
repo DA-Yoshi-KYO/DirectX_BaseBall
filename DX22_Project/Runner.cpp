@@ -185,8 +185,8 @@ void CRunner::UpdateInput()
 {
 	if (m_fStiffTime > 0.0f) return;
 
-	CAttackManager* pAttackManager = CGameManager::GetInstance()->GetAttackManager();
-	int nAttackPlayerNo = pAttackManager->GetPlayerNo();
+	CAttackDirecter* pAttackDirecter = CGameManager::GetInstance()->GetAttackDirecter();
+	int nAttackPlayerNo = pAttackDirecter->GetPlayerNo();
 	if (IsKeyTrigger(nAttackPlayerNo, Input::Y))
 	{
 		m_fStiffTime = 1.0f;

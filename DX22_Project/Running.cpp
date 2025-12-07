@@ -4,7 +4,7 @@
 #include "Main.h"
 #include "Input.h"
 #include "Fielding.h"
-#include "TeamManager.h"
+#include "TeamDirecter.h"
 #include "GameManager.h"
 
 /*

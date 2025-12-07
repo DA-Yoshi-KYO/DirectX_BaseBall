@@ -1,16 +1,19 @@
 #pragma once
 
+#include "GameDirecterBase.h"
 #include "Pitching.h"
 #include "Fielding.h"
 #include <memory>
 
-class CDefenceManager
+class CDefenceDirecter : public CGameDirecterBase
 {
 public:
-	CDefenceManager();
-	~CDefenceManager();
-	void Init();
+	CDefenceDirecter();
+	~CDefenceDirecter();
+	void Init() override;
 	void Update();
+	void EndInplay() override;
+	
 	void SetPlayerNo(int no) { m_nPlayerNo = no; }
 	int GetPlayerNo() { return m_nPlayerNo; }
 	CPitching* GetPitching() { return m_pPitching.get(); }

@@ -39,7 +39,7 @@ void CBatting::Update(int AttackPlayer)
 	CScene* pScene = GetScene();
 	DirectX::XMFLOAT3 fBallPos = pScene->GetGameObject<CBall>()->GetPos();
 	CGameManager* pGameManager = CGameManager::GetInstance();
-	CTeamDirector* pTeamDirector = pGameManager->GetTeamManager(AttackPlayer);
+	CTeamDirector* pTeamDirector = pGameManager->GetTeamDirecter(AttackPlayer);
 
 	// ピッチャーがボールを受け取ったらスイング可能にする
 	if (fBallPos.z == ce_fBallPos.z + WORLD_AJUST && CGameManager::GetInstance()->GetPhase() == GamePhase::Batting)
@@ -93,7 +93,7 @@ void CBatting::Update(int AttackPlayer)
 			// タイミングチェック 
 			if (fTyming > ce_fHittingTyming || fTyming < -ce_fHittingTyming)
 			{
-				pGameManager->GetCountManager()->AddStrikeCount();
+				pGameManager->GetCountDirecter()->AddStrikeCount();
 				break;
 			}
 			else
@@ -127,7 +127,7 @@ void CBatting::Update(int AttackPlayer)
 					// 捉えた場所が端すぎるならファールチップとしてストライクにする
 					if (fabsf(fDistanceRatio.x) >= 75.0f || fabsf(fDistanceRatio.y) >= 75.0f)
 					{
-						pGameManager->GetCountManager()->AddStrikeCount();
+						pGameManager->GetCountDirecter()->AddStrikeCount();
 						break;
 					}
 
@@ -165,7 +165,7 @@ void CBatting::Update(int AttackPlayer)
 				else
 				{
 					// 空振り
-					pGameManager->GetCountManager()->AddStrikeCount();
+					pGameManager->GetCountDirecter()->AddStrikeCount();
 				}
 			}
 		} while (0);

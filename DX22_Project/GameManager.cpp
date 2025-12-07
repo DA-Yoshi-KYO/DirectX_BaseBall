@@ -1,40 +1,37 @@
-#include "BallCount.h"
-#include "Camera.h"
-#include "Sprite.h"
-#include "Main.h"
-#include "TeamManager.h"
 #include "GameManager.h"
+#include "Main.h"
 #include "Runner.h"
 
 CGameManager* CGameManager::m_pInstance = nullptr;
+constexpr float ce_fWaitMaxTime = 1.0f;
 
 CGameManager::CGameManager()
-    : m_pCountManager(nullptr), m_pAttackManager(nullptr)
-    , m_pDefenceManager(nullptr), m_pTeamManager{ nullptr, nullptr }
+    : m_pCountDirecter(nullptr), m_pAttackDirecter(nullptr)
+    , m_pDefenceDirecter(nullptr), m_pTeamDirecter{ nullptr, nullptr }
     , m_ePhase(GamePhase::Batting), m_fWaitTime(0.0f)
 {
-    if (!m_pFieldManager)
+    if (!m_pFieldDirecter)
     {
-        m_pFieldManager = std::make_unique<CFieldManager>();
+        m_pFieldDirecter = std::make_unique<CFieldDirecter>();
     }
-    if (!m_pCountManager)
+    if (!m_pCountDirecter)
     {
-        m_pCountManager = std::make_unique<CCountManager>();
+        m_pCountDirecter = std::make_unique<CCountDirecter>();
     }
-    if (!m_pAttackManager)
+    if (!m_pAttackDirecter)
     {
-        m_pAttackManager = std::make_unique<CAttackManager>();
+        m_pAttackDirecter = std::make_unique<CAttackDirecter>();
     }
-    if (!m_pDefenceManager)
+    if (!m_pDefenceDirecter)
     {
-        m_pDefenceManager = std::make_unique<CDefenceManager>();
+        m_pDefenceDirecter = std::make_unique<CDefenceDirecter>();
     }
 
     for (int i = 0; i < 2; i++)
     {
-        if (!m_pTeamManager[i])
+        if (!m_pTeamDirecter[i])
         {
-            m_pTeamManager[i] = std::make_unique<CTeamDirector>(i + 1);
+            m_pTeamDirecter[i] = std::make_unique<CTeamDirector>(i + 1);
         }
     }
 }
@@ -46,10 +43,10 @@ CGameManager::~CGameManager()
 
 void CGameManager::Init()
 {
-    m_pFieldManager->Init();
-    m_pCountManager->Init();
-    m_pAttackManager->Init();
-    m_pDefenceManager->Init();
+    m_pFieldDirecter->Init();
+    m_pCountDirecter->Init();
+    m_pAttackDirecter->Init();
+    m_pDefenceDirecter->Init();
 }
 
 void CGameManager::Update()
@@ -67,9 +64,9 @@ void CGameManager::Update()
     default:
         break;
     }
-    if (m_pAttackManager) m_pAttackManager->Update();
-    if (m_pDefenceManager) m_pDefenceManager->Update();
-    if (m_pCountManager) m_pCountManager->Update();
+    if (m_pAttackDirecter) m_pAttackDirecter->Update();
+    if (m_pDefenceDirecter) m_pDefenceDirecter->Update();
+    if (m_pCountDirecter) m_pCountDirecter->Update();
 }
 
 void CGameManager::Draw()
@@ -97,6 +94,9 @@ void CGameManager::CheckEndInplay()
     CScene* pScene = GetScene();
     bool isEnd = true;
 
+    CBall* pBall = pScene->GetGameObject<CBall>();
+    if (!pBall->GetCaught()) return;
+
     auto RunnerList = pScene->GetSameGameObject<CRunner>();
     for (auto itr : RunnerList)
     {
@@ -114,6 +114,21 @@ void CGameManager::CheckEndInplay()
         }
     }
 
-    CBall* pBall = pScene->GetGameObject<CBall>();
-    if (!pBall->GetCaught()) return;
+    m_fWaitTime += 1.0f / fFPS;
+
+    if (m_fWaitTime >= ce_fWaitMaxTime)
+    {
+        m_fWaitTime = 0.0f;
+
+        m_pFieldDirecter->EndInplay();
+        m_pCountDirecter->EndInplay();
+        m_pAttackDirecter->EndInplay();
+        m_pDefenceDirecter->EndInplay();
+        for (int i = 0; i < 2; i++)
+        {
+            m_pTeamDirecter[i]->EndInplay();
+        }
+
+        m_ePhase = GamePhase::Batting;
+    }
 }

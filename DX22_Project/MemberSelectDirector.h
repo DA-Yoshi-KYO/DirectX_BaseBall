@@ -1,7 +1,7 @@
 #pragma once
 
 #include "MemberIcon.h"
-#include "TeamManager.h"
+#include "TeamDirecter.h"
 #include <memory>
 #include <vector>
 #include <array>

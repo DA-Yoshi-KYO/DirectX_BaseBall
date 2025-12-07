@@ -151,7 +151,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AnimationObject.cpp" />
-    <ClCompile Include="AttackManager.cpp" />
+    <ClCompile Include="AttackDirecter.cpp" />
     <ClCompile Include="Ball.cpp" />
     <ClCompile Include="BallCount.cpp" />
     <ClCompile Include="Base.cpp" />
@@ -164,14 +164,15 @@
     <ClCompile Include="CollisionLine.cpp" />
     <ClCompile Include="CollisionTriangle.cpp" />
     <ClCompile Include="ColllisionPlane.cpp" />
-    <ClCompile Include="CountManager.cpp" />
+    <ClCompile Include="CountDirecter.cpp" />
     <ClCompile Include="CountObject.cpp" />
     <ClCompile Include="DebugSystem.cpp" />
-    <ClCompile Include="DefenceManager.cpp" />
+    <ClCompile Include="DefenceDirecter.cpp" />
     <ClCompile Include="Fielder.cpp" />
     <ClCompile Include="FielderData.cpp" />
     <ClCompile Include="FielderSelectBack.cpp" />
-    <ClCompile Include="FieldManager.cpp" />
+    <ClCompile Include="FieldDirecter.cpp" />
+    <ClCompile Include="GameDirecterBase.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="Batting.cpp" />
     <ClCompile Include="BattingCursor.cpp" />
@@ -192,7 +193,6 @@
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Geometory.cpp" />
     <ClCompile Include="imgui.cpp" />
-    <ClCompile Include="ImGuiManager.cpp" />
     <ClCompile Include="imgui_demo.cpp" />
     <ClCompile Include="imgui_draw.cpp" />
     <ClCompile Include="imgui_impl_dx11.cpp" />
@@ -245,7 +245,7 @@
     <ClCompile Include="StartingLineupField.cpp" />
     <ClCompile Include="StrikeCount.cpp" />
     <ClCompile Include="Team.cpp" />
-    <ClCompile Include="TeamManager.cpp" />
+    <ClCompile Include="TeamDirecter.cpp" />
     <ClCompile Include="Running.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneGame.cpp" />
@@ -274,7 +274,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AnimationObject.h" />
-    <ClInclude Include="AttackManager.h" />
+    <ClInclude Include="AttackDirecter.h" />
     <ClInclude Include="Ball.h" />
     <ClInclude Include="BallCount.h" />
     <ClInclude Include="Base.h" />
@@ -287,15 +287,16 @@
     <ClInclude Include="CollisionLine.h" />
     <ClInclude Include="CollisionTriangle.h" />
     <ClInclude Include="ColllisionPlane.h" />
-    <ClInclude Include="CountManager.h" />
+    <ClInclude Include="CountDirecter.h" />
     <ClInclude Include="CountObject.h" />
     <ClInclude Include="DebugSystem.h" />
-    <ClInclude Include="DefenceManager.h" />
+    <ClInclude Include="DefenceDirecter.h" />
     <ClInclude Include="Easing.h" />
     <ClInclude Include="Fielder.h" />
     <ClInclude Include="FielderData.h" />
     <ClInclude Include="FielderSelectBack.h" />
-    <ClInclude Include="FieldManager.h" />
+    <ClInclude Include="FieldDirecter.h" />
+    <ClInclude Include="GameDirecterBase.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="Batting.h" />
     <ClInclude Include="BattingCursor.h" />
@@ -318,7 +319,6 @@
     <ClInclude Include="Geometory.h" />
     <ClInclude Include="imconfig.h" />
     <ClInclude Include="imgui.h" />
-    <ClInclude Include="ImGuiManager.h" />
     <ClInclude Include="imgui_impl_dx11.h" />
     <ClInclude Include="imgui_impl_win32.h" />
     <ClInclude Include="imgui_internal.h" />
@@ -368,7 +368,7 @@
     <ClInclude Include="StartingLineupField.h" />
     <ClInclude Include="StrikeCount.h" />
     <ClInclude Include="Team.h" />
-    <ClInclude Include="TeamManager.h" />
+    <ClInclude Include="TeamDirecter.h" />
     <ClInclude Include="Running.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneGame.h" />

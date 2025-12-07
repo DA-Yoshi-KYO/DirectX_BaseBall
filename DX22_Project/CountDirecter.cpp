@@ -1,4 +1,4 @@
-#include "CountManager.h"
+#include "CountDirecter.h"
 #include "Main.h"
 
 constexpr DirectX::XMFLOAT3 ce_fCountPos = { 1025.0f,590,0.0f };
@@ -12,7 +12,7 @@ constexpr DirectX::XMFLOAT3 ce_fBaseAjust = { 42.0f,40.0f,0.0f };
 constexpr DirectX::XMFLOAT3 ce_fScoreTopPos = { 1134.0f,542.0f,0.0f };
 constexpr DirectX::XMFLOAT3 ce_fScoreBottomPos = { 1210.0f,542.0f,0.0f };
 
-CCountManager::CCountManager()
+CCountDirecter::CCountDirecter()
     : m_pStrikeCount{}, m_pBallCount{}, m_pOutCount{}, m_pBaseCount{}
     , m_pScore{}, m_pInning(nullptr), m_pScoreBoard(nullptr)
 {
@@ -21,12 +21,12 @@ CCountManager::CCountManager()
     m_tParam.m_nOutCount = 0;
 }
 
-CCountManager::~CCountManager()
+CCountDirecter::~CCountDirecter()
 {
 
 }
 
-void CCountManager::Init()
+void CCountDirecter::Init()
 {
     CScene* pScene = GetScene();
     
@@ -85,11 +85,15 @@ void CCountManager::Init()
     m_pInning = pScene->AddGameObject<CInning>("Inning", Tag::UI);
 }
 
-void CCountManager::Update()
+void CCountDirecter::Update()
 {
 }
 
-void CCountManager::AddStrikeCount()
+void CCountDirecter::EndInplay()
+{
+}
+
+void CCountDirecter::AddStrikeCount()
 {
     m_tParam.m_nStrikeCount++;
     if (m_tParam.m_nStrikeCount >= 3)
@@ -104,7 +108,7 @@ void CCountManager::AddStrikeCount()
     }
 }
 
-void CCountManager::AddBallCount()
+void CCountDirecter::AddBallCount()
 {
     m_tParam.m_nBallCount++;
     if (m_tParam.m_nBallCount >= 4)
@@ -119,7 +123,7 @@ void CCountManager::AddBallCount()
 
 }
 
-void CCountManager::AddOutCount()
+void CCountDirecter::AddOutCount()
 {
     m_tParam.m_nOutCount++;
     m_tParam.m_nStrikeCount = 0;
@@ -135,19 +139,19 @@ void CCountManager::AddOutCount()
     }
 }
 
-void CCountManager::SetIsBase(bool isBase, int index)
+void CCountDirecter::SetIsBase(bool isBase, int index)
 {
     if (index < 0 || index >= 3) return;
     
     m_pBaseCount[index]->SetActive(isBase);
 }
 
-void CCountManager::ThreeStrike()
+void CCountDirecter::ThreeStrike()
 {
     AddOutCount();
 }
 
-void CCountManager::FourBall()
+void CCountDirecter::FourBall()
 {
     m_tParam.m_nStrikeCount = 0;
     m_tParam.m_nBallCount = 0;
@@ -176,7 +180,7 @@ void CCountManager::FourBall()
     }
 }
 
-void CCountManager::ThreeOut()
+void CCountDirecter::ThreeOut()
 {
     m_tParam.m_nOutCount = 0;
     for (int i = 0; i < m_pBaseCount.size(); i++)

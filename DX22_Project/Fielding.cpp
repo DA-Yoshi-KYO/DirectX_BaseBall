@@ -93,7 +93,7 @@ void CFielding::Update(int DefencePlayer)
 
 void CFielding::SetFielderData(int DefencePlayer)
 {
-    CTeamDirector* pTeamDirector = CGameManager::GetInstance()->GetTeamManager(DefencePlayer);
+    CTeamDirector* pTeamDirector = CGameManager::GetInstance()->GetTeamDirecter(DefencePlayer);
 
     for (auto itr : pTeamDirector->GetTeam()->GetStartingLineup())
     {

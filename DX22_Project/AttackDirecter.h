@@ -1,15 +1,18 @@
 #pragma once
 
 #include <memory>
+#include "GameDirecterBase.h"
 #include "Batting.h"
 
-class CAttackManager
+class CAttackDirecter : public CGameDirecterBase
 {
 public:
-	CAttackManager();
-	~CAttackManager();
-	void Init();
+	CAttackDirecter();
+	~CAttackDirecter();
+	void Init() override;
 	void Update();
+	void EndInplay() override;
+
 	void SetPlayerNo(int no) { m_nPlayerNo = no; }
 	int GetPlayerNo() { return m_nPlayerNo; }
 	CBatting* GetBatting() { return m_pBatting.get(); }

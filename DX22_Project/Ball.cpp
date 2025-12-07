@@ -1,5 +1,4 @@
 ﻿#include "Ball.h"
-#include "ImGuiManager.h"
 #include "SceneGame.h"
 #include "Sprite.h"
 #include "Main.h"
@@ -204,11 +203,6 @@ void CBall::UpdateBatting()
 
 void CBall::UpdateInPlay()
 {
-	CGameManager* pBallCount = CGameManager::GetInstance();
-
-
-
-
 	m_tParam.m_f3Size= ce_fInplayBallSize;
 	CCamera::GetInstance()->SetCameraKind(CAM_INPLAY);
 	

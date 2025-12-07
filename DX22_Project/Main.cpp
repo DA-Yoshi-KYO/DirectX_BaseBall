@@ -17,7 +17,6 @@
 #include "Camera.h"
 #include "PostProcessChain.h"
 #include "GameManager.h"
-#include "TeamManager.h"
 
 // Scenes
 #include "SceneTitle.h"

@@ -7,7 +7,6 @@
 #include "Camera.h"
 #include "Input.h"
 #include "SceneGame.h"
-#include "ImGuiManager.h"
 #include "BallCount.h"
 #include "Pitching.h"
 #include "Controller.h"
@@ -69,18 +68,18 @@ CPitchingCursor::~CPitchingCursor()
 
 void CPitchingCursor::Update()
 {
-	CPitching* pPitching = CGameManager::GetInstance()->GetDefenceManager()->GetPitching();
+	CPitching* pPitching = CGameManager::GetInstance()->GetDefenceDirecter()->GetPitching();
 	CPitching::PitchState tState = pPitching->GetPitchState();
 	m_tPredParam.m_f3Pos = m_tBallParam.m_f3Pos;
 	CStrikeZone* pStrikeZone = GetScene()->GetGameObject<CStrikeZone>();
 	DirectX::XMFLOAT3 fStrikeZonePos = pStrikeZone->GetPos();
 	DirectX::XMFLOAT3 fStrikeZoneSize = pStrikeZone->GetSize();
-	CDefenceManager* pDefenceManager = CGameManager::GetInstance()->GetDefenceManager();
+	CDefenceDirecter* pDefenceDirecter = CGameManager::GetInstance()->GetDefenceDirecter();
 
 	// カーソル移動可能なときに移動処理をする
 	if (m_bMove && pPitching->GetPitchingPhase() == CPitching::PitchingPhase::Pitch)
 	{
-		int nPitchingPlayer = pDefenceManager->GetPlayerNo();
+		int nPitchingPlayer = pDefenceDirecter->GetPlayerNo();
 		// 移動処理
 		DirectX::XMFLOAT2 fInput = CGetLStick(nPitchingPlayer - 1);
 		DirectX::XMFLOAT2 fMaxPos = { fStrikeZoneSize.x / 1.5f , fStrikeZoneSize.y / 1.5f };

@@ -1,19 +1,19 @@
-#include "AttackManager.h"
+#include "AttackDirecter.h"
 #include "Main.h"
 #include "BattingCursor.h"
 
-CAttackManager::CAttackManager()
+CAttackDirecter::CAttackDirecter()
 	: m_nPlayerNo(1)
 {
 
 }
 
-CAttackManager::~CAttackManager()
+CAttackDirecter::~CAttackDirecter()
 {
 
 }
 
-void CAttackManager::Init()
+void CAttackDirecter::Init()
 {
 	CScene* pScene = GetScene();
 
@@ -22,7 +22,11 @@ void CAttackManager::Init()
 	m_pBatting = std::make_unique<CBatting>();
 }
 
-void CAttackManager::Update()
+void CAttackDirecter::Update()
 {
 	m_pBatting->Update(m_nPlayerNo);
+}
+
+void CAttackDirecter::EndInplay()
+{
 }

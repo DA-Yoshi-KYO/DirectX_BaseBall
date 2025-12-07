@@ -1,10 +1,10 @@
 #pragma once
 
-#include "CountManager.h"
-#include "AttackManager.h"
-#include "DefenceManager.h"
-#include "TeamManager.h"
-#include "FieldManager.h"
+#include "CountDirecter.h"
+#include "AttackDirecter.h"
+#include "DefenceDirecter.h"
+#include "TeamDirecter.h"
+#include "FieldDirecter.h"
 
 #define PLAYER_1 1
 #define PLAYER_2 2
@@ -31,18 +31,18 @@ public:
 public:
     static CGameManager* GetInstance();
     void Release();
-    CCountManager* GetCountManager() { return m_pCountManager.get(); };
-    CAttackManager* GetAttackManager() { return m_pAttackManager.get(); };
-    CDefenceManager* GetDefenceManager() { return m_pDefenceManager.get(); };
-    CTeamDirector* GetTeamManager(int teamNo) { return m_pTeamManager[teamNo - 1].get(); };
+    CCountDirecter* GetCountDirecter() { return m_pCountDirecter.get(); };
+    CAttackDirecter* GetAttackDirecter() { return m_pAttackDirecter.get(); };
+    CDefenceDirecter* GetDefenceDirecter() { return m_pDefenceDirecter.get(); };
+    CTeamDirector* GetTeamDirecter(int teamNo) { return m_pTeamDirecter[teamNo - 1].get(); };
 
 private:
     static CGameManager* m_pInstance;
-    std::unique_ptr<CCountManager> m_pCountManager;
-    std::unique_ptr<CAttackManager> m_pAttackManager;
-    std::unique_ptr<CDefenceManager> m_pDefenceManager;
-    std::unique_ptr<CFieldManager> m_pFieldManager;
-    std::unique_ptr<CTeamDirector> m_pTeamManager[2];
+    std::unique_ptr<CCountDirecter> m_pCountDirecter;
+    std::unique_ptr<CAttackDirecter> m_pAttackDirecter;
+    std::unique_ptr<CDefenceDirecter> m_pDefenceDirecter;
+    std::unique_ptr<CFieldDirecter> m_pFieldDirecter;
+    std::unique_ptr<CTeamDirector> m_pTeamDirecter[2];
     GamePhase m_ePhase;
     float m_fWaitTime;
 

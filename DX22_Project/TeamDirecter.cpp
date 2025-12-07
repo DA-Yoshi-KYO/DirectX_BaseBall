@@ -1,4 +1,4 @@
-#include "TeamManager.h"
+#include "TeamDirecter.h"
 #include <algorithm>
 #include "DirectX.h"
 #include "PitcherData.h"
@@ -43,6 +43,10 @@ void CTeamDirector::TeamUninit()
 CTeam* CTeamDirector::GetTeam()
 {
     return m_pTeam[m_nPlayerNo];
+}
+
+void CTeamDirector::EndInplay()
+{
 }
 
 void CTeamDirector::InitStarter()

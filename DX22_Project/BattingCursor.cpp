@@ -6,7 +6,6 @@
 #include "Main.h"
 #include "Camera.h"
 #include "Input.h"
-#include "ImGuiManager.h"
 #include "BattingCursor.h"
 #include "BallCount.h"
 #include "Controller.h"
@@ -43,12 +42,12 @@ void CBattingCursor::Update()
 {
 	CScene* pScene = GetScene();
 	CStrikeZone* pStrikeZone = pScene->GetGameObject<CStrikeZone>();
-	CAttackManager* pAttackManager = CGameManager::GetInstance()->GetAttackManager();
+	CAttackDirecter* pAttackDirecter = CGameManager::GetInstance()->GetAttackDirecter();
 
 	// カーソル移動可能なときに移動処理をする
 	if (m_bMove)
 	{
-		int nAttackPlayer = pAttackManager->GetPlayerNo();
+		int nAttackPlayer = pAttackDirecter->GetPlayerNo();
 		// 移動処理
 		DirectX::XMFLOAT3 fStrikeZonePos = pStrikeZone->GetPos();
 		DirectX::XMFLOAT3 fStrikeZoneSize = pStrikeZone->GetSize();

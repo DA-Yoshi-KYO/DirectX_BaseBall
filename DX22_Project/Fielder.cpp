@@ -45,7 +45,7 @@ void CFielder::Update()
 
     if (ePhase == GamePhase::InPlay)
     {
-        int DefencePlayer = pGameManager->GetDefenceManager()->GetPlayerNo();
+        int DefencePlayer = pGameManager->GetDefenceDirecter()->GetPlayerNo();
         int a = 0;
         switch (m_ePosition)
         {
@@ -177,7 +177,7 @@ void CFielder::OnCollision(CCollisionBase* other, std::string thisTag, Collision
         bool isFry = pBall->GetIsFryBall();
         if (isFry)
         {
-            CGameManager::GetInstance()->GetCountManager()->AddOutCount();
+            CGameManager::GetInstance()->GetCountDirecter()->AddOutCount();
             pBall->SetIsFryBall(false);
             pBall->SetCaught(true);
         }
@@ -255,7 +255,7 @@ void CFielder::Throwing(BaseKind kind)
     CScene* pScene = GetScene();
     CBall* pBall = pScene->GetGameObject<CBall>();
     CGameManager* pManager = CGameManager::GetInstance();
-    CTeamDirector* pTeamManager = pManager->GetTeamManager(pManager->GetDefenceManager()->GetPlayerNo());
+    CTeamDirector* pTeamDirecter = pManager->GetTeamDirecter(pManager->GetDefenceDirecter()->GetPlayerNo());
 
     DirectX::XMFLOAT3 fDir = pBase->GetPos() - m_tParam.m_f3Pos;
 
@@ -278,5 +278,4 @@ void CFielder::Throwing(BaseKind kind)
     fVelocity.y = fThrowAngle;
     pBall->SetVelocity(fVelocity);
     m_bChatch = false;
-    pBall->SetCaught(false);
 }

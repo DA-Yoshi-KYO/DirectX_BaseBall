@@ -8,14 +8,16 @@
 #include "Score.h"
 #include "Inning.h"
 #include "ScoreBoard.h"
+#include "GameDirecterBase.h"
 
-class CCountManager
+class CCountDirecter : public CGameDirecterBase
 {
 public:
-    CCountManager();
-    ~CCountManager();
-    void Init();
+    CCountDirecter();
+    ~CCountDirecter();
+    void Init()override;
     void Update();
+    void EndInplay() override;
 
     void AddStrikeCount();
     void AddBallCount();

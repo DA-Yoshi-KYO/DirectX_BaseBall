@@ -118,6 +118,12 @@
     <Filter Include="Code\Component\Collision">
       <UniqueIdentifier>{99552244-06fc-4c4a-86b9-980dae416949}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Code\Scene\Director\OutGame">
+      <UniqueIdentifier>{9fa8615e-c785-45c6-8b0d-8143f7117bff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\Scene\Director\InGame">
+      <UniqueIdentifier>{9fd1d4c8-8b8f-4a19-bef2-0f6d18fa1701}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -157,9 +163,6 @@
       <Filter>imgui</Filter>
     </ClCompile>
     <ClCompile Include="imgui_widgets.cpp">
-      <Filter>imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="ImGuiManager.cpp">
       <Filter>imgui</Filter>
     </ClCompile>
     <ClCompile Include="imgui_impl_win32.cpp">
@@ -318,27 +321,6 @@
     <ClCompile Include="Transition.cpp">
       <Filter>Code\Scene\Transition</Filter>
     </ClCompile>
-    <ClCompile Include="CountManager.cpp">
-      <Filter>Code\Scene\Director</Filter>
-    </ClCompile>
-    <ClCompile Include="GameManager.cpp">
-      <Filter>Code\Scene\Director</Filter>
-    </ClCompile>
-    <ClCompile Include="TeamManager.cpp">
-      <Filter>Code\Scene\Director</Filter>
-    </ClCompile>
-    <ClCompile Include="TeamSelectDirector.cpp">
-      <Filter>Code\Scene\Director</Filter>
-    </ClCompile>
-    <ClCompile Include="FieldManager.cpp">
-      <Filter>Code\Scene\Director</Filter>
-    </ClCompile>
-    <ClCompile Include="DefenceManager.cpp">
-      <Filter>Code\Scene\Director</Filter>
-    </ClCompile>
-    <ClCompile Include="AttackManager.cpp">
-      <Filter>Code\Scene\Director</Filter>
-    </ClCompile>
     <ClCompile Include="BillboardRenderer.cpp">
       <Filter>Code\Component\Renderer</Filter>
     </ClCompile>
@@ -356,9 +338,6 @@
     </ClCompile>
     <ClCompile Include="SpriteRendererBase.cpp">
       <Filter>Code\Component\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="TitleDirector.cpp">
-      <Filter>Code\Scene\Director</Filter>
     </ClCompile>
     <ClCompile Include="TitleBackGround.cpp">
       <Filter>Code\GameObject\Title</Filter>
@@ -407,9 +386,6 @@
     </ClCompile>
     <ClCompile Include="Team.cpp">
       <Filter>Code\GameObject\Game\PlayerData</Filter>
-    </ClCompile>
-    <ClCompile Include="MemberSelectDirector.cpp">
-      <Filter>Code\Scene\Director</Filter>
     </ClCompile>
     <ClCompile Include="MemberBack.cpp">
       <Filter>Code\GameObject\MemberSelect</Filter>
@@ -481,6 +457,36 @@
     <ClCompile Include="Runner.cpp">
       <Filter>Code\GameObject\Game\Attack</Filter>
     </ClCompile>
+    <ClCompile Include="AttackDirecter.cpp">
+      <Filter>Code\Scene\Director\InGame</Filter>
+    </ClCompile>
+    <ClCompile Include="CountDirecter.cpp">
+      <Filter>Code\Scene\Director\InGame</Filter>
+    </ClCompile>
+    <ClCompile Include="DefenceDirecter.cpp">
+      <Filter>Code\Scene\Director\InGame</Filter>
+    </ClCompile>
+    <ClCompile Include="FieldDirecter.cpp">
+      <Filter>Code\Scene\Director\InGame</Filter>
+    </ClCompile>
+    <ClCompile Include="GameManager.cpp">
+      <Filter>Code\Scene\Director\InGame</Filter>
+    </ClCompile>
+    <ClCompile Include="TeamDirecter.cpp">
+      <Filter>Code\Scene\Director\InGame</Filter>
+    </ClCompile>
+    <ClCompile Include="MemberSelectDirector.cpp">
+      <Filter>Code\Scene\Director\OutGame</Filter>
+    </ClCompile>
+    <ClCompile Include="TeamSelectDirector.cpp">
+      <Filter>Code\Scene\Director\OutGame</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleDirector.cpp">
+      <Filter>Code\Scene\Director\OutGame</Filter>
+    </ClCompile>
+    <ClCompile Include="GameDirecterBase.cpp">
+      <Filter>Code\Scene\Director\InGame</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imconfig.h">
@@ -502,9 +508,6 @@
       <Filter>imgui</Filter>
     </ClInclude>
     <ClInclude Include="imstb_truetype.h">
-      <Filter>imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="ImGuiManager.h">
       <Filter>imgui</Filter>
     </ClInclude>
     <ClInclude Include="imgui_impl_win32.h">
@@ -669,27 +672,6 @@
     <ClInclude Include="Transition.h">
       <Filter>Code\Scene\Transition</Filter>
     </ClInclude>
-    <ClInclude Include="CountManager.h">
-      <Filter>Code\Scene\Director</Filter>
-    </ClInclude>
-    <ClInclude Include="GameManager.h">
-      <Filter>Code\Scene\Director</Filter>
-    </ClInclude>
-    <ClInclude Include="TeamManager.h">
-      <Filter>Code\Scene\Director</Filter>
-    </ClInclude>
-    <ClInclude Include="TeamSelectDirector.h">
-      <Filter>Code\Scene\Director</Filter>
-    </ClInclude>
-    <ClInclude Include="FieldManager.h">
-      <Filter>Code\Scene\Director</Filter>
-    </ClInclude>
-    <ClInclude Include="DefenceManager.h">
-      <Filter>Code\Scene\Director</Filter>
-    </ClInclude>
-    <ClInclude Include="AttackManager.h">
-      <Filter>Code\Scene\Director</Filter>
-    </ClInclude>
     <ClInclude Include="BillboardRenderer.h">
       <Filter>Code\Component\Renderer</Filter>
     </ClInclude>
@@ -707,9 +689,6 @@
     </ClInclude>
     <ClInclude Include="SpriteRendererBase.h">
       <Filter>Code\Component\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="TitleDirector.h">
-      <Filter>Code\Scene\Director</Filter>
     </ClInclude>
     <ClInclude Include="TitleBackGround.h">
       <Filter>Code\GameObject\Title</Filter>
@@ -761,9 +740,6 @@
     </ClInclude>
     <ClInclude Include="Team.h">
       <Filter>Code\GameObject\Game\PlayerData</Filter>
-    </ClInclude>
-    <ClInclude Include="MemberSelectDirector.h">
-      <Filter>Code\Scene\Director</Filter>
     </ClInclude>
     <ClInclude Include="MemberBack.h">
       <Filter>Code\GameObject\MemberSelect</Filter>
@@ -834,6 +810,36 @@
     </ClInclude>
     <ClInclude Include="Runner.h">
       <Filter>Code\GameObject\Game\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="AttackDirecter.h">
+      <Filter>Code\Scene\Director\InGame</Filter>
+    </ClInclude>
+    <ClInclude Include="CountDirecter.h">
+      <Filter>Code\Scene\Director\InGame</Filter>
+    </ClInclude>
+    <ClInclude Include="DefenceDirecter.h">
+      <Filter>Code\Scene\Director\InGame</Filter>
+    </ClInclude>
+    <ClInclude Include="FieldDirecter.h">
+      <Filter>Code\Scene\Director\InGame</Filter>
+    </ClInclude>
+    <ClInclude Include="GameManager.h">
+      <Filter>Code\Scene\Director\InGame</Filter>
+    </ClInclude>
+    <ClInclude Include="TeamDirecter.h">
+      <Filter>Code\Scene\Director\InGame</Filter>
+    </ClInclude>
+    <ClInclude Include="MemberSelectDirector.h">
+      <Filter>Code\Scene\Director\OutGame</Filter>
+    </ClInclude>
+    <ClInclude Include="TeamSelectDirector.h">
+      <Filter>Code\Scene\Director\OutGame</Filter>
+    </ClInclude>
+    <ClInclude Include="TitleDirector.h">
+      <Filter>Code\Scene\Director\OutGame</Filter>
+    </ClInclude>
+    <ClInclude Include="GameDirecterBase.h">
+      <Filter>Code\Scene\Director\InGame</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
