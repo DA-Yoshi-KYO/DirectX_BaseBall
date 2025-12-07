@@ -441,7 +441,6 @@
     <ClCompile Include="Fielder.cpp">
       <Filter>Code\GameObject\Game\Difence</Filter>
     </ClCompile>
-    <ClCompile Include="DebugSystem.cpp" />
     <ClCompile Include="BenchBatterBack.cpp">
       <Filter>Code\GameObject\MemberSelect</Filter>
     </ClCompile>
@@ -486,6 +485,9 @@
     </ClCompile>
     <ClCompile Include="GameDirecterBase.cpp">
       <Filter>Code\Scene\Director\InGame</Filter>
+    </ClCompile>
+    <ClCompile Include="DebugSystem.cpp">
+      <Filter>Code\Work</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -795,7 +797,6 @@
     <ClInclude Include="Fielder.h">
       <Filter>Code\GameObject\Game\Difence</Filter>
     </ClInclude>
-    <ClInclude Include="DebugSystem.h" />
     <ClInclude Include="BenchPitcherBack.h">
       <Filter>Code\GameObject\MemberSelect</Filter>
     </ClInclude>
@@ -841,6 +842,9 @@
     <ClInclude Include="GameDirecterBase.h">
       <Filter>Code\Scene\Director\InGame</Filter>
     </ClInclude>
+    <ClInclude Include="DebugSystem.h">
+      <Filter>Code\Work</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="History.txt">
@@ -853,6 +857,9 @@
       <Filter>memo</Filter>
     </Text>
     <Text Include="refactor.txt">
+      <Filter>memo</Filter>
+    </Text>
+    <Text Include="newTask.txt">
       <Filter>memo</Filter>
     </Text>
   </ItemGroup>

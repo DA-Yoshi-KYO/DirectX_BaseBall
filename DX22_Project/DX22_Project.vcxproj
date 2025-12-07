@@ -394,6 +394,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="History.txt" />
+    <Text Include="newTask.txt" />
     <Text Include="refactor.txt" />
     <Text Include="Schedule.txt" />
     <Text Include="Task.txt" />

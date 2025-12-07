@@ -15,7 +15,7 @@ constexpr int ce_nBallRotateSec = 220 / 60;
 
 CBall::CBall()
 	: CGameObject()
-	, m_bFryBall(true), m_bPitched(false)
+	, m_bFryBall(true), m_bPitched(false), m_bCaught(false), m_bFryChatch(false)
 	, m_f3Velocity{}, m_fBallTime(0.0f)
 {
 

@@ -23,8 +23,10 @@ public:
 
 	void UpdateInPlay();
 	void UpdateBatting();
+	bool GetIsFryChatch() { return m_bFryChatch; }
 	bool GetIsFryBall() { return m_bFryBall; }
 	bool GetCaught() { return m_bCaught; }
+	void SetIsFryChatch(bool fryChatch) { m_bFryChatch = fryChatch; }
 	void SetIsFryBall(bool isFry) { m_bFryBall = isFry; }
 	void SetVelocity(DirectX::XMFLOAT3 vel) { m_f3Velocity = vel; }
 	void SetPitching(float time) { m_fBallTime = time; m_bPitched = true; }
@@ -35,6 +37,7 @@ private:
 	CCollisionBox* m_pBoxCollision;
 	DirectX::XMFLOAT3 m_f3Velocity;
 	bool m_bFryBall;
+	bool m_bFryChatch;
 	bool m_bCaught;
 	bool m_bPitched;
 	float m_fBallTime;

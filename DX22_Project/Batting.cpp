@@ -155,7 +155,7 @@ void CBatting::Update(int AttackPlayer)
 					DirectX::XMStoreFloat3(&m_fMoveDirection, vecMove);
 
 					pScene->GetGameObject<CBall>()->SetVelocity(m_fMoveDirection);
-					pScene->AddGameObject<CRunner>("Runner", Tag::GameObject);
+					pScene->AddGameObject<CRunner>("Runner", Tag::GameObject)->SetRunnerSpeed(tTakingBatterData.m_eSpeed);
 					pGameManager->SetPhase(GamePhase::InPlay);
 
 					// ƒoƒbƒg‚É“–‚½‚Á‚½

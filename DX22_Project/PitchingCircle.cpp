@@ -8,8 +8,8 @@ CPitchingCircle::CPitchingCircle()
 	: CGameObject()
 	, m_bScaleDown(false)
 {
-	m_tParam.m_f3Size = ce_fPitchingCircleFirstSize;
-	m_tParam.m_f4Color = { 1.0f,1.0f,1.0f,0.5f };
+	m_tParam.m_f3Size = DirectX::XMFLOAT3();
+	m_tParam.m_f4Color = DirectX::XMFLOAT4(1.0f,1.0f,1.0f,0.5f);
 	m_f3Future = m_tParam.m_f3Pos;
 }
 

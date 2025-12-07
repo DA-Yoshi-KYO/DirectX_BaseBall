@@ -12,7 +12,7 @@ CRunner::CRunner()
 	, m_eCurrentRunnerKind(RunnerKind::BatterToFirst)
 	, m_pCollision(nullptr),m_bIsStop(false), m_bFrontMove(true)
 	, m_f3TargetPos(), m_bRunOut(true), m_bBackTempBase(false)
-	, m_fStiffTime(0.0f)
+	, m_fStiffTime(0.0f), m_fSpeed(1.0f), m_bBatterRunner(true)
 {
 	m_tParam.m_f3Pos = DirectX::XMFLOAT3(0.0f, -4.5f, -218.0f);
 	m_tParam.m_f3Size = DirectX::XMFLOAT3(5.0f, 5.0f, 5.0f);
@@ -83,7 +83,7 @@ void CRunner::Update()
 	{
 		DirectX::XMFLOAT2 f2TargetDistance = DirectX::XMFLOAT2(target.x - m_tParam.m_f3Pos.x, target.z - m_tParam.m_f3Pos.z);
 		DirectX::XMVECTOR vecDir = DirectX::XMVector2Normalize(DirectX::XMLoadFloat2(&f2TargetDistance));
-		DirectX::XMVECTOR vecVelocity = DirectX::XMVectorScale(vecDir, 0.1f);
+		DirectX::XMVECTOR vecVelocity = DirectX::XMVectorScale(vecDir, m_fSpeed);
 		DirectX::XMFLOAT2 f2Velocity;
 		DirectX::XMStoreFloat2(&f2Velocity, vecVelocity);
 		m_tParam.m_f3Pos.x += f2Velocity.x;
@@ -94,7 +94,7 @@ void CRunner::Update()
 
 	}
 
-	if (!GetScene()->GetGameObject<CBall>()->GetIsFryBall())
+	if (GetScene()->GetGameObject<CBall>()->GetIsFryChatch())
 	{
 		if (!m_bRunOut) m_eNowBase = m_eTempBase;
 		else
@@ -117,7 +117,7 @@ void CRunner::OnCollision(CCollisionBase* other, std::string thisTag, Collision:
 	std::string tag = other->GetTag();
 	if (tag == "HomeBase" && m_eNowBase == GotBase::Third)
 	{
-		// TODO:“¾“_ˆ—‚ð’Ç‰Á
+		CGameManager::GetInstance()->GetCountDirecter()->AddScore(CGameManager::GetInstance()->GetAttackDirecter()->GetPlayerNo());
 		Destroy();
 		return;
 	}
@@ -142,6 +142,11 @@ void CRunner::OnCollision(CCollisionBase* other, std::string thisTag, Collision:
 		m_eCurrentRunnerKind = RunnerKind::StayThird;
 		return;
 	}
+}
+
+void CRunner::SetRunnerSpeed(Quality speed)
+{
+	m_fSpeed = 0.1f + int(speed) * 0.1f;
 }
 
 void CRunner::CheckRunOut()
@@ -172,6 +177,7 @@ void CRunner::GoToNextBase()
 		m_eNowBase = GotBase::Third;
 		break;
 	case GotBase::Third:
+		CGameManager::GetInstance()->GetCountDirecter()->AddScore(CGameManager::GetInstance()->GetAttackDirecter()->GetPlayerNo());
 		Destroy();
 		break;
 	case GotBase::Max:

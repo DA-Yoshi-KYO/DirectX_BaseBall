@@ -6,6 +6,7 @@
 #include "GameManager.h"
 #include "Input.h"
 #include "Oparation.h"
+#include "Runner.h"
 
 constexpr float ce_fDifencePower = 0.2f;	// Žç”õˆÚ“®‘¬“x
 constexpr float ce_fDifence = 0.4f;			// Žç”õ‘€ì‘¬“x
@@ -177,12 +178,22 @@ void CFielder::OnCollision(CCollisionBase* other, std::string thisTag, Collision
         m_bChatch = true;
         m_bIsOparation = true;
         pBall->SetActive(false);
+        pBall->SetCaught(true);
         bool isFry = pBall->GetIsFryBall();
         if (isFry)
         {
+            CScene* pScene = GetScene();
+            auto RunnerList = pScene->GetSameGameObject<CRunner>();
+            for (auto itr : RunnerList)
+            {
+                if (itr->GetIsBatterRunner())
+                {
+                    itr->Destroy();
+                    break;
+                }
+            }
             CGameManager::GetInstance()->GetCountDirecter()->AddOutCount();
             pBall->SetIsFryBall(false);
-            pBall->SetCaught(true);
         }
         return;
     }

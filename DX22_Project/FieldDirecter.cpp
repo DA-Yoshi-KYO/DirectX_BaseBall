@@ -1,9 +1,6 @@
 #include "FieldDirecter.h"
 #include "Main.h"
-#include "Ball.h"
-#include "Field.h"
-#include "StrikeZone.h"
-#include "Base.h"
+
 
 CFieldDirecter::CFieldDirecter()
 {
@@ -17,17 +14,21 @@ void CFieldDirecter::Init()
 {
 	CScene* pScene = GetScene();
 
-	pScene->AddGameObject<CField>("Field", Tag::Field);
-	pScene->AddGameObject<CBall>("Ball", Tag::GameObject);
-	pScene->AddGameObject<CStrikeZone>("StrikeZone", Tag::UI);
+	m_pBall = pScene->AddGameObject<CBall>("Ball", Tag::GameObject);
+	m_pField = pScene->AddGameObject<CField>("Field", Tag::Field);
+	m_pStrikeZone = pScene->AddGameObject<CStrikeZone>("StrikeZone", Tag::UI);
 
 	for (int i = 0; i < (int)BaseKind::Max; i++)
 	{
-		pScene->AddGameObject<CBase>("Base", Tag::GameObject)->Init(BaseKind(i));
+		m_pBase[i] = pScene->AddGameObject<CBase>("Base", Tag::GameObject);
+		m_pBase[i]->Init(BaseKind(i));
 	}
 
 }
 
 void CFieldDirecter::EndInplay()
 {
+	m_pBall->SetCaught(false);
+	m_pBall->SetIsFryBall(false);
+	m_pBall->SetIsFryChatch(false);
 }

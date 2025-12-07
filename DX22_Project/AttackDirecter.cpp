@@ -1,6 +1,7 @@
 #include "AttackDirecter.h"
 #include "Main.h"
 #include "BattingCursor.h"
+#include "Runner.h"
 
 CAttackDirecter::CAttackDirecter()
 	: m_nPlayerNo(1)
@@ -29,4 +30,10 @@ void CAttackDirecter::Update()
 
 void CAttackDirecter::EndInplay()
 {
+	CScene* pScene = GetScene();
+	auto RunnerList = pScene->GetSameGameObject<CRunner>();
+	for (auto itr : RunnerList)
+	{
+		itr->ToNormalRunner();
+	}
 }

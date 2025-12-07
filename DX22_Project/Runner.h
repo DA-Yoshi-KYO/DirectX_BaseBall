@@ -4,6 +4,7 @@
 #include "CollisionBox.h"
 #include "Base.h"
 #include <array>
+#include "FielderData.h"
 
 enum class RunnerKind
 {
@@ -34,12 +35,14 @@ public:
 	void Init() override;
 	void Update() override;
 	void OnCollision(CCollisionBase* other, std::string thisTag, Collision::Result result) override;
-	void SetRunnerParam();
+	void SetRunnerSpeed(Quality speed);
 	void CheckRunOut();
 	void NotRunOut() { m_bRunOut = false; }
 	void GoToNextBase();
+	void ToNormalRunner() { m_bBatterRunner = true; }
 	GotBase GetNowBase() { return m_eNowBase; }
 	RunnerKind GetCurrentKind() { return m_eCurrentRunnerKind; }
+	bool GetIsBatterRunner() { return m_bBatterRunner; }
 
 private:
 	GotBase m_eNowBase;
@@ -48,7 +51,9 @@ private:
 	bool m_bFrontMove;
 	bool m_bRunOut;
 	bool m_bBackTempBase;
+	bool m_bBatterRunner;
 	float m_fStiffTime;
+	float m_fSpeed;
 	CCollisionBox* m_pCollision;
 	std::array<DirectX::XMFLOAT3, int(BaseKind::Max)> m_f3TargetPos;
 	RunnerKind m_eCurrentRunnerKind;

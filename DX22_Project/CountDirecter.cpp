@@ -151,6 +151,12 @@ void CCountDirecter::AddOutCount()
     }
 }
 
+void CCountDirecter::AddScore(int attackPlayer)
+{
+    int playerIndex = attackPlayer - 1;
+    m_pScore[playerIndex]->AddScore();
+}
+
 void CCountDirecter::SetIsBase(bool isBase, int index)
 {
     if (index < 0 || index >= 3) return;

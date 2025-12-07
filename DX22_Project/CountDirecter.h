@@ -22,6 +22,7 @@ public:
     void AddStrikeCount();
     void AddBallCount();
     void AddOutCount();
+    void AddScore(int attackPlayer);
     void SetIsBase(bool isBase, int index);
 
 private:
