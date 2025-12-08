@@ -55,21 +55,21 @@ void CRunner::Update()
 		break;
 	case RunnerKind::StayFirst:
 		m_eTempBase = GotBase::First;
-		m_bIsStop = true;
+		target = m_f3TargetPos[int(BaseKind::First)];
 		break;
 	case RunnerKind::FirstToSecond:
 		if (m_bFrontMove) target = m_f3TargetPos[int(BaseKind::Second)];
 		else target = m_f3TargetPos[int(BaseKind::First)];
 		break;
 	case RunnerKind::StaySecond:
-		m_bIsStop = true;
+		target = m_f3TargetPos[int(BaseKind::Second)];
 		break;
 	case RunnerKind::SecondToThird:
 		if (m_bFrontMove) target = m_f3TargetPos[int(BaseKind::Third)];
 		else target = m_f3TargetPos[int(BaseKind::Second)];
 		break;
 	case RunnerKind::StayThird:
-		m_bIsStop = true;
+		target = m_f3TargetPos[int(BaseKind::Third)];
 		break;
 	case RunnerKind::ThirdToHome:
 		if (m_bFrontMove) target = m_f3TargetPos[int(BaseKind::Home)];
@@ -79,19 +79,23 @@ void CRunner::Update()
 		break;
 	}
 
+	m_bIsStop = !CheckCanProgress();
 	if (!m_bIsStop)
 	{
 		DirectX::XMFLOAT2 f2TargetDistance = DirectX::XMFLOAT2(target.x - m_tParam.m_f3Pos.x, target.z - m_tParam.m_f3Pos.z);
-		DirectX::XMVECTOR vecDir = DirectX::XMVector2Normalize(DirectX::XMLoadFloat2(&f2TargetDistance));
-		DirectX::XMVECTOR vecVelocity = DirectX::XMVectorScale(vecDir, m_fSpeed);
-		DirectX::XMFLOAT2 f2Velocity;
-		DirectX::XMStoreFloat2(&f2Velocity, vecVelocity);
-		m_tParam.m_f3Pos.x += f2Velocity.x;
-		m_tParam.m_f3Pos.z += f2Velocity.y;
-	}
-	else
-	{
-
+		DirectX::XMVECTOR vecDistance = DirectX::XMLoadFloat2(&f2TargetDistance);
+		DirectX::XMVECTOR vecLength = DirectX::XMVector2Length(vecDistance);
+		float fLength = 0.0f;
+		DirectX::XMStoreFloat(&fLength, vecLength);
+		if (fLength > 0.1f)
+		{
+			DirectX::XMVECTOR vecDir = DirectX::XMVector2Normalize(vecDistance);
+			DirectX::XMVECTOR vecVelocity = DirectX::XMVectorScale(vecDir, m_fSpeed);
+			DirectX::XMFLOAT2 f2Velocity;
+			DirectX::XMStoreFloat2(&f2Velocity, vecVelocity);
+			m_tParam.m_f3Pos.x += f2Velocity.x;
+			m_tParam.m_f3Pos.z += f2Velocity.y;
+		}
 	}
 
 	if (GetScene()->GetGameObject<CBall>()->GetIsFryChatch())
@@ -288,4 +292,43 @@ void CRunner::UpdateBackTempBase()
 	default:
 		break;
 	}
+}
+
+bool CRunner::CheckCanProgress()
+{
+	CScene* pScene = GetScene();
+	auto RunnerList = pScene->GetSameGameObject<CRunner>();
+	std::vector<RunnerKind> eRunnerKindList;
+	eRunnerKindList.clear();
+	for (auto itr : RunnerList)
+	{
+		if (itr != this) eRunnerKindList.push_back(itr->GetCurrentKind());
+	}
+
+	for (auto itr : eRunnerKindList)
+	{
+		switch (m_eCurrentRunnerKind)
+		{
+		case RunnerKind::BatterToFirst:
+			if (itr != RunnerKind::StayFirst) return false;
+			break;
+		case RunnerKind::FirstToSecond:
+			m_eCurrentRunnerKind = RunnerKind::FirstToSecond;
+			if (itr != RunnerKind::StaySecond) return false;
+			break;
+		case RunnerKind::SecondToThird:
+			m_eCurrentRunnerKind = RunnerKind::SecondToThird;
+			if (itr != RunnerKind::StayThird) return false;
+			break;
+		case RunnerKind::ThirdToHome:
+			m_eCurrentRunnerKind = RunnerKind::ThirdToHome;
+			if (pScene->GetGameObject<CBall>()->GetIsFryBall()) return false;
+			break;
+		default:
+			return true;
+			break;
+		}
+	}
+
+	return true;
 }

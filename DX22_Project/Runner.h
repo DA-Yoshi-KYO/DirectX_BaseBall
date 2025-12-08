@@ -62,5 +62,7 @@ private:
 
 	void UpdateInput();
 	void UpdateBackTempBase();
+	bool CheckCanProgress();
+
 };
 

@@ -95,7 +95,14 @@ void CCountDirecter::Update()
 void CCountDirecter::EndInplay()
 {
     auto RunnerList = GetScene()->GetSameGameObject<CRunner>();
-    
+    for (int i = 0; i < m_pStrikeCount.size(); i++)
+    {
+        m_pStrikeCount[i]->SetActive(false);
+    }
+    for (int i = 0; i < m_pBallCount.size(); i++)
+    {
+        m_pBallCount[i]->SetActive(false);
+    }
     for (int i = 0; i < int(GotBase::Max); i++)
     {
         SetIsBase(false, i);
@@ -166,32 +173,16 @@ void CCountDirecter::SetIsBase(bool isBase, int index)
 
 void CCountDirecter::ThreeStrike()
 {
-    AddOutCount();
-    CGameManager::GetInstance()->EndAllInplay();
     m_tParam.m_nStrikeCount = 0;
     m_tParam.m_nBallCount = 0;
-    for (int i = 0; i < m_pStrikeCount.size(); i++)
-    {
-        m_pStrikeCount[i]->SetActive(false);
-    }
-    for (int i = 0; i < m_pBallCount.size(); i++)
-    {
-        m_pBallCount[i]->SetActive(false);
-    }
+    AddOutCount();
+    CGameManager::GetInstance()->EndAllInplay();
 }
 
 void CCountDirecter::FourBall()
 {
     m_tParam.m_nStrikeCount = 0;
     m_tParam.m_nBallCount = 0;
-    for (int i = 0; i < m_pStrikeCount.size(); i++)
-    {
-        m_pStrikeCount[i]->SetActive(false);
-    }
-    for (int i = 0; i < m_pBallCount.size(); i++)
-    {
-        m_pBallCount[i]->SetActive(false);
-    }
 
     auto RunnerList = GetScene()->GetSameGameObject<CRunner>();
     bool bFillBase[int(GotBase::Max)] = {};
