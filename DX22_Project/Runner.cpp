@@ -79,14 +79,17 @@ void CRunner::Update()
 		break;
 	}
 
-	m_bIsStop = !CheckCanProgress();
+	DirectX::XMFLOAT2 f2TargetDistance = DirectX::XMFLOAT2(target.x - m_tParam.m_f3Pos.x, target.z - m_tParam.m_f3Pos.z);
+	DirectX::XMVECTOR vecDistance = DirectX::XMLoadFloat2(&f2TargetDistance);
+	DirectX::XMVECTOR vecLength = DirectX::XMVector2Length(vecDistance);
+	float fLength = 0.0f;
+	DirectX::XMStoreFloat(&fLength, vecLength);
+	//if (fLength < 2.0f)
+	//{
+	//	m_bIsStop = !CheckCanProgress();
+	//}
 	if (!m_bIsStop)
 	{
-		DirectX::XMFLOAT2 f2TargetDistance = DirectX::XMFLOAT2(target.x - m_tParam.m_f3Pos.x, target.z - m_tParam.m_f3Pos.z);
-		DirectX::XMVECTOR vecDistance = DirectX::XMLoadFloat2(&f2TargetDistance);
-		DirectX::XMVECTOR vecLength = DirectX::XMVector2Length(vecDistance);
-		float fLength = 0.0f;
-		DirectX::XMStoreFloat(&fLength, vecLength);
 		if (fLength > 0.1f)
 		{
 			DirectX::XMVECTOR vecDir = DirectX::XMVector2Normalize(vecDistance);
@@ -310,15 +313,15 @@ bool CRunner::CheckCanProgress()
 		switch (m_eCurrentRunnerKind)
 		{
 		case RunnerKind::BatterToFirst:
-			if (itr != RunnerKind::StayFirst) return false;
+			if (itr == RunnerKind::StayFirst) return false;
 			break;
 		case RunnerKind::FirstToSecond:
 			m_eCurrentRunnerKind = RunnerKind::FirstToSecond;
-			if (itr != RunnerKind::StaySecond) return false;
+			if (itr == RunnerKind::StaySecond) return false;
 			break;
 		case RunnerKind::SecondToThird:
 			m_eCurrentRunnerKind = RunnerKind::SecondToThird;
-			if (itr != RunnerKind::StayThird) return false;
+			if (itr == RunnerKind::StayThird) return false;
 			break;
 		case RunnerKind::ThirdToHome:
 			m_eCurrentRunnerKind = RunnerKind::ThirdToHome;
