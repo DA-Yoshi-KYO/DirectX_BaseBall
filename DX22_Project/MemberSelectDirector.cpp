@@ -162,9 +162,9 @@ void CMemberSelectDirector::Init(TeamKind kind1, TeamKind kind2)
 	{
 		m_pCursor[i] = pScene->AddGameObject<CMemberSelectCursor>("Cursor", Tag::UI);
 	}
-	m_pCursor[0]->SetColor(DirectX::XMFLOAT4(1, 0, 0, 1));
+	m_pCursor[0]->SetColor(DirectX::XMFLOAT4(0, 1, 0, 1));
 	m_pCursor[0]->SetPos(DirectX::XMFLOAT3(SCREEN_WIDTH * 0.5f - 114.0f, 114.0f, 0.0f));
-	m_pCursor[1]->SetColor(DirectX::XMFLOAT4(0, 1, 0, 1));
+	m_pCursor[1]->SetColor(DirectX::XMFLOAT4(1, 0, 0, 1));
 	m_pCursor[1]->SetPos(DirectX::XMFLOAT3(SCREEN_WIDTH * 0.5f + 114.0f, 114.0f, 0.0f));
 }
 

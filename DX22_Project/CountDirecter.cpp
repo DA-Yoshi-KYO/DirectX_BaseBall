@@ -1,6 +1,7 @@
 #include "CountDirecter.h"
 #include "Main.h"
 #include "Runner.h"
+#include "GameManager.h"
 
 constexpr DirectX::XMFLOAT3 ce_fCountPos = { 1025.0f,590,0.0f };
 constexpr DirectX::XMFLOAT3 ce_fCountSize = { 35.0f,35.0f,0.0f };
@@ -151,10 +152,9 @@ void CCountDirecter::AddOutCount()
     }
 }
 
-void CCountDirecter::AddScore(int attackPlayer)
+void CCountDirecter::AddScore()
 {
-    int playerIndex = attackPlayer - 1;
-    m_pScore[playerIndex]->AddScore();
+    m_pScore[CGameManager::GetInstance()->GetAttackDirecter()->GetPlayerNo() - 1]->AddScore();
 }
 
 void CCountDirecter::SetIsBase(bool isBase, int index)
@@ -167,35 +167,70 @@ void CCountDirecter::SetIsBase(bool isBase, int index)
 void CCountDirecter::ThreeStrike()
 {
     AddOutCount();
+    CGameManager::GetInstance()->EndAllInplay();
+    m_tParam.m_nStrikeCount = 0;
+    m_tParam.m_nBallCount = 0;
+    for (int i = 0; i < m_pStrikeCount.size(); i++)
+    {
+        m_pStrikeCount[i]->SetActive(false);
+    }
+    for (int i = 0; i < m_pBallCount.size(); i++)
+    {
+        m_pBallCount[i]->SetActive(false);
+    }
 }
 
 void CCountDirecter::FourBall()
 {
     m_tParam.m_nStrikeCount = 0;
     m_tParam.m_nBallCount = 0;
-
-
     for (int i = 0; i < m_pStrikeCount.size(); i++)
     {
-        if (i < m_tParam.m_nStrikeCount) m_pStrikeCount[i]->SetActive(true);
-        else m_pStrikeCount[i]->SetActive(false);
+        m_pStrikeCount[i]->SetActive(false);
     }
+    for (int i = 0; i < m_pBallCount.size(); i++)
+    {
+        m_pBallCount[i]->SetActive(false);
+    }
+
+    auto RunnerList = GetScene()->GetSameGameObject<CRunner>();
+    bool bFillBase[int(GotBase::Max)] = {};
+    CRunner* pRunner[int(GotBase::Max)] = {};
+    for (auto itr : RunnerList)
+    {
+        GotBase eBase = itr->GetNowBase();
+        pRunner[int(eBase)] = itr;
+    }
+    if (pRunner[int(GotBase::First)])
+    {
+        pRunner[int(GotBase::First)]->GoToNextBase();
+        if (pRunner[int(GotBase::Second)])
+        {
+            pRunner[int(GotBase::Second)]->GoToNextBase();
+            if (pRunner[int(GotBase::Third)])
+            {
+                pRunner[int(GotBase::Third)]->GoToNextBase();
+            }
+        }
+    }
+
+    CGameManager* pGameManager = CGameManager::GetInstance();
+    Quality eSpeed = pGameManager->GetTeamDirecter(pGameManager->GetAttackDirecter()->GetPlayerNo())->GetTeam()->GetTakingBatter()->GetFielderData().m_eSpeed;
+    CRunner* pBatterRunner = GetScene()->AddGameObject<CRunner>("Runner", Tag::GameObject);
+    pBatterRunner->SetRunnerSpeed(eSpeed);
+    pBatterRunner->SetFirstBaseRunner();
+
     for (int i = 0; i < m_pBaseCount.size(); i++)
     {
         if (!m_pBaseCount[i]->GetActive())
         {
             m_pBaseCount[i]->SetActive(true);
+
             break;
         }
-        else
-        {
-            // TODO: ‰Ÿ‚µo‚µ‚Ìˆ—‚ð‹Lq
-            if (i == m_pBaseCount.size() - 1)
-            {
-
-            }
-        }
     }
+
+    pGameManager->EndAllInplay();
 }
 
 void CCountDirecter::ThreeOut()

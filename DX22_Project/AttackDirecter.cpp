@@ -35,5 +35,6 @@ void CAttackDirecter::EndInplay()
 	for (auto itr : RunnerList)
 	{
 		itr->ToNormalRunner();
+		itr->ResetPos();
 	}
 }

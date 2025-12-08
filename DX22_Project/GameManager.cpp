@@ -74,6 +74,20 @@ void CGameManager::Draw()
     
 }
 
+void CGameManager::EndAllInplay()
+{
+    int nPlayerNo = m_pAttackDirecter->GetPlayerNo();
+    for (int i = 0; i < 2; i++)
+    {
+        m_pTeamDirecter[i]->EndInplay(m_pTeamDirecter[i]->GetTeamNo() == nPlayerNo);
+    }
+    m_pFieldDirecter->EndInplay();
+    m_pAttackDirecter->EndInplay();
+    m_pDefenceDirecter->EndInplay();
+    m_pCountDirecter->EndInplay();
+    m_ePhase = GamePhase::Batting;
+}
+
 CGameManager* CGameManager::GetInstance()
 { 
     if (!m_pInstance)
@@ -119,16 +133,6 @@ void CGameManager::CheckEndInplay()
     if (m_fWaitTime >= ce_fWaitMaxTime)
     {
         m_fWaitTime = 0.0f;
-
-        m_pFieldDirecter->EndInplay();
-        m_pCountDirecter->EndInplay();
-        m_pAttackDirecter->EndInplay();
-        m_pDefenceDirecter->EndInplay();
-        for (int i = 0; i < 2; i++)
-        {
-            m_pTeamDirecter[i]->EndInplay();
-        }
-
-        m_ePhase = GamePhase::Batting;
+        EndAllInplay();
     }
 }

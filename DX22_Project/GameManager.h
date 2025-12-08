@@ -27,6 +27,7 @@ public:
     void Draw();
     GamePhase GetPhase() { return m_ePhase; }
     void SetPhase(GamePhase phase) { m_ePhase = phase; }
+    void EndAllInplay();
 
 public:
     static CGameManager* GetInstance();

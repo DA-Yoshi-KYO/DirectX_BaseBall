@@ -1,9 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="imgui">
-      <UniqueIdentifier>{aceb42b5-a09e-4cf9-9a34-73e967d191b7}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Code">
       <UniqueIdentifier>{02f50f30-366e-49e2-8431-66a91522c93b}</UniqueIdentifier>
     </Filter>
@@ -124,6 +121,9 @@
     <Filter Include="Code\Scene\Kind">
       <UniqueIdentifier>{a9c95300-0300-430d-860f-a9ebd8f6b377}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Code\Work\imgui">
+      <UniqueIdentifier>{aceb42b5-a09e-4cf9-9a34-73e967d191b7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -148,25 +148,25 @@
       <Filter>Code\Camera</Filter>
     </ClCompile>
     <ClCompile Include="imgui.cpp">
-      <Filter>imgui</Filter>
+      <Filter>Code\Work\imgui</Filter>
     </ClCompile>
     <ClCompile Include="imgui_demo.cpp">
-      <Filter>imgui</Filter>
+      <Filter>Code\Work\imgui</Filter>
     </ClCompile>
     <ClCompile Include="imgui_draw.cpp">
-      <Filter>imgui</Filter>
+      <Filter>Code\Work\imgui</Filter>
     </ClCompile>
     <ClCompile Include="imgui_impl_dx11.cpp">
-      <Filter>imgui</Filter>
+      <Filter>Code\Work\imgui</Filter>
     </ClCompile>
     <ClCompile Include="imgui_tables.cpp">
-      <Filter>imgui</Filter>
+      <Filter>Code\Work\imgui</Filter>
     </ClCompile>
     <ClCompile Include="imgui_widgets.cpp">
-      <Filter>imgui</Filter>
+      <Filter>Code\Work\imgui</Filter>
     </ClCompile>
     <ClCompile Include="imgui_impl_win32.cpp">
-      <Filter>imgui</Filter>
+      <Filter>Code\Work\imgui</Filter>
     </ClCompile>
     <ClCompile Include="Pitching.cpp">
       <Filter>Code\GameObject\Game\Difence</Filter>
@@ -486,28 +486,28 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imconfig.h">
-      <Filter>imgui</Filter>
+      <Filter>Code\Work\imgui</Filter>
     </ClInclude>
     <ClInclude Include="imgui.h">
-      <Filter>imgui</Filter>
+      <Filter>Code\Work\imgui</Filter>
     </ClInclude>
     <ClInclude Include="imgui_impl_dx11.h">
-      <Filter>imgui</Filter>
+      <Filter>Code\Work\imgui</Filter>
     </ClInclude>
     <ClInclude Include="imgui_internal.h">
-      <Filter>imgui</Filter>
+      <Filter>Code\Work\imgui</Filter>
     </ClInclude>
     <ClInclude Include="imstb_rectpack.h">
-      <Filter>imgui</Filter>
+      <Filter>Code\Work\imgui</Filter>
     </ClInclude>
     <ClInclude Include="imstb_textedit.h">
-      <Filter>imgui</Filter>
+      <Filter>Code\Work\imgui</Filter>
     </ClInclude>
     <ClInclude Include="imstb_truetype.h">
-      <Filter>imgui</Filter>
+      <Filter>Code\Work\imgui</Filter>
     </ClInclude>
     <ClInclude Include="imgui_impl_win32.h">
-      <Filter>imgui</Filter>
+      <Filter>Code\Work\imgui</Filter>
     </ClInclude>
     <ClInclude Include="DirectX.h">
       <Filter>Code\Application</Filter>

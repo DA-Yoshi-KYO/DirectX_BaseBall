@@ -2,11 +2,6 @@
 #include <string>
 #include <fstream>
 #include <sstream>
-#include "PitcherData.h"
-#include "FielderData.h"
-#include "ChatcherData.h"
-#include "InFielderData.h"
-#include "OutFielderData.h"
 #include "Defines.h"
 #include "DirectX.h"
 
@@ -45,6 +40,11 @@ enum csvData
 };
 
 CTeam::CTeam()
+    : m_nTakingBatterNo(1)
+    , m_pMemberData{}, m_pPitcherData{}, m_pFielderData{}
+    , m_pChatcherData{}, m_pInFielderData{}, m_pOutFielderData{}
+    , m_pStarterPitcher{}, m_pStartingLineup{}
+    , m_pTakingPitcher{}, m_pTakingBatter{}
 {
 
 }
@@ -110,6 +110,7 @@ void CTeam::Load(TeamKind team)
     int nPitcherBenchNo = 0;
     int nBatterBenchNo = 0;
 
+    int nLineupNo = 0;
     for (int i = 1; i < rows.size(); i++)
     {
         PlayerData data;
@@ -117,7 +118,7 @@ void CTeam::Load(TeamKind team)
         data.m_eHandy = rows[i][csvData::Handed] == L"¶" ? Hand::Left : Hand::Right;
         data.m_eMainPosition = Positions(std::stoi(rows[i][csvData::Position]) - 1);
         data.m_eEntryPosition = Positions(std::stoi(rows[i][csvData::PositionEntry]) - 1);
-        data.m_nLineupNo = std::stoi(rows[i][csvData::LineupNo]);
+        nLineupNo = data.m_nLineupNo = std::stoi(rows[i][csvData::LineupNo]);
 
         PitcherData pitcherData{};
         FielderData fielderData{};
@@ -191,19 +192,9 @@ void CTeam::Load(TeamKind team)
             break;
         }
         m_pMemberData.push_back(pDataBase);
-    }
-}
 
-CFielderData* CTeam::GetTakingBatter(int TakingNo)
-{
-    int i = 1;
-    for (auto itr : m_pStartingLineup)
-    {
-        if (i == TakingNo) return itr;
-        ++i;
+        if (nLineupNo == 1) m_pTakingBatter = dynamic_cast<CFielderData*>(pDataBase);
     }
-
-    return nullptr;
 }
 
 CFielderData* CTeam::GetPositionFielder(Positions position)
@@ -214,4 +205,14 @@ CFielderData* CTeam::GetPositionFielder(Positions position)
     }
 
     return nullptr;
+}
+
+void CTeam::NextBatter()
+{
+    if (m_nTakingBatterNo < 9) m_nTakingBatterNo++;
+    else m_nTakingBatterNo = 1;
+
+    std::_List_iterator takingBatterItr = m_pStartingLineup.begin();
+    std::advance(takingBatterItr, m_nTakingBatterNo - 1);
+    m_pTakingBatter = *takingBatterItr;
 }

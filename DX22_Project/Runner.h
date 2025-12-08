@@ -35,7 +35,9 @@ public:
 	void Init() override;
 	void Update() override;
 	void OnCollision(CCollisionBase* other, std::string thisTag, Collision::Result result) override;
+	void ResetPos();
 	void SetRunnerSpeed(Quality speed);
+	void SetFirstBaseRunner() { m_eNowBase = GotBase::First; m_eTempBase = GotBase::First; };
 	void CheckRunOut();
 	void NotRunOut() { m_bRunOut = false; }
 	void GoToNextBase();

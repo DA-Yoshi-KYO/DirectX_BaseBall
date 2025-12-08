@@ -103,6 +103,10 @@ void CRunner::Update()
 			else m_bRunOut = false;
 		}
 	}
+	else
+	{
+		m_eNowBase = m_eTempBase;
+	}
 	m_pCollision->SetInfo(m_tParam.m_f3Pos, m_tParam.m_f3Size);
 
 	if (m_fStiffTime != 0.0f)
@@ -117,8 +121,7 @@ void CRunner::OnCollision(CCollisionBase* other, std::string thisTag, Collision:
 	std::string tag = other->GetTag();
 	if (tag == "HomeBase" && m_eNowBase == GotBase::Third)
 	{
-		CGameManager::GetInstance()->GetCountDirecter()->AddScore(CGameManager::GetInstance()->GetAttackDirecter()->GetPlayerNo());
-		Destroy();
+		CGameManager::GetInstance()->GetCountDirecter()->AddScore();
 		return;
 	}
 	if (tag == "FirstBase")
@@ -141,6 +144,24 @@ void CRunner::OnCollision(CCollisionBase* other, std::string thisTag, Collision:
 		if (m_fStiffTime > 0.0f) return;
 		m_eCurrentRunnerKind = RunnerKind::StayThird;
 		return;
+	}
+}
+
+void CRunner::ResetPos()
+{
+	switch (m_eNowBase)
+	{
+	case GotBase::First:
+		m_tParam.m_f3Pos = m_f3TargetPos[int(BaseKind::First)];
+		break;
+	case GotBase::Second:
+		m_tParam.m_f3Pos = m_f3TargetPos[int(BaseKind::Second)];
+		break;
+	case GotBase::Third:
+		m_tParam.m_f3Pos = m_f3TargetPos[int(BaseKind::Third)];
+		break;
+	default:
+		break;
 	}
 }
 
@@ -177,7 +198,7 @@ void CRunner::GoToNextBase()
 		m_eNowBase = GotBase::Third;
 		break;
 	case GotBase::Third:
-		CGameManager::GetInstance()->GetCountDirecter()->AddScore(CGameManager::GetInstance()->GetAttackDirecter()->GetPlayerNo());
+		CGameManager::GetInstance()->GetCountDirecter()->AddScore();
 		Destroy();
 		break;
 	case GotBase::Max:

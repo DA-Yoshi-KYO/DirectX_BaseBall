@@ -1,7 +1,10 @@
 #include "MemberSelectCursor.h"
 #include "SpriteRenderer.h"
+#include "Oparation.h"
 
-constexpr float ce_fRotateOfSec = DirectX::XMConvertToRadians(360.0f);
+constexpr DirectX::XMFLOAT3 ce_f3BaseSize = DirectX::XMFLOAT3(50.0f, 50.0f, 0.0f);
+constexpr float ce_fSubtractScale = 0.2f;
+constexpr float ce_fMaxTime = 1.0f;
 
 CMemberSelectCursor::CMemberSelectCursor()
 	: CGameObject()
@@ -18,7 +21,7 @@ CMemberSelectCursor::~CMemberSelectCursor()
 void CMemberSelectCursor::Init()
 {
 	CSpriteRenderer* pRenderer = AddComponent<CSpriteRenderer>();
-	pRenderer->Load(PATH_TEX("Ball.png"));
+	pRenderer->Load(PATH_TEX("MemberSelectCursor.png"));
 	pRenderer->LoadVertexShader(PATH_SHADER("VS_Sprite.cso"));
 	pRenderer->LoadPixelShader(PATH_SHADER("PS_Sprite.cso"));
 }
@@ -26,6 +29,8 @@ void CMemberSelectCursor::Init()
 void CMemberSelectCursor::Update()
 {
 	m_fTime += 1.0f / fFPS;
-	m_tParam.m_f3Rotate.z = ce_fRotateOfSec * m_fTime;
+	float t = m_fTime / ce_fMaxTime;
+	float step = fabsf(sinf(DirectX::XMConvertToRadians(t * 180.0f)));
+	m_tParam.m_f3Size = ce_f3BaseSize + ce_f3BaseSize * (ce_fSubtractScale * step);
 	CGameObject::Update();
 }

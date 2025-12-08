@@ -6,6 +6,6 @@ public:
 	CGameDirecterBase();
 	~CGameDirecterBase();
 	virtual void Init();
-	virtual void EndInplay() = 0;
+	virtual void EndInplay() {};
 
 };

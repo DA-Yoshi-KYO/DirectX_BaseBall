@@ -29,6 +29,6 @@ void CFieldDirecter::Init()
 void CFieldDirecter::EndInplay()
 {
 	m_pBall->SetCaught(false);
-	m_pBall->SetIsFryBall(false);
+	m_pBall->SetIsFryBall(true);
 	m_pBall->SetIsFryChatch(false);
 }
