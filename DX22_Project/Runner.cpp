@@ -44,10 +44,13 @@ void CRunner::Init()
 
 void CRunner::Update()
 {
+	if (CGameManager::GetInstance()->GetPhase() != GamePhase::InPlay)return;
+
 	if (!m_bBackTempBase) UpdateInput();
 	else UpdateBackTempBase();
 
 	DirectX::XMFLOAT3 target = {};
+	bool progressCheck = true;
 	switch (m_eCurrentRunnerKind)
 	{
 	case RunnerKind::BatterToFirst:
@@ -56,6 +59,7 @@ void CRunner::Update()
 	case RunnerKind::StayFirst:
 		m_eTempBase = GotBase::First;
 		target = m_f3TargetPos[int(BaseKind::First)];
+		progressCheck = false;
 		break;
 	case RunnerKind::FirstToSecond:
 		if (m_bFrontMove) target = m_f3TargetPos[int(BaseKind::Second)];
@@ -63,6 +67,7 @@ void CRunner::Update()
 		break;
 	case RunnerKind::StaySecond:
 		target = m_f3TargetPos[int(BaseKind::Second)];
+		progressCheck = false;
 		break;
 	case RunnerKind::SecondToThird:
 		if (m_bFrontMove) target = m_f3TargetPos[int(BaseKind::Third)];
@@ -70,6 +75,7 @@ void CRunner::Update()
 		break;
 	case RunnerKind::StayThird:
 		target = m_f3TargetPos[int(BaseKind::Third)];
+		progressCheck = false;
 		break;
 	case RunnerKind::ThirdToHome:
 		if (m_bFrontMove) target = m_f3TargetPos[int(BaseKind::Home)];
@@ -84,10 +90,13 @@ void CRunner::Update()
 	DirectX::XMVECTOR vecLength = DirectX::XMVector2Length(vecDistance);
 	float fLength = 0.0f;
 	DirectX::XMStoreFloat(&fLength, vecLength);
-	//if (fLength < 2.0f)
-	//{
-	//	m_bIsStop = !CheckCanProgress();
-	//}
+	if (progressCheck)
+	{
+		if (fLength < 15.0f)
+		{
+			m_bIsStop = !CheckCanProgress();
+		}
+	}
 	if (!m_bIsStop)
 	{
 		if (fLength > 0.1f)

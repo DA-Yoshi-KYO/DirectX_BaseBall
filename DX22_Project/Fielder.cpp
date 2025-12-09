@@ -171,7 +171,6 @@ void CFielder::ResetPos()
 void CFielder::OnCollision(CCollisionBase* other, std::string thisTag, Collision::Result result)
 {
     CBall* pBall = dynamic_cast<CBall*>(other->GetGameObject());
-    CBase* pBase = dynamic_cast<CBase*>(other->GetGameObject());
 
     if (pBall)
     {
@@ -197,6 +196,8 @@ void CFielder::OnCollision(CCollisionBase* other, std::string thisTag, Collision
         }
         return;
     }
+    
+    CBase* pBase = dynamic_cast<CBase*>(other->GetGameObject());
     if (pBase)
     {
         pBase->SetBaseCover(true);
