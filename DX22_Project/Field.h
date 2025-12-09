@@ -20,17 +20,15 @@ public:
 	~CField();
 	void Init() override;
 	void Update() override;
-
-public:
-	/// <summary> OnCollision:グラウンドに当たった時の処理 </summary>
-	/// <param name="collision"> 当たった結果 </param>
 	void OnCollision(CCollisionBase* other, std::string thisTag, Collision::Result result) override;
+	std::array<DirectX::XMFLOAT3, 2> GetFirstBaseLinePoint() { return m_f3FirstBaseLine; }
+	std::array<DirectX::XMFLOAT3, 2> GetThirdBaseLinePoint() { return m_f3ThirdBaseLine; }
 
 private:
 	// 当たり判定情報
 	Collision::Info m_Ground;
-	std::vector<Collision::Info> m_FirstBaseLine;	// 一塁線
-	std::vector<Collision::Info> m_ThirdBaseLine;	// 三塁線
+	std::array<DirectX::XMFLOAT3, 2> m_f3FirstBaseLine;	// 一塁線
+	std::array<DirectX::XMFLOAT3, 2> m_f3ThirdBaseLine;	// 三塁線
 	std::vector<Collision::Info> m_LeftFoul;		// レフト側ファールゾーン
 	std::vector<Collision::Info> m_RightFoul;		// ライト側ファールゾーン
 	bool m_bCollisionSwap;

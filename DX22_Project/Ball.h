@@ -42,4 +42,6 @@ private:
 	bool m_bPitched;
 	float m_fBallTime;
 
+	void CheckFaul();
+
 };

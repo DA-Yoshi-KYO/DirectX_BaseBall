@@ -201,6 +201,45 @@ void CBall::UpdateBatting()
 	}
 }
 
+void CBall::CheckFaul()
+{
+	if (m_bCaught) return;
+	if (m_bFryBall) return;
+
+	/*
+	// 点 A, B, P は XMFLOAT3 など
+	DirectX::XMVECTOR A = DirectX::XMLoadFloat3(&D);
+	DirectX::XMVECTOR B = DirectX::XMLoadFloat3(&D);
+	DirectX::XMVECTOR P = DirectX::XMLoadFloat3(&D);
+
+	// 線分ベクトルと点方向ベクトル
+	DirectX::XMVECTOR AB = DirectX::XMVectorSubtract(B, A);
+	DirectX::XMVECTOR AP = DirectX::XMVectorSubtract(P, A);
+
+	// 基準となる法線（例：上方向 Y+）
+	DirectX::XMVECTOR N = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+
+	// クロス積
+	DirectX::XMVECTOR cross = DirectX::XMVector3Cross(AB, AP);
+
+	// 左右判定（符号で決まる）
+	float side = DirectX::XMVectorGetX(DirectX::XMVector3Dot(cross, N));
+
+	if (side > 0)
+	{
+		// 左側
+	}
+	else if (side < 0)
+	{
+		// 右側
+	}
+	else
+	{
+		// 線上（ほぼ同一直線状）
+	}
+	*/
+}
+
 void CBall::UpdateInPlay()
 {
 	m_tParam.m_f3Size= ce_fInplayBallSize;
@@ -243,6 +282,7 @@ void CBall::UpdateInPlay()
 	DirectX::XMVECTOR vMove = DirectX::XMLoadFloat3(&m_f3Velocity);
 	DirectX::XMVECTOR vLen = DirectX::XMVector3Length(vMove);
 	DirectX::XMStoreFloat(&speed, vLen);
+	CheckFaul();
 	//if (m_bBallFaulZone)
 	{
 		// ボールが落ちてからファール判定をする

@@ -49,6 +49,7 @@ void CDebugSystem::Draw()
     DrawUpdateTick();
     DrawSceneSelect();
     DrawCollision();
+    DrawCollisionInfo();
     DrawMousePos();
     DrawFPS();
     DrawPostProcess();
@@ -306,6 +307,44 @@ void CDebugSystem::DrawPostProcess()
         if (ImGui::Button(sButtonName.c_str()))
         {
             m_pPostProcess = pPostProcessList[i];
+        }
+    }
+
+    ImGui::EndChild();
+    ImGui::End();
+}
+
+void CDebugSystem::DrawCollisionInfo()
+{
+    ImGui::Begin("CollisionInfo");
+    ImGui::BeginChild(ImGui::GetID((void*)0), ImVec2(250, 160), ImGuiWindowFlags_NoTitleBar);
+
+    CScene* pScene = GetScene();
+    auto CollisionList = pScene->GetCollisionList();
+    std::map<std::string, int> sameNameNum;
+    std::map<std::string, std::vector<std::string>> sameCollisionMap;
+    sameNameNum.clear();
+    for (auto itr : CollisionList)
+    {
+        std::string name = itr->GetTag();
+        if (sameNameNum.find(name) == sameNameNum.end()) sameNameNum.emplace(name);
+        sameNameNum[name]++;
+
+        std::string buttonName = "[" + name + "]";
+        sameCollisionMap[buttonName].push_back(name + std::to_string(sameNameNum[name]));
+    }
+
+    for (auto itr : sameCollisionMap)
+    {
+        if (ImGui::CollapsingHeader(itr.first.c_str()))
+        {
+            for (auto itrButton : itr.second)
+            {
+                if (ImGui::Button(itrButton.c_str()))
+                {
+
+                }
+            }
         }
     }
 

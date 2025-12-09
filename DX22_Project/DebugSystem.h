@@ -38,6 +38,7 @@ private:
     void DrawMousePos();
     void DrawFPS();
     void DrawPostProcess();
+    void DrawCollisionInfo();
     void DrawActivePostProcess();
 
 };

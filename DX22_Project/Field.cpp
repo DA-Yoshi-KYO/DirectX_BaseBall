@@ -182,23 +182,12 @@ void CField::InitCollision()
 		++i;
 	}
 
-	//	m_FirstBaseLine.resize(ce_nPlanePolyLine);
-	//	m_FirstBaseLine[0].type = Collision::eTriangle;
-	//	m_FirstBaseLine[0].triangle.point[0] = { m_tBaseParam[(int)BaseKind::Home].pos.x + ce_fHomeToBatterBoxX  ,ce_fJudgeZoneY + WORLD_AJUST , m_tBaseParam[(int)BaseKind::Home].pos.z + ce_fHomeToBatterBoxZ };
-	//	m_FirstBaseLine[0].triangle.point[1] = { m_tBaseParam[(int)BaseKind::Home].pos.x + ce_fHomeToBatterBoxX  ,ce_fGroundY + WORLD_AJUST , m_tBaseParam[(int)BaseKind::Home].pos.z + ce_fHomeToBatterBoxZ };
-	//	m_FirstBaseLine[0].triangle.point[2] = { fBaseX , ce_fJudgeZoneY + WORLD_AJUST , ce_fStartEndZ + WORLD_AJUST };
-	//	m_FirstBaseLine[1].type = Collision::eTriangle;
-	//	m_FirstBaseLine[1].triangle.point[0] = { m_tBaseParam[(int)BaseKind::Home].pos.x + ce_fHomeToBatterBoxX  ,ce_fGroundY + WORLD_AJUST, m_tBaseParam[(int)BaseKind::Home].pos.z + ce_fHomeToBatterBoxZ };
-	//	m_FirstBaseLine[1].triangle.point[1] = { fBaseX , ce_fJudgeZoneY + WORLD_AJUST , ce_fStartEndZ + WORLD_AJUST };
-	//	m_FirstBaseLine[1].triangle.point[2] = { fBaseX , ce_fGroundY + WORLD_AJUST, ce_fStartEndZ + WORLD_AJUST };
+	CCollisionTriangle* pOutFieldLine[2] = { AddComponent<CCollisionTriangle>(),AddComponent<CCollisionTriangle>() };
+	pOutFieldLine[0]->Init();
+	pOutFieldLine[0]->SetInfo(DirectX::XMFLOAT3(), DirectX::XMFLOAT3(), DirectX::XMFLOAT3());
+	pOutFieldLine[0]->SetTag("OutFieldLine");
+	pOutFieldLine[1]->Init();
+	pOutFieldLine[1]->SetInfo(DirectX::XMFLOAT3(), DirectX::XMFLOAT3(), DirectX::XMFLOAT3());
+	pOutFieldLine[1]->SetTag("OutFieldLine");
 
-	//	m_ThirdBaseLine.resize(ce_nPlanePolyLine);
-	//	m_ThirdBaseLine[0].type = Collision::eTriangle;
-	////	m_ThirdBaseLine[0].triangle.point[0] = { m_tBaseParam[(int)BaseKind::Home].pos.x - ce_fHomeToBatterBoxX ,ce_fJudgeZoneY + WORLD_AJUST , m_tBaseParam[(int)BaseKind::Home].pos.z + ce_fHomeToBatterBoxZ };
-	////	m_ThirdBaseLine[0].triangle.point[1] = { m_tBaseParam[(int)BaseKind::Home].pos.x - ce_fHomeToBatterBoxX ,ce_fGroundY + WORLD_AJUST , m_tBaseParam[(int)BaseKind::Home].pos.z + ce_fHomeToBatterBoxZ };
-	//	m_ThirdBaseLine[0].triangle.point[2] = { fBaseX - ce_fFenceX, ce_fJudgeZoneY + WORLD_AJUST , ce_fStartEndZ + WORLD_AJUST };
-	//	m_ThirdBaseLine[1].type = Collision::eTriangle;
-	////	m_ThirdBaseLine[1].triangle.point[0] = { m_tBaseParam[(int)BaseKind::Home].pos.x - ce_fHomeToBatterBoxX ,ce_fGroundY + WORLD_AJUST , m_tBaseParam[(int)BaseKind::Home].pos.z + ce_fHomeToBatterBoxZ };
-	//	m_ThirdBaseLine[1].triangle.point[1] = { fBaseX - ce_fFenceX, ce_fJudgeZoneY + WORLD_AJUST , ce_fStartEndZ + WORLD_AJUST };
-	//	m_ThirdBaseLine[1].triangle.point[2] = { fBaseX - ce_fFenceX, ce_fGroundY + WORLD_AJUST , ce_fStartEndZ + WORLD_AJUST };
 }
