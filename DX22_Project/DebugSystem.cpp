@@ -10,6 +10,9 @@
 #include "PostProcess.h"
 #include "GameObject.h"
 #include <algorithm>
+#include <map>
+#include "CollisionBox.h"
+#include "CollisionTriangle.h"
 
 CDebugSystem* CDebugSystem::m_pInstance = nullptr;
 
@@ -321,32 +324,85 @@ void CDebugSystem::DrawCollisionInfo()
 
     CScene* pScene = GetScene();
     auto CollisionList = pScene->GetCollisionList();
-    std::map<std::string, int> sameNameNum;
-    std::map<std::string, std::vector<std::string>> sameCollisionMap;
-    sameNameNum.clear();
+    std::unordered_map<std::string, int> sameNameNum;
+    std::unordered_map<CCollisionBase*, std::vector<std::string>> sameCollisionMap;
+
     for (auto itr : CollisionList)
     {
         std::string name = itr->GetTag();
-        if (sameNameNum.find(name) == sameNameNum.end()) sameNameNum.emplace(name);
-        sameNameNum[name]++;
+        if (sameNameNum.find(name) == sameNameNum.end()) sameNameNum.emplace(name,0);
+        else sameNameNum[name]++;
 
         std::string buttonName = "[" + name + "]";
-        sameCollisionMap[buttonName].push_back(name + std::to_string(sameNameNum[name]));
+        sameCollisionMap[itr].push_back(name + std::to_string(sameNameNum[name]));
     }
 
     for (auto itr : sameCollisionMap)
     {
-        if (ImGui::CollapsingHeader(itr.first.c_str()))
+        for (auto itrButton : itr.second)
         {
-            for (auto itrButton : itr.second)
+            if (ImGui::CollapsingHeader(itrButton.c_str()))
             {
-                if (ImGui::Button(itrButton.c_str()))
+                Collision::Info info = itr.first->GetInfo();
+                float inputF3[3]{};
+                switch (info.type)
                 {
+                case Collision::Type::eBox:
+                    inputF3[0] = info.box.center.x;
+                    inputF3[1] = info.box.center.y;
+                    inputF3[2] = info.box.center.z;
+                    ImGui::InputFloat3("Center", inputF3);
+                    ImGui::Spacing();
+                    info.box.center = DirectX::XMFLOAT3(inputF3[0], inputF3[1], inputF3[2]);
 
+                    inputF3[0] = info.box.size.x;
+                    inputF3[1] = info.box.size.y;
+                    inputF3[2] = info.box.size.z;
+                    ImGui::InputFloat3("Size", inputF3);
+                    ImGui::Spacing();
+                    info.box.size = DirectX::XMFLOAT3(inputF3[0], inputF3[1], inputF3[2]);
+
+                    dynamic_cast<CCollisionBox*>(itr.first)->SetInfo(info.box.center, info.box.size);
+                    break;
+                case Collision::Type::eTriangle:
+                    inputF3[0] = info.triangle.point[0].x;
+                    inputF3[1] = info.triangle.point[0].y;
+                    inputF3[2] = info.triangle.point[0].z;
+                    ImGui::InputFloat3("Point1", inputF3);
+                    ImGui::Spacing();
+                    info.triangle.point[0] = DirectX::XMFLOAT3(inputF3[0], inputF3[1], inputF3[2]);
+
+                    inputF3[0] = info.triangle.point[1].x;
+                    inputF3[1] = info.triangle.point[1].y;
+                    inputF3[2] = info.triangle.point[1].z;
+                    ImGui::InputFloat3("Point2", inputF3);
+                    ImGui::Spacing();
+                    info.triangle.point[1] = DirectX::XMFLOAT3(inputF3[0], inputF3[1], inputF3[2]);
+
+                    inputF3[0] = info.triangle.point[2].x;
+                    inputF3[1] = info.triangle.point[2].y;
+                    inputF3[2] = info.triangle.point[2].z;
+                    ImGui::InputFloat3("Point3", inputF3);
+                    ImGui::Spacing();
+                    info.triangle.point[2] = DirectX::XMFLOAT3(inputF3[0], inputF3[1], inputF3[2]);
+
+                    dynamic_cast<CCollisionTriangle*>(itr.first)->SetInfo(info.triangle.point[0], info.triangle.point[1], info.triangle.point[2]);
+                    break;
+
+                default:
+                    break;
                 }
             }
         }
     }
+
+    ImGui::EndChild();
+    ImGui::End();
+
+    ImGui::Begin("CollisionInfo");
+    ImGui::BeginChild(ImGui::GetID((void*)0), ImVec2(250, 160), ImGuiWindowFlags_NoTitleBar);
+
+
 
     ImGui::EndChild();
     ImGui::End();

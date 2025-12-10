@@ -184,10 +184,10 @@ void CField::InitCollision()
 
 	CCollisionTriangle* pOutFieldLine[2] = { AddComponent<CCollisionTriangle>(),AddComponent<CCollisionTriangle>() };
 	pOutFieldLine[0]->Init();
-	pOutFieldLine[0]->SetInfo(DirectX::XMFLOAT3(), DirectX::XMFLOAT3(), DirectX::XMFLOAT3());
+	pOutFieldLine[0]->SetInfo(DirectX::XMFLOAT3(-200.0f,-8.0f,-146.0f), DirectX::XMFLOAT3(200.0f, -8.0f, -146.0f), DirectX::XMFLOAT3(-200.0f, 100.0f, -146.0f));
 	pOutFieldLine[0]->SetTag("OutFieldLine");
 	pOutFieldLine[1]->Init();
-	pOutFieldLine[1]->SetInfo(DirectX::XMFLOAT3(), DirectX::XMFLOAT3(), DirectX::XMFLOAT3());
+	pOutFieldLine[1]->SetInfo(DirectX::XMFLOAT3(-200.0f, 100.0f, -146.0f), DirectX::XMFLOAT3(200.0f, -8.0f, -146.0f), DirectX::XMFLOAT3(200.0f, 100.0f, -146.0f));
 	pOutFieldLine[1]->SetTag("OutFieldLine");
 
 }

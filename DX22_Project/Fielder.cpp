@@ -166,6 +166,12 @@ void CFielder::ResetPos()
     }
     m_tParam.m_f3Pos.y += m_tParam.m_f3Size.y / 2.0f;
     m_pCollision->SetInfo(m_tParam.m_f3Pos, m_tParam.m_f3Size);
+    m_bIsOparation = false;
+    m_bChatch = false;
+    m_bMostNearToBase[0] = false;
+    m_bMostNearToBase[1] = false;
+    m_bMostNearToBase[2] = false;
+    m_bMostNearToBase[3] = false;
 }
 
 void CFielder::OnCollision(CCollisionBase* other, std::string thisTag, Collision::Result result)

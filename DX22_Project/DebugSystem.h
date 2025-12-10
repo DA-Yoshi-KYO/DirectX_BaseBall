@@ -25,6 +25,7 @@ private:
     static CDebugSystem* m_pInstance;
     class CGameObject* m_pObject;
     class CPostProcess* m_pPostProcess;
+    class CCollisionInfo* m_pCollision;
     bool m_bUpdate;
     bool m_bCollision;
     bool m_bCameraMove;
