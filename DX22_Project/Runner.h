@@ -41,7 +41,7 @@ public:
 	void CheckRunOut();
 	void NotRunOut() { m_bRunOut = false; }
 	void GoToNextBase();
-	void ToNormalRunner() { m_bBatterRunner = true; }
+	void ToNormalRunner() { m_bBatterRunner = false; }
 	GotBase GetNowBase() { return m_eNowBase; }
 	RunnerKind GetCurrentKind() { return m_eCurrentRunnerKind; }
 	bool GetIsBatterRunner() { return m_bBatterRunner; }

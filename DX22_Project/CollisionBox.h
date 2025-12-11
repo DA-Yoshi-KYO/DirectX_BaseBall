@@ -8,5 +8,6 @@ public:
 	using CCollisionBase::CCollisionBase;
 	void Init() override;
 	void SetInfo(DirectX::XMFLOAT3 center, DirectX::XMFLOAT3 size);
+	void SetInfo(Collision::Box box);
 	
 };

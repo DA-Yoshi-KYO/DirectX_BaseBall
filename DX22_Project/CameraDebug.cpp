@@ -63,7 +63,7 @@ void CCameraDebug::Update()
 		POINT mousePos = *GetMousePosition();
 		// ˆÚ“®—Ê‚ğ‰ñ“]‚É”½‰f‚³‚¹‚é
 		m_radXZ += mousePos.x * CAMERA_SPEED;
-		m_radY += mousePos.y * CAMERA_SPEED;
+		m_radY -= mousePos.y * CAMERA_SPEED;
 
 		// ƒJƒƒ‰‚ÌÀ•W‚ğ’†‰›‚É–ß‚·
 		POINT center;

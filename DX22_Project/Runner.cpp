@@ -15,7 +15,8 @@ CRunner::CRunner()
 	, m_fStiffTime(0.0f), m_fSpeed(1.0f), m_bBatterRunner(true)
 {
 	m_tParam.m_f3Pos = DirectX::XMFLOAT3(0.0f, -4.5f, -218.0f);
-	m_tParam.m_f3Size = DirectX::XMFLOAT3(5.0f, 5.0f, 5.0f);
+	m_tParam.m_f3Size = DirectX::XMFLOAT3(15.0f, 15.0f, 15.0f);
+	m_tParam.m_f3Rotate.x = DirectX::XMConvertToRadians(90.0f);
 }
 
 CRunner::~CRunner()
@@ -26,7 +27,7 @@ CRunner::~CRunner()
 void CRunner::Init()
 {
 	CModelRenderer* pRenderer = AddComponent<CModelRenderer>();
-	pRenderer->Load(PATH_MODEL("Ball.obj"));
+	pRenderer->Load(PATH_MODEL("Character.fbx"),0.2f);
 	pRenderer->LoadVertexShader(PATH_SHADER("VS_Object.cso"));
 	pRenderer->LoadPixelShader(PATH_SHADER("PS_TexColor.cso"));
 	pRenderer->LoadTexture(PATH_MODEL("ball.png"));
@@ -41,6 +42,9 @@ void CRunner::Init()
 	{
 		m_f3TargetPos[int(itr->GetKind())] = itr->GetPos();
 	}
+	int nNo = CGameManager::GetInstance()->GetAttackDirecter()->GetPlayerNo();
+	if (nNo == 1) m_tParam.m_f4Color = DirectX::XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
+	else if (nNo == 2) m_tParam.m_f4Color = DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
 }
 
 void CRunner::Update()
@@ -124,13 +128,19 @@ void CRunner::Update()
 	{
 		m_eNowBase = m_eTempBase;
 	}
-	m_pCollision->SetInfo(m_tParam.m_f3Pos, m_tParam.m_f3Size);
-
 	if (m_fStiffTime != 0.0f)
 	{
 		m_fStiffTime -= 1.0f / fFPS;
 		m_fStiffTime = std::max(0.0f, m_fStiffTime);
 	}
+
+	// “–‚½‚è”»’èî•ñ‚ÌXV
+	Collision::Box tBox;
+	tBox.center = m_tParam.m_f3Pos;
+	tBox.center.y += 2.0f;
+	tBox.size = m_tParam.m_f3Size * 0.5f;
+	tBox.size.y += 2.0f;
+	m_pCollision->SetInfo(tBox);
 }
 
 void CRunner::OnCollision(CCollisionBase* other, std::string thisTag, Collision::Result result)
@@ -138,6 +148,7 @@ void CRunner::OnCollision(CCollisionBase* other, std::string thisTag, Collision:
 	std::string tag = other->GetTag();
 	if (tag == "HomeBase" && m_eNowBase == GotBase::Third)
 	{
+		Destroy();
 		CGameManager::GetInstance()->GetCountDirecter()->AddScore();
 		return;
 	}
@@ -180,6 +191,7 @@ void CRunner::ResetPos()
 	default:
 		break;
 	}
+	m_tParam.m_f3Pos.y = -4.0f;
 }
 
 void CRunner::SetRunnerSpeed(Quality speed)

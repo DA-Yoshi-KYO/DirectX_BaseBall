@@ -12,6 +12,7 @@ public:
 	~CFielder();
 	void Init() override;
 	void Update() override;
+	void Draw() override;
 	void LateUpdate() override;
 	void ResetPos();
 	void OnCollision(CCollisionBase* other, std::string thisTag, Collision::Result result) override;
@@ -27,7 +28,7 @@ private:
 	bool m_bChatch;
 	bool m_bMostNearToBase[(int)BaseKind::Max];
 	CCollisionBox* m_pCollision;
-
+	
 	void BaseCover();
 	void Throwing(BaseKind kind);
 
