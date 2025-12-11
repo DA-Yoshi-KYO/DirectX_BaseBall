@@ -5,6 +5,7 @@
 #include "PostProcessChain.h"
 
 std::map<std::string, Model*> CModelRenderer::m_pModelList = {};
+std::map<std::string, Texture*> CModelRenderer::m_pCustomTextureList = {};
 
 CModelRenderer::~CModelRenderer()
 {
@@ -24,7 +25,8 @@ void CModelRenderer::Draw()
     // RenderTarget* pRTV = CPostProcessChain::GetInstance()->GetScreenTarget();
     RenderTarget* pRTV = GetDefaultRTV();
     DepthStencil* pDSV = GetDefaultDSV();
-    SetRenderTargets(1, &pRTV, pDSV);
+    if(m_bIsDepth) SetRenderTargets(1, &pRTV, pDSV);
+    else SetRenderTargets(1, &pRTV, nullptr);
     
     DirectX::XMFLOAT4X4 wvp[3];
     DirectX::XMMATRIX world =
@@ -53,8 +55,21 @@ void CModelRenderer::Draw()
     // モデルの描画
     for (unsigned int i = 0; i < pModel->GetMeshNum(); i++)
     {
-        Texture* tex = pModel->GetMaterial(i)->pTexture;
-        if (tex) pPS->SetTexture(0, tex);
+        // objもしかして自動テクスチャ無い...？
+        // 一旦カスタムなテクスチャでお茶を濁す
+        Texture* tex = nullptr;
+        if (!m_pUseTextureList.empty())
+        {
+            tex = m_pUseTextureList[0];
+        }
+        else
+        {
+            // マテリアルにテクスチャが存在すればそちらを使用する
+            const Model::Material* material = pModel->GetMaterial(i);
+            if (material) tex = material->pTexture;
+        }
+        pPS->SetTexture(0, tex);
+        
         if (pModel) pModel->Draw(i);
     }
 }
@@ -78,9 +93,34 @@ void CModelRenderer::Load(std::string inPath, float inScale, Model::Flip inFlip)
     m_pModelList[m_sModelKey] = pModel;
 }
 
+void CModelRenderer::LoadTexture(std::string inPath)
+{
+    auto itr = m_pCustomTextureList.find(inPath);
+    if (itr != m_pCustomTextureList.end())
+    {
+        m_pUseTextureList.push_back(m_pCustomTextureList[inPath]);
+        return;
+    }
+
+    m_pCustomTextureList[inPath] = new Texture();
+    if (FAILED(m_pCustomTextureList[inPath]->Create(inPath.c_str())))
+    {
+        MessageBox(NULL, inPath.c_str(), "Load failed.", MB_OK);
+    }
+    m_pUseTextureList.push_back(m_pCustomTextureList[inPath]);
+}
+
 void CModelRenderer::UnloadAll()
 {
     for (auto itr : m_pModelList)
+    {
+        if (itr.second)
+        {
+            delete itr.second;
+            itr.second = nullptr;
+        }
+    }
+    for (auto itr : m_pCustomTextureList)
     {
         if (itr.second)
         {

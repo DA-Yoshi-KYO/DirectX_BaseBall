@@ -15,7 +15,7 @@ constexpr int ce_nBallRotateSec = 220 / 60;
 
 CBall::CBall()
 	: CGameObject()
-	, m_bFryBall(true), m_bPitched(false), m_bCaught(false), m_bFryChatch(false)
+	, m_bFryBall(true), m_bPitched(false), m_bCaught(false), m_bFryChatch(false), m_bInOutField(false)
 	, m_f3Velocity{}, m_fBallTime(0.0f)
 {
 
@@ -41,10 +41,11 @@ CBall::~CBall()
 
 void CBall::Init()
 {
-	CModelRenderer* pModel = AddComponent<CModelRenderer>();
-	pModel->Load(PATH_MODEL("ball.obj"));
-	pModel->LoadVertexShader(PATH_SHADER("VS_Object.cso"));
-	pModel->LoadPixelShader(PATH_SHADER("PS_TexColor.cso"));
+	CModelRenderer* pRenderer = AddComponent<CModelRenderer>();
+	pRenderer->Load(PATH_MODEL("ball.obj"));
+	pRenderer->LoadVertexShader(PATH_SHADER("VS_Object.cso"));
+	pRenderer->LoadPixelShader(PATH_SHADER("PS_TexColor.cso"));
+	pRenderer->LoadTexture(PATH_MODEL("ball.png"));
 
 	
 }
@@ -74,55 +75,65 @@ void CBall::OnCollision(CCollisionBase* other, std::string thisTag, Collision::R
 	if (dynamic_cast<CField*>(other->GetGameObject()) && thisTag == "BallLine")
 	{
 		// フェンスを越えていたらホームラン
-		if (m_tParam.m_f3Pos.y >= ce_fFenceHeight + WORLD_AJUST && otherTag == "HomeRunFence")
+		if (otherTag == "HomeRunFence")
 		{
-			//CRunning::HomeRun();
+			if (m_tParam.m_f3Pos.y >= ce_fFenceHeight + WORLD_AJUST)
+			{
+				//CRunning::HomeRun();
+				return;
+			}
+
+			Collision::Info info = m_pLucusCollision->GetInfo();
+			// 越えていなかったらフェンス反射の計算をする
+			// 計算に使用する変数を定義
+			DirectX::XMVECTOR vecStart = DirectX::XMLoadFloat3(&info.line.start);
+			DirectX::XMVECTOR vecEnd = DirectX::XMLoadFloat3(&info.line.end);
+			DirectX::XMVECTOR vecDir = DirectX::XMVectorSubtract(vecEnd, vecStart);
+			DirectX::XMVECTOR vecPoint[3];
+			vecPoint[0] = DirectX::XMLoadFloat3(&otherInfo.triangle.point[0]);
+			vecPoint[1] = DirectX::XMLoadFloat3(&otherInfo.triangle.point[1]);
+			vecPoint[2] = DirectX::XMLoadFloat3(&otherInfo.triangle.point[2]);
+
+			// 衝突位置の検出
+			DirectX::XMVECTOR vecHitPoint = DirectX::XMVectorAdd(vecStart, DirectX::XMVectorScale(vecDir, result.t));
+
+			// 衝突した三角形の法線を求める
+			DirectX::XMVECTOR vecEdge1 = DirectX::XMVectorSubtract(vecPoint[1], vecPoint[0]);
+			DirectX::XMVECTOR vecEdge2 = DirectX::XMVectorSubtract(vecPoint[2], vecPoint[0]);
+			DirectX::XMVECTOR vecNormal = DirectX::XMVector3Normalize(DirectX::XMVector3Cross(vecEdge1, vecEdge2));
+
+			// 反射ベクトルの計算 (修正済み)
+			float dotProduct = DirectX::XMVectorGetX(DirectX::XMVector3Dot(vecDir, vecNormal));
+			DirectX::XMVECTOR vecReflectDir = DirectX::XMVectorSubtract(
+				vecDir,
+				DirectX::XMVectorScale(vecNormal, 2.0f * dotProduct)
+			);
+			vecReflectDir = DirectX::XMVector3Normalize(vecReflectDir);
+
+			// 反射後の位置を補正（スタック防止）
+			vecHitPoint = DirectX::XMVectorAdd(vecHitPoint, DirectX::XMVectorScale(vecNormal, 5.0f));
+
+			// 速度の減衰
+			float fRestitution = 0.8f;
+			float ballVelocity = DirectX::XMVectorGetX(DirectX::XMVector3Length(vecDir));
+
+			DirectX::XMVECTOR vecNewVelocity = DirectX::XMVectorScale(vecReflectDir, fRestitution * ballVelocity);
+
+			// 移動先の更新
+			DirectX::XMFLOAT3 curDir;
+			DirectX::XMStoreFloat3(&curDir, vecDir);
+			DirectX::XMStoreFloat3(&info.line.start, vecHitPoint);
+			DirectX::XMStoreFloat3(&m_tParam.m_f3Pos, vecHitPoint);
+			DirectX::XMStoreFloat3(&info.line.end, DirectX::XMVectorAdd(vecHitPoint, vecNewVelocity));
+			DirectX::XMStoreFloat3(&m_f3Velocity, vecNewVelocity);
 			return;
 		}
 
-		Collision::Info info = m_pLucusCollision->GetInfo();
-		// 越えていなかったらフェンス反射の計算をする
-		// 計算に使用する変数を定義
-		DirectX::XMVECTOR vecStart = DirectX::XMLoadFloat3(&info.line.start);
-		DirectX::XMVECTOR vecEnd = DirectX::XMLoadFloat3(&info.line.end);
-		DirectX::XMVECTOR vecDir = DirectX::XMVectorSubtract(vecEnd, vecStart);
-		DirectX::XMVECTOR vecPoint[3];
-		vecPoint[0] = DirectX::XMLoadFloat3(&otherInfo.triangle.point[0]);
-		vecPoint[1] = DirectX::XMLoadFloat3(&otherInfo.triangle.point[1]);
-		vecPoint[2] = DirectX::XMLoadFloat3(&otherInfo.triangle.point[2]);
-
-		// 衝突位置の検出
-		DirectX::XMVECTOR vecHitPoint = DirectX::XMVectorAdd(vecStart, DirectX::XMVectorScale(vecDir, result.t));
-
-		// 衝突した三角形の法線を求める
-		DirectX::XMVECTOR vecEdge1 = DirectX::XMVectorSubtract(vecPoint[1], vecPoint[0]);
-		DirectX::XMVECTOR vecEdge2 = DirectX::XMVectorSubtract(vecPoint[2], vecPoint[0]);
-		DirectX::XMVECTOR vecNormal = DirectX::XMVector3Normalize(DirectX::XMVector3Cross(vecEdge1, vecEdge2));
-
-		// 反射ベクトルの計算 (修正済み)
-		float dotProduct = DirectX::XMVectorGetX(DirectX::XMVector3Dot(vecDir, vecNormal));
-		DirectX::XMVECTOR vecReflectDir = DirectX::XMVectorSubtract(
-			vecDir,
-			DirectX::XMVectorScale(vecNormal, 2.0f * dotProduct)
-		);
-		vecReflectDir = DirectX::XMVector3Normalize(vecReflectDir);
-
-		// 反射後の位置を補正（スタック防止）
-		vecHitPoint = DirectX::XMVectorAdd(vecHitPoint, DirectX::XMVectorScale(vecNormal, 5.0f));
-
-		// 速度の減衰
-		float fRestitution = 0.8f;
-		float ballVelocity = DirectX::XMVectorGetX(DirectX::XMVector3Length(vecDir));
-
-		DirectX::XMVECTOR vecNewVelocity = DirectX::XMVectorScale(vecReflectDir, fRestitution * ballVelocity);
-
-		// 移動先の更新
-		DirectX::XMFLOAT3 curDir;
-		DirectX::XMStoreFloat3(&curDir, vecDir);
-		DirectX::XMStoreFloat3(&info.line.start, vecHitPoint);
-		DirectX::XMStoreFloat3(&m_tParam.m_f3Pos, vecHitPoint);
-		DirectX::XMStoreFloat3(&info.line.end, DirectX::XMVectorAdd(vecHitPoint, vecNewVelocity));
-		DirectX::XMStoreFloat3(&m_f3Velocity, vecNewVelocity);
+		if (otherTag == "OutField")
+		{
+			m_bInOutField = true;
+			return;
+		}
 	}
 }
 
@@ -203,8 +214,23 @@ void CBall::UpdateBatting()
 
 void CBall::CheckFaul()
 {
-	if (m_bCaught) return;
-	if (m_bFryBall) return;
+	// 守備側が捕球してない時
+	if (!m_bCaught)
+	{
+		DirectX::XMVECTOR vecVelScale = DirectX::XMVector3Length(DirectX::XMLoadFloat3(&m_f3Velocity));
+		float fVelPower = 0.0f;
+		DirectX::XMStoreFloat(&fVelPower, vecVelScale);
+		// フライならファール判定を行わない
+		if (m_bFryBall) return;
+		// 内野でボールが動いている時もフェアに戻るかもしれないのでファール判定を行わない
+		else if (!m_bInOutField && fVelPower > 1.0f) return;
+	}
+	// 捕球した時
+	else
+	{
+		// フライキャッチはアウトなのでファール判定を行わない
+		if (m_bFryChatch) return;
+	}
 
 	/*
 	// 点 A, B, P は XMFLOAT3 など

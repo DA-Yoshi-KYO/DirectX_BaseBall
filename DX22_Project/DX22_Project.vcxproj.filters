@@ -483,6 +483,9 @@
     <ClCompile Include="DebugSystem.cpp">
       <Filter>Code\Work</Filter>
     </ClCompile>
+    <ClCompile Include="SkyBox.cpp">
+      <Filter>Code\GameObject\Game\Field</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imconfig.h">
@@ -833,6 +836,9 @@
     <ClInclude Include="DebugSystem.h">
       <Filter>Code\Work</Filter>
     </ClInclude>
+    <ClInclude Include="SkyBox.h">
+      <Filter>Code\GameObject\Game\Field</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="History.txt">
@@ -862,6 +868,9 @@
       <Filter>Code\Shader</Filter>
     </FxCompile>
     <FxCompile Include="VS_Sprite.hlsl">
+      <Filter>Code\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="PS_SimpleColor.hlsl">
       <Filter>Code\Shader</Filter>
     </FxCompile>
   </ItemGroup>

@@ -148,6 +148,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>dinput8.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <FxCompile>
+      <ObjectFileOutput>$(ProjectDir)Assets\Shader\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AnimationObject.cpp" />
@@ -236,6 +239,7 @@
     <ClCompile Include="SelectFielderField.cpp" />
     <ClCompile Include="SelectPitcherField.cpp" />
     <ClCompile Include="SelectTeam.cpp" />
+    <ClCompile Include="SkyBox.cpp" />
     <ClCompile Include="Sound.cpp" />
     <ClCompile Include="Sprite3DRenderer.cpp" />
     <ClCompile Include="SpriteRenderer.cpp" />
@@ -357,6 +361,7 @@
     <ClInclude Include="SelectFielderField.h" />
     <ClInclude Include="SelectPitcherField.h" />
     <ClInclude Include="SelectTeam.h" />
+    <ClInclude Include="SkyBox.h" />
     <ClInclude Include="Sound.h" />
     <ClInclude Include="Sprite3DRenderer.h" />
     <ClInclude Include="SpriteRenderer.h" />
@@ -396,6 +401,10 @@
     <Text Include="Task.txt" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="PS_SimpleColor.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+    </FxCompile>
     <FxCompile Include="PS_Sprite.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
     </FxCompile>

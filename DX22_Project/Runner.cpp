@@ -29,6 +29,7 @@ void CRunner::Init()
 	pRenderer->Load(PATH_MODEL("Ball.obj"));
 	pRenderer->LoadVertexShader(PATH_SHADER("VS_Object.cso"));
 	pRenderer->LoadPixelShader(PATH_SHADER("PS_TexColor.cso"));
+	pRenderer->LoadTexture(PATH_MODEL("ball.png"));
 
 	m_pCollision = AddComponent<CCollisionBox>();
 	m_pCollision->SetTag("Runner");

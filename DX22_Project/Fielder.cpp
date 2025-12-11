@@ -29,10 +29,10 @@ CFielder::~CFielder()
 void CFielder::Init()
 {
     CModelRenderer* pRenderer = AddComponent<CModelRenderer>();
-    pRenderer->Load(PATH_MODEL("Ball.obj"));
+    pRenderer->Load(PATH_MODEL("Character.fbx"));
     pRenderer->LoadVertexShader(PATH_SHADER("VS_Object.cso"));
-    pRenderer->LoadPixelShader(PATH_SHADER("PS_TexColor.cso"));
-
+    pRenderer->LoadPixelShader(PATH_SHADER("PS_SimpleColor.cso"));
+    
     m_pCollision = AddComponent<CCollisionBox>();
     m_pCollision->SetTag("Fielder");
     m_pCollision->SetInfo(m_tParam.m_f3Pos, m_tParam.m_f3Size);

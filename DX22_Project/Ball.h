@@ -26,6 +26,7 @@ public:
 	bool GetIsFryChatch() { return m_bFryChatch; }
 	bool GetIsFryBall() { return m_bFryBall; }
 	bool GetCaught() { return m_bCaught; }
+	bool GetIsInOutField() { return m_bInOutField; }
 	void SetIsFryChatch(bool fryChatch) { m_bFryChatch = fryChatch; }
 	void SetIsFryBall(bool isFry) { m_bFryBall = isFry; }
 	void SetVelocity(DirectX::XMFLOAT3 vel) { m_f3Velocity = vel; }
@@ -40,6 +41,7 @@ private:
 	bool m_bFryChatch;
 	bool m_bCaught;
 	bool m_bPitched;
+	bool m_bInOutField;
 	float m_fBallTime;
 
 	void CheckFaul();

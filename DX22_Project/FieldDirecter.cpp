@@ -1,6 +1,6 @@
 #include "FieldDirecter.h"
 #include "Main.h"
-
+#include "SkyBox.h"
 
 CFieldDirecter::CFieldDirecter()
 {
@@ -14,8 +14,9 @@ void CFieldDirecter::Init()
 {
 	CScene* pScene = GetScene();
 
+	pScene->AddGameObject<CSkyBox>("SkyBox", Tag::GameObject);
 	m_pBall = pScene->AddGameObject<CBall>("Ball", Tag::GameObject);
-	m_pField = pScene->AddGameObject<CField>("Field", Tag::Field);
+	m_pField = pScene->AddGameObject<CField>("Field", Tag::GameObject);
 	m_pStrikeZone = pScene->AddGameObject<CStrikeZone>("StrikeZone", Tag::UI);
 
 	for (int i = 0; i < (int)BaseKind::Max; i++)
