@@ -164,6 +164,11 @@ void CCountDirecter::AddScore()
     m_pScore[CGameManager::GetInstance()->GetAttackDirecter()->GetPlayerNo() - 1]->AddScore();
 }
 
+void CCountDirecter::Faul()
+{
+    if (m_tParam.m_nStrikeCount < 2) AddStrikeCount();
+}
+
 void CCountDirecter::SetIsBase(bool isBase, int index)
 {
     if (index < 0 || index >= 3) return;

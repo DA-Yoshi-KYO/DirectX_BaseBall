@@ -45,5 +45,6 @@ private:
 	float m_fBallTime;
 
 	void CheckFaul();
+	void FaulCalc();
 
 };

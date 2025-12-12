@@ -132,6 +132,7 @@ void CBall::OnCollision(CCollisionBase* other, std::string thisTag, Collision::R
 		if (otherTag == "OutField")
 		{
 			m_bInOutField = true;
+			FaulCalc();
 			return;
 		}
 	}
@@ -224,6 +225,8 @@ void CBall::CheckFaul()
 		if (m_bFryBall) return;
 		// 内野でボールが動いている時もフェアに戻るかもしれないのでファール判定を行わない
 		else if (!m_bInOutField && fVelPower > 1.0f) return;
+		// 外野でのファール判定は基本行わない(外野に行った一度限りのタイミングで行う)
+		else if (m_bInOutField) return;
 	}
 	// 捕球した時
 	else
@@ -232,38 +235,52 @@ void CBall::CheckFaul()
 		if (m_bFryChatch) return;
 	}
 
-	/*
-	// 点 A, B, P は XMFLOAT3 など
-	DirectX::XMVECTOR A = DirectX::XMLoadFloat3(&D);
-	DirectX::XMVECTOR B = DirectX::XMLoadFloat3(&D);
-	DirectX::XMVECTOR P = DirectX::XMLoadFloat3(&D);
+	FaulCalc();
+}
+
+void CBall::FaulCalc()
+{
+	CScene* pScene = GetScene();
+	CField* pField = pScene->GetGameObject<CField>();
+	std::array<DirectX::XMFLOAT3, 2> f3BaseLinePoints = pField->GetFirstBaseLinePoint();
+	DirectX::XMVECTOR vecBallPoint = DirectX::XMLoadFloat3(&m_tParam.m_f3Pos);
+
+	DirectX::XMVECTOR vecLineStart = DirectX::XMLoadFloat3(&f3BaseLinePoints[0]);
+	DirectX::XMVECTOR vecLineEnd = DirectX::XMLoadFloat3(&f3BaseLinePoints[1]);
 
 	// 線分ベクトルと点方向ベクトル
-	DirectX::XMVECTOR AB = DirectX::XMVectorSubtract(B, A);
-	DirectX::XMVECTOR AP = DirectX::XMVectorSubtract(P, A);
+	DirectX::XMVECTOR vecFirstLine = DirectX::XMVectorSubtract(vecLineEnd, vecLineStart);
+	DirectX::XMVECTOR vecStartToPoint = DirectX::XMVectorSubtract(vecBallPoint, vecLineStart);
 
 	// 基準となる法線（例：上方向 Y+）
 	DirectX::XMVECTOR N = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 
 	// クロス積
-	DirectX::XMVECTOR cross = DirectX::XMVector3Cross(AB, AP);
+	DirectX::XMVECTOR cross = DirectX::XMVector3Cross(vecFirstLine, vecStartToPoint);
 
 	// 左右判定（符号で決まる）
-	float side = DirectX::XMVectorGetX(DirectX::XMVector3Dot(cross, N));
+	float sideFirst = DirectX::XMVectorGetX(DirectX::XMVector3Dot(cross, N));
 
-	if (side > 0)
+	f3BaseLinePoints = pField->GetThirdBaseLinePoint();
+
+	vecLineStart = DirectX::XMLoadFloat3(&f3BaseLinePoints[0]);
+	vecLineEnd = DirectX::XMLoadFloat3(&f3BaseLinePoints[1]);
+
+	// 線分ベクトルと点方向ベクトル
+	vecFirstLine = DirectX::XMVectorSubtract(vecLineEnd, vecLineStart);
+	vecStartToPoint = DirectX::XMVectorSubtract(vecBallPoint, vecLineStart);
+
+	// クロス積
+	cross = DirectX::XMVector3Cross(vecFirstLine, vecStartToPoint);
+
+	// 左右判定（符号で決まる）
+	float sideThird = DirectX::XMVectorGetX(DirectX::XMVector3Dot(cross, N));
+
+	if (sideFirst < 0 || sideThird > 0)
 	{
-		// 左側
+		CGameManager::GetInstance()->GetCountDirecter()->Faul();
+		CGameManager::GetInstance()->EndAllInplay();
 	}
-	else if (side < 0)
-	{
-		// 右側
-	}
-	else
-	{
-		// 線上（ほぼ同一直線状）
-	}
-	*/
 }
 
 void CBall::UpdateInPlay()
@@ -284,6 +301,7 @@ void CBall::UpdateInPlay()
  
 	if (m_tParam.m_f3Pos.y < 0.0f + WORLD_AJUST + ce_fGroundY)
 	{
+		if (m_bFryBall && m_bInOutField) FaulCalc();
 		m_bFryBall = false;
 		//if(CFielding::GetChatchPattern() == CFielding::ChatchPattern::NotChatch)m_bFry = false;
 		m_f3Velocity.x *= 0.95f;

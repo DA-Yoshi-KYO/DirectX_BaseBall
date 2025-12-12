@@ -20,7 +20,10 @@ constexpr float ce_fHomeToBatterBoxZ = 5.0f;	// バッターボックスまでの距離
 CField::CField()
 	: CGameObject()
 {
-
+	m_f3FirstBaseLine[0] = DirectX::XMFLOAT3(260.0f, -7.0f, 40.0f);
+	m_f3FirstBaseLine[1] = DirectX::XMFLOAT3(0.0f, -7.0f, -219.0f);
+	m_f3ThirdBaseLine[0] = DirectX::XMFLOAT3(-260.0f, -7.0f, 40.0f);
+	m_f3ThirdBaseLine[1] = DirectX::XMFLOAT3(0.0f, -7.0f, -219.0f);
 }
 
 CField::~CField()

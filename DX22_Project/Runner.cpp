@@ -220,6 +220,7 @@ void CRunner::CheckRunOut()
 
 void CRunner::CheckRunnerAutoStart()
 {
+	if (m_bBatterRunner) return;
 	CScene* pScene = GetScene();
 	if (pScene->GetGameObject<CBall>()->GetIsFryBall()) return;
 	std::vector<RunnerKind> eOtherRunnerKind;

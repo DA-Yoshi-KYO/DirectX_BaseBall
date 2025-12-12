@@ -23,6 +23,7 @@ public:
     void AddBallCount();
     void AddOutCount();
     void AddScore();
+    void Faul();
     void SetIsBase(bool isBase, int index);
 
 private:
