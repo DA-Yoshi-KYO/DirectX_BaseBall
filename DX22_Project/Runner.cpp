@@ -13,6 +13,7 @@ CRunner::CRunner()
 	, m_pCollision(nullptr),m_bIsStop(false), m_bFrontMove(true)
 	, m_f3TargetPos(), m_bRunOut(true), m_bBackTempBase(false)
 	, m_fStiffTime(0.0f), m_fSpeed(1.0f), m_bBatterRunner(true)
+	, m_bAutoStart(false)
 {
 	m_tParam.m_f3Pos = DirectX::XMFLOAT3(0.0f, -4.5f, -218.0f);
 	m_tParam.m_f3Size = DirectX::XMFLOAT3(15.0f, 15.0f, 15.0f);
@@ -51,7 +52,11 @@ void CRunner::Update()
 {
 	if (CGameManager::GetInstance()->GetPhase() != GamePhase::InPlay)return;
 
-	if (!m_bBackTempBase) UpdateInput();
+	if (!m_bBackTempBase)
+	{
+		UpdateInput();
+		CheckRunnerAutoStart();
+	}
 	else UpdateBackTempBase();
 
 	DirectX::XMFLOAT3 target = {};
@@ -156,21 +161,21 @@ void CRunner::OnCollision(CCollisionBase* other, std::string thisTag, Collision:
 	{
 		m_eTempBase = GotBase::First;
 		if (m_fStiffTime > 0.0f) return;
-		m_eCurrentRunnerKind = RunnerKind::StayFirst;
+		if (!m_bAutoStart) m_eCurrentRunnerKind = RunnerKind::StayFirst;
 		return;
 	}
 	if (tag == "SecondBase")
 	{
 		m_eTempBase = GotBase::Second;
 		if (m_fStiffTime > 0.0f) return;
-		m_eCurrentRunnerKind = RunnerKind::StaySecond;
+		if (!m_bAutoStart)m_eCurrentRunnerKind = RunnerKind::StaySecond;
 		return;
 	}
 	if (tag == "ThirdBase")
 	{
 		m_eTempBase = GotBase::Third;
 		if (m_fStiffTime > 0.0f) return;
-		m_eCurrentRunnerKind = RunnerKind::StayThird;
+		if (!m_bAutoStart)m_eCurrentRunnerKind = RunnerKind::StayThird;
 		return;
 	}
 }
@@ -209,6 +214,62 @@ void CRunner::CheckRunOut()
 		if (m_eNowBase == m_eTempBase) m_bRunOut = false;
 		break;
 	default:
+		break;
+	}
+}
+
+void CRunner::CheckRunnerAutoStart()
+{
+	CScene* pScene = GetScene();
+	if (pScene->GetGameObject<CBall>()->GetIsFryBall()) return;
+	std::vector<RunnerKind> eOtherRunnerKind;
+
+	auto RunnerList = GetScene()->GetSameGameObject<CRunner>();
+	for (auto itr : RunnerList)
+	{
+		if (itr != this) eOtherRunnerKind.push_back(itr->GetCurrentKind());
+	}
+
+	switch (m_eCurrentRunnerKind)
+	{
+	case RunnerKind::StayFirst:
+		for (auto itr : eOtherRunnerKind)
+		{
+			if (itr == RunnerKind::BatterToFirst)
+			{
+				m_eCurrentRunnerKind = RunnerKind::FirstToSecond;
+				m_bIsStop = false;
+				m_bFrontMove = true;
+				m_bAutoStart = true;
+			}
+		}
+		break;
+	case RunnerKind::StaySecond:
+		for (auto itr : eOtherRunnerKind)
+		{
+			if (itr == RunnerKind::FirstToSecond)
+			{
+				m_eCurrentRunnerKind = RunnerKind::SecondToThird;
+				m_bIsStop = false;
+				m_bFrontMove = true;
+				m_bAutoStart = true;
+			}
+		}
+		break;
+	case RunnerKind::StayThird:
+		for (auto itr : eOtherRunnerKind)
+		{
+			if (itr == RunnerKind::SecondToThird)
+			{
+				m_eCurrentRunnerKind = RunnerKind::ThirdToHome;
+				m_bIsStop = false;
+				m_bFrontMove = true;
+				m_bAutoStart = true;
+			}
+		}
+		break;
+	default:
+		m_bAutoStart = false;
 		break;
 	}
 }
