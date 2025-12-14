@@ -79,6 +79,10 @@ void CGameObject::OnCollision(CCollisionBase* other, std::string thisTag, Collis
 {
 }
 
+void CGameObject::OnCollisionExit(CCollisionBase* other, std::string thisTag)
+{
+}
+
 void CGameObject::Destroy()
 {
 	m_bDestroy = true;

@@ -21,11 +21,13 @@ void CAttackDirecter::Init()
 	pScene->AddGameObject<CBattingCursor>("BattingCursor", Tag::UI);
 
 	m_pBatting = std::make_unique<CBatting>();
+	m_pRunning = std::make_unique<CRunning>();
 }
 
 void CAttackDirecter::Update()
 {
 	m_pBatting->Update(m_nPlayerNo);
+	m_pRunning->Update(m_nPlayerNo);
 }
 
 void CAttackDirecter::EndInplay()

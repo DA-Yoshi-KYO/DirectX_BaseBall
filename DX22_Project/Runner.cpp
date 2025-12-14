@@ -8,12 +8,12 @@
 
 CRunner::CRunner()
 	: CGameObject()
-	, m_eNowBase(GotBase::None), m_eTempBase(GotBase::None)
-	, m_eCurrentRunnerKind(RunnerKind::BatterToFirst)
+	, m_eCurrentBase(GotBase::None), m_eOldBase(GotBase::None)
+	, m_eStatus(RunnerStatus::Stop)
 	, m_pCollision(nullptr),m_bIsStop(false), m_bFrontMove(true)
 	, m_f3TargetPos(), m_bRunOut(true), m_bBackTempBase(false)
 	, m_fStiffTime(0.0f), m_fSpeed(1.0f), m_bBatterRunner(true)
-	, m_bAutoStart(false)
+	, m_bAutoStart(false), m_bTightRunner(false)
 {
 	m_tParam.m_f3Pos = DirectX::XMFLOAT3(0.0f, -4.5f, -218.0f);
 	m_tParam.m_f3Size = DirectX::XMFLOAT3(15.0f, 15.0f, 15.0f);
@@ -30,9 +30,8 @@ void CRunner::Init()
 	CModelRenderer* pRenderer = AddComponent<CModelRenderer>();
 	pRenderer->Load(PATH_MODEL("Character.fbx"),0.2f);
 	pRenderer->LoadVertexShader(PATH_SHADER("VS_Object.cso"));
-	pRenderer->LoadPixelShader(PATH_SHADER("PS_TexColor.cso"));
-	pRenderer->LoadTexture(PATH_MODEL("ball.png"));
-
+	pRenderer->LoadPixelShader(PATH_SHADER("PS_SimpleColor.cso"));
+	
 	m_pCollision = AddComponent<CCollisionBox>();
 	m_pCollision->SetTag("Runner");
 	m_pCollision->SetInfo(m_tParam.m_f3Pos, m_tParam.m_f3Size);
@@ -52,91 +51,110 @@ void CRunner::Update()
 {
 	if (CGameManager::GetInstance()->GetPhase() != GamePhase::InPlay)return;
 
-	if (!m_bBackTempBase)
-	{
-		UpdateInput();
-		CheckRunnerAutoStart();
-	}
-	else UpdateBackTempBase();
+	//if (!m_bBackTempBase)
+	//{
+	//	UpdateInput();
+	//	CheckRunnerAutoStart();
+	//}
+	//else UpdateBackTempBase();
 
-	DirectX::XMFLOAT3 target = {};
-	bool progressCheck = true;
-	switch (m_eCurrentRunnerKind)
+	//DirectX::XMFLOAT3 target = {};
+	//bool progressCheck = true;
+	//switch (m_eCurrentRunnerKind)
+	//{
+	//case RunnerKind::BatterToFirst:
+	//	target = m_f3TargetPos[int(BaseKind::First)];
+	//	break;
+	//case RunnerKind::StayFirst:
+	//	m_eTempBase = GotBase::First;
+	//	target = m_f3TargetPos[int(BaseKind::First)];
+	//	progressCheck = false;
+	//	break;
+	//case RunnerKind::FirstToSecond:
+	//	if (m_bFrontMove) target = m_f3TargetPos[int(BaseKind::Second)];
+	//	else target = m_f3TargetPos[int(BaseKind::First)];
+	//	break;
+	//case RunnerKind::StaySecond:
+	//	target = m_f3TargetPos[int(BaseKind::Second)];
+	//	progressCheck = false;
+	//	break;
+	//case RunnerKind::SecondToThird:
+	//	if (m_bFrontMove) target = m_f3TargetPos[int(BaseKind::Third)];
+	//	else target = m_f3TargetPos[int(BaseKind::Second)];
+	//	break;
+	//case RunnerKind::StayThird:
+	//	target = m_f3TargetPos[int(BaseKind::Third)];
+	//	progressCheck = false;
+	//	break;
+	//case RunnerKind::ThirdToHome:
+	//	if (m_bFrontMove) target = m_f3TargetPos[int(BaseKind::Home)];
+	//	else target = m_f3TargetPos[int(BaseKind::Third)];
+	//	break;
+	//default:
+	//	break;
+	//}
+
+	//DirectX::XMFLOAT2 f2TargetDistance = DirectX::XMFLOAT2(target.x - m_tParam.m_f3Pos.x, target.z - m_tParam.m_f3Pos.z);
+	//DirectX::XMVECTOR vecDistance = DirectX::XMLoadFloat2(&f2TargetDistance);
+	//DirectX::XMVECTOR vecLength = DirectX::XMVector2Length(vecDistance);
+	//float fLength = 0.0f;
+	//DirectX::XMStoreFloat(&fLength, vecLength);
+	//if (progressCheck)
+	//{
+	//	if (fLength < 15.0f)
+	//	{
+	//		m_bIsStop = !CheckCanProgress();
+	//	}
+	//}
+	//if (!m_bIsStop)
+	//{
+	//	if (fLength > 0.1f)
+	//	{
+	//		DirectX::XMVECTOR vecDir = DirectX::XMVector2Normalize(vecDistance);
+	//		DirectX::XMVECTOR vecVelocity = DirectX::XMVectorScale(vecDir, m_fSpeed);
+	//		DirectX::XMFLOAT2 f2Velocity;
+	//		DirectX::XMStoreFloat2(&f2Velocity, vecVelocity);
+	//		m_tParam.m_f3Pos.x += f2Velocity.x;
+	//		m_tParam.m_f3Pos.z += f2Velocity.y;
+	//	}
+	//}
+
+	//if (GetScene()->GetGameObject<CBall>()->GetIsFryChatch())
+	//{
+	//	if (!m_bRunOut) m_eNowBase = m_eTempBase;
+	//	else
+	//	{
+	//		if (m_eTempBase != m_eNowBase) m_bBackTempBase = true;
+	//		else m_bRunOut = false;
+	//	}
+	//}
+	//else
+	//{
+	//	m_eNowBase = m_eTempBase;
+	//}
+	//if (m_fStiffTime != 0.0f)
+	//{
+	//	m_fStiffTime -= 1.0f / fFPS;
+	//	m_fStiffTime = std::max(0.0f, m_fStiffTime);
+	//}
+
+
+	switch (m_eStatus)
 	{
-	case RunnerKind::BatterToFirst:
-		target = m_f3TargetPos[int(BaseKind::First)];
+	case RunnerStatus::Stop:
 		break;
-	case RunnerKind::StayFirst:
-		m_eTempBase = GotBase::First;
-		target = m_f3TargetPos[int(BaseKind::First)];
-		progressCheck = false;
+	case RunnerStatus::ToNext:
+		UpdateToNext();
 		break;
-	case RunnerKind::FirstToSecond:
-		if (m_bFrontMove) target = m_f3TargetPos[int(BaseKind::Second)];
-		else target = m_f3TargetPos[int(BaseKind::First)];
+	case RunnerStatus::ToBack:
+		UpdateToBack();
 		break;
-	case RunnerKind::StaySecond:
-		target = m_f3TargetPos[int(BaseKind::Second)];
-		progressCheck = false;
+	case RunnerStatus::BackAll:
 		break;
-	case RunnerKind::SecondToThird:
-		if (m_bFrontMove) target = m_f3TargetPos[int(BaseKind::Third)];
-		else target = m_f3TargetPos[int(BaseKind::Second)];
-		break;
-	case RunnerKind::StayThird:
-		target = m_f3TargetPos[int(BaseKind::Third)];
-		progressCheck = false;
-		break;
-	case RunnerKind::ThirdToHome:
-		if (m_bFrontMove) target = m_f3TargetPos[int(BaseKind::Home)];
-		else target = m_f3TargetPos[int(BaseKind::Third)];
+	case RunnerStatus::Max:
 		break;
 	default:
 		break;
-	}
-
-	DirectX::XMFLOAT2 f2TargetDistance = DirectX::XMFLOAT2(target.x - m_tParam.m_f3Pos.x, target.z - m_tParam.m_f3Pos.z);
-	DirectX::XMVECTOR vecDistance = DirectX::XMLoadFloat2(&f2TargetDistance);
-	DirectX::XMVECTOR vecLength = DirectX::XMVector2Length(vecDistance);
-	float fLength = 0.0f;
-	DirectX::XMStoreFloat(&fLength, vecLength);
-	if (progressCheck)
-	{
-		if (fLength < 15.0f)
-		{
-			m_bIsStop = !CheckCanProgress();
-		}
-	}
-	if (!m_bIsStop)
-	{
-		if (fLength > 0.1f)
-		{
-			DirectX::XMVECTOR vecDir = DirectX::XMVector2Normalize(vecDistance);
-			DirectX::XMVECTOR vecVelocity = DirectX::XMVectorScale(vecDir, m_fSpeed);
-			DirectX::XMFLOAT2 f2Velocity;
-			DirectX::XMStoreFloat2(&f2Velocity, vecVelocity);
-			m_tParam.m_f3Pos.x += f2Velocity.x;
-			m_tParam.m_f3Pos.z += f2Velocity.y;
-		}
-	}
-
-	if (GetScene()->GetGameObject<CBall>()->GetIsFryChatch())
-	{
-		if (!m_bRunOut) m_eNowBase = m_eTempBase;
-		else
-		{
-			if (m_eTempBase != m_eNowBase) m_bBackTempBase = true;
-			else m_bRunOut = false;
-		}
-	}
-	else
-	{
-		m_eNowBase = m_eTempBase;
-	}
-	if (m_fStiffTime != 0.0f)
-	{
-		m_fStiffTime -= 1.0f / fFPS;
-		m_fStiffTime = std::max(0.0f, m_fStiffTime);
 	}
 
 	// “–‚½‚è”»’èî•ñ‚ÌXV
@@ -148,10 +166,15 @@ void CRunner::Update()
 	m_pCollision->SetInfo(tBox);
 }
 
+void CRunner::OnDestroy()
+{
+	CGameManager::GetInstance()->GetAttackDirecter()->GetRunning()->RemoveRunner(this);
+}
+
 void CRunner::OnCollision(CCollisionBase* other, std::string thisTag, Collision::Result result)
 {
 	std::string tag = other->GetTag();
-	if (tag == "HomeBase" && m_eNowBase == GotBase::Third)
+	if (tag == "HomeBase" && m_eCurrentBase == GotBase::Third)
 	{
 		Destroy();
 		CGameManager::GetInstance()->GetCountDirecter()->AddScore();
@@ -159,30 +182,37 @@ void CRunner::OnCollision(CCollisionBase* other, std::string thisTag, Collision:
 	}
 	if (tag == "FirstBase")
 	{
-		m_eTempBase = GotBase::First;
-		if (m_fStiffTime > 0.0f) return;
-		if (!m_bAutoStart) m_eCurrentRunnerKind = RunnerKind::StayFirst;
+		m_eTouchBase = GotBase::First;
 		return;
 	}
 	if (tag == "SecondBase")
 	{
-		m_eTempBase = GotBase::Second;
-		if (m_fStiffTime > 0.0f) return;
-		if (!m_bAutoStart)m_eCurrentRunnerKind = RunnerKind::StaySecond;
+		m_eTouchBase = GotBase::Second;
 		return;
 	}
 	if (tag == "ThirdBase")
 	{
-		m_eTempBase = GotBase::Third;
-		if (m_fStiffTime > 0.0f) return;
-		if (!m_bAutoStart)m_eCurrentRunnerKind = RunnerKind::StayThird;
+		m_eTouchBase = GotBase::Third;
+		return;
+	}
+}
+
+void CRunner::OnCollisionExit(CCollisionBase* other, std::string thisTag)
+{
+	std::string tag = other->GetTag();
+
+	if (tag == "FirstBase" ||
+		tag == "SecondBase" ||
+		tag == "ThirdBase")
+	{
+		m_eTouchBase = GotBase::None;
 		return;
 	}
 }
 
 void CRunner::ResetPos()
 {
-	switch (m_eNowBase)
+	switch (m_eCurrentBase)
 	{
 	case GotBase::First:
 		m_tParam.m_f3Pos = m_f3TargetPos[int(BaseKind::First)];
@@ -206,87 +236,157 @@ void CRunner::SetRunnerSpeed(Quality speed)
 
 void CRunner::CheckRunOut()
 {
-	switch (m_eCurrentRunnerKind)
+
+}
+
+void CRunner::UpdateToNext()
+{
+	if (m_bTightRunner) return;
+
+	DirectX::XMFLOAT2 f2Distance{};
+	if (int(m_eTouchBase) == int(m_eCurrentBase) + 1)
 	{
-	case RunnerKind::StayFirst:
-	case RunnerKind::StaySecond:
-	case RunnerKind::StayThird:
-		if (m_eNowBase == m_eTempBase) m_bRunOut = false;
+		m_eStatus = RunnerStatus::Stop;
+		m_eCurrentBase = m_eTouchBase;
+		return;
+	}
+	switch (m_eCurrentBase)
+	{
+	case GotBase::None:
+		f2Distance.x = m_f3TargetPos[int(BaseKind::First)].x - m_tParam.m_f3Pos.x;
+		f2Distance.y = m_f3TargetPos[int(BaseKind::First)].z - m_tParam.m_f3Pos.z;
+		break;
+	case GotBase::First:
+		f2Distance.x = m_f3TargetPos[int(BaseKind::Second)].x - m_tParam.m_f3Pos.x;
+		f2Distance.y = m_f3TargetPos[int(BaseKind::Second)].z - m_tParam.m_f3Pos.z;
+		break;
+	case GotBase::Second:
+		f2Distance.x = m_f3TargetPos[int(BaseKind::Third)].x - m_tParam.m_f3Pos.x;
+		f2Distance.y = m_f3TargetPos[int(BaseKind::Third)].z - m_tParam.m_f3Pos.z;
+		break;
+	case GotBase::Third:
+		f2Distance.x = m_f3TargetPos[int(BaseKind::Home)].x - m_tParam.m_f3Pos.x;
+		f2Distance.y = m_f3TargetPos[int(BaseKind::Home)].z - m_tParam.m_f3Pos.z;
 		break;
 	default:
 		break;
 	}
+
+	DirectX::XMVECTOR vecDir = DirectX::XMVector2Normalize(DirectX::XMLoadFloat2(&f2Distance));
+	DirectX::XMVECTOR vecVel = DirectX::XMVectorScale(vecDir, m_fSpeed);
+	DirectX::XMFLOAT2 f2Vel{};
+	DirectX::XMStoreFloat2(&f2Vel, vecVel);
+	m_tParam.m_f3Pos.x += f2Vel.x;
+	m_tParam.m_f3Pos.z += f2Vel.y;
+}
+
+void CRunner::UpdateToBack()
+{
+	DirectX::XMFLOAT2 f2Distance{};
+	if (int(m_eTouchBase) == int(m_eCurrentBase))
+	{
+		m_eStatus = RunnerStatus::Stop;
+		return;
+	}
+	switch (m_eCurrentBase)
+	{
+	case GotBase::None:
+		f2Distance.x = m_f3TargetPos[int(BaseKind::First)].x - m_tParam.m_f3Pos.x;
+		f2Distance.y = m_f3TargetPos[int(BaseKind::First)].z - m_tParam.m_f3Pos.z;
+		break;
+	case GotBase::First:
+		f2Distance.x = m_f3TargetPos[int(BaseKind::Second)].x - m_tParam.m_f3Pos.x;
+		f2Distance.y = m_f3TargetPos[int(BaseKind::Second)].z - m_tParam.m_f3Pos.z;
+		break;
+	case GotBase::Second:
+		f2Distance.x = m_f3TargetPos[int(BaseKind::Third)].x - m_tParam.m_f3Pos.x;
+		f2Distance.y = m_f3TargetPos[int(BaseKind::Third)].z - m_tParam.m_f3Pos.z;
+		break;
+	case GotBase::Third:
+		f2Distance.x = m_f3TargetPos[int(BaseKind::Home)].x - m_tParam.m_f3Pos.x;
+		f2Distance.y = m_f3TargetPos[int(BaseKind::Home)].z - m_tParam.m_f3Pos.z;
+		break;
+	default:
+		break;
+	}
+
+	DirectX::XMVECTOR vecDir = DirectX::XMVector2Normalize(DirectX::XMLoadFloat2(&f2Distance));
+	DirectX::XMVECTOR vecVel = DirectX::XMVectorScale(vecVel, m_fSpeed);
+	DirectX::XMFLOAT2 f2Vel{};
+	DirectX::XMStoreFloat2(&f2Vel, vecVel);
+	m_tParam.m_f3Pos.x += f2Vel.x;
+	m_tParam.m_f3Pos.z += f2Vel.y;
 }
 
 void CRunner::CheckRunnerAutoStart()
 {
-	if (m_bBatterRunner) return;
-	CScene* pScene = GetScene();
-	if (pScene->GetGameObject<CBall>()->GetIsFryBall()) return;
-	std::vector<RunnerKind> eOtherRunnerKind;
+	//if (m_bBatterRunner) return;
+	//CScene* pScene = GetScene();
+	//if (pScene->GetGameObject<CBall>()->GetIsFryBall()) return;
+	//std::vector<RunnerKind> eOtherRunnerKind;
 
-	auto RunnerList = GetScene()->GetSameGameObject<CRunner>();
-	for (auto itr : RunnerList)
-	{
-		if (itr != this) eOtherRunnerKind.push_back(itr->GetCurrentKind());
-	}
+	//auto RunnerList = GetScene()->GetSameGameObject<CRunner>();
+	//for (auto itr : RunnerList)
+	//{
+	//	if (itr != this) eOtherRunnerKind.push_back(itr->GetCurrentKind());
+	//}
 
-	switch (m_eCurrentRunnerKind)
-	{
-	case RunnerKind::StayFirst:
-		for (auto itr : eOtherRunnerKind)
-		{
-			if (itr == RunnerKind::BatterToFirst)
-			{
-				m_eCurrentRunnerKind = RunnerKind::FirstToSecond;
-				m_bIsStop = false;
-				m_bFrontMove = true;
-				m_bAutoStart = true;
-			}
-		}
-		break;
-	case RunnerKind::StaySecond:
-		for (auto itr : eOtherRunnerKind)
-		{
-			if (itr == RunnerKind::FirstToSecond)
-			{
-				m_eCurrentRunnerKind = RunnerKind::SecondToThird;
-				m_bIsStop = false;
-				m_bFrontMove = true;
-				m_bAutoStart = true;
-			}
-		}
-		break;
-	case RunnerKind::StayThird:
-		for (auto itr : eOtherRunnerKind)
-		{
-			if (itr == RunnerKind::SecondToThird)
-			{
-				m_eCurrentRunnerKind = RunnerKind::ThirdToHome;
-				m_bIsStop = false;
-				m_bFrontMove = true;
-				m_bAutoStart = true;
-			}
-		}
-		break;
-	default:
-		m_bAutoStart = false;
-		break;
-	}
+	//switch (m_eCurrentRunnerKind)
+	//{
+	//case RunnerKind::StayFirst:
+	//	for (auto itr : eOtherRunnerKind)
+	//	{
+	//		if (itr == RunnerKind::BatterToFirst)
+	//		{
+	//			m_eCurrentRunnerKind = RunnerKind::FirstToSecond;
+	//			m_bIsStop = false;
+	//			m_bFrontMove = true;
+	//			m_bAutoStart = true;
+	//		}
+	//	}
+	//	break;
+	//case RunnerKind::StaySecond:
+	//	for (auto itr : eOtherRunnerKind)
+	//	{
+	//		if (itr == RunnerKind::FirstToSecond)
+	//		{
+	//			m_eCurrentRunnerKind = RunnerKind::SecondToThird;
+	//			m_bIsStop = false;
+	//			m_bFrontMove = true;
+	//			m_bAutoStart = true;
+	//		}
+	//	}
+	//	break;
+	//case RunnerKind::StayThird:
+	//	for (auto itr : eOtherRunnerKind)
+	//	{
+	//		if (itr == RunnerKind::SecondToThird)
+	//		{
+	//			m_eCurrentRunnerKind = RunnerKind::ThirdToHome;
+	//			m_bIsStop = false;
+	//			m_bFrontMove = true;
+	//			m_bAutoStart = true;
+	//		}
+	//	}
+	//	break;
+	//default:
+	//	m_bAutoStart = false;
+	//	break;
+	//}
 }
 
 void CRunner::GoToNextBase()
 {
-	switch (m_eNowBase)
+	switch (m_eCurrentBase)
 	{
 	case GotBase::None:
-		m_eNowBase = GotBase::First;
+		m_eCurrentBase = GotBase::First;
 		break;
 	case GotBase::First:
-		m_eNowBase = GotBase::Second;
+		m_eCurrentBase = GotBase::Second;
 		break;
 	case GotBase::Second:
-		m_eNowBase = GotBase::Third;
+		m_eCurrentBase = GotBase::Third;
 		break;
 	case GotBase::Third:
 		CGameManager::GetInstance()->GetCountDirecter()->AddScore();
@@ -301,7 +401,7 @@ void CRunner::GoToNextBase()
 
 void CRunner::UpdateInput()
 {
-	if (m_fStiffTime > 0.0f) return;
+	/*if (m_fStiffTime > 0.0f) return;
 
 	CAttackDirecter* pAttackDirecter = CGameManager::GetInstance()->GetAttackDirecter();
 	int nAttackPlayerNo = pAttackDirecter->GetPlayerNo();
@@ -356,12 +456,12 @@ void CRunner::UpdateInput()
 		m_bIsStop = false;
 		m_bFrontMove = false;
 		return;
-	}
+	}*/
 }
 
 void CRunner::UpdateBackTempBase()
 {
-	if (m_eNowBase == m_eTempBase)
+	/*if (m_eNowBase == m_eTempBase)
 	{
 		m_bBackTempBase = false;
 		return;
@@ -378,12 +478,13 @@ void CRunner::UpdateBackTempBase()
 		break;
 	default:
 		break;
-	}
+	}*/
 }
 
 bool CRunner::CheckCanProgress()
 {
-	CScene* pScene = GetScene();
+	return true;	
+	/*CScene* pScene = GetScene();
 	auto RunnerList = pScene->GetSameGameObject<CRunner>();
 	std::vector<RunnerKind> eRunnerKindList;
 	eRunnerKindList.clear();
@@ -399,7 +500,7 @@ bool CRunner::CheckCanProgress()
 		case RunnerKind::BatterToFirst:
 			if (itr == RunnerKind::StayFirst) return false;
 			break;
-		case RunnerKind::FirstToSecond:
+		case RunnerKind::FirstToSecond:wwwww
 			m_eCurrentRunnerKind = RunnerKind::FirstToSecond;
 			if (itr == RunnerKind::StaySecond) return false;
 			break;
@@ -417,5 +518,5 @@ bool CRunner::CheckCanProgress()
 		}
 	}
 
-	return true;
+	return true;*/
 }

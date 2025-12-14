@@ -156,6 +156,7 @@ void CBatting::Update(int AttackPlayer)
 
 					pScene->GetGameObject<CBall>()->SetVelocity(m_fMoveDirection);
 					pGameManager->SetPhase(GamePhase::InPlay);
+					pGameManager->GetAttackDirecter()->GetRunning()->SetBatterRunner(tTakingBatterData.m_eSpeed);
 
 					// ƒoƒbƒg‚É“–‚½‚Á‚½
 					m_bBatting = true;

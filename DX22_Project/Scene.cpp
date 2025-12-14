@@ -51,6 +51,7 @@ void CScene::Update()
         }
     }
 
+    m_pHitCollisionList.clear();
     for (int i = 0; i < m_pCollisionList.size(); i++)
     {
         for (int j = i + 1; j < m_pCollisionList.size(); j++)
@@ -62,18 +63,28 @@ void CScene::Update()
                 CGameObject* hitB = m_pCollisionList[j]->GetGameObject();
                 hitA->OnCollision(m_pCollisionList[j],m_pCollisionList[i]->GetTag(), result);
                 hitB->OnCollision(m_pCollisionList[i],m_pCollisionList[j]->GetTag(), result);
+                m_pHitCollisionList.push_back(std::pair(m_pCollisionList[i], m_pCollisionList[j]));
             }
         }
     }
 
-    for (auto& list : m_pGameObject_List)
+    std::vector<std::pair<CCollisionBase*, CCollisionBase*>> pMoreCollision = 
+        m_pHitCollisionList.size() > m_pOldHitCollisionList.size() ? 
+        m_pHitCollisionList : m_pOldHitCollisionList;
+    std::vector<std::pair<CCollisionBase*, CCollisionBase*>> pLessCollision =
+        m_pHitCollisionList == pMoreCollision ? m_pOldHitCollisionList : m_pHitCollisionList;
+    for (auto itr : pMoreCollision)
     {
-        for (auto obj : list)
+        auto findItr = std::find(pLessCollision.begin(), pLessCollision.end(), itr);
+
+        if (findItr == pLessCollision.end())
         {
-            obj->LateUpdate();
+            itr.first->GetGameObject()->OnCollisionExit(itr.second, itr.first->GetTag());
+            itr.second->GetGameObject()->OnCollisionExit(itr.first, itr.second->GetTag());
         }
     }
-    
+    m_pOldHitCollisionList = m_pHitCollisionList;
+
     // 何かしらのオブジェクトが削除されたと通知された際に、リストから削除する処理を行う
     if (m_bAnyObjectDestroy)
     {

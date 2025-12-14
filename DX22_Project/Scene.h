@@ -124,6 +124,8 @@ protected:
 private:
     std::vector<ObjectID> m_tIDVec;
     std::vector<CCollisionBase*> m_pCollisionList;
+    std::vector<std::pair<CCollisionBase*, CCollisionBase*>> m_pHitCollisionList;
+    std::vector<std::pair<CCollisionBase*, CCollisionBase*>> m_pOldHitCollisionList;
     bool m_bAnyObjectDestroy;
 
 };

@@ -209,17 +209,9 @@ void CFielder::OnCollision(CCollisionBase* other, std::string thisTag, Collision
         bool isFry = pBall->GetIsFryBall();
         if (isFry)
         {
-            CScene* pScene = GetScene();
-            auto RunnerList = pScene->GetSameGameObject<CRunner>();
-            for (auto itr : RunnerList)
-            {
-                if (itr->GetIsBatterRunner())
-                {
-                    itr->Destroy();
-                    break;
-                }
-            }
-            CGameManager::GetInstance()->GetCountDirecter()->AddOutCount();
+            CGameManager* pManager = CGameManager::GetInstance();
+            pManager->GetAttackDirecter()->GetRunning()->GetBatterRunner()->Destroy();
+            pManager->GetCountDirecter()->AddOutCount();
             pBall->SetIsFryBall(false);
         }
         return;

@@ -3,7 +3,7 @@
 #include "Runner.h"
 
 CGameManager* CGameManager::m_pInstance = nullptr;
-constexpr float ce_fWaitMaxTime = 1.0f;
+constexpr float ce_fWaitMaxTime = 3.0f;
 
 CGameManager::CGameManager()
     : m_pCountDirecter(nullptr), m_pAttackDirecter(nullptr)
@@ -106,22 +106,18 @@ void CGameManager::Release()
 void CGameManager::CheckEndInplay()
 {
     CScene* pScene = GetScene();
-    bool isEnd = true;
-
+    
     CBall* pBall = pScene->GetGameObject<CBall>();
     if (!pBall->GetCaught()) return;
 
     auto RunnerList = pScene->GetSameGameObject<CRunner>();
     for (auto itr : RunnerList)
     {
-        RunnerKind eKind = itr->GetCurrentKind();
+        GotBase eKind = itr->GetTouchBase();
 
         switch (eKind)
         {
-        case RunnerKind::BatterToFirst:
-        case RunnerKind::FirstToSecond:
-        case RunnerKind::SecondToThird:
-        case RunnerKind::ThirdToHome:
+        case GotBase::None:
             m_fWaitTime = 0.0f;
             return;
             break;
