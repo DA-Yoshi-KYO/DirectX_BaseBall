@@ -110,7 +110,7 @@ void CFielder::Update()
         }
             
     }
-
+    BaseCover();
     // “–‚½‚è”»’èî•ñ‚ÌXV
     Collision::Box tBox;
     tBox.center = m_tParam.m_f3Pos;
@@ -128,14 +128,7 @@ void CFielder::Draw()
     CGameObject::Draw();
 }
 
-void CFielder::LateUpdate()
-{
-    CGameManager* pGameManager = CGameManager::GetInstance();
-    GamePhase ePhase = pGameManager->GetPhase();
-    if (ePhase != GamePhase::InPlay) return;
-    if (m_bIsOparation) return;
-    BaseCover();
-}
+
 
 void CFielder::ResetPos()
 {
@@ -194,6 +187,7 @@ void CFielder::ResetPos()
 
 void CFielder::OnCollision(CCollisionBase* other, std::string thisTag, Collision::Result result)
 {
+    if (CGameManager::GetInstance()->GetPhase() == GamePhase::Batting) return;
     CBall* pBall = dynamic_cast<CBall*>(other->GetGameObject());
 
     if (pBall)
@@ -205,7 +199,6 @@ void CFielder::OnCollision(CCollisionBase* other, std::string thisTag, Collision
         m_bChatch = true;
         m_bIsOparation = true;
         pBall->SetActive(false);
-        pBall->SetCaught(true);
         bool isFry = pBall->GetIsFryBall();
         if (isFry)
         {
@@ -214,6 +207,7 @@ void CFielder::OnCollision(CCollisionBase* other, std::string thisTag, Collision
             pManager->GetCountDirecter()->AddOutCount();
             pBall->SetIsFryBall(false);
         }
+        if (!pBall->GetCaught()) pBall->SetCaught(true);
         return;
     }
     
@@ -221,6 +215,17 @@ void CFielder::OnCollision(CCollisionBase* other, std::string thisTag, Collision
     if (pBase)
     {
         pBase->SetBaseCover(true);
+
+        return;
+    }
+}
+
+void CFielder::OnCollisionExit(CCollisionBase* other, std::string thisTag)
+{
+    CBase* pBase = dynamic_cast<CBase*>(other->GetGameObject());
+    if (pBase)
+    {
+        pBase->SetBaseCover(false);
 
         return;
     }

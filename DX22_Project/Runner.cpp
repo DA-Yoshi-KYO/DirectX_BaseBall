@@ -5,6 +5,7 @@
 #include "Ball.h"
 #include "GameManager.h"
 #include "Input.h"
+#include "Running.h"
 
 CRunner::CRunner()
 	: CGameObject()
@@ -45,6 +46,8 @@ void CRunner::Init()
 	int nNo = CGameManager::GetInstance()->GetAttackDirecter()->GetPlayerNo();
 	if (nNo == 1) m_tParam.m_f4Color = DirectX::XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
 	else if (nNo == 2) m_tParam.m_f4Color = DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
+
+	m_pRunning = CGameManager::GetInstance()->GetAttackDirecter()->GetRunning();
 }
 
 void CRunner::Update()
@@ -168,7 +171,7 @@ void CRunner::Update()
 
 void CRunner::OnDestroy()
 {
-	CGameManager::GetInstance()->GetAttackDirecter()->GetRunning()->RemoveRunner(this);
+	m_pRunning->RemoveRunner(this);
 }
 
 void CRunner::OnCollision(CCollisionBase* other, std::string thisTag, Collision::Result result)
@@ -241,15 +244,13 @@ void CRunner::CheckRunOut()
 
 void CRunner::UpdateToNext()
 {
-	if (m_bTightRunner) return;
-
-	DirectX::XMFLOAT2 f2Distance{};
 	if (int(m_eTouchBase) == int(m_eCurrentBase) + 1)
 	{
 		m_eStatus = RunnerStatus::Stop;
 		m_eCurrentBase = m_eTouchBase;
 		return;
 	}
+	DirectX::XMFLOAT2 f2Distance{};
 	switch (m_eCurrentBase)
 	{
 	case GotBase::None:
@@ -270,9 +271,21 @@ void CRunner::UpdateToNext()
 		break;
 	default:
 		break;
+	}	
+	
+	DirectX::XMVECTOR vecDist = DirectX::XMLoadFloat2(&f2Distance);
+	DirectX::XMVECTOR vecLength = DirectX::XMVector2Length(vecDist);
+	float fLength = 0.0f;
+	DirectX::XMStoreFloat(&fLength, vecLength);
+	if (fLength < 20.0f)
+	{
+		if (m_pRunning->IsTight(this))
+		{
+			return;
+		}
 	}
 
-	DirectX::XMVECTOR vecDir = DirectX::XMVector2Normalize(DirectX::XMLoadFloat2(&f2Distance));
+	DirectX::XMVECTOR vecDir = DirectX::XMVector2Normalize(vecDist);
 	DirectX::XMVECTOR vecVel = DirectX::XMVectorScale(vecDir, m_fSpeed);
 	DirectX::XMFLOAT2 f2Vel{};
 	DirectX::XMStoreFloat2(&f2Vel, vecVel);
@@ -311,7 +324,7 @@ void CRunner::UpdateToBack()
 	}
 
 	DirectX::XMVECTOR vecDir = DirectX::XMVector2Normalize(DirectX::XMLoadFloat2(&f2Distance));
-	DirectX::XMVECTOR vecVel = DirectX::XMVectorScale(vecVel, m_fSpeed);
+	DirectX::XMVECTOR vecVel = DirectX::XMVectorScale(vecDir, m_fSpeed);
 	DirectX::XMFLOAT2 f2Vel{};
 	DirectX::XMStoreFloat2(&f2Vel, vecVel);
 	m_tParam.m_f3Pos.x += f2Vel.x;

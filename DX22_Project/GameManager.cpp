@@ -88,6 +88,20 @@ void CGameManager::EndAllInplay()
     m_ePhase = GamePhase::Batting;
 }
 
+void CGameManager::FaulBall()
+{
+    int nPlayerNo = m_pAttackDirecter->GetPlayerNo();
+    for (int i = 0; i < 2; i++)
+    {
+        m_pTeamDirecter[i]->EndInplay(m_pTeamDirecter[i]->GetTeamNo() == nPlayerNo);
+    }
+    m_pFieldDirecter->EndInplay();
+    m_pAttackDirecter->EndInplay();
+    m_pDefenceDirecter->EndInplay();
+    m_pCountDirecter->Faul();
+    m_ePhase = GamePhase::Batting;
+}
+
 CGameManager* CGameManager::GetInstance()
 { 
     if (!m_pInstance)

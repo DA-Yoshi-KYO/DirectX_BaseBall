@@ -31,7 +31,7 @@ public:
 	void SetIsFryBall(bool isFry) { m_bFryBall = isFry; }
 	void SetVelocity(DirectX::XMFLOAT3 vel) { m_f3Velocity = vel; }
 	void SetPitching(float time) { m_fBallTime = time; m_bPitched = true; }
-	void SetCaught(bool isChatch) { m_bCaught = isChatch; }
+	void SetCaught(bool isChatch);
 
 private:
 	CCollisionLine* m_pLucusCollision;

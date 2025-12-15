@@ -213,6 +213,12 @@ void CBall::UpdateBatting()
 	}
 }
 
+void CBall::SetCaught(bool isChatch)
+{
+	if (isChatch && !m_bFryBall)  FaulCalc();
+	m_bCaught = isChatch;
+}
+
 void CBall::CheckFaul()
 {
 	// 守備側が捕球してない時
@@ -232,7 +238,8 @@ void CBall::CheckFaul()
 	else
 	{
 		// フライキャッチはアウトなのでファール判定を行わない
-		if (m_bFryChatch) return;
+		// ゴロキャッチ時のファール判定はキャッチしたタイミングで行う
+		return;
 	}
 
 	FaulCalc();
@@ -278,8 +285,7 @@ void CBall::FaulCalc()
 
 	if (sideFirst < 0 || sideThird > 0)
 	{
-		CGameManager::GetInstance()->GetCountDirecter()->Faul();
-		CGameManager::GetInstance()->EndAllInplay();
+		CGameManager::GetInstance()->FaulBall();
 	}
 }
 

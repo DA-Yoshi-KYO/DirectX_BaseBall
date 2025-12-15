@@ -14,6 +14,8 @@ public:
 	void AddFirstRunner(Quality speed);
 	void RemoveRunner(CRunner* pThis);
 
+	bool IsTight(CRunner* pThis);
+
 	CRunner* GetBatterRunner() { return m_pBatterRunner; }
 	std::vector<CRunner*> GetAllRunner() { return m_pRunners; }
 

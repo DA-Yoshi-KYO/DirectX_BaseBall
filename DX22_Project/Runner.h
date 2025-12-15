@@ -47,6 +47,7 @@ public:
 	void SetStatus(RunnerStatus status) { m_eStatus = status; }
 	
 private:
+	class CRunning* m_pRunning;
 	GotBase m_eCurrentBase;
 	GotBase m_eOldBase;
 	GotBase m_eTouchBase;

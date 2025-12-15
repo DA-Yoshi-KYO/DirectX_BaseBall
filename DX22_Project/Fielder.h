@@ -13,9 +13,9 @@ public:
 	void Init() override;
 	void Update() override;
 	void Draw() override;
-	void LateUpdate() override;
 	void ResetPos();
 	void OnCollision(CCollisionBase* other, std::string thisTag, Collision::Result result) override;
+	void OnCollisionExit(CCollisionBase* other, std::string thisTag) override;
 	void SetData(CFielderData* fielder);
 	void SetData(FielderData data);
 	bool SetBaseCoverFrag(int baseIndex, bool frag);
