@@ -97,6 +97,7 @@ void CGameManager::FaulBall()
     }
     m_pFieldDirecter->EndInplay();
     m_pAttackDirecter->EndInplay();
+    m_pAttackDirecter->GetRunning()->GetBatterRunner()->Destroy();
     m_pDefenceDirecter->EndInplay();
     m_pCountDirecter->Faul();
     m_ePhase = GamePhase::Batting;

@@ -54,7 +54,8 @@ bool CRunning::IsTight(CRunner* pThis)
 {
 	GotBase thisCurrentBase = pThis->GetNowBase();
 	GotBase thisTouchBase = pThis->GetTouchBase();
-	if (thisTouchBase != GotBase::None)  return true;
+	bool isTight = false;
+	if (thisTouchBase != GotBase::None)  isTight = true;
 
 	switch (thisCurrentBase)
 	{
@@ -62,29 +63,48 @@ bool CRunning::IsTight(CRunner* pThis)
 		for (auto itr : m_pAllRunners)
 		{
 			if (itr == pThis) continue;
-			if (itr->GetTouchBase() == GotBase::First) return true;
+			if (itr->GetTouchBase() == GotBase::First) isTight = true;
 		}
 		break;
 	case GotBase::First:
 		for (auto itr : m_pAllRunners)
 		{
 			if (itr == pThis) continue;
-			if (itr->GetTouchBase() == GotBase::Second) return true;
+			if (itr->GetTouchBase() == GotBase::Second) isTight = true;
 		}
 		break;
 	case GotBase::Second:
 		for (auto itr : m_pAllRunners)
 		{
 			if (itr == pThis) continue;
-			if (itr->GetTouchBase() == GotBase::Third) return true;
+			if (itr->GetTouchBase() == GotBase::Third) isTight = true;
 		}
 		break;
 	case GotBase::Third:
-		if (GetScene()->GetGameObject<CBall>()->GetIsFryBall()) return true;
+		if (GetScene()->GetGameObject<CBall>()->GetIsFryBall()) isTight = true;
 		break;
 	default:
 		break;
 	}
 
-	return false;
+	if (isTight) TightRunnerNext(pThis);
+
+	return isTight;
+}
+
+void CRunning::TightRunnerNext(CRunner* pThis)
+{
+	CScene* pScene = GetScene();
+	CBall* pBall = pScene->GetGameObject<CBall>();
+	if (!pBall->GetIsFryChatch() && pBall->GetCaught())
+	{
+		if (m_pAllRunners.size() >= 2)
+		{
+			auto findItr = std::find(m_pAllRunners.rbegin(), m_pAllRunners.rend(), pThis);
+			if (findItr == m_pAllRunners.rend()) return;
+			std::advance(findItr, 1);
+			if (findItr == m_pAllRunners.rend()) return;
+			(*findItr)->SetStatus(RunnerStatus::ToNext);
+		}
+	}
 }

@@ -68,16 +68,12 @@ void CScene::Update()
         }
     }
 
-    std::vector<std::pair<CCollisionBase*, CCollisionBase*>> pMoreCollision = 
-        m_pHitCollisionList.size() > m_pOldHitCollisionList.size() ? 
-        m_pHitCollisionList : m_pOldHitCollisionList;
-    std::vector<std::pair<CCollisionBase*, CCollisionBase*>> pLessCollision =
-        m_pHitCollisionList == pMoreCollision ? m_pOldHitCollisionList : m_pHitCollisionList;
-    for (auto itr : pMoreCollision)
-    {
-        auto findItr = std::find(pLessCollision.begin(), pLessCollision.end(), itr);
 
-        if (findItr == pLessCollision.end())
+    for (auto itr : m_pOldHitCollisionList)
+    {
+        auto findItr = std::find(m_pHitCollisionList.begin(), m_pHitCollisionList.end(), itr);
+
+        if (findItr == m_pHitCollisionList.end())
         {
             itr.first->GetGameObject()->OnCollisionExit(itr.second, itr.first->GetTag());
             itr.second->GetGameObject()->OnCollisionExit(itr.first, itr.second->GetTag());
@@ -107,6 +103,28 @@ void CScene::Update()
             if (GetGameObject(*itr)->IsDestroy())
             {
                 itr = m_tIDVec.erase(itr);
+            }
+            else
+            {
+                itr++;
+            }
+        }
+        for (auto itr = m_pHitCollisionList.begin(); itr != m_pHitCollisionList.end();)
+        {
+            if ((*itr).first->GetGameObject()->IsDestroy() || (*itr).second->GetGameObject()->IsDestroy())
+            {
+                itr = m_pHitCollisionList.erase(itr);
+            }
+            else
+            {
+                itr++;
+            }
+        }
+        for (auto itr = m_pOldHitCollisionList.begin(); itr != m_pOldHitCollisionList.end();)
+        {
+            if ((*itr).first->GetGameObject()->IsDestroy() || (*itr).second->GetGameObject()->IsDestroy())
+            {
+                itr = m_pOldHitCollisionList.erase(itr);
             }
             else
             {

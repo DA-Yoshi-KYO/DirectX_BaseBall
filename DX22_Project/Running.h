@@ -23,5 +23,6 @@ private:
 	CRunner* m_pBatterRunner;
 	std::vector<CRunner*>  m_pRunners;
 	std::vector<CRunner*>  m_pAllRunners;
+	void TightRunnerNext(CRunner* pThis);
 
 };

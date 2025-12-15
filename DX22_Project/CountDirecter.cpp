@@ -212,10 +212,9 @@ void CCountDirecter::FourBall()
 
     CGameManager* pGameManager = CGameManager::GetInstance();
     Quality eSpeed = pGameManager->GetTeamDirecter(pGameManager->GetAttackDirecter()->GetPlayerNo())->GetTeam()->GetTakingBatter()->GetFielderData().m_eSpeed;
-    CRunner* pBatterRunner = GetScene()->AddGameObject<CRunner>("Runner", Tag::GameObject);
-    pBatterRunner->SetRunnerSpeed(eSpeed);
-    pBatterRunner->SetFirstBaseRunner();
-
+    CRunning* pRunning = pGameManager->GetAttackDirecter()->GetRunning();
+    pRunning->AddFirstRunner(eSpeed);
+    
     for (int i = 0; i < m_pBaseCount.size(); i++)
     {
         if (!m_pBaseCount[i]->GetActive())

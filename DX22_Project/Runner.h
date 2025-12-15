@@ -43,7 +43,7 @@ public:
 	void GoToNextBase();
 	void ToNormalRunner() { m_bBatterRunner = false; }
 	GotBase GetNowBase() { return m_eCurrentBase; }
-	GotBase GetTouchBase() { return m_eCurrentBase; }
+	GotBase GetTouchBase() { return m_eTouchBase; }
 	void SetStatus(RunnerStatus status) { m_eStatus = status; }
 	
 private:

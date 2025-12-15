@@ -9,12 +9,12 @@
 
 CRunner::CRunner()
 	: CGameObject()
-	, m_eCurrentBase(GotBase::None), m_eOldBase(GotBase::None)
+	, m_eCurrentBase(GotBase::None), m_eOldBase(GotBase::None), m_eTouchBase(GotBase::None)
 	, m_eStatus(RunnerStatus::Stop)
-	, m_pCollision(nullptr),m_bIsStop(false), m_bFrontMove(true)
+	, m_pCollision(nullptr), m_bIsStop(false), m_bFrontMove(true)
 	, m_f3TargetPos(), m_bRunOut(true), m_bBackTempBase(false)
 	, m_fStiffTime(0.0f), m_fSpeed(1.0f), m_bBatterRunner(true)
-	, m_bAutoStart(false), m_bTightRunner(false)
+	, m_bAutoStart(false), m_bTightRunner(false), m_pRunning(nullptr)
 {
 	m_tParam.m_f3Pos = DirectX::XMFLOAT3(0.0f, -4.5f, -218.0f);
 	m_tParam.m_f3Size = DirectX::XMFLOAT3(15.0f, 15.0f, 15.0f);
