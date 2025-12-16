@@ -188,8 +188,9 @@ void CFielder::ResetPos()
 void CFielder::OnCollision(CCollisionBase* other, std::string thisTag, Collision::Result result)
 {
     if (CGameManager::GetInstance()->GetPhase() == GamePhase::Batting) return;
-    CBall* pBall = dynamic_cast<CBall*>(other->GetGameObject());
+    CGameObject* pOtherObject = other->GetGameObject();
 
+    CBall* pBall = dynamic_cast<CBall*>(pOtherObject);
     if (pBall)
     {   
         CGameManager * pGameManager = CGameManager::GetInstance();
@@ -211,13 +212,25 @@ void CFielder::OnCollision(CCollisionBase* other, std::string thisTag, Collision
         return;
     }
     
-    CBase* pBase = dynamic_cast<CBase*>(other->GetGameObject());
+    CBase* pBase = dynamic_cast<CBase*>(pOtherObject);
     if (pBase)
     {
         pBase->SetBaseCover(true);
 
         return;
     }
+
+    CRunner* pRunner = dynamic_cast<CRunner*>(pOtherObject);
+    if (pRunner)
+    {
+        if (pRunner->GetTouchBase() == GotBase::None)
+        {
+            pRunner->Destroy();
+            CGameManager* pManager = CGameManager::GetInstance();
+            pManager->GetCountDirecter()->AddOutCount();
+        }
+    }
+
 }
 
 void CFielder::OnCollisionExit(CCollisionBase* other, std::string thisTag)
