@@ -139,6 +139,7 @@ void CScene::Update()
                 {
                     if (pObj->IsDestroy())
                     {
+                        CDebugSystem::GetInstance()->ReleaseGameObject();
                         pObj->OnDestroy();
                         pObj->Uninit();
                         delete pObj;

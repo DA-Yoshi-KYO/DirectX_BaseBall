@@ -14,4 +14,6 @@ public:
 
 private:
 	int m_nIndex;
+	float m_fTime;
+
 };

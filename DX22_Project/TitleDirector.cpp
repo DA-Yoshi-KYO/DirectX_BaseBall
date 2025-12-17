@@ -9,6 +9,7 @@
 #include "TitleSelectCursor.h"
 #include "TitleLogo.h"
 #include "SceneTeamselect.h"
+#include "ParticleBalloon.h"
 
 constexpr int ce_nMaxSelectIndex = 1;
 
@@ -42,6 +43,7 @@ void CTitleDirector::Init()
 	m_pEndButton = pScene->AddGameObject<CTitleEndButton>("EndButton", Tag::UI);
 	m_pSelectCursor = pScene->AddGameObject<CTitleSelectCursor>("SelectCursor", Tag::UI);
 	m_pLogo = pScene->AddGameObject<CTitleLogo>("Logo", Tag::UI);
+	pScene->AddGameObject<CParticleBalloon>("Balloon", Tag::UI);
 }
 
 void CTitleDirector::Update()

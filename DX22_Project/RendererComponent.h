@@ -28,6 +28,7 @@ class CRendererComponent : public CComponent
 public:
 	using CComponent::CComponent;
 	virtual ~CRendererComponent();
+	void Init() override;
 
     static void UnloadShader();
 

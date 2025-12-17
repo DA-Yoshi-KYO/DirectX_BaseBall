@@ -486,6 +486,12 @@
     <ClCompile Include="SkyBox.cpp">
       <Filter>Code\GameObject\Game\Field</Filter>
     </ClCompile>
+    <ClCompile Include="EffectBase.cpp">
+      <Filter>Code\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleBalloon.cpp">
+      <Filter>Code\GameObject\Title</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imconfig.h">
@@ -838,6 +844,12 @@
     </ClInclude>
     <ClInclude Include="SkyBox.h">
       <Filter>Code\GameObject\Game\Field</Filter>
+    </ClInclude>
+    <ClInclude Include="EffectBase.h">
+      <Filter>Code\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleBalloon.h">
+      <Filter>Code\GameObject\Title</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

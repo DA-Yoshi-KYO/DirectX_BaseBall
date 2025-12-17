@@ -34,7 +34,7 @@ public:
 
         t = std::clamp(t, 0.0f, 1.0f);
 
-        return t * (2 - t);
+        return t * (2.0f - t);
     }
 
     // https://easings.net/ja#easeInOutQuad
@@ -46,11 +46,11 @@ public:
 
         if (t < 0.5f)
         {
-            return 2 * t * t;
+            return 2.0f * t * t;
         }
         else
         {
-            return -1 + (4 - 2 * t) * t;
+            return -1.0f + (4.0f - 2.0f * t) * t;
         }
     }
 
@@ -71,7 +71,7 @@ public:
 
         t = std::clamp(t, 0.0f, 1.0f);
 
-        return --t * t * t + 1;
+        return --t * t * t + 1.0f;
     }
 
     static float EaseOutQuint(float t, float maxT = 1.0f)
@@ -80,7 +80,7 @@ public:
 
         t = std::clamp(t, 0.0f, 1.0f);
 
-        return 1 - powf(1 - t, 5);
+        return 1.0f - powf(1.0f - t, 5.0f);
     }
 
     // https://easings.net/ja#easeInOutCubic
@@ -92,11 +92,11 @@ public:
 
         if (t < 0.5f)
         {
-            return 4 * t * t * t;
+            return 4.0f * t * t * t;
         }
         else
         {
-            return (t - 1) * (2 * (t - 1)) * (2 * (t - 1)) + 1;
+            return (t - 1.0f) * (2.0f * (t - 1.0f)) * (2.0f * (t - 1.0f)) + 1.0f;
         }
     }
 
@@ -105,7 +105,7 @@ public:
     {
         t /= maxT;
         t = std::clamp(t, 0.0f, 1.0f);
-        return --t * t * ((s + 1) * t + s) + 1;
+        return --t * t * ((s + 1.0f) * t + s) + 1.0f;
     }
 
     // https://easings.net/ja#easeOutBounce
@@ -113,22 +113,22 @@ public:
     {
         t /= maxT;
         t = std::clamp(t, 0.0f, 1.0f);
-        const float n1 = 7.5625;
-        const float d1 = 2.75;
+        const float n1 = 7.5625f;
+        const float d1 = 2.75f;
 
         if (t < 1 / d1)
         {
             return n1 * t * t;
         }
         else if (t < 2 / d1) {
-            return n1 * (t -= 1.5 / d1) * t + 0.75;
+            return n1 * (t -= 1.5f / d1) * t + 0.75f;
         }
         else if (t < 2.5 / d1) {
-            return n1 * (t -= 2.25 / d1) * t + 0.9375;
+            return n1 * (t -= 2.25f / d1) * t + 0.9375f;
         }
         else
         {
-            return n1 * (t -= 2.625 / d1) * t + 0.984375;
+            return n1 * (t -= 2.625f / d1) * t + 0.984375f;
         }
     }
 };

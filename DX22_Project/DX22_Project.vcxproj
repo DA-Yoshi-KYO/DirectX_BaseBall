@@ -140,9 +140,10 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -171,6 +172,7 @@
     <ClCompile Include="CountObject.cpp" />
     <ClCompile Include="DebugSystem.cpp" />
     <ClCompile Include="DefenceDirecter.cpp" />
+    <ClCompile Include="EffectBase.cpp" />
     <ClCompile Include="Fielder.cpp" />
     <ClCompile Include="FielderData.cpp" />
     <ClCompile Include="FielderSelectBack.cpp" />
@@ -220,6 +222,7 @@
     <ClCompile Include="Model_morph.cpp" />
     <ClCompile Include="OutCount.cpp" />
     <ClCompile Include="OutFielderData.cpp" />
+    <ClCompile Include="ParticleBalloon.cpp" />
     <ClCompile Include="PitcherData.cpp" />
     <ClCompile Include="PitcherSelectBack.cpp" />
     <ClCompile Include="Pitching.cpp" />
@@ -294,6 +297,7 @@
     <ClInclude Include="DebugSystem.h" />
     <ClInclude Include="DefenceDirecter.h" />
     <ClInclude Include="Easing.h" />
+    <ClInclude Include="EffectBase.h" />
     <ClInclude Include="Fielder.h" />
     <ClInclude Include="FielderData.h" />
     <ClInclude Include="FielderSelectBack.h" />
@@ -342,6 +346,7 @@
     <ClInclude Include="Oparation.h" />
     <ClInclude Include="OutCount.h" />
     <ClInclude Include="OutFielderData.h" />
+    <ClInclude Include="ParticleBalloon.h" />
     <ClInclude Include="PitcherData.h" />
     <ClInclude Include="PitcherSelectBack.h" />
     <ClInclude Include="Pitching.h" />
@@ -407,15 +412,19 @@
     </FxCompile>
     <FxCompile Include="PS_Sprite.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>
     <FxCompile Include="PS_TexColor.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>
     <FxCompile Include="VS_Object.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
     </FxCompile>
     <FxCompile Include="VS_Sprite.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
     </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
