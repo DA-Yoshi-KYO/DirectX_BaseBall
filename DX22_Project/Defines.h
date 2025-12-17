@@ -28,7 +28,6 @@ static const float fFPS = static_cast<float>(FPS);
 #define RANGEERROR_MESSAGE(value) do{ MessageBox(NULL,value,"Out of range",MB_OK); } while (0)
 
 
-
 // 3D‹óŠÔ’è‹`
 #define CMETER(value) (value * 0.01f)
 #define METER(value) (value * 1.0f)

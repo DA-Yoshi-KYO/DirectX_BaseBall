@@ -154,6 +154,9 @@ void CRunner::Update()
 		break;
 	case RunnerStatus::BackAll:
 		break;
+	case RunnerStatus::CompulsoryToNext:
+		UpdateCompulsoryToNext();
+		break;
 	case RunnerStatus::Max:
 		break;
 	default:
@@ -329,6 +332,11 @@ void CRunner::UpdateToBack()
 	DirectX::XMStoreFloat2(&f2Vel, vecVel);
 	m_tParam.m_f3Pos.x += f2Vel.x;
 	m_tParam.m_f3Pos.z += f2Vel.y;
+}
+
+void CRunner::UpdateCompulsoryToNext()
+{
+	UpdateToNext();
 }
 
 void CRunner::CheckRunnerAutoStart()

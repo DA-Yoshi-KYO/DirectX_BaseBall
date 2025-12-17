@@ -11,6 +11,7 @@ enum class RunnerStatus
 	Stop,
 	ToNext,
 	ToBack,
+	CompulsoryToNext,
 	BackAll,
 
 	Max
@@ -44,6 +45,7 @@ public:
 	void ToNormalRunner() { m_bBatterRunner = false; }
 	GotBase GetNowBase() { return m_eCurrentBase; }
 	GotBase GetTouchBase() { return m_eTouchBase; }
+	GotBase GetOldBase() { return m_eOldBase; }
 	void SetStatus(RunnerStatus status) { m_eStatus = status; }
 	
 private:
@@ -72,4 +74,5 @@ private:
 
 	void UpdateToNext();
 	void UpdateToBack();
+	void UpdateCompulsoryToNext();
 };

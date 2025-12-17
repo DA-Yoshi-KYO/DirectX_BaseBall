@@ -27,13 +27,14 @@ void CRunning::SetBatterRunner(Quality speed)
 {
 	m_pBatterRunner = GetScene()->AddGameObject<CRunner>("Runner", Tag::GameObject);
 	m_pBatterRunner->SetRunnerSpeed(speed);
-	m_pBatterRunner->SetStatus(RunnerStatus::ToNext);
+	m_pBatterRunner->SetStatus(RunnerStatus::CompulsoryToNext);
 	m_pAllRunners.push_back(m_pBatterRunner);
 }
 
 void CRunning::AddFirstRunner(Quality speed)
 {
 	CRunner* pRunner = GetScene()->AddGameObject<CRunner>("Runner", Tag::GameObject);
+	pRunner->SetFirstBaseRunner();
 	pRunner->SetRunnerSpeed(speed);
 	m_pAllRunners.push_back(pRunner);
 	m_pRunners.push_back(pRunner);
@@ -92,6 +93,17 @@ bool CRunning::IsTight(CRunner* pThis)
 	return isTight;
 }
 
+CRunner* CRunning::GetRunnerFromOldBase(GotBase base)
+{
+	for (auto itr : m_pAllRunners)
+	{
+		if (itr->GetOldBase() == base)
+			return itr;
+	}
+
+	return nullptr;
+}
+
 void CRunning::TightRunnerNext(CRunner* pThis)
 {
 	CScene* pScene = GetScene();
@@ -104,7 +116,7 @@ void CRunning::TightRunnerNext(CRunner* pThis)
 			if (findItr == m_pAllRunners.rend()) return;
 			std::advance(findItr, 1);
 			if (findItr == m_pAllRunners.rend()) return;
-			(*findItr)->SetStatus(RunnerStatus::ToNext);
+			(*findItr)->SetStatus(RunnerStatus::CompulsoryToNext);
 		}
 	}
 }

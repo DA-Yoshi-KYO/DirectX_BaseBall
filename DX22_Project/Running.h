@@ -17,6 +17,7 @@ public:
 	bool IsTight(CRunner* pThis);
 
 	CRunner* GetBatterRunner() { return m_pBatterRunner; }
+	CRunner* GetRunnerFromOldBase(GotBase base);
 	std::vector<CRunner*> GetAllRunner() { return m_pRunners; }
 
 private:

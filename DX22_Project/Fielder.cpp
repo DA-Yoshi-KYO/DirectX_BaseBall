@@ -216,6 +216,26 @@ void CFielder::OnCollision(CCollisionBase* other, std::string thisTag, Collision
     if (pBase)
     {
         pBase->SetBaseCover(true);
+        if (m_bChatch)
+        {
+            bool isFryChatch = GetScene()->GetGameObject<CBall>()->GetIsFryChatch();
+            if (!isFryChatch)
+            {
+                CRunning* pRunning = CGameManager::GetInstance()->GetAttackDirecter()->GetRunning();
+                BaseKind kind = pBase->GetKind();
+                CRunner* pRunner;
+                int nTarget = kind != BaseKind::Home ? (int)kind - 2 : (int)GotBase::Third;
+                pRunner = pRunning->GetRunnerFromOldBase((GotBase)nTarget);
+                if (pRunner)
+                {
+                    if (pRunner->GetTouchBase() == GotBase::None)
+                    {
+                        pRunner->Destroy();
+                        CGameManager::GetInstance()->GetCountDirecter()->AddOutCount();
+                    }
+                }
+            }
+        }
 
         return;
     }
@@ -223,7 +243,7 @@ void CFielder::OnCollision(CCollisionBase* other, std::string thisTag, Collision
     CRunner* pRunner = dynamic_cast<CRunner*>(pOtherObject);
     if (pRunner)
     {
-        if (pRunner->GetTouchBase() == GotBase::None)
+        if (m_bChatch && pRunner->GetTouchBase() == GotBase::None)
         {
             pRunner->Destroy();
             CGameManager* pManager = CGameManager::GetInstance();
