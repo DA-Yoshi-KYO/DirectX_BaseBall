@@ -233,6 +233,8 @@ void CRunner::ResetPos()
 		break;
 	}
 	m_tParam.m_f3Pos.y = -4.0f;
+
+	m_eOldBase = m_eCurrentBase;
 }
 
 void CRunner::SetRunnerSpeed(Quality speed)
