@@ -79,7 +79,7 @@ void CBall::OnCollision(CCollisionBase* other, std::string thisTag, Collision::R
 		{
 			if (m_tParam.m_f3Pos.y >= ce_fFenceHeight + WORLD_AJUST)
 			{
-				//CRunning::HomeRun();
+				CGameManager::GetInstance()->HomeRun();
 				return;
 			}
 

@@ -109,7 +109,7 @@ void CCountDirecter::EndInplay()
     }
     for (auto itr : RunnerList)
     {
-        SetIsBase(true, int(itr->GetNowBase()));
+        if (!itr->IsDestroy()) SetIsBase(true, int(itr->GetNowBase()));
     }
 }
 

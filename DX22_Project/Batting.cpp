@@ -63,7 +63,7 @@ void CBatting::Update(int AttackPlayer)
 			if (fTyming > 50.0f) break;
 
 			FielderData tTakingBatterData = pTeamDirector->GetTeam()->GetTakingBatter()->GetFielderData();
-			switch (tTakingBatterData.m_ePower)
+			switch (Quality::A)
 			{
 			case Quality::S: m_fPower = 6.0f; break;
 			case Quality::A: m_fPower = 5.5f; break;

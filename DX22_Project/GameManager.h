@@ -29,6 +29,7 @@ public:
     void SetPhase(GamePhase phase) { m_ePhase = phase; }
     void EndAllInplay();
     void FaulBall();
+    void HomeRun();
 
 public:
     static CGameManager* GetInstance();

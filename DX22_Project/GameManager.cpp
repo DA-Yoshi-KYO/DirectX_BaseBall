@@ -104,6 +104,19 @@ void CGameManager::FaulBall()
     m_ePhase = GamePhase::Batting;
 }
 
+void CGameManager::HomeRun()
+{
+    auto RunnerList = m_pAttackDirecter->GetRunning()->GetAllRunner();
+
+    for (auto itr : RunnerList)
+    {
+        m_pCountDirecter->AddScore();
+        itr->Destroy();
+    }
+
+    EndAllInplay();
+}
+
 CGameManager* CGameManager::GetInstance()
 { 
     if (!m_pInstance)
