@@ -40,6 +40,18 @@ void CRunning::AddFirstRunner(Quality speed)
 	m_pRunners.push_back(pRunner);
 }
 
+void CRunning::ToNormalRunner()
+{
+	if (m_pBatterRunner)
+	{
+		if (!m_pBatterRunner->IsDestroy())
+		{
+			m_pRunners.push_back(m_pBatterRunner);
+			m_pBatterRunner = nullptr;
+		}
+	}
+}
+
 void CRunning::RemoveRunner(CRunner* pThis)
 {
 	auto findRunnersItr = std::find(m_pRunners.begin(), m_pRunners.end(), pThis);
@@ -49,6 +61,77 @@ void CRunning::RemoveRunner(CRunner* pThis)
 	if (findAllRunnersItr != m_pAllRunners.end()) m_pAllRunners.erase(findAllRunnersItr);
 
 	if (m_pBatterRunner == pThis)  m_pBatterRunner = nullptr;
+}
+
+CRunner* CRunning::GetBackRunner(CRunner* pRunner)
+{
+	auto findItr = std::find(m_pAllRunners.begin(), m_pAllRunners.end(), pRunner);
+	if (findItr == m_pAllRunners.end()) return nullptr;
+	if (findItr == m_pAllRunners.begin()) return nullptr;
+
+	std::advance(findItr, -1);
+
+	return *findItr;
+}
+
+bool CRunning::IsAllBaseTight(BaseKind base)
+{
+	int nCheck = 1;
+	int nCheckNum = 0;
+	switch (base)
+	{
+	case BaseKind::Home:
+		nCheck = 3;
+		for (auto itr : m_pRunners)
+		{
+			GotBase oldBase = itr->GetOldBase();
+			switch (oldBase)
+			{
+			case GotBase::First: 
+			case GotBase::Second: 
+			case GotBase::Third: 
+				nCheckNum++;
+				break;
+			}
+		}
+		break;
+	case BaseKind::First:
+		return true;
+		break;
+	case BaseKind::Second:
+		nCheck = 1;
+		for (auto itr : m_pRunners)
+		{
+			GotBase oldBase = itr->GetOldBase();
+			switch (oldBase)
+			{
+			case GotBase::First: 
+				nCheckNum++;
+				break;
+			}
+		}
+		break;
+	case BaseKind::Third:
+		nCheck = 2;
+		for (auto itr : m_pRunners)
+		{
+			GotBase oldBase = itr->GetOldBase();
+			switch (oldBase)
+			{
+			case GotBase::First: 
+			case GotBase::Second: 
+				nCheckNum++;
+				break;
+			}
+		}
+		break;
+	case BaseKind::Max:
+		break;
+	default:
+		break;
+	}
+
+	return nCheck == nCheckNum;
 }
 
 bool CRunning::IsTight(CRunner* pThis)

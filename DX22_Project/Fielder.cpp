@@ -228,10 +228,13 @@ void CFielder::OnCollision(CCollisionBase* other, std::string thisTag, Collision
                 pRunner = pRunning->GetRunnerFromOldBase((GotBase)nTarget);
                 if (pRunner)
                 {
-                    if (pRunner->GetTouchBase() == GotBase::None)
+                    if (pRunner->GetTouchBase() != GotBase(nTarget + 1))
                     {
-                        pRunner->Destroy();
-                        CGameManager::GetInstance()->GetCountDirecter()->AddOutCount();
+                        if (pRunning->IsAllBaseTight(kind))
+                        {
+                            pRunner->Destroy();
+                            CGameManager::GetInstance()->GetCountDirecter()->AddOutCount();
+                        }
                     }
                 }
             }

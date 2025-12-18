@@ -33,6 +33,7 @@ void CAttackDirecter::Update()
 void CAttackDirecter::EndInplay()
 {
 	CScene* pScene = GetScene();
+	m_pRunning->ToNormalRunner();
 	auto RunnerList = m_pRunning->GetAllRunner();
 	for (auto itr : RunnerList)
 	{

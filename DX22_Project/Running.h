@@ -13,10 +13,12 @@ public:
 	void SetBatterRunner(Quality speed);
 	void AddFirstRunner(Quality speed);
 	void RemoveRunner(CRunner* pThis);
+	CRunner* GetBackRunner(CRunner* pRunner);
 
-	void EndInplay();
-
+	bool IsAllBaseTight(BaseKind base);
 	bool IsTight(CRunner* pThis);
+
+	void ToNormalRunner();
 
 	CRunner* GetBatterRunner() { return m_pBatterRunner; }
 	CRunner* GetRunnerFromOldBase(GotBase base);
