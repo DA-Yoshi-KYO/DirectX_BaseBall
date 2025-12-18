@@ -6,6 +6,14 @@
 #include <array>
 #include <list>
 
+enum class SceneKind
+{
+    Title,
+    TeamSelect,
+    MemberSelect,
+    Game
+};
+
 class CScene
 {
 public:

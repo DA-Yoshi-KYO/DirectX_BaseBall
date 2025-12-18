@@ -3,6 +3,7 @@
 #include "Camera.h"
 #include "Sprite.h"
 #include "Input.h"
+#include "BGMSpeaker.h"
 
 //constexpr float ce_fCursorMove = 75.0f;
 //constexpr float ce_fCursorMoveBench = 325.0f;
@@ -29,6 +30,7 @@ CSceneMemberselect::~CSceneMemberselect()
 
 void CSceneMemberselect::Init()
 {
+	AddGameObject<CBGMSpeaker>("BGM", Tag::Sound)->Init(SceneKind::MemberSelect);
 	m_pDirector = std::make_unique<CMemberSelectDirector>();
 	m_pDirector->Init(m_eTeamKind[0], m_eTeamKind[1]);
 }

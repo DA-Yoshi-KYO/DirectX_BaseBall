@@ -1,6 +1,7 @@
 #include "Input.h"
 #include "Controller.h"
 #include "Main.h"
+#include "DebugSystem.h"
 
 //--- ƒOƒ[ƒoƒ‹•Ï”
 BYTE g_keyTable[256];
@@ -83,7 +84,6 @@ bool IsKeyPress(BYTE key)
 {
 	return g_keyTable[key] & 0x80;
 }
-
 
 bool IsKeyTrigger(BYTE key)
 {
