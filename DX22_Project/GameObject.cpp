@@ -17,6 +17,7 @@ CGameObject::CGameObject()
     m_tParam.m_f2UVSize = DirectX::XMFLOAT2(1.0f, 1.0f);
     m_tParam.m_eCulling = D3D11_CULL_BACK;
     m_f3OldPos = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
+    m_pSEList.clear();
 }
 
 CGameObject::~CGameObject()

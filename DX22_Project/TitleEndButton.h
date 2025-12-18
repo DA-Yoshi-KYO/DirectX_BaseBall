@@ -10,5 +10,6 @@ public:
 	void Init() override;
 	void ExecAnimation() override;
 	void EndAnimation() override;
+	bool IsCompliteAnimation() override;
 
 };

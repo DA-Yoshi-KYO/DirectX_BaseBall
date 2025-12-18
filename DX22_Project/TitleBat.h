@@ -11,6 +11,7 @@ public:
 	void ExecAnimation() override;
 	void EndAnimation() override;
 	void SetIsRight(bool isRight) { m_bIsRight = isRight; }
+	bool IsCompliteAnimation() override;
 
 private:
 	bool m_bIsRight;

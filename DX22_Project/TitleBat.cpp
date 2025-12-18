@@ -6,6 +6,11 @@ constexpr DirectX::XMFLOAT3 ce_fStartBatPos = DirectX::XMFLOAT3(SCREEN_WIDTH * 0
 constexpr DirectX::XMFLOAT3 ce_fEndBatPos = DirectX::XMFLOAT3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f + 20.0f,0.0f);
 constexpr float ce_fEndRotate = DirectX::XMConvertToRadians(1870.0f);
 
+enum TitleBatSE
+{
+	BatHit
+};
+
 CTitleBat::CTitleBat()
 	: CAnimationObject()
 	, m_bIsRight(true)
@@ -25,6 +30,8 @@ void CTitleBat::Init()
 	pRenderer->Load(PATH_TEX("Bat.png"));
 	pRenderer->LoadVertexShader(PATH_SHADER("VS_Sprite.cso"));
 	pRenderer->LoadPixelShader(PATH_SHADER("PS_Sprite.cso"));
+
+	m_pSEList.emplace_back(AddComponent<CAudio>())->Load(PATH_SE("TitleBat.wav"));
 
 	m_fDurationTime = 0.5f;
 }
@@ -47,4 +54,10 @@ void CTitleBat::EndAnimation()
 	m_tParam.m_f3Pos = ce_fEndBatPos;
 	if (m_bIsRight) m_tParam.m_f3Rotate.z = ce_fEndRotate;
 	else m_tParam.m_f3Rotate.z = -ce_fEndRotate;
+}
+
+bool CTitleBat::IsCompliteAnimation()
+{
+	if (m_bIsRight && !m_pSEList[TitleBatSE::BatHit]->IsPlay()) m_pSEList[TitleBatSE::BatHit]->Play();
+	return CAnimationObject::IsCompliteAnimation();
 }
