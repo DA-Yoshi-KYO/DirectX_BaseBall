@@ -47,6 +47,7 @@ public:
 	GotBase GetTouchBase() { return m_eTouchBase; }
 	GotBase GetOldBase() { return m_eOldBase; }
 	void SetStatus(RunnerStatus status) { m_eStatus = status; }
+	RunnerStatus GetStatus() { return m_eStatus; }
 	
 private:
 	class CRunning* m_pRunning;

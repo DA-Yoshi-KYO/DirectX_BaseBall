@@ -1,6 +1,7 @@
 #include "Running.h"
 #include "Main.h"
 #include "Ball.h"
+#include "Input.h"
 
 CRunning::CRunning()
 	: m_pBatterRunner(nullptr), m_pRunners{}
@@ -15,7 +16,20 @@ CRunning::~CRunning()
 
 void CRunning::Update(int AttackPlayer)
 {
-
+	if (IsKeyPress(AttackPlayer, Input::Y))
+	{
+		for (auto itr : m_pAllRunners)
+		{
+			if (itr->GetStatus() != RunnerStatus::CompulsoryToNext) itr->SetStatus(RunnerStatus::ToNext);
+		}
+	}
+	else if (IsKeyPress(AttackPlayer, Input::B))
+	{
+		for (auto itr : m_pAllRunners)
+		{
+			if (itr->GetStatus() != RunnerStatus::CompulsoryToNext) itr->SetStatus(RunnerStatus::ToBack);
+		}
+	}
 }
 
 void CRunning::Draw()
