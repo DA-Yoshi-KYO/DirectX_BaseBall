@@ -88,6 +88,28 @@ void CGameManager::EndAllInplay()
     m_ePhase = GamePhase::Batting;
 }
 
+void CGameManager::ChangeInning()
+{
+    auto RunnerList = m_pAttackDirecter->GetRunning()->GetAllRunner();
+
+    for (auto itr : RunnerList)
+    {
+        m_pCountDirecter->AddScore();
+        itr->Destroy();
+    }
+
+    if (m_pAttackDirecter->GetPlayerNo() == 1)
+    {
+        m_pAttackDirecter->SetPlayerNo(2);
+        m_pDefenceDirecter->SetPlayerNo(1);
+    }
+    else
+    {
+        m_pAttackDirecter->SetPlayerNo(1);
+        m_pDefenceDirecter->SetPlayerNo(2);
+    }
+}
+
 void CGameManager::FaulBall()
 {
     int nPlayerNo = m_pAttackDirecter->GetPlayerNo();

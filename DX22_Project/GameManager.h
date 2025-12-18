@@ -28,6 +28,7 @@ public:
     GamePhase GetPhase() { return m_ePhase; }
     void SetPhase(GamePhase phase) { m_ePhase = phase; }
     void EndAllInplay();
+    void ChangeInning();
     void FaulBall();
     void HomeRun();
 

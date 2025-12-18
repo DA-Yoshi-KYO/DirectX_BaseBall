@@ -236,4 +236,5 @@ void CCountDirecter::ThreeOut()
         m_pBaseCount[i]->SetActive(false);
     }
     m_pInning->InningProgress();
+    CGameManager::GetInstance()->ChangeInning();
 }
