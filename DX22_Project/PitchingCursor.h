@@ -4,7 +4,7 @@
 #include "RendererComponent.h"
 #include "GameObject.h"
 
-constexpr DirectX::XMFLOAT3 ce_fPitchingCursorPos = { 0.0f,-150.0f,0.0f };	// 投球カーソルの初期位置
+constexpr DirectX::XMFLOAT3 ce_fPitchingCursorPos = { SCREEN_WIDTH * 0.5f,450.0f,0.0f };	// 投球カーソルの初期位置
 constexpr int ce_nMaxBenderQuality = 7;	// 細大変化量
 
 class CPitchingCursor : public CGameObject
