@@ -156,12 +156,14 @@
   <ItemGroup>
     <ClCompile Include="AnimationObject.cpp" />
     <ClCompile Include="AttackDirecter.cpp" />
+    <ClCompile Include="Audio.cpp" />
     <ClCompile Include="Ball.cpp" />
     <ClCompile Include="BallCount.cpp" />
     <ClCompile Include="Base.cpp" />
     <ClCompile Include="BaseCount.cpp" />
     <ClCompile Include="BenchBatterBack.cpp" />
     <ClCompile Include="BenchPitcherBack.cpp" />
+    <ClCompile Include="BGMSpeaker.cpp" />
     <ClCompile Include="ChatcherData.cpp" />
     <ClCompile Include="CollisionBase.cpp" />
     <ClCompile Include="CollisionBox.cpp" />
@@ -243,7 +245,6 @@
     <ClCompile Include="SelectPitcherField.cpp" />
     <ClCompile Include="SelectTeam.cpp" />
     <ClCompile Include="SkyBox.cpp" />
-    <ClCompile Include="Sound.cpp" />
     <ClCompile Include="Sprite3DRenderer.cpp" />
     <ClCompile Include="SpriteRenderer.cpp" />
     <ClCompile Include="SpriteRendererBase.cpp" />
@@ -280,12 +281,14 @@
   <ItemGroup>
     <ClInclude Include="AnimationObject.h" />
     <ClInclude Include="AttackDirecter.h" />
+    <ClInclude Include="Audio.h" />
     <ClInclude Include="Ball.h" />
     <ClInclude Include="BallCount.h" />
     <ClInclude Include="Base.h" />
     <ClInclude Include="BaseCount.h" />
     <ClInclude Include="BenchBatterBack.h" />
     <ClInclude Include="BenchPitcherBack.h" />
+    <ClInclude Include="BGMSpeaker.h" />
     <ClInclude Include="ChatcherData.h" />
     <ClInclude Include="CollisionBase.h" />
     <ClInclude Include="CollisionBox.h" />
@@ -367,7 +370,6 @@
     <ClInclude Include="SelectPitcherField.h" />
     <ClInclude Include="SelectTeam.h" />
     <ClInclude Include="SkyBox.h" />
-    <ClInclude Include="Sound.h" />
     <ClInclude Include="Sprite3DRenderer.h" />
     <ClInclude Include="SpriteRenderer.h" />
     <ClInclude Include="SpriteRendererBase.h" />

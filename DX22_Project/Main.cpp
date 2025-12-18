@@ -6,6 +6,7 @@
 #include "Geometory.h"
 #include "Sprite.h"
 #include "Input.h"
+#include "Audio.h"
 
 // PreLoadAssets
 #include "RendererComponent.h"
@@ -43,6 +44,7 @@ HRESULT Init(HWND hWnd, UINT width, UINT height)
     if (FAILED(hr)) { return hr; }
 	Geometory::Init();
 	Sprite::Init();
+    CAudio::InitMaster();
 
     // SingletonInstances
     CDebugSystem::GetInstance();
@@ -80,6 +82,7 @@ void Uninit()
     CSpriteRendererBase::UnloadAll();
 
     // Works
+    CAudio::UninitMaster();
 	Sprite::Uninit();
 	Geometory::Uninit();
     UninitInput();

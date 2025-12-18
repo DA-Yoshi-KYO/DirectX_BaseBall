@@ -40,9 +40,6 @@
     <Filter Include="Code\Work\Character">
       <UniqueIdentifier>{8f1e00f7-80fc-49ab-bf6e-d4fcf549aa0a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Code\Work\Audio">
-      <UniqueIdentifier>{bb8189fc-87ba-4dfd-934d-c4611a94d9f4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Code\Component">
       <UniqueIdentifier>{df11a5f5-5822-43a0-af83-672fde2ace0d}</UniqueIdentifier>
     </Filter>
@@ -123,6 +120,9 @@
     </Filter>
     <Filter Include="Code\Work\imgui">
       <UniqueIdentifier>{aceb42b5-a09e-4cf9-9a34-73e967d191b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Code\Component\Audio">
+      <UniqueIdentifier>{f2744479-9f24-4f54-a3b2-b238b5240c04}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -230,9 +230,6 @@
     </ClCompile>
     <ClCompile Include="Write.cpp">
       <Filter>Code\Work\Character</Filter>
-    </ClCompile>
-    <ClCompile Include="Sound.cpp">
-      <Filter>Code\Work\Audio</Filter>
     </ClCompile>
     <ClCompile Include="Component.cpp">
       <Filter>Code\Component</Filter>
@@ -492,6 +489,12 @@
     <ClCompile Include="ParticleBalloon.cpp">
       <Filter>Code\GameObject\Title</Filter>
     </ClCompile>
+    <ClCompile Include="BGMSpeaker.cpp">
+      <Filter>Code\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Audio.cpp">
+      <Filter>Code\Component</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imconfig.h">
@@ -583,9 +586,6 @@
     </ClInclude>
     <ClInclude Include="Write.h">
       <Filter>Code\Work\Character</Filter>
-    </ClInclude>
-    <ClInclude Include="Sound.h">
-      <Filter>Code\Work\Audio</Filter>
     </ClInclude>
     <ClInclude Include="Component.h">
       <Filter>Code\Component</Filter>
@@ -850,6 +850,12 @@
     </ClInclude>
     <ClInclude Include="ParticleBalloon.h">
       <Filter>Code\GameObject\Title</Filter>
+    </ClInclude>
+    <ClInclude Include="BGMSpeaker.h">
+      <Filter>Code\GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Audio.h">
+      <Filter>Code\Component</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
