@@ -299,7 +299,7 @@ protected:
 	bool m_bActive;                 // 破棄はしないが、更新や描画等の対象外としたいときに使用
 	Tag m_eTag;                     // オブジェクトのタグ
 	ObjectID m_tID;                 // オブジェクト識別用ID
-	std::vector<CAudio*> m_pSEList;	// SE
+	std::map<std::string,CAudio*> m_pSEList;	// SE
 
 };
 

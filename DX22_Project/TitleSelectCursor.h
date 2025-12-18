@@ -10,7 +10,7 @@ public:
 	void Init() override;
 	void Update() override;
 	void Draw() override;
-	void SetIndex(int index) { m_nIndex = index; };
+	void SetIndex(int index);
 
 private:
 	int m_nIndex;

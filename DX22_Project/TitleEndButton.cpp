@@ -6,11 +6,6 @@
 constexpr DirectX::XMFLOAT3 ce_fStartButtonPos = DirectX::XMFLOAT3(SCREEN_WIDTH * 0.5f + 1000.0f, SCREEN_HEIGHT * 0.5f + 300.0f, 0.0f);
 constexpr DirectX::XMFLOAT3 ce_fEndButtonPos = DirectX::XMFLOAT3(SCREEN_WIDTH * 0.5f,SCREEN_HEIGHT * 0.5f + 300.0f, 0.0f);
 
-enum EndButtonSE
-{
-	PlayerVoice
-};
-
 CTitleEndButton::CTitleEndButton()
 	: CAnimationObject()
 {
@@ -30,7 +25,8 @@ void CTitleEndButton::Init()
 	pRenderer->LoadVertexShader(PATH_SHADER("VS_Sprite.cso"));
 	pRenderer->LoadPixelShader(PATH_SHADER("PS_Sprite.cso"));
 
-	m_pSEList.emplace_back(AddComponent<CAudio>())->Load(PATH_SE("TitlePlayer.wav"));
+	m_pSEList["PlayerVoice"] = AddComponent<CAudio>();
+	m_pSEList["PlayerVoice"]->Load(PATH_SE("TitlePlayer.wav"));
 }
 
 void CTitleEndButton::ExecAnimation()
@@ -50,6 +46,6 @@ void CTitleEndButton::EndAnimation()
 
 bool CTitleEndButton::IsCompliteAnimation()
 {
-	if (!m_pSEList[EndButtonSE::PlayerVoice]->IsPlay()) m_pSEList[EndButtonSE::PlayerVoice]->Play(true);
+	if (!m_pSEList["PlayerVoice"]->IsPlay()) m_pSEList["PlayerVoice"]->Play(true);
 	return CAnimationObject::IsCompliteAnimation();
 }

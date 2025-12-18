@@ -26,6 +26,9 @@ void CTitleSelectCursor::Init()
 	pRenderer->LoadVertexShader(PATH_SHADER("VS_Sprite.cso"));
 	pRenderer->LoadPixelShader(PATH_SHADER("PS_Sprite.cso"));
 
+	m_pSEList["Select"] = AddComponent<CAudio>();
+	m_pSEList["Select"]->Load(PATH_SE("Select.wav"));
+
 	m_bActive = false;
 }
 
@@ -44,4 +47,10 @@ void CTitleSelectCursor::Draw()
 	if (!m_bActive) return;
 
 	CGameObject::Draw();
+}
+
+void CTitleSelectCursor::SetIndex(int index)
+{
+	m_pSEList["Select"]->Play();
+	m_nIndex = index;
 }
