@@ -116,12 +116,13 @@ void CTitleDirector::UpdateSelect()
 		m_pSelectCursor->SetIndex(m_nSelect);
 	}
 
-
 	if (IsKeyTrigger(1, Input::A) || IsKeyTrigger(2, Input::A))
 	{
+		auto SEList = m_pSelectCursor->GetSEList();
 		switch (m_nSelect)
 		{
 		case 0:
+			SEList["Decision"] ->Play();
 			FadeOut([]()
 				{
 					ChangeScene(new CSceneTeamSelect());
@@ -129,6 +130,7 @@ void CTitleDirector::UpdateSelect()
 				});
 			break;
 		case 1:
+			SEList["Decision"]->Play();
 			AppEnd();
 			break;
 		}

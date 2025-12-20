@@ -289,6 +289,8 @@ public:
 	/// </returns>
 	DirectX::XMFLOAT4X4* GetWorld();
 
+	std::map<std::string, CAudio*> GetSEList() { return m_pSEList; }
+
 public:
 	std::list<CComponent*> m_pComponent_List;   // コンポーネントのリスト
 
