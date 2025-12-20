@@ -54,7 +54,7 @@ void CTeamSelectDirector::Init()
 
 void CTeamSelectDirector::Update()
 {
-	if (!m_bSelectedPlayer1)
+	if (!m_bSelectedPlayer1 && !m_pTeams1[0]->GetIsMove())
 	{
 		if (IsKeyTrigger(1, Input::Up))
 		{
@@ -109,7 +109,7 @@ void CTeamSelectDirector::Update()
 		}
 	}
 
-	if (!m_bSelectedPlayer2)
+	if (!m_bSelectedPlayer2 && !m_pTeams2[0]->GetIsMove())
 	{
 		if (IsKeyTrigger(2, Input::Up))
 		{

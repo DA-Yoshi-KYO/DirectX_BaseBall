@@ -24,6 +24,12 @@ void CMemberSelectCursor::Init()
 	pRenderer->Load(PATH_TEX("MemberSelectCursor.png"));
 	pRenderer->LoadVertexShader(PATH_SHADER("VS_Sprite.cso"));
 	pRenderer->LoadPixelShader(PATH_SHADER("PS_Sprite.cso"));
+
+	m_pSEList["Select"] = AddComponent<CAudio>();
+	m_pSEList["Select"]->Load(PATH_SE("Select.wav"));
+
+	m_pSEList["Decision"] = AddComponent<CAudio>();
+	m_pSEList["Decision"]->Load(PATH_SE("Decision.wav"));
 }
 
 void CMemberSelectCursor::Update()

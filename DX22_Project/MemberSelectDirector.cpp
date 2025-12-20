@@ -212,14 +212,22 @@ void CMemberSelectDirector::Input()
 
 		if (IsKeyTrigger(i + 1, Input::Down))
 		{
+			auto SE = m_pCursor[i]->GetSEList();
+			SE["Select"]->Play();
 			if (m_nSelectIndex[i] != int(SelectKind::Max) - 1) m_nSelectIndex[i]++;
 		}
 		else if (IsKeyTrigger(i + 1, Input::Up))
 		{
+			auto SE = m_pCursor[i]->GetSEList();
+			SE["Select"]->Play();
 			if (m_nSelectIndex[i] != int(SelectKind::Start)) m_nSelectIndex[i]--;
 		}
 		else if (IsKeyTrigger(i + 1, Input::A))
 		{
+			int nSelectTeam = -1;
+			auto SE = m_pCursor[i]->GetSEList();
+			SE["Decision"]->Play();
+
 			switch (m_nSelectIndex[i])
 			{
 				case int(SelectKind::Start) :
