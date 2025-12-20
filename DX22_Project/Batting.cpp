@@ -42,7 +42,7 @@ void CBatting::Update(int AttackPlayer)
 	CTeamDirector* pTeamDirector = pGameManager->GetTeamDirecter(AttackPlayer);
 
 	// ピッチャーがボールを受け取ったらスイング可能にする
-	if (fBallPos.z == ce_fBallPos.z + WORLD_AJUST && CGameManager::GetInstance()->GetPhase() == GamePhase::Batting)
+	if (fBallPos.z == ce_fBallPos.z && CGameManager::GetInstance()->GetPhase() == GamePhase::Batting)
 	{
 		m_bSwing = false;
 		m_bBatting = false;

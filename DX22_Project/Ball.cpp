@@ -18,20 +18,9 @@ CBall::CBall()
 	, m_bFryBall(true), m_bPitched(false), m_bCaught(false), m_bFryChatch(false), m_bInOutField(false)
 	, m_f3Velocity{}, m_fBallTime(0.0f)
 {
-
-
-	
-	m_tParam.m_f3Pos = { ce_fBallPos.x + WORLD_AJUST ,ce_fBallPos.y + WORLD_AJUST, ce_fBallPos.z + WORLD_AJUST };
+	m_tParam.m_f3Pos = { ce_fBallPos.x ,ce_fBallPos.y, ce_fBallPos.z };
 	m_tParam.m_f3Size = ce_fBallSize;
 	m_tParam.m_f3Rotate = { 0.0f,0.0f,0.0f };
-
-	m_pBoxCollision = AddComponent<CCollisionBox>();
-	m_pBoxCollision->SetTag("Ball");
-	m_pBoxCollision->SetInfo(m_tParam.m_f3Pos, m_tParam.m_f3Size);
-	
-	m_pLucusCollision = AddComponent<CCollisionLine>();
-	m_pLucusCollision->SetTag("BallLine");
-	m_pLucusCollision->SetInfo(m_f3OldPos, m_tParam.m_f3Pos);
 }
 
 CBall::~CBall()
@@ -41,13 +30,19 @@ CBall::~CBall()
 
 void CBall::Init()
 {
+	m_pBoxCollision = AddComponent<CCollisionBox>();
+	m_pBoxCollision->SetTag("Ball");
+	m_pBoxCollision->SetInfo(m_tParam.m_f3Pos, m_tParam.m_f3Size);
+	
+	m_pLucusCollision = AddComponent<CCollisionLine>();
+	m_pLucusCollision->SetTag("BallLine");
+	m_pLucusCollision->SetInfo(m_f3OldPos, m_tParam.m_f3Pos);
+
 	CModelRenderer* pRenderer = AddComponent<CModelRenderer>();
 	pRenderer->Load(PATH_MODEL("ball.obj"));
 	pRenderer->LoadVertexShader(PATH_SHADER("VS_Object.cso"));
 	pRenderer->LoadPixelShader(PATH_SHADER("PS_TexColor.cso"));
 	pRenderer->LoadTexture(PATH_MODEL("ball.png"));
-
-	
 }
 
 void CBall::Update()
@@ -77,7 +72,7 @@ void CBall::OnCollision(CCollisionBase* other, std::string thisTag, Collision::R
 		// フェンスを越えていたらホームラン
 		if (otherTag == "HomeRunFence")
 		{
-			if (m_tParam.m_f3Pos.y >= ce_fFenceHeight + WORLD_AJUST)
+			if (m_tParam.m_f3Pos.y >= ce_fFenceHeight)
 			{
 				CGameManager::GetInstance()->HomeRun();
 				return;
@@ -207,7 +202,7 @@ void CBall::UpdateBatting()
 	else
 	{
 		fTime = 0.0f;
-		m_tParam.m_f3Pos = { ce_fBallPos.x + WORLD_AJUST ,ce_fBallPos.y + WORLD_AJUST, ce_fBallPos.z + WORLD_AJUST };
+		m_tParam.m_f3Pos = { ce_fBallPos.x ,ce_fBallPos.y, ce_fBallPos.z };
 
 		bRelease = false;
 	}
@@ -305,7 +300,7 @@ void CBall::UpdateInPlay()
 
 	m_f3Velocity.y -= MSEC(GRAVITY);
  
-	if (m_tParam.m_f3Pos.y < 0.0f + WORLD_AJUST + ce_fGroundY)
+	if (m_tParam.m_f3Pos.y < 0.0f + ce_fGroundY)
 	{
 		if (m_bFryBall && m_bInOutField) FaulCalc();
 		m_bFryBall = false;
@@ -318,13 +313,13 @@ void CBall::UpdateInPlay()
 		if (m_f3Velocity.y < CMETER(5.0f))
 		{
 			m_f3Velocity.y = 0.0f;
-			m_tParam.m_f3Pos.y = WORLD_AJUST + ce_fGroundY;
+			m_tParam.m_f3Pos.y =ce_fGroundY;
 		}
 		else 
 		{
-			m_tParam.m_f3Pos.y -= WORLD_AJUST + ce_fGroundY;
+			m_tParam.m_f3Pos.y -=ce_fGroundY;
 			m_tParam.m_f3Pos.y = -m_tParam.m_f3Pos.y;
-			m_tParam.m_f3Pos.y += WORLD_AJUST + ce_fGroundY;
+			m_tParam.m_f3Pos.y +=ce_fGroundY;
 		}
 	}
 

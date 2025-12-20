@@ -19,9 +19,9 @@ void CCameraEvent::Update()
 	float param = m_time / m_totalTime;
 	param = powf(param, 3);
 
-	m_look.x = m_start.x * (1 - param) + m_end.x * param + WORLD_AJUST;
-	m_look.y = m_start.y * (1 - param) + m_end.y * param + WORLD_AJUST;
-	m_look.z = m_start.z * (1 - param) + m_end.z * param + WORLD_AJUST;
+	m_look.x = m_start.x * (1 - param) + m_end.x * param;
+	m_look.y = m_start.y * (1 - param) + m_end.y * param;
+	m_look.z = m_start.z * (1 - param) + m_end.z * param;
 
 	m_pos.x = m_look.x + 0.0f; 
 	m_pos.y = m_look.y + 1.0f; 

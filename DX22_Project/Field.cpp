@@ -79,7 +79,7 @@ void CField::InitModel()
 	pModel->Load(PATH_MODEL("Baseball_Ground.fbx"),0.1f);
 	pModel->LoadVertexShader(PATH_SHADER("VS_Object.cso"));
 	pModel->LoadPixelShader(PATH_SHADER("PS_TexColor.cso"));
-	m_tParam.m_f3Pos = { 0.0f + WORLD_AJUST,-10.0f + WORLD_AJUST,0.0f + WORLD_AJUST - 40.0f };
+	m_tParam.m_f3Pos = { 0.0f,-10.0f,0.0f - 40.0f };
 	m_tParam.m_f3Size = { 50.0f,50.0f,50.0f };
 	m_tParam.m_f3Rotate = { 0.0f,0.0f,0.0f };
 
@@ -99,7 +99,7 @@ void CField::InitCollision()
 	int j = 0;	// ループ用(2回に1回)
 	std::array<Collision::Info, ce_nHomerunPolyLine> tHomeRunZone;		// ホームランゾーン
 	const float fStep = ce_fFenceX * 2.0f / (tHomeRunZone.size());	// フェンスx軸の大きさからポリライン一つあたりのステップを求める
-	const float fBaseX = WORLD_AJUST + ce_fFenceX / 2.0f;	// フェンスx軸の左端
+	const float fBaseX =ce_fFenceX / 2.0f;	// フェンスx軸の左端
 
 	float fEasValue[ce_nHomerunPolyLine / 2 + 1];
 
@@ -142,8 +142,8 @@ void CField::InitCollision()
 
 
 			// 左側の頂点
-			itr.triangle.point[0] = { fBaseX - fStep * (i / 2), ce_fJudgeZoneY + WORLD_AJUST, fAngleZ * ce_fAjustZ + WORLD_AJUST + ce_fStartEndZ };
-			itr.triangle.point[1] = { fBaseX - fStep * (i / 2), ce_fGroundY + WORLD_AJUST, fAngleZ * ce_fAjustZ + WORLD_AJUST + ce_fStartEndZ };
+			itr.triangle.point[0] = { fBaseX - fStep * (i / 2), ce_fJudgeZoneY, fAngleZ * ce_fAjustZ + ce_fStartEndZ };
+			itr.triangle.point[1] = { fBaseX - fStep * (i / 2), ce_fGroundY, fAngleZ * ce_fAjustZ + ce_fStartEndZ };
 			// 2
 			// ポリラインの場所に応じて角度を決める
 			fAngleZ = DirectX::XMConvertToRadians(360.0f) / tHomeRunZone.size() * (i / 2 + 1);
@@ -151,7 +151,7 @@ void CField::InitCollision()
 			fAngleZ = -sinf(fAngleZ) * fEasValue[j + 1];
 
 			// 右側の頂点
-			itr.triangle.point[2] = { fBaseX - fStep * (i / 2 + 1), ce_fJudgeZoneY + WORLD_AJUST, fAngleZ * ce_fAjustZ + WORLD_AJUST + ce_fStartEndZ };
+			itr.triangle.point[2] = { fBaseX - fStep * (i / 2 + 1), ce_fJudgeZoneY, fAngleZ * ce_fAjustZ + ce_fStartEndZ };
 		}
 		// 下三角形(1,2,3)
 		else
@@ -163,7 +163,7 @@ void CField::InitCollision()
 			fAngleZ = -sinf(fAngleZ) * fEasValue[j];
 
 			// 左側の頂点
-			itr.triangle.point[0] = { fBaseX - fStep * (i / 2), ce_fGroundY + WORLD_AJUST, fAngleZ * ce_fAjustZ + WORLD_AJUST + ce_fStartEndZ };
+			itr.triangle.point[0] = { fBaseX - fStep * (i / 2), ce_fGroundY, fAngleZ * ce_fAjustZ + ce_fStartEndZ };
 
 			// 2,3
 			// ポリラインの場所に応じて角度を決める
@@ -172,8 +172,8 @@ void CField::InitCollision()
 			fAngleZ = -sinf(fAngleZ) * fEasValue[j + 1];
 
 			// 右側の頂点
-			itr.triangle.point[1] = { fBaseX - fStep * (i / 2 + 1), ce_fJudgeZoneY + WORLD_AJUST, fAngleZ * ce_fAjustZ + WORLD_AJUST + ce_fStartEndZ };
-			itr.triangle.point[2] = { fBaseX - fStep * (i / 2 + 1), ce_fGroundY + WORLD_AJUST, fAngleZ * ce_fAjustZ + WORLD_AJUST + ce_fStartEndZ };
+			itr.triangle.point[1] = { fBaseX - fStep * (i / 2 + 1), ce_fJudgeZoneY, fAngleZ * ce_fAjustZ + ce_fStartEndZ };
+			itr.triangle.point[2] = { fBaseX - fStep * (i / 2 + 1), ce_fGroundY, fAngleZ * ce_fAjustZ + ce_fStartEndZ };
 
 			j += 1;
 		}

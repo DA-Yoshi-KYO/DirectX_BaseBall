@@ -2,7 +2,7 @@
 #include "ModelRenderer.h"
 #include "CollisionBox.h"
 
-constexpr DirectX::XMFLOAT3 ce_fPitcherPos = { WORLD_AJUST, WORLD_AJUST - 8.0f, WORLD_AJUST + 65.0f };	// グラウンドにいるピッチャーの位置(基準値)
+constexpr DirectX::XMFLOAT3 ce_fPitcherPos = { 0.0f, -8.0f,65.0f };	// グラウンドにいるピッチャーの位置(基準値)
 
 CBase::CBase()
     : CGameObject()

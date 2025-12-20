@@ -9,7 +9,7 @@ std::array<CCamera*, (int)CameraKind::MAX_CAMERA> CCamera::m_pInstance = {};
 CameraKind CCamera::m_eKind = CAM_DEBUG;
 
 CCamera::CCamera()
-	: m_pos{ 0.0f + WORLD_AJUST, 10.0f + WORLD_AJUST, 0.0f + WORLD_AJUST }, m_look{ 0.0f + WORLD_AJUST,0.0f + WORLD_AJUST,0.0f + WORLD_AJUST }, m_up{ 0.0f,1.0f,0.0f }
+	: m_pos{ 0.0f, 10.0f, 0.0f }, m_look{ 0.0f,0.0f,0.0f }, m_up{ 0.0f,1.0f,0.0f }
 	, m_fovy(DirectX::XMConvertToRadians(60.0f)), m_aspect(16.0f / 9.0f)
 	, m_near(CMETER(30.0f)), m_far(METER(1000.0f))
 {

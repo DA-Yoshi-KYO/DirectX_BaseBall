@@ -11,7 +11,7 @@
 // ==============================
 constexpr float ce_fGroundY = -8.0f;	// グラウンドの見た目上の高さ
 constexpr float ce_fFenceHeight = ce_fGroundY + 15.0f;	// フェンスの高さ
-constexpr float ce_fInOutBorderZ = WORLD_AJUST;	// 内外野の境目
+constexpr float ce_fInOutBorderZ = 0.0f;	// 内外野の境目
 
 class CField : public CGameObject
 {

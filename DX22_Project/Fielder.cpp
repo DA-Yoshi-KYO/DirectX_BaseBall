@@ -50,43 +50,6 @@ void CFielder::Update()
     if (ePhase == GamePhase::InPlay)
     {
         int DefencePlayer = pGameManager->GetDefenceDirecter()->GetPlayerNo();
-        int a = 0;
-        switch (m_ePosition)
-        {
-        case Positions::Pitcher:
-            a = 0;
-            break;
-        case Positions::Chatcher:
-            a = 0;
-            break;
-        case Positions::First:
-            a = 0;
-            break;
-        case Positions::Second:
-            a = 0;
-            break;
-        case Positions::Third:
-            a = 0;
-            break;
-        case Positions::Short:
-            a = 0;
-            break;
-        case Positions::Left:
-            a = 0;
-            break;
-        case Positions::Center:
-            a = 0;
-            break;
-        case Positions::Right:
-            a = 0;
-            break;
-        case Positions::Max:
-            break;
-        case Positions::None:
-            break;
-        default:
-            break;
-        }
 
         if (m_bIsOparation)
         {

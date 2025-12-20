@@ -34,7 +34,6 @@ static const float fFPS = static_cast<float>(FPS);
 #define KMETER(value) (value * 1000.0f)
 #define MSEC(value) (value / fFPS)
 #define CMSEC(value) MSEC(CMETER(value))
-#define WORLD_AJUST 0.0f
 static const float GRAVITY = 0.70f;
 
 // ƒ^ƒCƒgƒ‹
