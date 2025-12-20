@@ -2,7 +2,7 @@
 #include "Main.h"
 #include "Audio.h"
 
-std::map<std::string,IXAudio2SourceVoice*>  CAudio::m_pSourceVoice{};
+std::map<std::string, CAudio::SoundData>  CAudio::m_tSoundData{};
 IXAudio2* CAudio::m_pXAudio = nullptr;
 IXAudio2MasteringVoice* CAudio::m_pMasteringVoice = nullptr;
 
@@ -32,11 +32,15 @@ void CAudio::InitMaster()
 
 void CAudio::UninitMaster()
 {
-    for (auto itr : m_pSourceVoice)
+    for (auto itr : m_tSoundData)
     {
-        if (itr.second)
+        if (itr.second.m_pSourceVoice)
         {
-            itr.second->DestroyVoice();
+            itr.second.m_pSourceVoice->DestroyVoice();
+        }
+        if (itr.second.m_pSoundData)
+        {
+            delete itr.second.m_pSoundData;
         }
     }
     m_pMasteringVoice->DestroyVoice();
@@ -48,7 +52,7 @@ void CAudio::Load(const char* inPath)
 {
     m_sKey = inPath;
 
-    if (m_pSourceVoice.find(m_sKey) != m_pSourceVoice.end())
+    if (m_tSoundData.find(m_sKey) != m_tSoundData.end())
     {
         return;
     }
@@ -95,12 +99,12 @@ void CAudio::Load(const char* inPath)
 
 
         buflen = datachunkinfo.cksize;
-        m_pSoundData = new unsigned char[buflen];
-        readlen = mmioRead(hmmio, (HPSTR)m_pSoundData, buflen);
+        m_tSoundData[m_sKey].m_pSoundData = new unsigned char[buflen];
+        readlen = mmioRead(hmmio, (HPSTR)m_tSoundData[m_sKey].m_pSoundData, buflen);
 
 
-        m_nLength = readlen;
-        m_nPlayLength = readlen / wfx.nBlockAlign;
+        m_tSoundData[m_sKey].m_nLength = readlen;
+        m_tSoundData[m_sKey].m_nPlayLength = readlen / wfx.nBlockAlign;
 
 
         mmioClose(hmmio, 0);
@@ -108,60 +112,60 @@ void CAudio::Load(const char* inPath)
 
 
     // サウンドソース生成
-    m_pXAudio->CreateSourceVoice(&m_pSourceVoice[m_sKey], &wfx);
-    assert(m_pSourceVoice[m_sKey]);
+    m_pXAudio->CreateSourceVoice(&m_tSoundData[m_sKey].m_pSourceVoice, &wfx);
+    assert(m_tSoundData[m_sKey].m_pSourceVoice);
 }
 
 void CAudio::Uninit()
 {
-    m_pSourceVoice[m_sKey]->Stop();
+    m_tSoundData[m_sKey].m_pSourceVoice->Stop();
 }
 
 void CAudio::Play(bool Loop)
 {
-    m_pSourceVoice[m_sKey]->Stop();
-    m_pSourceVoice[m_sKey]->FlushSourceBuffers();
+    m_tSoundData[m_sKey].m_pSourceVoice->Stop();
+    m_tSoundData[m_sKey].m_pSourceVoice->FlushSourceBuffers();
 
 
     // バッファ設定
     XAUDIO2_BUFFER bufinfo;
 
     memset(&bufinfo, 0x00, sizeof(bufinfo));
-    bufinfo.AudioBytes = m_nLength;
-    bufinfo.pAudioData = m_pSoundData;
+    bufinfo.AudioBytes = m_tSoundData[m_sKey].m_nLength;
+    bufinfo.pAudioData = m_tSoundData[m_sKey].m_pSoundData;
     bufinfo.PlayBegin = 0;
-    bufinfo.PlayLength = m_nPlayLength;
+    bufinfo.PlayLength = m_tSoundData[m_sKey].m_nPlayLength;
 
     // ループ設定
     if (Loop)
     {
         bufinfo.LoopBegin = 0;
-        bufinfo.LoopLength = m_nPlayLength;
+        bufinfo.LoopLength = m_tSoundData[m_sKey].m_nPlayLength;
         bufinfo.LoopCount = XAUDIO2_LOOP_INFINITE;
     }
 
-    m_pSourceVoice[m_sKey]->SubmitSourceBuffer(&bufinfo, NULL);
+    m_tSoundData[m_sKey].m_pSourceVoice->SubmitSourceBuffer(&bufinfo, NULL);
 
 
     // 再生
-    m_pSourceVoice[m_sKey]->Start();
+    m_tSoundData[m_sKey].m_pSourceVoice->Start();
 
 }
 
 void CAudio::Stop()
 {
-    m_pSourceVoice[m_sKey]->Stop();
+    m_tSoundData[m_sKey].m_pSourceVoice->Stop();
 }
 
 void CAudio::SetVolume(float inVolume)
 {
     inVolume = std::clamp(inVolume, 0.0f, 1.0f);
-    m_pSourceVoice[m_sKey]->SetVolume(inVolume);
+    m_tSoundData[m_sKey].m_pSourceVoice->SetVolume(inVolume);
 }
 
 bool CAudio::IsPlay()
 {
     XAUDIO2_VOICE_STATE state;
-    m_pSourceVoice[m_sKey]->GetState(&state);
+    m_tSoundData[m_sKey].m_pSourceVoice->GetState(&state);
     return state.BuffersQueued > 0;
 }

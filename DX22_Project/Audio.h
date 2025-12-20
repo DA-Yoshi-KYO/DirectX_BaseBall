@@ -56,11 +56,14 @@ private:
 	static IXAudio2* m_pXAudio;
 	static IXAudio2MasteringVoice* m_pMasteringVoice;
 
-	static std::map<std::string,IXAudio2SourceVoice*> m_pSourceVoice;
 	std::string m_sKey = "";
-	BYTE* m_pSoundData{};
-
-	int	m_nLength{};
-	int	m_nPlayLength{};
+	struct SoundData
+	{
+		IXAudio2SourceVoice* m_pSourceVoice;
+		BYTE* m_pSoundData{};
+		int	m_nLength{};
+		int	m_nPlayLength{};
+	};
+	static std::map<std::string, SoundData> m_tSoundData;
 
 };

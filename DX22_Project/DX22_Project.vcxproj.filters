@@ -124,6 +124,9 @@
     <Filter Include="Code\Component\Audio">
       <UniqueIdentifier>{f2744479-9f24-4f54-a3b2-b238b5240c04}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Code\GameObject\Base">
+      <UniqueIdentifier>{c8aec5cd-e1ea-4e03-9a1f-5007d43bff02}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -258,9 +261,6 @@
     <ClCompile Include="CountObject.cpp">
       <Filter>Code\GameObject\Game\ScoreBoard\CountObject</Filter>
     </ClCompile>
-    <ClCompile Include="GameObject.cpp">
-      <Filter>Code\GameObject</Filter>
-    </ClCompile>
     <ClCompile Include="PostProcess.cpp">
       <Filter>Code\Shader</Filter>
     </ClCompile>
@@ -350,9 +350,6 @@
     </ClCompile>
     <ClCompile Include="TitleStartButton.cpp">
       <Filter>Code\GameObject\Title</Filter>
-    </ClCompile>
-    <ClCompile Include="AnimationObject.cpp">
-      <Filter>Code\GameObject</Filter>
     </ClCompile>
     <ClCompile Include="MemberSelectBackGround.cpp">
       <Filter>Code\GameObject\MemberSelect</Filter>
@@ -483,17 +480,29 @@
     <ClCompile Include="SkyBox.cpp">
       <Filter>Code\GameObject\Game\Field</Filter>
     </ClCompile>
-    <ClCompile Include="EffectBase.cpp">
-      <Filter>Code\GameObject</Filter>
-    </ClCompile>
     <ClCompile Include="ParticleBalloon.cpp">
       <Filter>Code\GameObject\Title</Filter>
     </ClCompile>
     <ClCompile Include="BGMSpeaker.cpp">
       <Filter>Code\GameObject</Filter>
     </ClCompile>
+    <ClCompile Include="TeamSelectArrow.cpp">
+      <Filter>Code\GameObject\TeamSelect</Filter>
+    </ClCompile>
+    <ClCompile Include="TeamSelectSE.cpp">
+      <Filter>Code\GameObject\TeamSelect</Filter>
+    </ClCompile>
     <ClCompile Include="Audio.cpp">
-      <Filter>Code\Component</Filter>
+      <Filter>Code\Component\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationObject.cpp">
+      <Filter>Code\GameObject\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="EffectBase.cpp">
+      <Filter>Code\GameObject\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>Code\GameObject\Base</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -614,9 +623,6 @@
     <ClInclude Include="CountObject.h">
       <Filter>Code\GameObject\Game\ScoreBoard\CountObject</Filter>
     </ClInclude>
-    <ClInclude Include="GameObject.h">
-      <Filter>Code\GameObject</Filter>
-    </ClInclude>
     <ClInclude Include="PostProcess.h">
       <Filter>Code\Shader</Filter>
     </ClInclude>
@@ -709,9 +715,6 @@
     </ClInclude>
     <ClInclude Include="TitleStartButton.h">
       <Filter>Code\GameObject\Title</Filter>
-    </ClInclude>
-    <ClInclude Include="AnimationObject.h">
-      <Filter>Code\GameObject</Filter>
     </ClInclude>
     <ClInclude Include="MemberSelectBackGround.h">
       <Filter>Code\GameObject\MemberSelect</Filter>
@@ -845,17 +848,29 @@
     <ClInclude Include="SkyBox.h">
       <Filter>Code\GameObject\Game\Field</Filter>
     </ClInclude>
-    <ClInclude Include="EffectBase.h">
-      <Filter>Code\GameObject</Filter>
-    </ClInclude>
     <ClInclude Include="ParticleBalloon.h">
       <Filter>Code\GameObject\Title</Filter>
     </ClInclude>
     <ClInclude Include="BGMSpeaker.h">
       <Filter>Code\GameObject</Filter>
     </ClInclude>
+    <ClInclude Include="TeamSelectArrow.h">
+      <Filter>Code\GameObject\TeamSelect</Filter>
+    </ClInclude>
+    <ClInclude Include="TeamSelectSE.h">
+      <Filter>Code\GameObject\TeamSelect</Filter>
+    </ClInclude>
     <ClInclude Include="Audio.h">
-      <Filter>Code\Component</Filter>
+      <Filter>Code\Component\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationObject.h">
+      <Filter>Code\GameObject\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="EffectBase.h">
+      <Filter>Code\GameObject\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>Code\GameObject\Base</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

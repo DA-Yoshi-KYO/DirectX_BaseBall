@@ -75,7 +75,7 @@ void CSelectTeam::Move(bool isUp)
 	m_bIsMove = true;
 
 	m_f3InitPos = m_tParam.m_f3Pos;
-	if (!isUp)
+	if (isUp)
 	{
 		if (m_nIndex == TeamKind::Max - 1)
 		{

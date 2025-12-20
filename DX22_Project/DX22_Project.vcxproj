@@ -261,8 +261,10 @@
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="Startup.cpp" />
     <ClCompile Include="StrikeZone.cpp" />
+    <ClCompile Include="TeamSelectArrow.cpp" />
     <ClCompile Include="TeamSelectBackGround.cpp" />
     <ClCompile Include="TeamSelectDirector.cpp" />
+    <ClCompile Include="TeamSelectSE.cpp" />
     <ClCompile Include="TextRenderer.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="TitleBackGround.cpp" />
@@ -385,8 +387,10 @@
     <ClInclude Include="ShaderList.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="StrikeZone.h" />
+    <ClInclude Include="TeamSelectArrow.h" />
     <ClInclude Include="TeamSelectBackGround.h" />
     <ClInclude Include="TeamSelectDirector.h" />
+    <ClInclude Include="TeamSelectSE.h" />
     <ClInclude Include="TextRenderer.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TitleBackGround.h" />
