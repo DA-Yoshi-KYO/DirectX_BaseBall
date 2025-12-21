@@ -37,6 +37,7 @@ void CBGMSpeaker::Init(SceneKind kind)
 		break;
 	}
 	m_pAudio->Load(m_cPath);
+	m_pAudio->SetVolume(0.2f);
 	m_pAudio->Play(true);
 }
 

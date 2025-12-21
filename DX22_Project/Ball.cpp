@@ -43,6 +43,21 @@ void CBall::Init()
 	pRenderer->LoadVertexShader(PATH_SHADER("VS_Object.cso"));
 	pRenderer->LoadPixelShader(PATH_SHADER("PS_TexColor.cso"));
 	pRenderer->LoadTexture(PATH_MODEL("ball.png"));
+
+	m_pSEList["Batting"] = AddComponent<CAudio>();
+	m_pSEList["Batting"]->Load(PATH_SE("Batting.wav"));
+
+	m_pSEList["Pitching"] = AddComponent<CAudio>();
+	m_pSEList["Pitching"]->Load(PATH_SE("Pitching.wav"));
+
+	m_pSEList["Throwing"] = AddComponent<CAudio>();
+	m_pSEList["Throwing"]->Load(PATH_SE("Throwing.wav"));
+
+	m_pSEList["FielderChatch"] = AddComponent<CAudio>();
+	m_pSEList["FielderChatch"]->Load(PATH_SE("FielderChatch.wav"));
+
+	m_pSEList["PitchingChatch"] = AddComponent<CAudio>();
+	m_pSEList["PitchingChatch"]->Load(PATH_SE("PitchingChatch.wav"));
 }
 
 void CBall::Update()

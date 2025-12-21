@@ -154,12 +154,16 @@ void CBatting::Update(int AttackPlayer)
 					vecMove = DirectX::XMVectorScale(vecMove, fShotPower);
 					DirectX::XMStoreFloat3(&m_fMoveDirection, vecMove);
 
-					pScene->GetGameObject<CBall>()->SetVelocity(m_fMoveDirection);
+					CBall* pBall = pScene->GetGameObject<CBall>();
+					pBall->SetVelocity(m_fMoveDirection);
 					pGameManager->SetPhase(GamePhase::InPlay);
 					pGameManager->GetAttackDirecter()->GetRunning()->SetBatterRunner(tTakingBatterData.m_eSpeed);
 
 					// ƒoƒbƒg‚É“–‚½‚Á‚½
 					m_bBatting = true;
+
+					auto SEList = pBall->GetSEList();
+					SEList["Batting"]->Play();
 					break;
 				}
 				else

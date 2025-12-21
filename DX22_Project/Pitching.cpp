@@ -246,13 +246,17 @@ void CPitching::Update(int DefenceTeam)
 				}
 
 				// 投球したらボールをリリースする処理に移る
+				CBall* pBall = pScene->GetGameObject<CBall>();
+				auto SEList = pBall->GetSEList();
+				SEList["Pitching"]->Play();
 				m_pPitchingCircle->Pitched();
 				m_nPitchingPhase = (int)CPitching::PitchingPhase::Release;
-				pScene->GetGameObject<CBall>()->SetPitching(m_fChatchTime);
+				pBall->SetPitching(m_fChatchTime);
 				fPitchTime = 0.0f;
 			}
 			else if (pitchingCircleSize.x < 0.0f)
 			{
+
 				int randMiss = rand() % 10;
 				// 時間切れはミス投球になる
 				switch (randMiss)
@@ -265,14 +269,18 @@ void CPitching::Update(int DefenceTeam)
 
 					DirectX::XMFLOAT3 f3StrikeZonePos = pStrikeZone->GetPos();
 					DirectX::XMFLOAT3 f3StrikeZoneSize = pStrikeZone->GetSize();
-					pPitchingCursor->SetBallPos({ f3StrikeZonePos.x - f3StrikeZoneSize.x / 1.3f,f3StrikeZonePos.y + f3StrikeZoneSize.y / 1.3f,0.0f });
-					pPitchingCursor->SetPredPos({ f3StrikeZonePos.x - f3StrikeZoneSize.x / 1.3f, f3StrikeZonePos.y + f3StrikeZoneSize.y / 1.3f,0.0f });
+					pPitchingCursor->SetBallPos({ f3StrikeZonePos.x - f3StrikeZoneSize.x / 1.3f,f3StrikeZonePos.y - f3StrikeZoneSize.y / 1.3f,0.0f });
+					pPitchingCursor->SetPredPos({ f3StrikeZonePos.x - f3StrikeZoneSize.x / 1.3f, f3StrikeZonePos.y - f3StrikeZoneSize.y / 1.3f,0.0f });
 					break;
 				}
 				// 投球したらボールをリリースする処理に移る
 				m_pPitchingCircle->Pitched();
 				m_nPitchingPhase = (int)CPitching::PitchingPhase::Release;
-				pScene->GetGameObject<CBall>()->SetPitching(m_fChatchTime);
+
+				CBall* pBall = pScene->GetGameObject<CBall>();
+				auto SEList = pBall->GetSEList();
+				SEList["Pitching"]->Play();
+				pBall->SetPitching(m_fChatchTime);
 				fPitchTime = 0.0f;
 			}
 			// 球速に応じて捕球までの時間を決める
