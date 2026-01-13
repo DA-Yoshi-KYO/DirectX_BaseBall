@@ -18,7 +18,7 @@
 //    定数定義
 // ==============================
 // 基礎変化量
-constexpr DirectX::XMFLOAT3 ce_fBenderValue[(int)CPitching::BenderKind::Max] =
+constexpr DirectX::XMFLOAT3 ce_fBenderValue[(int)BenderKind::Max] =
 {
 	{ 0.0f,0.0f,0.0f },		// ストレートの基礎変化量
 	{ 5.0f,5.0f,0.0f },		// ツーシームの基礎変化量
@@ -105,80 +105,80 @@ void CPitchingCursor::Update()
 	// 球種と変化量に応じて投球予測地点を決める
 	switch (tState.m_eThrowKind)
 	{
-	case CPitching::BenderKind::Fourseam:
+	case BenderKind::Fourseam:
 		m_tPredParam.m_f3Pos = m_tBallParam.m_f3Pos;
 		break;
-	case CPitching::BenderKind::Twoseam:
-		if (tState.m_nBenderQuality[(int)CPitching::BenderKind::Twoseam] != 0)
+	case BenderKind::Twoseam:
+		if (tState.m_nBenderQuality[(int)BenderKind::Twoseam] != 0)
 		{
-			if(tState.m_bLeftPitcher) m_tPredParam.m_f3Pos = { m_tBallParam.m_f3Pos.x + ce_fBenderValue[(int)CPitching::BenderKind::Twoseam].x ,m_tBallParam.m_f3Pos.y + ce_fBenderValue[(int)CPitching::BenderKind::Twoseam].y, 0.0f };
-			else m_tPredParam.m_f3Pos = { m_tBallParam.m_f3Pos.x - ce_fBenderValue[(int)CPitching::BenderKind::Twoseam].x ,m_tBallParam.m_f3Pos.y + ce_fBenderValue[(int)CPitching::BenderKind::Twoseam].y, 0.0f };
+			if(tState.m_bLeftPitcher) m_tPredParam.m_f3Pos = { m_tBallParam.m_f3Pos.x + ce_fBenderValue[(int)BenderKind::Twoseam].x ,m_tBallParam.m_f3Pos.y + ce_fBenderValue[(int)BenderKind::Twoseam].y, 0.0f };
+			else m_tPredParam.m_f3Pos = { m_tBallParam.m_f3Pos.x - ce_fBenderValue[(int)BenderKind::Twoseam].x ,m_tBallParam.m_f3Pos.y + ce_fBenderValue[(int)BenderKind::Twoseam].y, 0.0f };
 		}
 		break;
-	case CPitching::BenderKind::Slider:
-		if (tState.m_nBenderQuality[(int)CPitching::BenderKind::Slider] != 0)
+	case BenderKind::Slider:
+		if (tState.m_nBenderQuality[(int)BenderKind::Slider] != 0)
 		{
 			if (tState.m_bLeftPitcher)
 			{
-				m_tPredParam.m_f3Pos = { m_tBallParam.m_f3Pos.x - ce_fBenderValue[(int)CPitching::BenderKind::Slider].x * tState.m_nBenderQuality[(int)CPitching::BenderKind::Slider],
-				   m_tBallParam.m_f3Pos.y + ce_fBenderValue[(int)CPitching::BenderKind::Slider].y
+				m_tPredParam.m_f3Pos = { m_tBallParam.m_f3Pos.x - ce_fBenderValue[(int)BenderKind::Slider].x * tState.m_nBenderQuality[(int)BenderKind::Slider],
+				   m_tBallParam.m_f3Pos.y + ce_fBenderValue[(int)BenderKind::Slider].y
 				, 0.0f};
 			}
 			else
 			{
-				m_tPredParam.m_f3Pos = { m_tBallParam.m_f3Pos.x + ce_fBenderValue[(int)CPitching::BenderKind::Slider].x * tState.m_nBenderQuality[(int)CPitching::BenderKind::Slider] ,
-					m_tBallParam.m_f3Pos.y + ce_fBenderValue[(int)CPitching::BenderKind::Slider].y * tState.m_nBenderQuality[(int)CPitching::BenderKind::Slider] 
+				m_tPredParam.m_f3Pos = { m_tBallParam.m_f3Pos.x + ce_fBenderValue[(int)BenderKind::Slider].x * tState.m_nBenderQuality[(int)BenderKind::Slider] ,
+					m_tBallParam.m_f3Pos.y + ce_fBenderValue[(int)BenderKind::Slider].y * tState.m_nBenderQuality[(int)BenderKind::Slider] 
 				, 0.0f };
 			}
 		}
 		break;
-	case CPitching::BenderKind::Curve:
-		if (tState.m_nBenderQuality[(int)CPitching::BenderKind::Curve] != 0)
+	case BenderKind::Curve:
+		if (tState.m_nBenderQuality[(int)BenderKind::Curve] != 0)
 		{
 			if (tState.m_bLeftPitcher) 
 			{
-				m_tPredParam.m_f3Pos = { m_tBallParam.m_f3Pos.x - ce_fBenderValue[(int)CPitching::BenderKind::Curve].x * tState.m_nBenderQuality[(int)CPitching::BenderKind::Curve],
-					m_tBallParam.m_f3Pos.y + ce_fBenderValue[(int)CPitching::BenderKind::Curve].y * tState.m_nBenderQuality[(int)CPitching::BenderKind::Curve], 0.0f };
+				m_tPredParam.m_f3Pos = { m_tBallParam.m_f3Pos.x - ce_fBenderValue[(int)BenderKind::Curve].x * tState.m_nBenderQuality[(int)BenderKind::Curve],
+					m_tBallParam.m_f3Pos.y + ce_fBenderValue[(int)BenderKind::Curve].y * tState.m_nBenderQuality[(int)BenderKind::Curve], 0.0f };
 			}
 			else
 			{
-				m_tPredParam.m_f3Pos = { m_tBallParam.m_f3Pos.x + ce_fBenderValue[(int)CPitching::BenderKind::Curve].x * tState.m_nBenderQuality[(int)CPitching::BenderKind::Curve]
-					,m_tBallParam.m_f3Pos.y + ce_fBenderValue[(int)CPitching::BenderKind::Curve].y * tState.m_nBenderQuality[(int)CPitching::BenderKind::Curve], 0.0f };
+				m_tPredParam.m_f3Pos = { m_tBallParam.m_f3Pos.x + ce_fBenderValue[(int)BenderKind::Curve].x * tState.m_nBenderQuality[(int)BenderKind::Curve]
+					,m_tBallParam.m_f3Pos.y + ce_fBenderValue[(int)BenderKind::Curve].y * tState.m_nBenderQuality[(int)BenderKind::Curve], 0.0f };
 			}
 		}
 		break;
-	case CPitching::BenderKind::Split:
-		m_tPredParam.m_f3Pos = { m_tBallParam.m_f3Pos.x + ce_fBenderValue[(int)CPitching::BenderKind::Split].x * tState.m_nBenderQuality[(int)CPitching::BenderKind::Split],
-			m_tBallParam.m_f3Pos.y + ce_fBenderValue[(int)CPitching::BenderKind::Split].y * tState.m_nBenderQuality[(int)CPitching::BenderKind::Split], 0.0f };
+	case BenderKind::Split:
+		m_tPredParam.m_f3Pos = { m_tBallParam.m_f3Pos.x + ce_fBenderValue[(int)BenderKind::Split].x * tState.m_nBenderQuality[(int)BenderKind::Split],
+			m_tBallParam.m_f3Pos.y + ce_fBenderValue[(int)BenderKind::Split].y * tState.m_nBenderQuality[(int)BenderKind::Split], 0.0f };
 		
 		break;
-	case CPitching::BenderKind::Sinker:
-		if (tState.m_nBenderQuality[(int)CPitching::BenderKind::Sinker] != 0)
+	case BenderKind::Sinker:
+		if (tState.m_nBenderQuality[(int)BenderKind::Sinker] != 0)
 		{
 			if (tState.m_bLeftPitcher)
 			{
-				m_tPredParam.m_f3Pos = { m_tBallParam.m_f3Pos.x - ce_fBenderValue[(int)CPitching::BenderKind::Sinker].x * tState.m_nBenderQuality[(int)CPitching::BenderKind::Sinker] ,
-					m_tBallParam.m_f3Pos.y + ce_fBenderValue[(int)CPitching::BenderKind::Sinker].y * tState.m_nBenderQuality[(int)CPitching::BenderKind::Sinker], 0.0f };
+				m_tPredParam.m_f3Pos = { m_tBallParam.m_f3Pos.x - ce_fBenderValue[(int)BenderKind::Sinker].x * tState.m_nBenderQuality[(int)BenderKind::Sinker] ,
+					m_tBallParam.m_f3Pos.y + ce_fBenderValue[(int)BenderKind::Sinker].y * tState.m_nBenderQuality[(int)BenderKind::Sinker], 0.0f };
 			}
 			else
 			{
-				m_tPredParam.m_f3Pos = { m_tBallParam.m_f3Pos.x + ce_fBenderValue[(int)CPitching::BenderKind::Sinker].x * tState.m_nBenderQuality[(int)CPitching::BenderKind::Sinker],
-					m_tBallParam.m_f3Pos.y + ce_fBenderValue[(int)CPitching::BenderKind::Sinker].y * tState.m_nBenderQuality[(int)CPitching::BenderKind::Sinker] , 0.0f };
+				m_tPredParam.m_f3Pos = { m_tBallParam.m_f3Pos.x + ce_fBenderValue[(int)BenderKind::Sinker].x * tState.m_nBenderQuality[(int)BenderKind::Sinker],
+					m_tBallParam.m_f3Pos.y + ce_fBenderValue[(int)BenderKind::Sinker].y * tState.m_nBenderQuality[(int)BenderKind::Sinker] , 0.0f };
 			}
 		}
 		break;
-	case CPitching::BenderKind::Shoot:
-		if (tState.m_nBenderQuality[(int)CPitching::BenderKind::Shoot] != 0)
+	case BenderKind::Shoot:
+		if (tState.m_nBenderQuality[(int)BenderKind::Shoot] != 0)
 		{
 			if (tState.m_bLeftPitcher)
 			{
-				m_tPredParam.m_f3Pos = { m_tBallParam.m_f3Pos.x - ce_fBenderValue[(int)CPitching::BenderKind::Shoot].x * tState.m_nBenderQuality[(int)CPitching::BenderKind::Shoot] ,
-					m_tBallParam.m_f3Pos.y + ce_fBenderValue[(int)CPitching::BenderKind::Shoot].y * tState.m_nBenderQuality[(int)CPitching::BenderKind::Shoot], 0.0f };
+				m_tPredParam.m_f3Pos = { m_tBallParam.m_f3Pos.x - ce_fBenderValue[(int)BenderKind::Shoot].x * tState.m_nBenderQuality[(int)BenderKind::Shoot] ,
+					m_tBallParam.m_f3Pos.y + ce_fBenderValue[(int)BenderKind::Shoot].y * tState.m_nBenderQuality[(int)BenderKind::Shoot], 0.0f };
 			}
 			else
 			{
-				m_tPredParam.m_f3Pos = { m_tBallParam.m_f3Pos.x + ce_fBenderValue[(int)CPitching::BenderKind::Shoot].x * tState.m_nBenderQuality[(int)CPitching::BenderKind::Shoot] ,
-					m_tBallParam.m_f3Pos.y + ce_fBenderValue[(int)CPitching::BenderKind::Shoot].y * tState.m_nBenderQuality[(int)CPitching::BenderKind::Shoot], 0.0f };
+				m_tPredParam.m_f3Pos = { m_tBallParam.m_f3Pos.x + ce_fBenderValue[(int)BenderKind::Shoot].x * tState.m_nBenderQuality[(int)BenderKind::Shoot] ,
+					m_tBallParam.m_f3Pos.y + ce_fBenderValue[(int)BenderKind::Shoot].y * tState.m_nBenderQuality[(int)BenderKind::Shoot], 0.0f };
 			}
 		}
 		break;

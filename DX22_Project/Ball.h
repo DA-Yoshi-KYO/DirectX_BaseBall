@@ -30,19 +30,21 @@ public:
 	void SetIsFryChatch(bool fryChatch) { m_bFryChatch = fryChatch; }
 	void SetIsFryBall(bool isFry) { m_bFryBall = isFry; }
 	void SetVelocity(DirectX::XMFLOAT3 vel) { m_f3Velocity = vel; }
-	void SetPitching(float time) { m_fBallTime = time; m_bPitched = true; }
+	void SetPitching(float time, BenderKind kind) { m_fBallTime = time; m_eBender = kind; m_bPitched = true; }
 	void SetCaught(bool isChatch);
 
 private:
 	CCollisionLine* m_pLucusCollision;
 	CCollisionBox* m_pBoxCollision;
 	DirectX::XMFLOAT3 m_f3Velocity;
+	DirectX::XMFLOAT3 m_f3PitchingDistance;
 	bool m_bFryBall;
 	bool m_bFryChatch;
 	bool m_bCaught;
 	bool m_bPitched;
 	bool m_bInOutField;
 	float m_fBallTime;
+	BenderKind m_eBender;
 
 	void CheckFaul();
 	void FaulCalc();

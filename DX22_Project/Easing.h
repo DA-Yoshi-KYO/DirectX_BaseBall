@@ -100,6 +100,15 @@ public:
         }
     }
 
+    // https://easings.net/ja#easeInBack
+    static float EaseInBack(float t, float maxT = 1.0f, float s = 1.70158f)
+    {
+        t /= maxT;
+        t = std::clamp(t, 0.0f, 1.0f);
+        const float c3 = s + 1;
+        return c3 * t * t * t - s * t * t;
+    }
+
     // https://easings.net/ja#easeOutBack
     static float EaseOutBack(float t, float maxT = 1.0f, float s = 1.70158f)
     {
