@@ -4,7 +4,7 @@
 #include "Main.h"
 
 CGameObject::CGameObject()
-    : m_bDestroy(false), m_bActive(true)
+    : m_bDestroy(false), m_bActive(true), m_bDrawEnable(true)
     , m_eTag(Tag::None)
     , m_tID{ "Object", 0 }
 {
@@ -57,6 +57,7 @@ void CGameObject::WriteBuffer()
 
 void CGameObject::Draw()
 {
+    if (!m_bDrawEnable) return;
     for (auto comp : m_pComponent_List)
 	{
         if (!comp) continue;
@@ -208,6 +209,14 @@ int CGameObject::Inspecter(bool isEnd)
     // 子要素の終了
     ImGui::EndChild();
     // 子要素の数をインクリメント
+    nChildCnt++;
+
+    ImGui::BeginChild(ImGui::GetID((void*)nChildCnt), ImVec2(250, 60), ImGuiWindowFlags_NoTitleBar);
+
+    ImGui::Checkbox("Draw", &m_bDrawEnable);
+
+    ImGui::EndChild();
+
     nChildCnt++;
 
     // IMGUIウィンドウの終了

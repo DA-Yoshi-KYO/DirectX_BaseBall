@@ -115,7 +115,7 @@ void CBall::OnCollision(CCollisionBase* other, std::string thisTag, Collision::R
 			DirectX::XMVECTOR vecEdge2 = DirectX::XMVectorSubtract(vecPoint[2], vecPoint[0]);
 			DirectX::XMVECTOR vecNormal = DirectX::XMVector3Normalize(DirectX::XMVector3Cross(vecEdge1, vecEdge2));
 
-			// 反射ベクトルの計算 (修正済み)
+			// 反射ベクトルの計算
 			float dotProduct = DirectX::XMVectorGetX(DirectX::XMVector3Dot(vecDir, vecNormal));
 			DirectX::XMVECTOR vecReflectDir = DirectX::XMVectorSubtract(
 				vecDir,
@@ -123,7 +123,7 @@ void CBall::OnCollision(CCollisionBase* other, std::string thisTag, Collision::R
 			);
 			vecReflectDir = DirectX::XMVector3Normalize(vecReflectDir);
 
-			// 反射後の位置を補正（スタック防止）
+			// 反射後の位置を補正
 			vecHitPoint = DirectX::XMVectorAdd(vecHitPoint, DirectX::XMVectorScale(vecNormal, 5.0f));
 
 			// 速度の減衰
@@ -180,7 +180,7 @@ void CBall::UpdateBatting()
 			DirectX::XMFLOAT3 f3ZoneLimitToCursor = f3OffsetFromCenter / f3StrikeZoneHarfSize;	// ゾーンハーフサイズの地点を+-1.0fとして、カーソル位置を-1~1に正規化する
 			DirectX::XMFLOAT3 f3CusorPos3D = f3ZoneLimitToCursor * ce_fStrikeZoneSizeIn3D;	// 正規化したカーソル位置を3D空間上のゾーンサイズを使って3D空間に投影する
 			DirectX::XMFLOAT3 f3BendedPos = DirectX::XMFLOAT3(ce_fJustmeetPos.x + f3CusorPos3D.x, ce_fJustmeetPos.y + f3CusorPos3D.y, ce_fJustmeetPos.z);	// 求めたカーソル位置は中心からのOffSet座標なので、ゾーンの中心座標を加算する
-			f3BendedPos.x *= f3Right.x;
+			f3BendedPos.x *= f3Right.x;	// スクリーン上の右方向と3D空間上の右方向は違うので3D空間上の右方向ベクトルを掛ける
 
 			// 投球予測地点への方向でキャッチャーミットまでの距離を移動するVelocityを求める
 			DirectX::XMVECTOR vecZoneCenterPos = DirectX::XMLoadFloat3(&f3BendedPos);	// 投球予測地点
