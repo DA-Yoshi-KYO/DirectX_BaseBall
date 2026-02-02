@@ -5,6 +5,20 @@
 #include "ReleasePoint.h"
 #include "PitchingCircle.h"
 
+// ‹…Ží
+enum class BenderKind
+{
+	Fourseam,
+	Twoseam,
+	Slider,
+	Curve,
+	Split,
+	Sinker,
+	Shoot,
+
+	Max
+};
+
 class CPitching
 {
 public:
@@ -55,19 +69,7 @@ private:
 	};
 
 public:
-	// ‹…Ží
-	enum class BenderKind
-	{
-		Fourseam,
-		Twoseam,
-		Slider,
-		Curve,
-		Split,
-		Sinker,
-		Shoot,
 
-		Max
-	};
 
 	// “Š‹…‚Ì—¬‚ê
 	enum class PitchingPhase

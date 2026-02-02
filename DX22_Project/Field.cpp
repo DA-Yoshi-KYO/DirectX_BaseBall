@@ -9,7 +9,9 @@
 
 constexpr int ce_nHomerunPolyLine = 40;	// ホームランゾーンのポリライン分割数
 constexpr int ce_nPlanePolyLine = 2;	// 直線平面のポリライン分割数
+
 constexpr float ce_nEasPow = 2.5f;	// イージングの強さ
+
 constexpr float ce_fJudgeZoneY = ce_fGroundY + 500.0f;	// 判定用当たり判定の高さ
 constexpr float ce_fStartEndZ = 30;	// 外野フェンスポリラインの最初のZ値
 constexpr float ce_fAjustZ = -200.0f;	// 外野フェンスの頂点(ce_fStartEndZから見た膨らみの最大値)

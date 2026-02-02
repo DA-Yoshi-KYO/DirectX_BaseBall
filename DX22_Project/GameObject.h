@@ -298,7 +298,8 @@ protected:
 	RendererParam m_tParam;         // 描画パラメータ
 	DirectX::XMFLOAT3 m_f3OldPos;   // 前フレームの位置
 	bool m_bDestroy;                // オブジェクトが破棄されているかのフラグ
-	bool m_bActive;                 // 破棄はしないが、更新や描画等の対象外としたいときに使用
+	bool m_bActive;                 // 破棄はしないが、更新の対象外としたいときに使用
+	bool m_bDrawEnable;				// 表示フラグ
 	Tag m_eTag;                     // オブジェクトのタグ
 	ObjectID m_tID;                 // オブジェクト識別用ID
 	std::map<std::string,CAudio*> m_pSEList;	// SE

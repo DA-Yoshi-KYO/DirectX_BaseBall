@@ -7,16 +7,19 @@
 #include "ModelRenderer.h"
 #include "Field.h"
 #include "Oparation.h"
+#include "Easing.h"
 
-constexpr DirectX::XMFLOAT3 ce_fStrikeZoneSizeIn3D = { 1.54f,1.54f,0.0f };
-constexpr  DirectX::XMFLOAT3 ce_fBallSize = { 0.5f,0.5f,0.5f };
+constexpr DirectX::XMFLOAT3 ce_fStrikeZoneSizeIn3D = { 1.8f,1.8f,0.0f };
+constexpr  DirectX::XMFLOAT3 ce_fBallSize = { 0.3f,0.3f,0.3f };
 constexpr  DirectX::XMFLOAT3 ce_fInplayBallSize = { 2.0f,2.0f,2.0f };
 constexpr int ce_nBallRotateSec = 220 / 60;
 
 CBall::CBall()
 	: CGameObject()
 	, m_bFryBall(true), m_bPitched(false), m_bCaught(false), m_bFryChatch(false), m_bInOutField(false)
-	, m_f3Velocity{}, m_fBallTime(0.0f)
+	, m_f3Velocity{}, m_f3PitchingDistance{}, m_fBallTime(0.0f)
+	, m_eBender(BenderKind::Fourseam)
+	, m_pBoxCollision(nullptr), m_pLucusCollision(nullptr)
 {
 	m_tParam.m_f3Pos = { ce_fBallPos.x ,ce_fBallPos.y, ce_fBallPos.z };
 	m_tParam.m_f3Size = ce_fBallSize;
@@ -112,7 +115,7 @@ void CBall::OnCollision(CCollisionBase* other, std::string thisTag, Collision::R
 			DirectX::XMVECTOR vecEdge2 = DirectX::XMVectorSubtract(vecPoint[2], vecPoint[0]);
 			DirectX::XMVECTOR vecNormal = DirectX::XMVector3Normalize(DirectX::XMVector3Cross(vecEdge1, vecEdge2));
 
-			// 反射ベクトルの計算 (修正済み)
+			// 反射ベクトルの計算
 			float dotProduct = DirectX::XMVectorGetX(DirectX::XMVector3Dot(vecDir, vecNormal));
 			DirectX::XMVECTOR vecReflectDir = DirectX::XMVectorSubtract(
 				vecDir,
@@ -120,7 +123,7 @@ void CBall::OnCollision(CCollisionBase* other, std::string thisTag, Collision::R
 			);
 			vecReflectDir = DirectX::XMVector3Normalize(vecReflectDir);
 
-			// 反射後の位置を補正（スタック防止）
+			// 反射後の位置を補正
 			vecHitPoint = DirectX::XMVectorAdd(vecHitPoint, DirectX::XMVectorScale(vecNormal, 5.0f));
 
 			// 速度の減衰
@@ -177,7 +180,7 @@ void CBall::UpdateBatting()
 			DirectX::XMFLOAT3 f3ZoneLimitToCursor = f3OffsetFromCenter / f3StrikeZoneHarfSize;	// ゾーンハーフサイズの地点を+-1.0fとして、カーソル位置を-1~1に正規化する
 			DirectX::XMFLOAT3 f3CusorPos3D = f3ZoneLimitToCursor * ce_fStrikeZoneSizeIn3D;	// 正規化したカーソル位置を3D空間上のゾーンサイズを使って3D空間に投影する
 			DirectX::XMFLOAT3 f3BendedPos = DirectX::XMFLOAT3(ce_fJustmeetPos.x + f3CusorPos3D.x, ce_fJustmeetPos.y + f3CusorPos3D.y, ce_fJustmeetPos.z);	// 求めたカーソル位置は中心からのOffSet座標なので、ゾーンの中心座標を加算する
-			f3BendedPos.x *= f3Right.x;
+			f3BendedPos.x *= f3Right.x;	// スクリーン上の右方向と3D空間上の右方向は違うので3D空間上の右方向ベクトルを掛ける
 
 			// 投球予測地点への方向でキャッチャーミットまでの距離を移動するVelocityを求める
 			DirectX::XMVECTOR vecZoneCenterPos = DirectX::XMLoadFloat3(&f3BendedPos);	// 投球予測地点
@@ -198,14 +201,49 @@ void CBall::UpdateBatting()
 
 			// 投球位置からキャッチャー位置までの距離を求める
 			DirectX::XMVECTOR vecLengthOfPitch = targetC - vecInitPos;
+			DirectX::XMStoreFloat3(&m_f3PitchingDistance, AB);
 			// その距離をm_fBallTime秒で進み終わるようにVelocityを求める
-			DirectX::XMVECTOR vecVel = DirectX::XMVectorScale(vecLengthOfPitch, 1.0f / (fFPS * m_fBallTime));
-			DirectX::XMStoreFloat3(&m_f3Velocity, vecVel);
+			//DirectX::XMVECTOR vecVel = DirectX::XMVectorScale(vecLengthOfPitch, 1.0f / (fFPS * m_fBallTime));
+			//DirectX::XMStoreFloat3(&m_f3Velocity, vecVel);
 			bRelease = true;
 		}
 
 		fTime += 1.0f / fFPS;
-		m_tParam.m_f3Pos += m_f3Velocity;
+		switch (m_eBender)
+		{
+		case BenderKind::Fourseam:
+			m_tParam.m_f3Pos.x = ce_fBallPos.x + m_f3PitchingDistance.x * CEasing::Linear(fTime, m_fBallTime);
+			m_tParam.m_f3Pos.y = ce_fBallPos.y + m_f3PitchingDistance.y * CEasing::Linear(fTime, m_fBallTime);
+			break;
+		case BenderKind::Twoseam:
+			m_tParam.m_f3Pos.x = ce_fBallPos.x + m_f3PitchingDistance.x * CEasing::EaseInCubic(fTime, m_fBallTime);
+			m_tParam.m_f3Pos.y = ce_fBallPos.y + m_f3PitchingDistance.y * CEasing::EaseInCubic(fTime, m_fBallTime);
+			break;
+		case BenderKind::Slider:
+			m_tParam.m_f3Pos.x = ce_fBallPos.x + m_f3PitchingDistance.x * CEasing::EaseInQuad(fTime, m_fBallTime);
+			m_tParam.m_f3Pos.y = ce_fBallPos.y + m_f3PitchingDistance.y * CEasing::Linear(fTime, m_fBallTime);
+			break;
+		case BenderKind::Curve:
+			m_tParam.m_f3Pos.x = ce_fBallPos.x + m_f3PitchingDistance.x * CEasing::EaseInBack(fTime, m_fBallTime, 8.0f);
+			m_tParam.m_f3Pos.y = ce_fBallPos.y + m_f3PitchingDistance.y * CEasing::EaseInBack(fTime, m_fBallTime, 10.0f);
+			break;
+		case BenderKind::Split:
+			m_tParam.m_f3Pos.x = ce_fBallPos.x + m_f3PitchingDistance.x * CEasing::Linear(fTime, m_fBallTime);
+			m_tParam.m_f3Pos.y = ce_fBallPos.y + m_f3PitchingDistance.y * CEasing::EaseInCubic(fTime, m_fBallTime);
+			break;
+		case BenderKind::Sinker:
+			m_tParam.m_f3Pos.x = ce_fBallPos.x + m_f3PitchingDistance.x * CEasing::EaseInQuad(fTime, m_fBallTime);
+			m_tParam.m_f3Pos.y = ce_fBallPos.y + m_f3PitchingDistance.y * CEasing::EaseInQuad(fTime, m_fBallTime);
+			break;
+		case BenderKind::Shoot:
+			m_tParam.m_f3Pos.x = ce_fBallPos.x + m_f3PitchingDistance.x * CEasing::EaseInCubic(fTime, m_fBallTime);
+			m_tParam.m_f3Pos.y = ce_fBallPos.y + m_f3PitchingDistance.y * CEasing::Linear(fTime, m_fBallTime);
+			break;
+		default:
+			break;
+		}
+
+		m_tParam.m_f3Pos.z = ce_fBallPos.z + (-224.0f - ce_fBallPos.z) * CEasing::Linear(fTime, m_fBallTime);
 
 		if (m_fBallTime <= fTime)
 		{

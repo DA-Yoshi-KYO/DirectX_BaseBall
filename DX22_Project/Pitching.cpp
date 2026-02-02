@@ -251,7 +251,7 @@ void CPitching::Update(int DefenceTeam)
 				SEList["Pitching"]->Play();
 				m_pPitchingCircle->Pitched();
 				m_nPitchingPhase = (int)CPitching::PitchingPhase::Release;
-				pBall->SetPitching(m_fChatchTime);
+				pBall->SetPitching(m_fChatchTime,m_tPitcherState.m_eThrowKind);
 				fPitchTime = 0.0f;
 			}
 			else if (pitchingCircleSize.x < 0.0f)
@@ -280,7 +280,7 @@ void CPitching::Update(int DefenceTeam)
 				CBall* pBall = pScene->GetGameObject<CBall>();
 				auto SEList = pBall->GetSEList();
 				SEList["Pitching"]->Play();
-				pBall->SetPitching(m_fChatchTime);
+				pBall->SetPitching(m_fChatchTime, m_tPitcherState.m_eThrowKind);
 				fPitchTime = 0.0f;
 			}
 			// ‹…‘¬‚É‰ž‚¶‚Ä•ß‹…‚Ü‚Å‚ÌŽžŠÔ‚ðŒˆ‚ß‚é
