@@ -65,7 +65,7 @@ void CModelRenderer::Draw()
         else
         {
             // マテリアルにテクスチャが存在すればそちらを使用する
-            const Model::Material* material = pModel->GetMaterial(i);
+            const Model::Material* material = pModel->GetMaterial(pModel->GetMesh(i)->materialID);
             if (material) tex = material->pTexture;
         }
         pPS->SetTexture(0, tex);
