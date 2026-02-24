@@ -18,7 +18,8 @@ CRunner::CRunner()
 {
 	m_tParam.m_f3Pos = DirectX::XMFLOAT3(0.0f, -4.5f, -218.0f);
 	m_tParam.m_f3Size = DirectX::XMFLOAT3(15.0f, 15.0f, 15.0f);
-	m_tParam.m_f3Rotate.x = DirectX::XMConvertToRadians(90.0f);
+	m_tParam.m_f3OffSet = { 0.0f,-3.0f,0.0f };
+	m_tParam.m_f3Scale = { 2.0f,2.0f,2.0f };
 }
 
 CRunner::~CRunner()
@@ -31,7 +32,7 @@ void CRunner::Init()
 	CModelRenderer* pRenderer = AddComponent<CModelRenderer>();
 	pRenderer->Load(PATH_MODEL("Character.fbx"),0.2f);
 	pRenderer->LoadVertexShader(PATH_SHADER("VS_Object.cso"));
-	pRenderer->LoadPixelShader(PATH_SHADER("PS_SimpleColor.cso"));
+	pRenderer->LoadPixelShader(PATH_SHADER("PS_TexColor.cso"));
 	
 	m_pCollision = AddComponent<CCollisionBox>();
 	m_pCollision->SetTag("Runner");
@@ -44,8 +45,8 @@ void CRunner::Init()
 		m_f3TargetPos[int(itr->GetKind())] = itr->GetPos();
 	}
 	int nNo = CGameManager::GetInstance()->GetAttackDirecter()->GetPlayerNo();
-	if (nNo == 1) m_tParam.m_f4Color = DirectX::XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
-	else if (nNo == 2) m_tParam.m_f4Color = DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
+	//if (nNo == 1) m_tParam.m_f4Color = DirectX::XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
+	//else if (nNo == 2) m_tParam.m_f4Color = DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
 
 	m_pRunning = CGameManager::GetInstance()->GetAttackDirecter()->GetRunning();
 }

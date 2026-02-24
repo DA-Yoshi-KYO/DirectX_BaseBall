@@ -11,7 +11,9 @@
 struct RendererParam
 {
 	DirectX::XMFLOAT3 m_f3Pos;
+	DirectX::XMFLOAT3 m_f3OffSet;
 	DirectX::XMFLOAT3 m_f3Size;
+	DirectX::XMFLOAT3 m_f3Scale;
 	DirectX::XMFLOAT3 m_f3Rotate;
 	DirectX::XMFLOAT4 m_f4Color;
 	DirectX::XMFLOAT2 m_f2UVPos;

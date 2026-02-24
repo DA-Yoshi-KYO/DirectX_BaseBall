@@ -3,6 +3,7 @@
 #include "SpriteRendererBase.h"
 #include "Camera.h"
 #include "PostProcessChain.h"
+#include "Oparation.h"
 
 std::map<std::string, Model*> CModelRenderer::m_pModelList = {};
 std::map<std::string, Texture*> CModelRenderer::m_pCustomTextureList = {};
@@ -29,10 +30,12 @@ void CModelRenderer::Draw()
     else SetRenderTargets(1, &pRTV, nullptr);
     
     DirectX::XMFLOAT4X4 wvp[3];
+	DirectX::XMFLOAT3 pos = m_tParam.m_f3Pos + m_tParam.m_f3OffSet;
+	DirectX::XMFLOAT3 size = m_tParam.m_f3Size * m_tParam.m_f3Scale;
     DirectX::XMMATRIX world =
-        DirectX::XMMatrixScaling(m_tParam.m_f3Size.x, m_tParam.m_f3Size.y, m_tParam.m_f3Size.z) *
+        DirectX::XMMatrixScaling(size.x, size.y, size.z) *
         DirectX::XMMatrixRotationRollPitchYaw(m_tParam.m_f3Rotate.x, m_tParam.m_f3Rotate.y, m_tParam.m_f3Rotate.z) *
-        DirectX::XMMatrixTranslation(m_tParam.m_f3Pos.x, m_tParam.m_f3Pos.y, m_tParam.m_f3Pos.z);
+        DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);
     world = DirectX::XMMatrixTranspose(world);
     DirectX::XMStoreFloat4x4(&wvp[0], world);
 

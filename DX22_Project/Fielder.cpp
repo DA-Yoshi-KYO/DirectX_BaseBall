@@ -18,8 +18,10 @@ CFielder::CFielder()
     , m_bIsOparation(true), m_bChatch(false)
     , m_bMostNearToBase{}, m_pCollision{}
 {
+    m_tParam.m_f3OffSet = { 0.0f,-3.0f,0.0f };
     m_tParam.m_f3Size = { 15.0f,15.0f,15.0f };
-    m_tParam.m_f3Rotate.x = DirectX::XMConvertToRadians(90.0f);
+    m_tParam.m_f3Scale = { 2.0f,2.0f,2.0f };
+    //m_tParam.m_f3Rotate.x = DirectX::XMConvertToRadians(90.0f);
 }
 
 CFielder::~CFielder()
@@ -32,14 +34,14 @@ void CFielder::Init()
     CModelRenderer* pRenderer = AddComponent<CModelRenderer>();
     pRenderer->Load(PATH_MODEL("Character.fbx"),0.2f);
     pRenderer->LoadVertexShader(PATH_SHADER("VS_Object.cso"));
-    pRenderer->LoadPixelShader(PATH_SHADER("PS_SimpleColor.cso"));
+    pRenderer->LoadPixelShader(PATH_SHADER("PS_TexColor.cso"));
     
     m_pCollision = AddComponent<CCollisionBox>();
     m_pCollision->SetTag("Fielder");
     m_pCollision->SetInfo(m_tParam.m_f3Pos, m_tParam.m_f3Size);
     int nNo = CGameManager::GetInstance()->GetDefenceDirecter()->GetPlayerNo();
-    if (nNo == 1) m_tParam.m_f4Color = DirectX::XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
-    else if (nNo == 2) m_tParam.m_f4Color = DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
+    //if (nNo == 1) m_tParam.m_f4Color = DirectX::XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
+    //else if (nNo == 2) m_tParam.m_f4Color = DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
 }
 
 void CFielder::Update()
@@ -135,8 +137,8 @@ void CFielder::ResetPos()
         break;
     };
     int nNo = CGameManager::GetInstance()->GetDefenceDirecter()->GetPlayerNo();
-    if (nNo == 1) m_tParam.m_f4Color = DirectX::XMFLOAT4(1.0f,0.0f,0.0f,1.0f);
-    else if (nNo == 2) m_tParam.m_f4Color = DirectX::XMFLOAT4(0.0f,1.0f,0.0f,1.0f);
+    //if (nNo == 1) m_tParam.m_f4Color = DirectX::XMFLOAT4(1.0f,0.0f,0.0f,1.0f);
+    //else if (nNo == 2) m_tParam.m_f4Color = DirectX::XMFLOAT4(0.0f,1.0f,0.0f,1.0f);
 
     m_tParam.m_f3Pos.y = -4.0f;
     m_pCollision->SetInfo(m_tParam.m_f3Pos, m_tParam.m_f3Size);

@@ -10,7 +10,9 @@ CGameObject::CGameObject()
 {
     // 汎用パラメータの初期化
     m_tParam.m_f3Pos = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
+    m_tParam.m_f3OffSet = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
     m_tParam.m_f3Size = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
+    m_tParam.m_f3Scale = DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f);
     m_tParam.m_f3Rotate = DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f);
     m_tParam.m_f4Color = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
     m_tParam.m_f2UVPos = DirectX::XMFLOAT2(0.0f, 0.0f);
